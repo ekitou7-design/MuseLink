@@ -1,0 +1,50 @@
+{
+  "sourceName": "中国国家博物馆示例导入",
+  "sourceType": "inline",
+  "mode": "replace-museum",
+  "persistTo": ["file"],
+  "defaults": {
+    "museum": "中国国家博物馆",
+    "culture": "馆藏文物",
+    "favsCount": 0
+  },
+  "mapping": {
+    "id": ["文物编号", "id"],
+    "name": ["名称", "name", "title"],
+    "museum": ["博物馆", "museum"],
+    "period": ["年代", "period"],
+    "material": ["材质", "material"],
+    "culture": ["文化", "culture", "category"],
+    "origin": ["出土地", "origin", "unearthedAt"],
+    "description": ["简介", "description", "summary"],
+    "imageUrl": ["图片", "imageUrl", "image"],
+    "tags": ["标签", "tags"],
+    "favsCount": ["热度", "favsCount"]
+  },
+  "records": [
+    {
+      "文物编号": "guobo-001",
+      "名称": "后母戊鼎",
+      "博物馆": "中国国家博物馆",
+      "年代": "商代晚期",
+      "材质": "青铜",
+      "文化": "商周青铜文明",
+      "出土地": "河南安阳武官村",
+      "简介": "已知中国古代最重的青铜礼器之一，气势雄浑，代表了商代晚期高超的青铜铸造水平。",
+      "图片": "https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&q=80&w=800",
+      "标签": "青铜器,国宝,礼器"
+    },
+    {
+      "文物编号": "guobo-002",
+      "名称": "四羊方尊",
+      "博物馆": "中国国家博物馆",
+      "年代": "商代晚期",
+      "材质": "青铜",
+      "文化": "商周青铜文明",
+      "出土地": "湖南宁乡黄材",
+      "简介": "方尊四角各饰卷角羊首，造型雄奇，纹饰繁复，是商代青铜器中的杰出代表。",
+      "图片": "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&q=80&w=800",
+      "标签": "青铜器,国宝,礼器"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: muselink
+      POSTGRES_USER: muselink
+      POSTGRES_PASSWORD: muselink_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - muselink_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U muselink -d muselink"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  muselink_pg:
+

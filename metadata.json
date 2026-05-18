@@ -1,0 +1,5 @@
+{
+  "name": "博悟 (MuseLink)",
+  "description": "全国博物馆馆藏文物数字聚合与AI智能展陈平台。探索千年羁绊，定制你的数字博物馆。",
+  "requestFramePermissions": ["camera", "geolocation"]
+}

@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Times New Roman", Times, serif;
+  --font-serif: "Times New Roman", Times, serif;
+  --font-display: "Times New Roman", Times, serif;
+  
+  --color-primary: #8C7851;
+  --color-secondary: #1A1A1A;
+  --color-tertiary: #A69066;
+  --color-neutral: #FAFAFA;
+
+  --radius-xs: 5px;
+  --radius-sm: 5px;
+  --radius-md: 5px;
+  --radius-lg: 5px;
+  --radius-xl: 5px;
+  --radius-2xl: 5px;
+  --radius-3xl: 5px;
+  --radius-4xl: 5px;
+}
+
+@layer base {
+  * {
+    font-family: "Times New Roman", Times, serif !important;
+  }
+  html {
+    @apply min-h-full bg-[#E8E2D7];
+  }
+  body {
+    @apply min-h-screen bg-[#E8E2D7] text-[#1A1A1A] antialiased overflow-x-hidden font-sans;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+  }
+  #root {
+    --phone-safe-top: 58px;
+    width: min(100vw, 393px);
+    height: min(100svh, 852px);
+    min-height: 0;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    padding-top: var(--phone-safe-top);
+    background: #FFFFFF;
+    border: 6px solid #111216;
+    border-radius: 45px;
+    outline: 1px solid rgba(255, 255, 255, 0.38);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.32),
+      0 22px 54px rgba(24, 20, 14, 0.28),
+      0 2px 10px rgba(24, 20, 14, 0.18),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+    transform: translateZ(0);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  #root::-webkit-scrollbar {
+    display: none;
+  }
+  #root::before {
+    content: "";
+    position: fixed;
+    top: 13px;
+    left: 50%;
+    z-index: 1000;
+    width: 126px;
+    height: 36px;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 78% 50%, #15171d 0 5px, transparent 6px),
+      linear-gradient(180deg, #050507 0%, #15161a 100%);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.08),
+      0 1px 2px rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+  #root::after {
+    content: "9:41";
+    position: fixed;
+    top: 18px;
+    left: 33px;
+    z-index: 1001;
+    color: #111216;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Arial, sans-serif !important;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0;
+    pointer-events: none;
+  }
+  #root .min-h-screen {
+    min-height: 100%;
+  }
+  #root .h-full {
+    height: 100%;
+  }
+  #root .h-screen {
+    height: 100%;
+  }
+  #root .top-\[60px\] {
+    top: 60px;
+  }
+  #root .top-\[110px\] {
+    top: 110px;
+  }
+  @media (max-width: 460px) {
+    body {
+      padding: 0;
+    }
+    #root {
+      --phone-safe-top: env(safe-area-inset-top, 0px);
+      width: 100vw;
+      height: 100svh;
+      border: none;
+      border-radius: 0;
+      outline: none;
+      padding-top: var(--phone-safe-top);
+      box-shadow: none;
+    }
+    #root::before,
+    #root::after {
+      display: none;
+    }
+  }
+  svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+@layer components {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .drawer-overlay {
+    @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] opacity-0 pointer-events-none transition-opacity duration-300;
+    top: var(--phone-safe-top);
+  }
+  .drawer-overlay.open {
+    @apply opacity-100 pointer-events-auto;
+  }
+  
+  .drawer-content {
+    @apply fixed top-0 left-0 bottom-0 w-3/4 bg-[#FDFBF7] z-[101] -translate-x-full transition-transform duration-300 ease-out shadow-2xl;
+    top: var(--phone-safe-top);
+  }
+  .drawer-content.open {
+    @apply translate-x-0;
+  }
+
+  #root .fixed.inset-0 {
+    top: var(--phone-safe-top);
+  }
+
+  #root .fixed.top-0 {
+    top: var(--phone-safe-top);
+  }
+
+  .two-floor-container {
+    @apply relative h-screen overflow-hidden;
+  }
+  
+  .floor {
+    @apply absolute inset-0 w-full h-full transition-transform duration-500 ease-in-out;
+  }
+
+  .bg-beige {
+    @apply bg-[#FDFBF7];
+  }
+  .bg-light-gray {
+    @apply bg-[#F5F5F5];
+  }
+
+  /* Force single line text with ellipsis */
+  .text-nowrap-ellipsis {
+    @apply whitespace-nowrap overflow-hidden text-ellipsis;
+  }
+
+  /* Global rule for titles, buttons, and labels to prevent wrapping */
+  .force-nowrap {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 0; /* Allow flex items to shrink below their content size */
+  }
+}

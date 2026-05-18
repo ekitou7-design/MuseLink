@@ -1,0 +1,361 @@
+{
+  "version": 1,
+  "users": [
+    {
+      "id": 100010,
+      "museId": "jiangzhong",
+      "passwordHash": "$2b$12$bj.Dzgoa7ykJhbR63.SdOOYvbH3QyiyCd97hpM2SLn6xj9h5nStQ2",
+      "createdAt": "2026-04-20T13:27:58.155Z",
+      "profile": {
+        "displayName": "犟种",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "admin",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100000,
+      "passwordHash": "$2b$12$ZZ.bp6Vf/QksUJbwR781Ku9xifiW2AMSNvHQEsPzep.isTiY0PKgi",
+      "createdAt": "2026-04-20T12:15:49.817Z",
+      "profile": {
+        "displayName": "测试用户",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100001,
+      "museId": "747291743",
+      "passwordHash": "$2b$12$Ng56FEfd3vh9K3dPSn33C.dvfnL1nsaLU8U45YjYxHF1goqeYMJMa",
+      "createdAt": "2026-04-20T12:33:37.725Z",
+      "profile": {
+        "displayName": "MuseLink 747291743",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100002,
+      "museId": "3490158531",
+      "passwordHash": "$2b$12$AKwAQ5/kyE5pgbJzOui7ferxjTH1.nsAeetdg60cXWaVY2PyyJOxC",
+      "createdAt": "2026-04-20T12:33:41.099Z",
+      "profile": {
+        "displayName": "MuseLink 3490158531",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100003,
+      "museId": "677896520",
+      "passwordHash": "$2b$12$zP7S5kCxqaUnzfSYuOcF2eANNhB6SwkVCwvVWjYmSFChBWiCNp/PK",
+      "createdAt": "2026-04-20T12:40:34.132Z",
+      "profile": {
+        "displayName": "MuseLink 677896520",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100004,
+      "museId": "8042938828",
+      "passwordHash": "$2b$12$QDBQFgdTuTRIJgXjuuNgn.QI6X4k1XVmK0tccbi8wXIfrzQ2/jkfi",
+      "createdAt": "2026-04-20T12:40:37.598Z",
+      "profile": {
+        "displayName": "MuseLink 8042938828",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100005,
+      "passwordHash": "$2b$12$WPfDYkO5XmL.9nzyfBXwvuE0xhNxFRG7bV3qkYZyZVTSPcQRHc0R.",
+      "createdAt": "2026-04-20T12:47:38.194Z",
+      "profile": {
+        "displayName": "用户0005",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100006,
+      "passwordHash": "$2b$12$hdnw4dhEtPqDooBsPZPYAe6IZNYXmUCudfMP15T.GZ9JOglzf2qBq",
+      "createdAt": "2026-04-20T12:47:43.192Z",
+      "profile": {
+        "displayName": "用户0006",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100007,
+      "passwordHash": "$2b$12$6MZ8uod3SyWj.iJH882M4OqR9ir8vlIMn35mjqXf4puf42KzXzsdG",
+      "createdAt": "2026-04-20T12:47:49.010Z",
+      "profile": {
+        "displayName": "用户0007",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100008,
+      "passwordHash": "$2b$12$2WUDC1uaqIltGtMiWfH.7Od.nsNN8BJFrMa8GS7E3Nun1WeFs.vhq",
+      "createdAt": "2026-04-20T12:47:55.878Z",
+      "profile": {
+        "displayName": "用户0008",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100009,
+      "museId": "9092277295",
+      "passwordHash": "$2b$12$blvZpTfPoOtUyCfDLvRVauhZgvg29Cju3tXZe4r8E8I9e4QSMiXBa",
+      "createdAt": "2026-04-20T13:08:15.135Z",
+      "profile": {
+        "displayName": "MuseLink 9092277295",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100011,
+      "museId": "82904049",
+      "passwordHash": "$2b$12$hnSV2F0nJKdDkT2ZLmJyPO.pGXZEPsOgzQvC6q/yuYupJlH/gM/ZK",
+      "createdAt": "2026-04-20T13:40:30.402Z",
+      "profile": {
+        "displayName": "MuseLink 82904049",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100012,
+      "museId": "27175782",
+      "passwordHash": "$2b$12$oh2.aSvFDGyaSoFSkfrUFumRfQJ.0OVLEIBIkkZLwtLDJLUAGsVfq",
+      "createdAt": "2026-04-20T13:48:55.014Z",
+      "profile": {
+        "displayName": "MuseLink 27175782",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100013,
+      "museId": "7055731483",
+      "passwordHash": "$2b$12$aSnnbtXpIBG5NWePU1Fi9OEdsFfgj285DZ8f2ESpfe9ZWpz.X2G66",
+      "createdAt": "2026-04-21T09:49:04.056Z",
+      "profile": {
+        "displayName": "MuseLink 7055731483",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    },
+    {
+      "id": 100014,
+      "museId": "8203390376",
+      "passwordHash": "",
+      "phone": "15642710488",
+      "createdAt": "2026-05-12T00:26:10.130Z",
+      "profile": {
+        "displayName": "MuseLink 0488",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
+    }
+  ]
+}

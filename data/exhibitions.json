@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "exhibitions": [
+    {
+      "id": "exh_1779019399860_7b4e64",
+      "userId": 100010,
+      "userName": "犟种",
+      "userPhoto": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+      "title": "啦啦啦",
+      "intro": "",
+      "coverUrl": "https://lnmuseum.com.cn/singleMuseum/attach/getImg?fileId=22024462001&type=S&s=2243",
+      "artifactIds": [
+        "WW-辽 - 金灰陶罐形扑满-0"
+      ],
+      "isPublic": false,
+      "likesCount": 0,
+      "favsCount": 0,
+      "commentsCount": 0,
+      "slideshowSettings": {
+        "duration": 4,
+        "transition": "fade",
+        "showIntro": true,
+        "loop": true
+      },
+      "createdAt": "2026-05-17T12:03:19.860Z",
+      "updatedAt": "2026-05-17T12:03:19.860Z"
+    },
+    {
+      "id": "exh_1778991362028_929ee9",
+      "userId": 100013,
+      "userName": "MuseLink 7055731483",
+      "userPhoto": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+      "title": "一念成展：关于江南文人生活的展览",
+      "intro": "本展围绕「关于江南文人生活的展览」，从后端文物库实时筛选 12 件真实馆藏展品，以 辽 - 金灰陶罐形扑满、民国巴林石印、清浮雕瓜瓞天台石印、清雕钮天然木根印 等 建立叙事入口。\n\n馆藏线索：辽宁省博物馆；主要年代：清 (1616~1911)；高频材质：宝玉石\n\n展览逻辑：由日常经验进入器物细节，再回到地域、时代与审美秩序，让观众从“看见一件物”走向“理解一种生活”。\n\n第二单元：器物与审美\n辽 - 金灰陶罐形扑满、民国巴林石印、清浮雕瓜瓞天台石印、清浮雕梅花天台石印、清浮雕树石昌化长方石印\n\n第三单元：地域与时代\n清浮雕瓜瓞天台石印、清雕钮天然木根印、清浮雕梅花天台石印、清豆瓣青田石印、清浮雕树石昌化长方石印\n\n导览文案：请从展品名称、馆藏单位、年代、材质和简介中读取线索；系统不会补写数据库中不存在的具体来源或故事。",
+      "coverUrl": "https://lnmuseum.com.cn/singleMuseum/attach/getImg?fileId=22024462001&type=S&s=2243",
+      "artifactIds": [
+        "WW-辽 - 金灰陶罐形扑满-0",
+        "WW-民国巴林石印-1",
+        "WW-清浮雕瓜瓞天台石印-2",
+        "WW-清雕钮天然木根印-3",
+        "WW-清浮雕梅花天台石印-4",
+        "WW-清豆瓣青田石印-5",
+        "WW-清浮雕树石昌化长方石印-6",
+        "WW-清螭钮寿山石印-7",
+        "WW-清螭钮大田石椭圆印-8",
+        "WW-清狮钮青玉印-9",
+        "WW-民国巴林石印-10",
+        "WW-民国浮雕造像巴林石印-11"
+      ],
+      "isPublic": false,
+      "likesCount": 0,
+      "favsCount": 0,
+      "commentsCount": 0,
+      "bgmUrl": "ambient://rain-ocean-wind",
+      "createdAt": "2026-05-17T04:16:02.028Z",
+      "updatedAt": "2026-05-17T04:16:02.028Z"
+    },
+    {
+      "id": "exh_1776687363674_f5d284",
+      "userId": 100000,
+      "userName": "测试用户",
+      "userPhoto": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+      "title": "我的第一个展陈",
+      "intro": "intro",
+      "coverUrl": "https://lnmuseum.com.cn/singleMuseum/attach/getImg?fileId=22024462001&type=S&s=2243",
+      "artifactIds": [
+        "WW-辽 - 金灰陶罐形扑满-0",
+        "WW-民国巴林石印-1",
+        "WW-清浮雕瓜瓞天台石印-2"
+      ],
+      "isPublic": true,
+      "likesCount": 0,
+      "favsCount": 0,
+      "commentsCount": 0,
+      "createdAt": "2026-04-20T12:16:03.674Z",
+      "updatedAt": "2026-04-20T12:16:03.674Z"
+    }
+  ]
+}

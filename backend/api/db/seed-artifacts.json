@@ -1,0 +1,106 @@
+[
+  {
+    "name": "后母戊鼎",
+    "dynasty": "商代晚期",
+    "museum": "中国国家博物馆",
+    "description": "中国古代最重的青铜礼器之一，纹饰庄严雄浑，体现商代晚期青铜铸造巅峰。适合用于“王权与祭祀”“青铜文明”主题策展。",
+    "image_url": "https://picsum.photos/seed/hmw/800/600",
+    "tags": ["青铜器", "礼器", "国宝", "祭祀"]
+  },
+  {
+    "name": "四羊方尊",
+    "dynasty": "商代晚期",
+    "museum": "湖南博物院",
+    "description": "以四羊为立体装饰的青铜尊，造型奇崛、铸造复杂，常用于讲述商周礼制与图腾信仰。",
+    "image_url": "https://picsum.photos/seed/syfz/800/600",
+    "tags": ["青铜器", "礼器", "动物纹", "图腾"]
+  },
+  {
+    "name": "曾侯乙编钟",
+    "dynasty": "战国",
+    "museum": "湖北省博物馆",
+    "description": "世界罕见的大型青铜乐器群，可一钟双音，体现礼乐文明与宫廷仪式。适合“礼乐中国”“音乐与王国”主题。",
+    "image_url": "https://picsum.photos/seed/zhy/800/600",
+    "tags": ["乐器", "编钟", "青铜器", "礼乐"]
+  },
+  {
+    "name": "越王勾践剑",
+    "dynasty": "春秋",
+    "museum": "湖北省博物馆",
+    "description": "出土千年依旧寒光逼人的青铜剑，工艺精湛。适合“兵器与工艺”“春秋争霸”主题策展。",
+    "image_url": "https://picsum.photos/seed/gjj/800/600",
+    "tags": ["兵器", "青铜剑", "工艺", "铭文"]
+  },
+  {
+    "name": "清明上河图（摹本）",
+    "dynasty": "北宋",
+    "museum": "故宫博物院",
+    "description": "长卷描绘汴京繁华市井与社会百态，是城市史与生活史的视觉百科。适合“宋代城市”“市井人间”主题。",
+    "image_url": "https://picsum.photos/seed/qmsh/800/600",
+    "tags": ["书画", "长卷", "城市", "宋代"]
+  },
+  {
+    "name": "富春山居图（剩山图卷）",
+    "dynasty": "元",
+    "museum": "浙江省博物馆",
+    "description": "黄公望山水代表作，笔墨清润、构图悠远。适合“元代文人画”“山水与心境”主题。",
+    "image_url": "https://picsum.photos/seed/fcsj/800/600",
+    "tags": ["书画", "山水", "文人画", "元代"]
+  },
+  {
+    "name": "《兰亭序》摹本",
+    "dynasty": "东晋",
+    "museum": "故宫博物院",
+    "description": "书法史上影响深远的行书典范。适合“书法与风骨”“魏晋风流”主题策展。",
+    "image_url": "https://picsum.photos/seed/lts/800/600",
+    "tags": ["书法", "行书", "魏晋", "名帖"]
+  },
+  {
+    "name": "唐三彩骆驼载乐俑",
+    "dynasty": "唐",
+    "museum": "陕西历史博物馆",
+    "description": "丝路贸易与胡乐风尚的缩影，色釉明快、形象生动。适合“丝绸之路”“盛唐气象”主题。",
+    "image_url": "https://picsum.photos/seed/tsc/800/600",
+    "tags": ["陶瓷", "唐三彩", "丝路", "乐舞"]
+  },
+  {
+    "name": "鎏金铜蚕",
+    "dynasty": "汉",
+    "museum": "四川博物院",
+    "description": "与蜀地蚕桑文化相关的精巧鎏金铜器，适合讲述“汉代工艺”“衣食与生产”主题。",
+    "image_url": "https://picsum.photos/seed/can/800/600",
+    "tags": ["金属器", "鎏金", "汉代", "蚕桑"]
+  },
+  {
+    "name": "马踏飞燕（铜奔马）",
+    "dynasty": "东汉",
+    "museum": "甘肃省博物馆",
+    "description": "以疾驰之势踏燕而行的青铜马，动感强烈，象征汉代开拓精神。适合“汉风”“速度与想象”主题。",
+    "image_url": "https://picsum.photos/seed/mtfy/800/600",
+    "tags": ["青铜器", "雕塑", "汉代", "马"]
+  },
+  {
+    "name": "金缕玉衣",
+    "dynasty": "西汉",
+    "museum": "河北博物院",
+    "description": "以金丝缀连玉片的葬服，体现汉代贵族丧葬观与工艺。适合“生死观”“汉代王侯”主题。",
+    "image_url": "https://picsum.photos/seed/jlyy/800/600",
+    "tags": ["玉器", "丧葬", "汉代", "王侯"]
+  },
+  {
+    "name": "红山玉龙",
+    "dynasty": "新石器时代",
+    "museum": "辽宁省博物馆",
+    "description": "史前玉器代表作，龙形象早期化的关键证据。适合“龙的起源”“史前信仰”主题。",
+    "image_url": "https://picsum.photos/seed/hsy/800/600",
+    "tags": ["玉器", "史前", "红山文化", "龙"]
+  },
+  {
+    "name": "太阳神鸟金饰",
+    "dynasty": "商周",
+    "museum": "金沙遗址博物馆",
+    "description": "圆形镂空金箔，体现古蜀金器工艺。适合“古蜀文明”“黄金工艺”主题。",
+    "image_url": "https://picsum.photos/seed/ty/800/600",
+    "tags": ["金器", "古蜀", "太阳神鸟", "商周"]
+  }
+]
