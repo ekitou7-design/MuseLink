@@ -1,18 +1,44 @@
 # src/services 文件夹说明
 
-## 整体作用
+这个文件夹放的是前端里比较「业务化」的能力。
 
-业务服务层。当前包含基于文物元数据的**本地规则**策展与关联推荐，并提供 provider-neutral 接口，后续可接任意 AI 网关或自建模型服务。
+目前最重要的是智能策展和相关文物推荐。
 
-## 核心文件
+## curatorService.ts 是做什么的？
 
-**curatorService.ts**
+它负责这些事：
 
-- `generateExhibition(userPrompt, allArtifacts)` — 先通过 `/api/rag/search` 按关键词筛选候选文物，再生成标题、前言与 `artifactIds` 草案。
-- `getRelatedArtifacts(currentArtifact, allArtifacts)` — 按馆藏、年代、材质、出土地等规则打分，返回关联文物与简短理由。
-- `setCurationProvider(provider)` — 替换策展 provider，可接 OpenAI-compatible 网关、Claude、本地模型或其他后端 AI 服务。
-- `createRemoteCurationProvider(endpoint)` — 创建通用远程 provider，向指定 endpoint 发送 `action` 与上下文数据。
+- 根据用户输入的主题，生成一个展陈草案
+- 从文物库里挑出比较相关的文物
+- 给文物详情页推荐相似或相关文物
+- 如果以后接入真正的大模型服务，也会从这里发起请求
 
-## 配置
+## 现在必须接 AI 接口吗？
 
-默认无需云端推理密钥即可运行。需要外部 AI 时，请在后端或自建网关中管理密钥，再通过通用 provider 接入；登录等功能如需可自行配置 `JWT_SECRET` 等（见项目根说明）。
+不必须。
+
+项目现在有本地规则，即使没有外部 AI 密钥，也可以生成基础展陈草案。
+
+如果以后要接入更强的 AI 服务，建议让后端或自建网关保存密钥，不要把密钥直接写在前端。
+
+## 线上部署要注意什么？
+
+智能策展会请求后端接口。
+
+如果前端和后端分开部署，需要配置：
+
+```text
+VITE_API_BASE_URL=https://你的后端网址
+```
+
+如果使用 Cloudflare Pages Functions 代理，则配置：
+
+```text
+BACKEND_API_BASE_URL=https://你的后端网址
+```
+
+## 给非技术同学的理解
+
+你可以把这里理解成 App 的「策展助手」。
+
+页面负责展示按钮和输入框，这里负责根据输入内容整理展陈方案。

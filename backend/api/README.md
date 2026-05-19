@@ -1,223 +1,91 @@
 # backend/api 文件夹说明
 
-## 整体作用
-Express.js API 服务器的完整实现。定义所有 HTTP 接口、控制器逻辑、数据库操作、路由管理。这是前后端通信的枢纽。
+这个文件夹可以理解成后端的「接口说明区」。
 
-## 核心文件
+接口就是前端和后端说话的地址。比如用户点击登录按钮时，前端会请求登录接口，后端检查账号密码后再回复结果。
 
-### 🔴 最关键的文件
+## 这里主要负责什么？
 
-**server.ts** - ⭐ Express 服务器启动文件
-- 初始化 Express 应用
-- 配置 JSON 中间件
-- 定义所有 API 路由
-- 启动服务器监听（默认端口 3000）
-- 包含所有路由定义：
-  - `/api/health` - 健康检查
-  - `/api/auth/*` - 认证相关
-  - `/api/artifacts/*` - 文物管理
-  - `/api/exhibitions/*` - 展陈管理
-  - `/api/likes/*` - 点赞管理
-  - `/api/admin/*` - 管理员接口
+- 接收前端请求
+- 判断请求的是登录、注册、文物列表还是后台数据
+- 检查用户有没有登录
+- 检查用户是不是管理员
+- 把结果返回给前端
 
-### 🟡 其他核心文件
+## 常见接口
 
-## 子目录说明
+账号相关：
 
-| 目录 | 说明 |
+| 功能 | 接口 |
 |------|------|
-| **controllers/** | 请求处理逻辑 |
-| **routes/** | 路由定义 |
-| **middleware/** | Express 中间件 |
-| **models/** | 数据类型定义 |
-| **db/** | 数据库相关 |
+| 注册 | `POST /api/auth/register` |
+| 密码登录 | `POST /api/auth/login` |
+| 请求验证码 | `POST /api/auth/code/request` |
+| 验证码登录 | `POST /api/auth/code/login` |
+| 获取当前用户 | `GET /api/auth/me` |
 
-## API 端点一览
+文物相关：
 
-### 认证相关 `/api/auth`
-- `POST /api/auth/register` - 注册用户
-- `POST /api/auth/login` - 登录用户
-- `GET /api/auth/me` - 获取当前用户信息
+| 功能 | 接口 |
+|------|------|
+| 文物列表 | `GET /api/artifacts` |
+| 博物馆列表 | `GET /api/museums` |
+| 文物详情 | `GET /api/artifacts/:id` |
 
-### 文物管理 `/api/artifacts`
-- `GET /api/artifacts` - 列表（分页、搜索、筛选）
-- `GET /api/artifacts/:id` - 获取详情
-- `POST /api/artifacts` - 创建（管理员）
-- `PUT /api/artifacts/:id` - 更新（管理员）
-- `DELETE /api/artifacts/:id` - 删除（管理员）
+展陈和收藏：
 
-### 展陈管理 `/api/exhibitions`
-- `GET /api/exhibitions` - 列表
-- `POST /api/exhibitions` - 创建
-- `PUT /api/exhibitions/:id` - 更新
-- `DELETE /api/exhibitions/:id` - 删除
+| 功能 | 接口 |
+|------|------|
+| 展陈列表 | `GET /api/exhibitions` |
+| 创建展陈 | `POST /api/exhibitions` |
+| 收藏文物 | `POST /api/likes` |
+| 取消收藏 | `DELETE /api/likes/:id` |
 
-### 点赞/收藏 `/api/likes`
-- `POST /api/likes` - 添加点赞
-- `DELETE /api/likes/:id` - 取消点赞
-- `GET /api/likes` - 获取用户点赞列表
+管理员：
 
-### 管理员 `/api/admin`
-- `GET /api/admin/users` - 用户列表
-- `GET /api/admin/stats` - 系统统计
+| 功能 | 接口 |
+|------|------|
+| 用户列表 | `GET /api/admin/users` |
+| 系统统计 | `GET /api/admin/stats` |
 
-## 请求/响应流程
+## 为什么线上会有跨域问题？
 
-### 典型的 API 调用流程
+如果前端网页在一个网址，后端服务在另一个网址，浏览器会先确认：
 
-```
-前端发送请求
-  ↓
-Express 接收请求
-  ↓
-检查 URL 路由
-  ├─ 匹配对应的 route handler
-  └─ 传递给 controller
-  ↓
-Controller 处理请求
-  ├─ 验证参数
-  ├─ 调用业务逻辑
-  └─ 处理错误
-  ↓
-返回响应
-  ├─ 200: 成功返回数据
-  ├─ 400: 参数错误
-  ├─ 401: 需要认证
-  ├─ 403: 权限不足
-  └─ 500: 服务器错误
-  ↓
-前端接收 JSON 响应
+```text
+这个网页有没有权限访问这个后端？
 ```
 
-## 中间件执行顺序
+后端通过 `CORS_ORIGIN` 回答这个问题。
 
-```
-Express 服务器
-  ↓
-1. express.json() - 解析 JSON body
-  ↓
-2. authMiddleware (某些路由) - 检查 token
-  ↓
-3. requireAdmin (某些路由) - 检查管理员权限
-  ↓
-4. Route Handler (具体业务逻辑)
+线上部署时请配置：
+
+```text
+CORS_ORIGIN=https://你的前端网址
 ```
 
-## 错误处理
+如果这里配错，网页可能能打开，但登录或加载数据会失败。
 
-### 标准错误响应格式
+## Cloudflare Pages 特别提醒
 
-```javascript
-// 成功响应
-{ 
-  status: 200,
-  data: { /* 返回数据 */ }
-}
+Cloudflare Pages 只放前端网页，不会自动运行后端。
 
-// 错误响应
-{
-  status: 400,
-  error: "错误消息"
-}
+线上要正常工作，需要：
+
+1. 把后端部署到能运行 Node.js 的平台
+2. 让前端知道后端网址，配置 `VITE_API_BASE_URL`
+3. 或者使用 `functions` 文件夹里的代理，配置 `BACKEND_API_BASE_URL`
+
+## 给开发同学的入口
+
+主要启动文件是根目录的：
+
+```text
+server.ts
 ```
 
-### 常见 HTTP 状态码
+需要看具体路由说明，可以继续看：
 
-| 状态码 | 含义 | 示例 |
-|-------|------|------|
-| 200 | OK，请求成功 | 登录成功 |
-| 400 | Bad Request，请求格式错误 | 缺少必要参数 |
-| 401 | Unauthorized，需要认证 | 没有 token |
-| 403 | Forbidden，权限不足 | 非管理员操作 |
-| 404 | Not Found，资源不存在 | 用户不存在 |
-| 500 | Server Error，服务器错误 | 数据库错误 |
-
-## 快速参考
-
-### 前端调用示例
-
-```javascript
-// 注册
-POST /api/auth/register
-Body: { password, confirmPassword }
-
-// 登录
-POST /api/auth/login
-Body: { museId, password }
-
-// 获取文物列表
-GET /api/artifacts?q=搜索词&limit=20
-
-// 添加点赞
-POST /api/likes
-Body: { artifactId }
-Header: Authorization: Bearer <token>
-```
-
-### 需要认证的端点
-
-所有带 🔒 标记的端点都需要有效的 JWT token：
-- GET /api/auth/me 🔒
-- POST /api/artifacts 🔒 （仅管理员）
-- POST /api/likes 🔒
-- DELETE /api/likes/:id 🔒
-- 等等
-
-### 仅限管理员的端点
-
-- POST /api/artifacts （创建文物）
-- PUT /api/artifacts/:id （修改文物）
-- DELETE /api/artifacts/:id （删除文物）
-- GET /api/admin/users
-- GET /api/admin/stats
-
-## 配置和部署
-
-### 默认配置
-- 端口：3000（可通过 PORT 环境变量修改）
-- 主机：0.0.0.0（监听所有 IP）
-
-### 环境变量
-- `PORT` - 服务器端口（默认 3000）
-- `JWT_SECRET` - JWT 签名密钥（必需）
-
-### 启动服务器
-```bash
-npm run dev          # 开发模式（自动重启）
-npm run dev:backend  # 后端服务器模式
-```
-# MuseLink（博悟）Backend API
-
-This folder is a standalone backend skeleton for:
-- 全国博物馆文物聚合
-- AI 智能策展（当前内置 fallback 生成器，保证可离线运行）
-- 用户体系（编号 + 密码 + JWT）
-- 收藏/点赞
-
-## Quick start
-
-### Option A (recommended for “just run”): in-memory Postgres (pg-mem)
-
-1) Seed artifacts into memory DB and run backend
-```bash
-USE_PGMEM=1 npm run db:seed
-USE_PGMEM=1 JWT_SECRET=dev_secret npm run dev:backend
-```
-
-### Option B: real PostgreSQL (your local Postgres or Docker)
-
-1) (Optional) If you have Docker, start Postgres
-```bash
-npm run db:up
-```
-
-2) Create schema & seed artifacts
-```bash
-npm run db:migrate
-npm run db:seed
-```
-
-3) Run backend
-```bash
-JWT_SECRET=dev_secret npm run dev:backend
+```text
+backend/api/routes/README.md
 ```

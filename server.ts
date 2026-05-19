@@ -234,11 +234,33 @@ function isExternalRelicDbConfigured() {
   return Boolean(process.env.DB_HOST || process.env.DB_NAME || process.env.USE_PGMEM === "true" || process.env.USE_PGMEM === "1");
 }
 
+function getAllowedCorsOrigin(origin: string | undefined) {
+  const configured = (process.env.CORS_ORIGIN || "*")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  if (configured.includes("*")) return "*";
+  if (origin && configured.includes(origin)) return origin;
+  return configured[0] || "*";
+}
+
 async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT || 3000);
 
   app.use(express.json({ limit: "50mb" }));
+  app.use((req, res, next) => {
+    const allowedOrigin = getAllowedCorsOrigin(req.headers.origin);
+    res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Vary", "Origin");
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(204);
+    }
+    next();
+  });
 
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true, time: new Date().toISOString() });

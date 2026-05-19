@@ -1,5 +1,6 @@
 import { Artifact, Exhibition } from "../types";
 import { rankArtifactsByKeywordQuery } from "../lib/artifactSearch";
+import { apiUrl } from "../lib/api";
 import {
   artifactCategoryRaw,
   artifactCultureRaw,
@@ -51,7 +52,7 @@ export interface CurationProvider {
 
 async function retrieveCandidatesForCuration(userPrompt: string, allArtifacts: Artifact[]): Promise<Artifact[]> {
   try {
-    const res = await fetch("/api/rag/search", {
+    const res = await fetch(apiUrl("/api/rag/search"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ q: userPrompt, limit: CURATION_CANDIDATE_LIMIT }),
@@ -342,7 +343,7 @@ async function tryRemoteExhibitionGeneration(
 ): Promise<Partial<Exhibition> | null> {
   try {
     const candidates = await retrieveCandidatesForCuration(userPrompt, allArtifacts);
-    const res = await fetch(REMOTE_CURATION_ENDPOINT, {
+    const res = await fetch(apiUrl(REMOTE_CURATION_ENDPOINT), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -1,84 +1,51 @@
 # src 文件夹说明
 
-## 整体作用
-这是前端应用的源代码目录，包含所有 React 组件、页面、业务逻辑和工具函数。使用 TypeScript + React 19 + Tailwind CSS 构建用户界面。
+这个文件夹放的是「前端页面」，也就是用户在浏览器里看到和点击的部分。
 
-## 核心文件
+如果你不是开发同学，只需要知道：
 
-### 入口文件
-- **main.tsx** - 应用的启动入口，挂载根组件到 DOM
-- **index.css** - 全局样式定义
-- **App.tsx** - 主应用组件（已弃用，使用 RootApp 替代）
-- **RootApp.tsx** - ⭐ 真正的根组件，处理路由和页面渲染
-- **types.ts** - 全局 TypeScript 类型定义
+- 登录页、首页、个人中心、后台页面都在这里
+- 页面按钮、文字、布局、交互大多在这里改
+- 前端要请求后端数据时，会通过 `src/lib` 里的工具发送请求
 
-### 配置文件
-- **constants.ts** - 应用全局常量
+## 最常看的地方
 
-## 子目录结构
-
-| 目录 | 说明 |
+| 想改什么 | 去哪里看 |
 |------|------|
-| **auth/** | 用户认证相关逻辑 |
-| **components/** | 可复用的 React 组件 |
-| **pages/** | 应用页面组件 |
-| **router/** | 路由管理和权限守卫 |
-| **lib/** | 工具函数和 API 调用 |
-| **services/** | 业务服务（AI 等） |
-| **data/** | 本地数据文件 |
+| 登录页 | `src/pages/LoginPage.tsx` |
+| 注册页 | `src/pages/RegisterPage.tsx` |
+| 首页和主要 App 体验 | `src/App.tsx` |
+| 个人中心 | `src/pages/ProfilePage.tsx` |
+| 管理员后台 | `src/pages/AdminPage.tsx` |
+| 页面跳转和权限保护 | `src/router` |
+| 登录状态和账号逻辑 | `src/auth`、`src/lib` |
+| 智能策展和推荐逻辑 | `src/services` |
 
-## 重要文件优先级
+## 前端怎么和后端连接
 
-### 🔴 最关键（必须了解）
-- `RootApp.tsx` - 路由总入口，管理所有页面切换
-- `router/router.ts` - 路由系统的核心
-- `lib/authClient.ts` - 前端认证 API 调用
-- `auth/AuthService.ts` - 认证业务逻辑
-- `pages/LoginPage.tsx` - 登录页，用户入口
+本地开发时，前端和后端通常一起跑起来，你打开：
 
-### 🟡 重要（应该了解）
-- `router/AuthGuard.tsx` - 登录保护
-- `router/AdminGuard.tsx` - 管理员权限保护
-- `components/AuthModal.tsx` - 认证弹窗
-- `pages/HomePage.tsx` - 主页
-- `services/curatorService.ts` - 本地规则策展与关联推荐
-
-### 🟢 辅助（参考即可）
-- `constants.ts` - 常量定义
-- `index.css` - CSS 样式
-
-## 架构逻辑
-
-```
-启动 (main.tsx)
-  ↓
-RootApp 组件
-  ↓
-根据 URL hash 判断路由
-  ├─ /login → LoginPage（登录页）
-  ├─ /register → RegisterPage（注册页）
-  ├─ /home → AuthGuard → HomePage（需要认证）
-  ├─ /profile → AuthGuard → ProfilePage（需要认证）
-  └─ /admin → AdminGuard → AdminPage（需要管理员）
+```text
+http://localhost:3000
 ```
 
-## 数据流向
+线上部署时，前端网页和后端服务可能不是同一个网址。
 
-1. **用户操作** (UI 组件) 
-   ↓
-2. **调用 API** (lib/authClient.ts, lib/api.ts)
-   ↓
-3. **后端返回** (server.ts)
-   ↓
-4. **保存状态** (AuthService, UserSession)
-   ↓
-5. **重新渲染** (React 组件)
+这时要配置：
 
-## 快速导航
+```text
+VITE_API_BASE_URL=https://你的后端网址
+```
 
-- **要修改注册流程？** → 查看 `pages/RegisterPage.tsx` 和 `components/AuthModal.tsx`
-- **要修改登录流程？** → 查看 `pages/LoginPage.tsx` 和 `lib/authClient.ts`
-- **要添加新页面？** → 在 `pages/` 创建文件，然后在 `RootApp.tsx` 注册
-- **要修改路由？** → 查看 `router/router.ts`
-- **要修改权限？** → 查看 `router/AuthGuard.tsx` 和 `router/AdminGuard.tsx`
-- **要调用 API？** → 使用 `lib/api.ts` 中的 `apiFetch()` 函数
+如果没有配置好，登录、注册、收藏、文物列表这些功能可能会失败。
+
+## 给非技术同学的理解
+
+你可以把 `src` 理解成 App 的「门面和操作界面」：
+
+- 页面长什么样，在这里
+- 点击按钮后发生什么，在这里
+- 要不要跳转到登录页，在这里
+- 要显示哪些文物、展陈、用户信息，也会从这里发起请求
+
+真正保存数据的地方不在 `src`，而是在后端和 `data` 文件夹。

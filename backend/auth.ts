@@ -91,8 +91,19 @@ function createDefaultProfile(museId: string, role: UserRole, displayName?: stri
 async function ensureAdminAccount(db: AuthDb): Promise<AuthDb> {
   const existingAdmin = db.users.find((user) => user.museId === DEFAULT_ADMIN_MUSE_ID);
   if (existingAdmin) {
+    let changed = false;
     if (existingAdmin.profile.role !== "admin") {
       existingAdmin.profile.role = "admin";
+      changed = true;
+    }
+
+    const passwordMatchesDefault = await bcrypt.compare(DEFAULT_ADMIN_PASSWORD, existingAdmin.passwordHash);
+    if (!passwordMatchesDefault) {
+      existingAdmin.passwordHash = await bcrypt.hash(DEFAULT_ADMIN_PASSWORD, 12);
+      changed = true;
+    }
+
+    if (changed) {
       await saveAuthDb(db);
     }
     return db;

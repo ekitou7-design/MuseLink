@@ -1,186 +1,58 @@
 # src/router 文件夹说明
 
-## 整体作用
-管理应用的路由系统和用户权限控制。决定用户能访问哪些页面，保护需要登录或管理员权限的页面。
+这个文件夹负责「页面跳转」和「权限保护」。
 
-## 核心文件
+## 它管什么？
 
-### 🔴 最关键的文件
+- 打开哪个页面
+- 登录后跳到哪里
+- 没登录时是否跳回登录页
+- 普通用户能不能访问管理员后台
 
-**router.ts** - ⭐ 路由系统核心
-- `navigate(路由, 参数)` - 导航到某个页面
-  ```javascript
-  navigate("/login");
-  navigate("/home");
-  navigate("/login", { museId: "12345678" }); // 传递参数
-  ```
-- `useRoute()` - Hook，获取当前路由（返回 RoutePath）
-  ```javascript
-  const route = useRoute(); // "/login" | "/home" | "/profile" | "/admin"
-  ```
-- `getRouteSearchParams()` - 获取 URL 中的查询参数
-  ```javascript
-  const museId = getRouteSearchParams().get("museId");
-  ```
-- 使用 URL hash（#）作为路由标记，例如 `http://localhost:3000#/home`
+## 页面地址长什么样？
 
-**AuthGuard.tsx** - ⭐ 登录保护
-- 包裹需要登录的组件
-- 如果用户未登录，自动跳转到登录页
-- 使用示例：
-  ```jsx
-  <AuthGuard>
-    <HomePage />
-  </AuthGuard>
-  ```
-- 检查点：
-  - 用户是否已登录（`isLoggedIn`）
-  - 是否有有效 token（`token`）
-  - 是否有 MuseLink ID（`museId`）
-- 所有条件都满足才能访问内部组件
+这个项目使用带 `#` 的地址。
 
-**AdminGuard.tsx** - ⭐ 管理员保护
-- 比 AuthGuard 更严格
-- 不仅检查是否登录，还检查用户角色是否为 `admin`
-- 如果不是管理员，显示 ForbiddenPage
-- 使用示例：
-  ```jsx
-  <AdminGuard>
-    <AdminPage />
-  </AdminGuard>
-  ```
+常见地址：
 
-### 🟢 辅助文件
-
-**authChecks.ts** - 权限检查工具函数
-- `isUserAuthenticated()` - 检查用户是否已认证
-- `isUserAdmin()` - 检查用户是否为管理员
-- 被 AuthGuard 和 AdminGuard 使用
-
-## 路由流程
-
-### 路由工作原理
-
-```javascript
-// 用户访问 http://localhost:3000#/home
-// ↓
-// URL 中的 hash 是 #/home
-// ↓
-// useRoute() 读取 hash
-// ↓
-// 返回 "/home"
-// ↓
-// RootApp 根据返回值决定显示哪个页面
+```text
+http://localhost:3000/#/login
+http://localhost:3000/#/home
+http://localhost:3000/#/profile
+http://localhost:3000/#/admin
 ```
 
-### 守卫机制流程
+如果你用的是 3001 端口，就把 `3000` 换成 `3001`。
 
-```javascript
-// 未登录用户访问 /home
-// ↓
-// RootApp 尝试渲染 <AuthGuard><HomePage /></AuthGuard>
-// ↓
-// AuthGuard 检查 isUserAuthenticated()
-// ↓
-// 检查失败，调用 navigate("/login")
-// ↓
-// URL hash 变为 #/login
-// ↓
-// RootApp 重新渲染，显示 LoginPage
-```
+## 主要文件
 
-## 权限检查逻辑
-
-### AuthGuard 检查流程
-```
-用户已登录？ ✅
-  ├─ 有 token？✅
-  │   ├─ 有 museId？✅
-  │   │   └─ ✅ 显示页面
-  │   └─ ❌ 跳转到登录
-  └─ ❌ 跳转到登录
-```
-
-### AdminGuard 检查流程
-```
-通过 AuthGuard 检查？✅
-  ├─ 用户角色是 admin？✅
-  │   └─ ✅ 显示页面
-  └─ ❌ 显示权限不足页面
-```
-
-## 典型使用场景
-
-### 场景1：用户登录后访问首页
-```javascript
-1. 用户在浏览器输入 localhost:3000
-2. navigate("/home") 被调用
-3. URL 变为 #/home
-4. RootApp 读取路由为 "/home"
-5. AuthGuard 检查：已登录 ✅
-6. 显示 HomePage
-```
-
-### 场景2：未登录用户直接访问首页
-```javascript
-1. 用户访问 localhost:3000#/home
-2. RootApp 读取路由为 "/home"
-3. AuthGuard 检查：未登录 ❌
-4. AuthGuard 调用 navigate("/login")
-5. URL 变为 #/login
-6. 显示 LoginPage
-```
-
-### 场景3：普通用户访问管理页面
-```javascript
-1. 用户访问 localhost:3000#/admin
-2. RootApp 读取路由为 "/admin"
-3. AdminGuard 检查登录：✅
-4. AdminGuard 检查角色：❌（普通用户）
-5. 显示 ForbiddenPage
-```
-
-## 重要说明
-
-### 为什么使用 Hash 路由？
-
-应用使用 `#` 而不是传统的 URL path：
-- ✅ 不需要服务器改变
-- ✅ 刷新页面不会 404
-- ✅ 浏览器历史记录保留
-- ❌ 不利于 SEO（但此应用主要是内部工具）
-
-URL 示例：
-- `http://localhost:3000#/login`
-- `http://localhost:3000#/home`
-- `http://localhost:3000#/profile`
-
-### 导航参数的传递
-
-```javascript
-// 传递参数
-navigate("/login", { museId: "12345678" });
-
-// URL 变为 #/login?museId=12345678
-
-// 在目标页面读取
-const museId = getRouteSearchParams().get("museId");
-```
-
-## 快速参考
-
-| 方法 | 用途 |
+| 文件 | 做什么 |
 |------|------|
-| `navigate(path)` | 跳转到某个页面 |
-| `useRoute()` | 获取当前页面路由（Hook） |
-| `getRouteSearchParams()` | 获取 URL 查询参数 |
-| `<AuthGuard>` | 保护需要登录的页面 |
-| `<AdminGuard>` | 保护需要管理员权限的页面 |
+| `router.ts` | 负责页面跳转 |
+| `AuthGuard.tsx` | 保护需要登录的页面 |
+| `AdminGuard.tsx` | 保护只有管理员能看的页面 |
+| `authChecks.ts` | 判断用户是否登录、是否管理员 |
 
-## 添加新页面的步骤
+## 哪些页面需要权限？
 
-1. 在 `src/pages/` 创建新页面组件
-2. 在 `src/router/router.ts` 中定义新路由（可选）
-3. 在 `RootApp.tsx` 中添加路由判断
-4. 如果需要保护，包裹上 AuthGuard 或 AdminGuard
-5. 使用 `navigate("/new-page")` 进行导航
+| 页面 | 权限 |
+|------|------|
+| 登录页 | 不需要登录 |
+| 注册页 | 不需要登录 |
+| 首页 | 需要登录 |
+| 个人中心 | 需要登录 |
+| 管理员后台 | 需要管理员 |
+
+## 常见现象
+
+| 现象 | 可能原因 |
+|------|------|
+| 一打开首页就跳到登录页 | 当前没有登录 |
+| 普通用户打不开后台 | 这是正常的，后台只给管理员 |
+| 登录后没有跳到首页 | 登录状态保存或页面跳转可能有问题 |
+
+## 给非技术同学的理解
+
+`src/router` 就像 App 的「导航和门禁」。
+
+页面本身在 `src/pages`，但用户能不能进去、进去后跳到哪里，是这里决定的。

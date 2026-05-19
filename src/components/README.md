@@ -1,104 +1,43 @@
 # src/components 文件夹说明
 
-## 整体作用
-存储可复用的 React 组件。这些组件不是完整的页面，而是用于构建页面的模块化组件。
+这个文件夹放的是可以重复使用的小组件。
 
-## 核心文件
+页面是完整房间，组件就是房间里的按钮、弹窗、图片查看器等零件。
 
-### 🔴 重要组件
+## 常见组件
 
-**AuthModal.tsx** - ⭐ 认证弹窗（登录/注册）
-- 支持三种模式：
-  - `login` - 登录表单
-  - `register` - 注册表单
-  - `registerSuccess` - 注册成功显示
-- 使用 Framer Motion 提供动画效果
-- 包含完整的表单验证和错误提示
-- 注册成功后显示 MuseLink ID 和复制按钮
-- 适用于弹出式认证流程
+| 组件 | 做什么 |
+|------|------|
+| `AuthModal.tsx` | 登录、注册弹窗 |
+| `ProfileEditModal.tsx` | 编辑个人资料弹窗 |
+| `BGMGeneratorModal.tsx` | 背景音乐生成相关弹窗 |
+| `SlideshowOverlay.tsx` | 全屏查看图片 |
+| `SafeImage.tsx` | 更安全地显示图片，图片坏了也不让页面崩 |
 
-**BGMGeneratorModal.tsx** - AI 背景音乐生成器
-- 背景音乐相关 UI（占位 / 示例音频）
-- 支持选择音乐风格和场景
-- 生成完成后可预览和下载
+## 什么时候看这里？
 
-**ProfileEditModal.tsx** - 用户资料编辑弹窗
-- 编辑用户头像、昵称、简介等
-- 图片上传预览
-- 表单验证和提交
+如果你想改：
 
-**SlideshowOverlay.tsx** - 幻灯片叠加层
-- 全屏图片展示
-- 支持前后翻页
-- ESC 或点击关闭
+- 弹窗样式
+- 图片显示方式
+- 个人资料编辑框
+- 登录注册弹窗
+- 某个页面里反复出现的小模块
 
-## 组件特点
+通常可以先看这里。
 
-### 通用特性
-- 所有组件都接收 `isOpen` 和 `onClose` props
-- 使用 Tailwind CSS 构建样式，统一外观
-- 支持暗色模式和响应式布局
-- 集成 Lucide React 图标库
+## 和 pages 有什么区别？
 
-### 动画效果
-- AuthModal 和其他弹窗使用 `motion/react` 库
-- 进入/退出动画增强用户体验
-- 背景使用 `backdrop-blur` 毛玻璃效果
+`src/pages` 是完整页面。
 
-## 使用示例
+`src/components` 是页面里可以复用的小块。
 
-### AuthModal 使用
-```jsx
-const [isAuthOpen, setIsAuthOpen] = useState(false);
+比如「个人中心」是页面，「编辑资料弹窗」就是组件。
 
-<AuthModal 
-  isOpen={isAuthOpen}
-  onClose={() => setIsAuthOpen(false)}
-  onSuccess={() => {
-    // 认证成功回调
-    navigate("/home");
-  }}
-/>
-```
+## 给非技术同学的理解
 
-### ProfileEditModal 使用
-```jsx
-const [isEditOpen, setIsEditOpen] = useState(false);
+这里不是 App 的完整流程，而是很多可以被页面拿来用的零件库。
 
-<ProfileEditModal
-  isOpen={isEditOpen}
-  onClose={() => setIsEditOpen(false)}
-  onSave={(profile) => {
-    // 保存用户资料
-    updateUserProfile(profile);
-  }}
-/>
-```
+如果只是想改某个页面的大结构，先看 `src/pages`。
 
-## 重要说明
-
-### 为什么使用弹窗组件？
-
-不同于页面路由方式，弹窗组件提供了：
-- **无需跳转** - 用户留在当前页面
-- **信息保留** - 后面的内容不会丢失
-- **快速反馈** - 用户操作立即看到结果
-- **灵活复用** - 同一组件可在不同页面使用
-
-### 组件状态管理
-
-所有弹窗都由父组件控制状态（Controlled Component）：
-- `isOpen` - 弹窗是否显示
-- `onClose` - 关闭回调
-- `onSuccess` / `onSave` - 成功回调
-
-这样做的好处是父组件完全控制弹窗的生命周期。
-
-## 快速参考
-
-| 组件 | 用途 | 位置 |
-|------|------|------|
-| AuthModal | 登录/注册 | 首页、App.tsx |
-| ProfileEditModal | 编辑用户资料 | ProfilePage |
-| BGMGeneratorModal | 生成背景音乐 | HomePage |
-| SlideshowOverlay | 全屏图片查看 | HomePage |
+如果想改某个弹窗或小模块，再看 `src/components`。

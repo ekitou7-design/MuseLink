@@ -18,7 +18,7 @@ function validateTarget(channel: LoginChannel, value: string) {
 }
 
 export function LoginPage() {
-  const [mode, setMode] = useState<"code" | "password">("code");
+  const [mode, setMode] = useState<"code" | "password">("password");
   const [channel, setChannel] = useState<LoginChannel>("phone");
   const [target, setTarget] = useState("");
   const [code, setCode] = useState("");
@@ -130,7 +130,7 @@ export function LoginPage() {
         <div className="space-y-1">
           <h1 className="text-2xl font-black text-stone-950">MuseLink 登录</h1>
           <p className="text-sm text-stone-500">
-            {mode === "code" ? "验证码即登录，新用户会自动创建账号。" : "使用 MuseLink ID 和密码登录。"}
+            {mode === "code" ? "验证码即登录，新用户会自动创建账号。" : "输入 MuseLink ID 或管理员账号即可进入应用。"}
           </p>
         </div>
 

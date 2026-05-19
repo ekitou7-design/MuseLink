@@ -1,60 +1,94 @@
-# 博悟 MuseLink
+# 博悟 MuseLink 使用说明
 
-这个项目现在已经带有一个可复用的“文物导入后端”，可以把不同博物馆导出的 `JSON / NDJSON / CSV` 数据，映射成你当前 App 使用的文物结构：
+这份文档写给所有项目成员，不要求你会写代码。你可以把 MuseLink 理解成一个文博 App：
 
-```ts
-{
-  id,
-  name,
-  museum,
-  period, // 朝代 / 年代（与数据源字段一致）
-  material,
-  culture,
-  origin,
-  description,
-  imageUrl,
-  tags,
-  favsCount,
-  // 以下为可选扩展字段：有值且配置了展示标签时，才会在「文物详情」扩展信息区出现对应卡片
-  category?,
-  level?,
-  dimensions?,
-  remarks?,
-}
+- 可以浏览文物
+- 可以搜索文物、博物馆和展陈
+- 可以注册、登录、收藏
+- 可以用关键词生成展陈草案
+- 管理员可以进入后台看用户和统计
+- 团队可以导入自己的博物馆文物数据
+
+## 先看这里：你是哪种角色？
+
+如果你只是想打开 App 看效果：
+
+1. 看「本地运行：Mac 和 Windows 都适用」
+2. 打开浏览器
+3. 注册或用管理员账号登录
+
+如果你要导入文物数据：
+
+1. 先确认 App 能正常打开
+2. 再看「导入文物数据」
+
+如果你要部署到线上：
+
+1. 先看「线上部署要知道的事」
+2. 再找会部署后端的同事一起做
+
+## 本地运行：Mac 和 Windows 都适用
+
+### 第一步：安装 Node.js
+
+这个项目需要 Node.js 20 或更高版本。
+
+你可以在这里下载：
+
+```text
+https://nodejs.org/
 ```
 
-导入完成后：
+安装完成后，重新打开终端。
 
-- 数据会先写入本地文件 `data/imported-artifacts.json`
-- 前端会自动优先读取这些导入数据
-- 如果本地还没有导入数据，前端会回退到原来的 mock 数据
+Mac 用户通常打开「终端」或 VS Code 里的 Terminal。
 
-## 1. 本地运行
+Windows 用户建议打开 VS Code 里的 Terminal，或者打开 PowerShell。
 
-前提：
+### 第二步：打开项目文件夹
 
-- Node.js 20+
+用 VS Code 打开这个项目文件夹，也就是包含 `package.json` 的那个文件夹。
 
-步骤：
+如果你不确定是不是正确位置，看左侧文件列表里有没有这些文件：
 
-1. 安装依赖
-   ```bash
-   npm install
-   ```
-2. （可选）在项目根目录创建 `.env.local`，配置例如 `JWT_SECRET`（登录鉴权用）。
-3. 启动项目
-   ```bash
-   npm run dev
-   ```
-4. 浏览器打开
-   ```text
-   http://localhost:3000
-   ```
+- `README.md`
+- `package.json`
+- `src`
+- `backend`
+- `data`
 
-如果 `3000` 端口被占用，可以这样启动：
+### 第三步：安装依赖
+
+在 VS Code 底部的 Terminal 里输入：
 
 ```bash
-PORT=3001 DISABLE_HMR=true npm run dev
+npm install
+```
+
+这一步会下载项目需要的工具。第一次运行会慢一点。
+
+### 第四步：启动 App
+
+继续输入：
+
+```bash
+npm run dev
+```
+
+看到类似 `localhost:3000` 的地址后，打开浏览器访问：
+
+```text
+http://localhost:3000
+```
+
+### 如果 3000 端口被占用
+
+有时候电脑上别的软件已经占用了 3000 端口，可以换成 3001。
+
+Mac / Windows PowerShell 都可以用：
+
+```bash
+npm run dev -- --port 3001
 ```
 
 然后打开：
@@ -63,427 +97,223 @@ PORT=3001 DISABLE_HMR=true npm run dev
 http://localhost:3001
 ```
 
-## App 功能概览
+## 登录和账号
 
-MuseLink 可以理解成一个“文物浏览 + 个人策展 + 账号系统 + 后台管理”的文博应用。
+### 普通用户
 
-当前你可以用它做这些事：
+你可以在 App 里注册新账号。注册成功后，系统会给你一个 MuseLink ID。
 
-- 浏览文物
-  在首页按 `推荐 / 博物馆 / 年代 / 馆藏全览` 查看文物内容
-- 搜索内容
-  搜索文物、展陈、博物馆等内容
-- 注册和登录
-  注册后系统会生成唯一的 `MuseLink ID`，后续用它登录
-- 收藏文物
-  未登录时可先保存在本地，登录后可同步到账号
-- 智能策展（本地规则）
-  根据关键词与文物元数据生成展陈草案（不依赖外部大模型 API）
-- 管理我的展陈
-  新建、编辑、删除自己的展陈，并管理展陈中的文物
-- 浏览展陈广场
-  查看公开展陈内容
-- 查看个人中心
-  查看自己的 MuseLink ID、账号角色、收藏和展陈
-- 进入管理员后台
-  管理员可以查看系统用户列表和统计数据
-- 导入自己的文物数据
-  支持通过 JSON / NDJSON / CSV 导入文物库
-- 查看文物详情
-  全屏详情页：顶栏返回与收藏、图片区（可点开放大）、名称 / 博物馆 / 朝代与接口返回一致（仅 `null` 或空字符串 `""` 时显示统一占位「未知」）、扩展信息区按固定标签展示有值的字段；收藏状态会在切回页面或焦点恢复时与服务端 / 本地存储对齐
+请保存好这个 ID，它就是之后登录用的账号。
 
-说明：
+### 管理员账号
 
-- 有些页面里仍有少量“未开发”占位入口，但核心流程已经可以使用
+当前默认管理员账号是：
 
-## 新手使用指南
+```text
+账号：jiangzhong
+密码：jiangzhong
+```
 
-如果你是第一次接触这个 App，建议直接按下面顺序体验。
+登录后可以进入后台管理页：
 
-### 第一步：启动 App
+```text
+http://localhost:3000/#/admin
+```
 
-在项目根目录运行：
+如果你用的是 3001 端口，就打开：
+
+```text
+http://localhost:3001/#/admin
+```
+
+## App 怎么体验
+
+建议第一次按这个顺序试：
+
+1. 打开首页
+2. 注册一个普通账号，或者直接用管理员账号登录
+3. 在「探索」里浏览文物
+4. 搜索一个关键词
+5. 收藏几个文物
+6. 到「展陈」里试一次智能策展
+7. 到「我的」里查看收藏和展陈
+8. 如果是管理员，进入后台看看用户列表和统计
+
+## 常见问题
+
+### npm install 很慢怎么办？
+
+这是正常的，第一次会下载很多依赖。可以先等几分钟。
+
+如果一直失败，把终端里的报错截图发给负责技术的同事。
+
+### npm run dev 后网页打不开怎么办？
+
+先看终端里有没有 `localhost` 地址。
+
+如果有，就复制那个地址到浏览器。
+
+如果没有，说明项目没启动成功，请把终端报错发给技术同事。
+
+### 登录时报 405 Method Not Allowed 是什么意思？
+
+这通常发生在线上部署时。
+
+简单说：网页部署成功了，但处理登录的后端没有部署好，或者网页没有连到后端。
+
+请看下面「线上部署要知道的事」。
+
+### Mac 和 Windows 命令一样吗？
+
+大多数命令一样，比如：
 
 ```bash
 npm install
 npm run dev
+npm run build
 ```
 
-打开浏览器访问：
+少数设置环境变量的命令在 Mac 和 Windows 上不同。为了避免混乱，本文尽量使用两边都能用的命令。
+
+## 导入文物数据
+
+项目支持导入 `JSON`、`CSV`、`NDJSON` 格式的文物数据。
+
+最推荐的方式是：一个博物馆准备一个导入任务文件。
+
+示例文件在：
 
 ```text
-http://localhost:3000
+imports/example-national-museum.json
 ```
 
-### 第二步：先注册账号
+### 执行示例导入
 
-打开注册页后：
+先保证你已经运行过：
 
-1. 输入密码
-2. 再输入一次确认密码
-3. 点击“注册”
-
-注册成功后，页面会显示一个 **MuseLink ID**。
-
-这个 ID 很重要：
-
-- 它不是手机号
-- 它不是昵称
-- 它是你之后登录时要用的账号号
-
-系统现在支持：
-
-- 大字高亮显示 MuseLink ID
-- 一键复制 MuseLink ID
-- 一键跳到登录页
-
-### 第三步：登录
-
-注册成功后，直接点击“去登录”即可。
-
-登录页会自动帮你填入刚才注册得到的 MuseLink ID，你只需要：
-
-1. 输入刚才设置的密码
-2. 点击“登录”
-
-如果你不是从注册页跳过来的，也可以手动输入：
-
-- MuseLink ID（8 到 10 位数字）
-- 密码
-
-### 第四步：先认识首页怎么用
-
-登录后你会进入首页。
-
-底部主要有 3 个区域：
-
-- `探索`
-  看文物内容
-- `展陈`
-  看 AI 策展、我的展陈、展陈广场
-- `我的`
-  看个人资料、收藏、展陈和账号信息
-
-#### 1. 探索
-
-在“探索”里，你可以按这些方式看文物：
-
-- `推荐`
-  看热门或推荐文物
-- `博物馆`
-  按博物馆筛选
-- `年代`
-  按朝代筛选
-- `馆藏全览`
-  综合搜索、筛选和浏览全部馆藏
-
-顶部还有搜索框，可以直接搜索关键词。
-
-#### 2. 展陈
-
-在“展陈”里有 3 类常用功能：
-
-- `AI 智能策展`
-  输入一个主题词，让 AI 帮你生成一个展陈方案
-- `我的策展`
-  登录后可以新建、查看和编辑自己的展陈
-- `展陈广场`
-  查看公开展陈内容
-
-如果你想试试 AI 策展，可以输入这样的关键词：
-
-- `青铜器与王权`
-- `唐代女性生活`
-- `丝绸之路上的器物交流`
-
-#### 3. 我的
-
-在“我的”页面里，你可以看到：
-
-- 自己的 MuseLink ID
-- 当前账号角色（`user` 或 `admin`）
-- 收藏文物
-- 我的展陈
-- 收藏展陈
-
-### 第五步：收藏和同步
-
-这个 App 支持“先收藏，后登录同步”。
-
-也就是说：
-
-- 如果你还没登录，收藏内容会先存在当前浏览器本地
-- 登录后，系统会尝试把这些收藏同步到你的账号
-
-这对第一次试用很友好，不需要一开始就强制登录。
-
-### 第六步：管理员怎么进入后台
-
-默认管理员账号如下：
-
-- MuseLink ID：`00000000`
-- 密码：`admin123`
-
-管理员登录后可以：
-
-- 从首页点击“进入后台管理”
-- 或直接访问 `#/admin`
-
-后台目前可以查看：
-
-- 全部用户列表
-- 用户总数
-- 管理员数量
-- 已分配 MuseLink ID 的数量
-
-普通用户不能访问后台。
-
-### 推荐的新手体验顺序
-
-如果你不知道先做什么，可以照这个顺序来：
-
-1. 启动项目
-2. 注册账号
-3. 保存好 MuseLink ID
-4. 登录
-5. 在“探索”里看看文物
-6. 收藏几个你喜欢的文物
-7. 去“展陈”试一次 AI 策展
-8. 去“我的”看收藏和展陈
-9. 如果你是管理员，再进入后台看看用户和统计
-
-## 2. 导入后端支持什么
-
-后端已经新增这些能力：
-
-- `GET /api/artifacts`
-  用来读取当前文物库（响应为 `artifacts` 数组及 `source` / `total` 等元信息）
-- `GET /api/museums`
-  用来按博物馆汇总统计
-- `GET /api/import/template`
-  返回一个可直接参考的导入模板
-- `POST /api/import/preview`
-  只预览导入结果，不落库
-- `POST /api/import/run`
-  正式导入
-- `npm run import:artifacts -- <任务文件>`
-  在 VS Code 终端里直接导入，不需要手写 HTTP 请求
-
-### 2.1 文物详情与界面数据一致性
-
-前端对**业务字段**不做截断、替换、翻译或格式化；界面展示与接口返回的字符串一致。
-
-- **空值规则**：仅当字段为 `null`、`undefined` 或完全空字符串 `""` 时，界面统一显示占位 **`未知`**。若数据库返回的是「未知」「暂无」等任意非空字符串，则原样显示。
-- **固定标签**（非接口字段）：文物详情扩展区使用固定文案 **类别、等级、材质、尺寸、文化、出土地、备注**，与字段 `category` / `level` / `material` / `dimensions` / `culture` / `origin` / `remarks` 对应；仅当对应字段为非空字符串时渲染该卡片。
-- **顶栏标题**：详情页顶栏弱标题固定为「文物详情」（非业务数据字段）。
-- **实现位置**：空值占位由 `src/lib/dbDisplay.ts` 的 `displayDbString` / `isStrictDbEmpty` 统一处理；图片无 URL 或与加载失败时，`src/components/SafeImage.tsx` 对空链显示「未知」，对加载失败且 URL 非空时展示**原始 URL 字符串**以便与数据源逐字对应。
-- **同义字段归并（不改写内容）**：库或导入 JSON 可能用不同键表示同一语义。展示与筛选按 `src/lib/dbDisplay.ts` 中定义的顺序取**第一个非空**值，例如朝代/时代/年代为 `朝代` → `dynasty` → `时代` → `period` → `era` → `年代`；图片、馆名、文物名、材质、文化、出土地、简介、等级、类别、尺寸、备注等均有对应键序（与导入器别名对齐）。
-
-## 3. 最推荐的用法：在 VS Code 终端直接导入
-
-这是最适合你现在的方式。
-
-### 3.1 准备导入任务文件
-
-你可以直接参考这个示例文件：
-
-- `imports/example-national-museum.json`
-
-它既是示例数据，也是一个可执行的导入任务。
-
-一个任务文件通常长这样：
-
-```json
-{
-  "sourceName": "中国国家博物馆示例导入",
-  "sourceType": "inline",
-  "mode": "replace-museum",
-  "persistTo": ["file"],
-  "defaults": {
-    "museum": "中国国家博物馆",
-    "culture": "馆藏文物",
-    "favsCount": 0
-  },
-  "mapping": {
-    "id": ["文物编号", "id"],
-    "name": ["名称", "name", "title"],
-    "museum": ["博物馆", "museum"],
-    "period": ["年代", "period"],
-    "material": ["材质", "material"],
-    "culture": ["文化", "culture", "category"],
-    "origin": ["出土地", "origin"],
-    "description": ["简介", "description", "summary"],
-    "imageUrl": ["图片", "imageUrl", "image"],
-    "tags": ["标签", "tags"],
-    "favsCount": ["热度", "favsCount"],
-    "category": ["类别", "category"],
-    "level": ["等级", "level"],
-    "dimensions": ["尺寸", "dimensions", "size"],
-    "remarks": ["备注", "remarks"]
-  },
-  "records": []
-}
+```bash
+npm install
 ```
 
-字段说明：
-
-- `sourceName`
-  这次导入任务的名字，方便识别
-- `sourceType`
-  `inline` 表示数据直接写在 `records` 里
-- `mode`
-  `replace-museum` 表示用这次导入的数据替换同博物馆旧数据
-- `persistTo`
-  `["file"]` 表示写入本地文物库
-- `mapping`
-  告诉系统“你拿到的原始字段”对应 App 里的哪个字段
-- `defaults`
-  原始数据没有某个字段时，自动补默认值
-- `records`
-  原始文物数组
-
-可选扩展字段 `category` / `level` / `dimensions` / `remarks` 与导入器中的别名、标签推断规则一致；若数据源中存在对应列或文内标签，也会被自动识别（详见 `backend/artifact-importer.ts`）。
-
-### 3.2 执行导入
-
-在 VS Code 终端运行：
+然后在项目根目录运行：
 
 ```bash
 npm run import:artifacts -- ./imports/example-national-museum.json
 ```
 
-成功后你会看到类似输出：
-
-```text
-导入完成
-来源: 中国国家博物馆示例导入
-原始记录: 2
-有效文物: 2
-跳过记录: 0
-已写入本地库: 2
-涉及博物馆: 中国国家博物馆
-```
-
-### 3.3 导入结果会写到哪里
-
-本地文件：
+成功后，导入结果会保存到：
 
 ```text
 data/imported-artifacts.json
 ```
 
-只要这个文件里有数据，前端就会优先展示这里的内容。
+只要这个文件里有数据，App 会优先展示这些导入的数据。
 
-## 4. 如果你的数据是单独文件，而不是写在 records 里
+### 给数据同事的理解方式
 
-你也可以用文件路径模式：
+导入任务文件的作用是告诉系统：
 
-```json
-{
-  "sourceName": "故宫文物导入",
-  "sourceType": "file",
-  "inputPath": "./imports/gugong-artifacts.json",
-  "format": "json",
-  "listPath": "data.items",
-  "mode": "replace-museum",
-  "persistTo": ["file"],
-  "defaults": {
-    "museum": "故宫博物院",
-    "culture": "宫廷文物",
-    "favsCount": 0
-  },
-  "mapping": {
-    "id": ["id", "编号"],
-    "name": ["名称", "title"],
-    "period": ["年代", "era"],
-    "material": ["材质"],
-    "origin": ["来源", "出土地"],
-    "description": ["说明", "简介"],
-    "imageUrl": ["图片", "cover"],
-    "tags": ["标签", "keywords"],
-    "category": ["类别"],
-    "level": ["等级"],
-    "dimensions": ["尺寸"],
-    "remarks": ["备注"]
-  }
-}
-```
+- 这批数据来自哪个博物馆
+- 原始表格里的「名称」对应 App 里的哪个字段
+- 原始表格里的「年代」对应 App 里的哪个字段
+- 如果某些字段缺失，要不要自动填默认值
+- 这次导入是追加，还是替换某个博物馆旧数据
 
-说明：
+如果你拿到的是 Excel，建议先另存为 CSV，再让技术同事帮你配置一次导入任务文件。
 
-- `inputPath` 是原始数据文件路径
-- `format` 支持 `json`、`ndjson`、`csv`
-- `listPath` 用来从复杂 JSON 里找到真正的数组，比如 `data.items`
+## 常用命令
 
-## 5. 用 API 导入
+这些命令都在项目根目录运行。
 
-如果你以后想做后台管理页面，或者希望别的系统调用，也可以直接走 HTTP API。
-
-### 5.1 获取模板
+安装依赖：
 
 ```bash
-curl -s http://localhost:3000/api/import/template
+npm install
 ```
 
-### 5.2 预览导入
-
-```bash
-curl -X POST http://localhost:3000/api/import/preview \
-  -H "Content-Type: application/json" \
-  -d @./imports/example-national-museum.json
-```
-
-### 5.3 正式导入
-
-```bash
-curl -X POST http://localhost:3000/api/import/run \
-  -H "Content-Type: application/json" \
-  -d @./imports/example-national-museum.json
-```
-
-### 5.4 查询导入后的文物
-
-```bash
-curl -s "http://localhost:3000/api/artifacts?source=imported"
-```
-
-响应 JSON 中含 `artifacts` 及 `source`、`total` 等字段。
-
-### 5.5 查询博物馆统计
-
-```bash
-curl -s "http://localhost:3000/api/museums?source=imported"
-```
-
-## 6. 这套后端适合你怎么导“全国各个博物馆”的数据
-
-建议你按“一个博物馆一个任务文件”的方式导入：
-
-1. 先准备一个博物馆的原始 JSON 或 CSV
-2. 新建一个对应的任务文件，比如：
-   `imports/gugong-job.json`
-3. 配好这个博物馆的字段映射
-4. 跑：
-   ```bash
-   npm run import:artifacts -- ./imports/gugong-job.json
-   ```
-5. 再继续下一个博物馆
-
-这样做的好处是：
-
-- 每个馆的字段差异可以单独处理
-- 后面更新某个馆的数据时，只重跑这个馆的任务即可
-- `mode: "replace-museum"` 可以避免同馆数据重复
-
-## 7. 数据保存在哪里
-
-当前导入只写本地文件，文物数据保存在 `data/imported-artifacts.json`。这样最适合本地开发、展示和调试，不需要额外配置云服务。
-
-## 8. 常用命令
+启动本地 App：
 
 ```bash
 npm run dev
-npm run lint
+```
+
+检查能不能正式打包：
+
+```bash
 npm run build
+```
+
+导入示例文物数据：
+
+```bash
 npm run import:artifacts -- ./imports/example-national-museum.json
 ```
+
+## 线上部署要知道的事
+
+这一段主要给负责发布的同事看。
+
+Cloudflare Pages 只能直接托管网页文件。它不会自动运行本项目里的后端服务。
+
+所以 MuseLink 线上要正常登录、注册、收藏和读取接口，需要两部分：
+
+1. 前端网页，部署到 Cloudflare Pages
+2. 后端服务，部署到能运行 Node.js 的平台
+
+后端可以放在：
+
+- Render
+- Railway
+- Fly.io
+- Google Cloud Run
+- 自己的服务器
+
+### 推荐部署方式
+
+后端配置：
+
+```text
+JWT_SECRET=请换成一串只有团队知道的长密码
+CORS_ORIGIN=https://你的-pages-网址.pages.dev
+```
+
+Cloudflare Pages 前端配置：
+
+```text
+VITE_API_BASE_URL=https://你的后端网址
+```
+
+这样前端就知道登录、注册、文物列表这些请求要发到哪里。
+
+### 另一种方式：使用 Pages Functions 代理
+
+项目里有这个文件：
+
+```text
+functions/api/[[path]].ts
+```
+
+它的作用是把 Cloudflare Pages 上的 `/api/...` 请求转发给真正的后端。
+
+如果使用这种方式，需要在 Cloudflare Pages 里配置：
+
+```text
+BACKEND_API_BASE_URL=https://你的后端网址
+```
+
+注意：这个代理不是后端本身，它只是一个转发员。真正的后端仍然必须部署。
+
+## 文件夹大概是干什么的
+
+不需要会代码也可以先有个印象：
+
+| 文件夹 | 用途 |
+|------|------|
+| `src` | 前端界面，用户看到的页面都在这里 |
+| `backend` | 后端逻辑，登录、账号、数据保存等在这里 |
+| `data` | 本地数据文件，比如用户、展陈、导入的文物 |
+| `imports` | 文物导入示例和导入任务文件 |
+| `functions` | Cloudflare Pages 的接口代理 |
+| `scripts` | 一些辅助脚本 |
+
+更多细节可以看各文件夹里的 `README.md`。

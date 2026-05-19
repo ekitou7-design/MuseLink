@@ -1,143 +1,56 @@
 # src/pages 文件夹说明
 
-## 整体作用
-应用的各个页面组件。每个文件对应一个可以通过 URL 访问的页面。页面是 RootApp 路由的目的地。
+这个文件夹放的是 App 的主要页面。
 
-## 核心文件
+如果你想找「某个页面在哪里改」，通常先来这里。
 
-### 🔴 登录认证相关页面
+## 页面对应关系
 
-**LoginPage.tsx** - ⭐ 登录页面
-- 用户输入 MuseLink ID 和密码
-- 支持从注册页面自动填入 MuseLink ID
-- 页面刷新时从 UserSession 恢复之前的 ID
-- 登录成功后跳转到首页
+| 页面 | 文件 | 用户看到什么 |
+|------|------|------|
+| 登录页 | `LoginPage.tsx` | 输入账号密码，或用手机/邮箱验证码登录 |
+| 注册页 | `RegisterPage.tsx` | 创建新账号，拿到 MuseLink ID |
+| 首页 | `HomePage.tsx` | 浏览、搜索、收藏文物 |
+| 个人中心 | `ProfilePage.tsx` | 查看个人资料、收藏、展陈 |
+| 管理员后台 | `AdminPage.tsx` | 查看用户和系统统计 |
+| 无权限页 | `ForbiddenPage.tsx` | 普通用户访问后台时看到的提示 |
 
-**RegisterPage.tsx** - ⭐ 注册页面
-- 用户输入密码和确认密码
-- 注册成功后显示专门的"注册成功"页面
-- 显示生成的 MuseLink ID，支持复制
-- 提供"进入应用"按钮跳转到登录页
-- 提供"重新注册"选项重新开始
+## 登录页现在怎么工作？
 
-### 🟡 应用主要页面
+登录页默认是「账号 + 密码」模式。
 
-**HomePage.tsx** - 应用首页
-- 显示文物列表和展陈
-- 搜索和筛选功能
-- 点击文物查看详情
-- 收藏/取消收藏功能
+可以输入：
 
-**ProfilePage.tsx** - 用户个人资料页
-- 显示用户头像、昵称、简介等
-- 编辑个人资料
-- 显示收藏的文物和展陈
-- 显示发布的展陈
+- 普通用户的 MuseLink ID
+- 管理员账号 `jiangzhong`
 
-**AdminPage.tsx** - 管理员后台
-- 查看系统统计数据
-- 管理用户（删除、封禁等）
-- 文物数据管理
-- 仅管理员可见
+也可以切换到验证码登录：
 
-**ForbiddenPage.tsx** - 权限不足页面
-- 用户尝试访问权限页面时显示
-- 提供返回首页的链接
+- 手机验证码
+- 邮箱验证码
 
-## 页面流程
+验证码登录会请求后端接口。线上如果后端没配好，这里最容易报错。
 
-### 用户访问流程
-```
-未登录状态
-  ↓
-访问任何页面
-  ↓
-看 /login 页面
+## 注册页为什么会显示 MuseLink ID？
 
-登录成功
-  ↓
-访问 /home
-  ↓
-看 HomePage（包含 AuthGuard 保护）
+注册成功后，系统会生成一个 MuseLink ID。
 
-访问 /admin（非管理员）
-  ↓
-看 ForbiddenPage（包含 AdminGuard 保护）
-```
+这个 ID 就是以后登录用的账号，所以注册页会特意停下来展示它，并提供复制按钮。
 
-### 页面守卫机制
+## 哪些页面需要登录？
 
-```typescript
-// RootApp.tsx 中的路由定义
-if (route === "/login") return <LoginPage />;          // 无保护
-if (route === "/register") return <RegisterPage />;    // 无保护
-if (route === "/home") return <AuthGuard><HomePage /></AuthGuard>;        // 需要登录
-if (route === "/profile") return <AuthGuard><ProfilePage /></AuthGuard>; // 需要登录
-if (route === "/admin") return <AdminGuard><AdminPage /></AdminGuard>;   // 需要管理员
-```
+| 页面 | 是否需要登录 |
+|------|------|
+| 登录页 | 不需要 |
+| 注册页 | 不需要 |
+| 首页 | 需要 |
+| 个人中心 | 需要 |
+| 管理员后台 | 需要管理员 |
 
-## 重要的页面状态管理
+## 给非技术同学的理解
 
-### LoginPage 的特殊逻辑
-- 监听 URL hash 中的 `museId` 参数
-- 如果注册成功后跳转过来，会自动填入 museId
-- 用户开始输入密码，会自动聚焦
-- 刷新页面后从 UserSession 恢复之前的 museId
+`src/pages` 就像 App 的「页面目录」。
 
-### RegisterPage 的特殊逻辑
-- 用户注册后，立即切换到注册成功视图（不是导航到新页面）
-- 注册成功页面展示 museId 和复制按钮
-- 用户点击"进入应用"后，自动导航到登录页并填入 museId
+想改某个页面上的文案、按钮、布局，通常先从这里找。
 
-## 页面之间的数据传递
-
-### 通过 URL 参数传递
-```javascript
-// 从 RegisterPage 跳转到 LoginPage，传递 museId
-navigate("/login", { museId: registeredMuseId });
-
-// 在 LoginPage 中读取
-const museId = getRouteSearchParams().get("museId");
-```
-
-### 通过 UserSession 传递
-```javascript
-// 登录时保存
-UserSession.setMuseId(museId);
-UserSession.setToken(token);
-
-// 其他页面读取
-const currentMuseId = UserSession.getMuseId();
-```
-
-## 快速参考
-
-| 页面 | 路由 | 需要认证 | 描述 |
-|------|------|--------|------|
-| LoginPage | /login | ❌ | 登录 |
-| RegisterPage | /register | ❌ | 注册 |
-| HomePage | /home | ✅ | 首页 |
-| ProfilePage | /profile | ✅ | 个人资料 |
-| AdminPage | /admin | ✅ + 管理员 | 管理后台 |
-| ForbiddenPage | 无路由 | - | 权限不足 |
-
-## 常见问题
-
-### Q: 如何在页面之间导航？
-```javascript
-import { navigate } from "../router/router";
-navigate("/home");
-navigate("/login", { museId: "12345678" });
-```
-
-### Q: 如何判断当前用户是否已登录？
-```javascript
-import { UserSession } from "../auth/UserSession";
-const isLoggedIn = UserSession.isLoggedIn();
-```
-
-### Q: 注册成功后页面为什么不跳转？
-这是有意设计，为了让用户看到生成的 museId，复制后再进入登录页。
-
-### Q: 页面刷新后登录状态会丢失吗？
-不会。Token 保存在 localStorage 中，刷新后会自动恢复。
+但如果是登录失败、数据加载失败，不一定是页面问题，也可能是后端或接口地址配置问题。

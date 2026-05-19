@@ -54,7 +54,7 @@ import {
   MicOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { apiFetch } from './lib/api';
+import { apiFetch, apiUrl } from './lib/api';
 import { logout as jwtLogout, me as fetchMe } from './lib/authClient';
 import { Artifact, Exhibition, Favorite, UserProfile, Message, Comment, SlideshowSettings, Museum } from './types';
 import { MOCK_ARTIFACTS } from './constants';
@@ -2119,7 +2119,7 @@ export default function App() {
 
     const fetchArtifacts = async () => {
       try {
-        const response = await fetch('/api/artifacts?source=merged&limit=5000', {
+        const response = await fetch(apiUrl('/api/artifacts?source=merged&limit=5000'), {
           signal: controller.signal,
         });
         if (!response.ok) {
@@ -2153,7 +2153,7 @@ export default function App() {
 
     const fetchMuseums = async () => {
       try {
-        const response = await fetch('/api/museums?source=merged', {
+        const response = await fetch(apiUrl('/api/museums?source=merged'), {
           signal: controller.signal,
         });
         if (!response.ok) {
@@ -2203,7 +2203,7 @@ export default function App() {
   };
 
   const fetchBackendArtifactPool = async () => {
-    const response = await fetch('/api/artifacts?source=merged&limit=5000');
+    const response = await fetch(apiUrl('/api/artifacts?source=merged&limit=5000'));
     if (!response.ok) throw new Error(`Failed to fetch backend artifacts: ${response.status}`);
     const data = await response.json();
     if (!Array.isArray(data.artifacts) || data.artifacts.length === 0) {

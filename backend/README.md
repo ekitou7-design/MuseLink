@@ -1,199 +1,84 @@
 # backend 文件夹说明
 
-## 整体作用
-后端业务逻辑层。包含用户认证、文物数据管理、用户数据管理、展陈管理等核心业务逻辑。这一层负责数据处理，与数据库和 API 路由之间的中间层。
+这个文件夹放的是「后端逻辑」。
 
-## 核心文件
+前端是用户看到的页面，后端是 App 背后做事的部分，比如：
 
-### 🔴 最关键的文件
+- 注册账号
+- 登录账号
+- 判断是不是管理员
+- 保存收藏
+- 保存展陈
+- 读取和导入文物数据
 
-**auth.ts** - ⭐ 认证业务逻辑
-- `registerUser()` - 用户注册逻辑
-  - 生成唯一的 MuseLink ID
-  - 对密码进行加密（bcrypt）
-  - 创建用户记录
-  
-- `loginUser()` - 用户登录逻辑
-  - 查找用户
-  - 验证密码
-  - 生成 JWT token
-  
-- `verifyToken()` - 验证 JWT token
-  - 解析 token
-  - 检查是否过期
-  - 提取用户信息
-  
-- `authMiddleware()` - Express 中间件
-  - 自动检查每个请求的 Authorization header
-  - 验证 token
-  - 提取用户 ID 和角色
-  
-- `requireAdmin()` - Express 中间件
-  - 检查用户是否为管理员
-  - 非管理员返回 403 Forbidden
+## 非技术同学先看这个
 
-**store.ts** - ⭐ JSON 文件存储
-- `readJsonFile()` - 读取 JSON 数据文件
-- `writeJsonFile()` - 写入 JSON 数据文件
-- 支持自动创建备份和原子写入
-- 所有数据都存储为 JSON 文件在 `data/` 目录
+你可以把后端理解成 App 的「服务台」：
 
-**artifact-importer.ts** - ⭐ 文物数据导入
-- `executeArtifactImport()` - 执行导入任务
-- `previewArtifactImport()` - 预览导入结果
-- 支持多种数据格式：JSON、CSV、NDJSON
-- 灵活的字段映射和默认值设置
-- 三种导入模式：追加、替换博物馆、完全替换
+- 前端问：这个账号能不能登录？
+- 后端查：账号和密码对不对？
+- 前端问：这个用户收藏了哪些文物？
+- 后端查：数据文件里有没有记录？
+- 前端问：管理员能不能看后台？
+- 后端判断：这个账号是不是管理员？
 
-### 🟡 其他业务逻辑
+## 默认管理员账号
 
-**user-data.ts** - 用户数据管理
-- 用户收藏管理
-- 用户关注管理
+当前项目启动时会保证这个管理员账号存在：
 
-**exhibitions.ts** - 展陈管理
-- 创建展陈
-- 删除展陈
-- 列出展陈
-
-## 数据存储方式
-
-### JSON 文件存储位置
-```
-data/
-├── auth-users.json          # 所有用户账号（包含密码哈希）
-├── auth-user-seq.json       # 用户 ID 序列号
-├── imported-artifacts.json  # 文物数据库
-├── exhibitions.json         # 展陈数据
-└── user-data.json          # 用户收藏、关注等
+```text
+账号：jiangzhong
+密码：jiangzhong
+角色：admin
 ```
 
-### 数据结构示例
+如果本地数据文件里这个账号被改坏了，项目启动时会尽量自动修正。
 
-**auth-users.json**
-```json
-{
-  "version": 1,
-  "users": [
-    {
-      "id": 100000,
-      "museId": "12345678",
-      "passwordHash": "$2a$12$...",
-      "createdAt": "2026-04-20T12:00:00Z",
-      "profile": {
-        "displayName": "用户名",
-        "photoURL": "...",
-        "role": "user"
-      }
-    }
-  ]
-}
-```
+## 数据保存在哪里？
 
-## 核心流程
+现在项目主要把数据保存在 `data` 文件夹里。
 
-### 注册流程
-```
-前端调用 POST /api/auth/register
-  ↓
-server.ts 路由到 registerUser()
-  ↓
-auth.ts generateMuseId() 生成唯一 ID
-  ↓
-bcrypt.hash() 加密密码
-  ↓
-loadAuthDb() 读取用户数据库
-  ↓
-向数据库添加新用户
-  ↓
-saveAuthDb() 保存数据库
-  ↓
-返回 { museId: "12345678" }
-```
+常见文件包括：
 
-### 登录流程
-```
-前端调用 POST /api/auth/login
-  ↓
-server.ts 路由到 loginUser()
-  ↓
-loadAuthDb() 读取用户数据库
-  ↓
-查找 MuseLink ID 对应的用户
-  ↓
-bcrypt.compare() 验证密码
-  ↓
-jwt.sign() 生成 JWT token
-  ↓
-返回 { token, museId, role }
-  ↓
-Token 存储在前端 localStorage
-```
-
-### 文物导入流程
-```
-前端或脚本调用导入命令
-  ↓
-读取导入配置文件
-  ↓
-读取数据源（JSON/CSV 文件）
-  ↓
-通过字段映射提取数据
-  ↓
-验证每条记录
-  ↓
-生成预览（可选）
-  ↓
-决定是追加还是替换
-  ↓
-保存到 imported-artifacts.json
-```
-
-## 子目录结构
-
-| 目录 | 说明 |
+| 文件 | 保存什么 |
 |------|------|
-| **api/** | Express 服务器相关（路由、控制器、中间件） |
+| `data/auth-users.json` | 用户账号 |
+| `data/user-data.json` | 收藏、关注等用户数据 |
+| `data/exhibitions.json` | 展陈数据 |
+| `data/imported-artifacts.json` | 导入的文物数据 |
 
-## 重要说明
+这些都是普通文本数据文件，方便演示和调试。
 
-### 为什么使用 JSON 文件而不是数据库？
+正式上线、用户变多以后，建议再升级成真正的数据库。
 
-✅ 优点：
-- 开发简单，无需配置数据库
-- 数据易于查看和修改
-- 适合小型项目或演示
-- 易于版本控制
+## 常见功能对应哪里
 
-❌ 缺点：
-- 不适合大规模数据
-- 并发访问有限制
-- 查询性能较差
+| 功能 | 主要文件 |
+|------|------|
+| 注册、登录、管理员账号 | `backend/auth.ts` |
+| 读取和写入 JSON 数据 | `backend/store.ts` |
+| 导入文物数据 | `backend/artifact-importer.ts` |
+| 用户收藏等数据 | `backend/user-data.ts` |
+| 展陈数据 | `backend/exhibitions.ts` |
 
-⚠️ 未来如果数据量变大，可升级为 PostgreSQL 等数据库。
+## 线上部署时要注意
 
-### 密码安全
+如果前端部署在 Cloudflare Pages，后端必须另外部署到能运行 Node.js 的地方。
 
-- 使用 bcrypt 算法加密（Salt rounds = 12）
-- 密码长度限制：8-64 位
-- 存储时只保存 hash，不保存原文
-- 登录时通过 bcrypt.compare() 验证
+后端至少需要配置：
 
-### JWT Token
+```text
+JWT_SECRET=请换成一串只有团队知道的长密码
+CORS_ORIGIN=https://你的前端网址
+```
 
-- 有效期：7 天
-- 包含信息：用户 ID、角色、MuseLink ID
-- 存储位置：前端 localStorage
-- 传输方式：HTTP Header `Authorization: Bearer <token>`
+`CORS_ORIGIN` 的意思是：允许哪个网页来访问这个后端。
 
-## 快速参考
+如果这里没配对，线上网页可能会出现登录失败、接口请求失败等问题。
 
-| 操作 | 涉及文件 | 功能 |
-|------|--------|------|
-| 用户注册 | auth.ts | registerUser() |
-| 用户登录 | auth.ts | loginUser() |
-| Token 验证 | auth.ts | verifyToken() |
-| API 保护 | auth.ts | authMiddleware() |
-| 管理员检查 | auth.ts | requireAdmin() |
-| 导入文物 | artifact-importer.ts | executeArtifactImport() |
-| 预览导入 | artifact-importer.ts | previewArtifactImport() |
+## 给开发同学的提醒
+
+- 密码不是明文保存，会经过 bcrypt 加密
+- 登录成功后会返回 JWT token
+- 需要登录的接口会检查 `Authorization` 请求头
+- 管理员接口会额外检查用户角色是不是 `admin`
