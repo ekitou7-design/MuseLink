@@ -356,6 +356,31 @@
           "followers": 0
         }
       }
+    },
+    {
+      "id": 100016,
+      "museId": "289137632",
+      "passwordHash": "",
+      "phone": "18370545142",
+      "createdAt": "2026-05-20T01:59:52.164Z",
+      "profile": {
+        "displayName": "MuseLink 5142",
+        "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+        "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
+        "bio": "",
+        "role": "user",
+        "privacySettings": {
+          "profileVisibility": "all"
+        },
+        "stats": {
+          "favArtifacts": 0,
+          "myExhibitions": 0,
+          "favExhibitions": 0,
+          "likes": 0,
+          "following": 0,
+          "followers": 0
+        }
+      }
     }
   ]
 }
