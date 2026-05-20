@@ -2,6 +2,32 @@
   "version": 1,
   "exhibitions": [
     {
+      "id": "exh_1779242660325_41c0a1",
+      "userId": 100016,
+      "userName": "MuseLink 5142",
+      "userPhoto": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+      "title": "笔墨丹青间：江南文人生活图景",
+      "intro": "本展以清至民国时期江南文人的精神世界为线索，通过精选的印章、鼻烟壶、砚台、纸张与文房用具，展现其雅致生活与艺术追求。第一单元‘印心寄意’聚焦文人用印传统，从寿山石、青田石到巴林石，雕工细腻，寓意深远；第二单元‘袖中乾坤’呈现鼻烟壶的微雕艺术，内画山水、浮雕人物，方寸之间见天地；第三单元‘纸砚生香’展示端砚、洒金笺与高丽发笺，体现文房四宝的材质之美与书写仪式感；第四单元‘生活雅趣’涵盖扑满、牙雕盒等日常器物，反映文人对节制与精致生活的平衡追求。展览通过实物与情境还原，带领观众走进一个重情尚雅、寄情于物的江南文人世界。",
+      "coverUrl": "https://www.lnmuseum.com.cn/singleMuseum/attach/getImg?fileId=22001353001&type=L&s=2274",
+      "artifactIds": [
+        "WW-清浮雕瓜瓞天台石印-2",
+        "WW-清雕钮天然木根印-3",
+        "WW-清内画山水花鸟鼻烟壶-12",
+        "WW-清玉鼻烟壶-16",
+        "WW-清雍正制“玉音”端砚-31",
+        "WW-清洒金笺-33",
+        "WW-辽-金灰陶罐形扑满-0",
+        "WW-现代牙雕鹌鹑黍穗盒-21"
+      ],
+      "isPublic": false,
+      "likesCount": 0,
+      "favsCount": 0,
+      "commentsCount": 0,
+      "bgmUrl": "ambient://rain-ocean-wind",
+      "createdAt": "2026-05-20T02:04:20.325Z",
+      "updatedAt": "2026-05-20T02:04:20.325Z"
+    },
+    {
       "id": "exh_1779019399860_7b4e64",
       "userId": 100010,
       "userName": "犟种",
