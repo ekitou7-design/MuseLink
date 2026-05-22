@@ -1,6 +1,8 @@
 # MuseLink AI 数据准备脚本
 
-`prepare-artifacts-for-ai.ts` 用于把当前 `data/imported-artifacts.json` 中已有的辽宁省博物馆文物整理为后续 RAG 知识库、知识图谱和 AI Workflow 策展生成可用的标准样板数据。
+`prepare-artifacts-for-ai.ts` 用于把当前 `data/imported-artifacts.json` 中已有的导入文物整理为后续 RAG 知识库、知识图谱和 AI Workflow 策展生成可用的标准样板数据。
+
+当前进度：已基于 92 件导入文物生成 AI-ready v2 数据、92 条 RAG JSONL 文档和 229 条知识图谱关系候选。v2 比 v1 更适合做技术验证，但仍需要人工审核后才能作为正式内容上线。
 
 ## 如何运行
 
@@ -12,9 +14,15 @@ node --import tsx scripts/data-prep/prepare-artifacts-for-ai.ts
 
 ## 输出文件
 
-- `data/imported-artifacts.ai-ready.json`：AI-ready 文物派生数据。
-- `data/artifact-relation-seeds.json`：知识图谱关系候选。
-- `data/rag/artifacts-rag-documents.jsonl`：可导入 Dify、FastGPT、RAGFlow 等知识库的 JSONL 文档。
+- `data/imported-artifacts.ai-ready.v2.json`：AI-ready v2 文物派生数据。
+- `data/artifact-relation-seeds.v2.json`：知识图谱关系候选。
+- `data/rag/artifacts-rag-documents.v2.jsonl`：可导入 Dify、FastGPT、RAGFlow 等知识库的 JSONL 文档。
+
+仓库里仍保留 v1 文件，便于对照规则变化：
+
+- `data/imported-artifacts.ai-ready.json`
+- `data/artifact-relation-seeds.json`
+- `data/rag/artifacts-rag-documents.jsonl`
 
 ## 自动生成字段
 
@@ -58,11 +66,11 @@ AI Workflow 字段：
 - `shortIntro`、`description`、`workflowSummary`、`curatorNote` 是规则化摘要，不等同于馆方正式说明。
 - `cultureTags`、`themeTags`、`periodTags` 是自动标签，需要专家或运营审核标签边界。
 - `sourceName` 和 `copyrightNote` 需要结合真实授权、馆方开放数据政策和图片使用协议确认。
-- `artifact-relation-seeds.json` 是关系候选，不是已确认知识图谱事实。
+- `artifact-relation-seeds.v2.json` 是关系候选，不是已确认知识图谱事实。
 
 ## 后续接入 RAG 平台
 
-`data/rag/artifacts-rag-documents.jsonl` 每行是一条文物文档：
+`data/rag/artifacts-rag-documents.v2.jsonl` 每行是一条文物文档：
 
 - `id`：文物 ID。
 - `title`：文物名称。

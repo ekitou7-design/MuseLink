@@ -16,6 +16,17 @@ Cloudflare Pages 主要负责放网页。它不会自动运行本项目的后端
 - 读取文物列表
 - 读取展陈
 
+知识库相关接口也会经过这里转发，例如：
+
+- `/api/artifacts`
+- `/api/artifacts/:id`
+- `/api/museums`
+- `/api/rag/search`
+- `/api/import/preview`
+- `/api/import/run`
+
+所以线上如果要展示现有 92 件文物知识库、博物馆聚合和智能策展候选，仍然需要把真正的 Node.js 后端部署好，再让这个代理转发过去。
+
 所以线上部署时必须有一个真正的后端网址。
 
 `functions/api/[[path]].ts` 的作用很简单：

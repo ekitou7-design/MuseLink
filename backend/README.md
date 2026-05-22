@@ -11,6 +11,19 @@
 - 保存展陈
 - 读取和导入文物数据
 
+## 后端里的知识库能力
+
+当前知识库主要由后端负责读取、导入和检索。它已经可以：
+
+- 从 `data/imported-artifacts.json` 读取 92 件导入文物，导入数据存在时优先使用导入库
+- 通过 `/api/artifacts` 提供文物列表，并支持关键词、博物馆、时代、文化筛选
+- 通过 `/api/artifacts/:id` 提供文物详情
+- 通过 `/api/museums` 根据文物自动聚合 83 个博物馆条目
+- 通过 `/api/rag/search` 给智能策展和相关文物推荐提供关键词检索候选
+- 通过 `/api/import/template`、`/api/import/preview`、`/api/import/run` 支持导入流程
+
+AI-ready v2、RAG JSONL 和知识图谱候选文件保存在 `data` 文件夹，由 `scripts/data-prep` 生成。后端目前使用本地关键词检索，不依赖外部向量数据库。
+
 ## 非技术同学先看这个
 
 你可以把后端理解成 App 的「服务台」：

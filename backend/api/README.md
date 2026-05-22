@@ -12,6 +12,23 @@
 - 检查用户是不是管理员
 - 把结果返回给前端
 
+## 知识库相关接口
+
+当前知识库已经接入这些接口：
+
+| 功能 | 接口 |
+|------|------|
+| 文物列表、关键词筛选 | `GET /api/artifacts?q=关键词` |
+| 单件文物详情 | `GET /api/artifacts/:id` |
+| 博物馆聚合列表 | `GET /api/museums` |
+| 单个博物馆及馆藏 | `GET /api/museums/:id` |
+| 策展候选检索 | `POST /api/rag/search` |
+| 导入模板 | `GET /api/import/template` |
+| 导入预览 | `POST /api/import/preview` |
+| 执行导入 | `POST /api/import/run` |
+
+这些接口现在主要服务于 92 件导入文物、83 个博物馆聚合条目、智能策展候选和后续 RAG 平台接入。`/api/rag/search` 当前是本地关键词排序，不是外部向量检索。
+
 ## 常见接口
 
 账号相关：

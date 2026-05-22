@@ -14,6 +14,22 @@
 | `exhibitions.json` | 展陈数据 |
 | `imported-artifacts.json` | 导入的文物数据 |
 | `imported-museums.json` | 根据文物数据生成的博物馆数据 |
+| `imported-artifacts.ai-ready.v2.json` | 面向 AI、RAG 和策展的文物派生数据 |
+| `artifact-relation-seeds.v2.json` | 知识图谱关系候选 |
+| `rag/artifacts-rag-documents.v2.jsonl` | 可导入外部 RAG 平台的文物文档 |
+
+## 现有知识库数据进度
+
+当前知识库主数据是 `imported-artifacts.json`，里面有 92 件已导入文物。基于这些文物，项目已经生成：
+
+- 92 条 AI-ready v2 文物数据：`imported-artifacts.ai-ready.v2.json`
+- 92 条 RAG JSONL 文档：`rag/artifacts-rag-documents.v2.jsonl`
+- 229 条关系候选：`artifact-relation-seeds.v2.json`
+- 83 个博物馆聚合条目：`imported-museums.json`
+
+这些文件让 App 可以展示文物、搜索文物、生成博物馆列表，并给智能策展和后续外部知识库平台提供材料。
+
+正式使用前仍建议人工审核：文物来源链接、版权说明、自动摘要、自动标签和关系候选都不应直接当作馆方正式内容发布。
 
 ## 可以直接改这些文件吗？
 

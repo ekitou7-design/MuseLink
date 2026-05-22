@@ -11,6 +11,23 @@
 - 文物列表走文物窗口
 - 后台用户列表走管理员窗口
 
+## 知识库路由进度
+
+知识库现在已经有可用路由：
+
+| 功能 | 地址 |
+|------|------|
+| 文物列表和筛选 | `GET /api/artifacts` |
+| 文物详情 | `GET /api/artifacts/:id` |
+| 博物馆列表 | `GET /api/museums` |
+| 单馆详情和馆藏 | `GET /api/museums/:id` |
+| 本地 RAG 候选检索 | `POST /api/rag/search` |
+| 导入模板 | `GET /api/import/template` |
+| 导入预览 | `POST /api/import/preview` |
+| 执行导入 | `POST /api/import/run` |
+
+这些路由目前支撑 92 件导入文物的浏览、搜索、详情、博物馆聚合和智能策展候选。外部向量数据库还没有接入，当前检索模式是全字段关键词排序。
+
 ## 常见接口地址
 
 账号：

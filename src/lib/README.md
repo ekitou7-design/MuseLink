@@ -72,6 +72,17 @@ VITE_API_BASE_URL
 BACKEND_API_BASE_URL
 ```
 
+## 知识库相关请求
+
+前端访问知识库接口时也会经过这里拼接后端地址。常见接口包括：
+
+- `GET /api/artifacts`：文物列表、搜索和筛选
+- `GET /api/artifacts/:id`：文物详情
+- `GET /api/museums`：博物馆聚合
+- `POST /api/rag/search`：智能策展候选检索
+
+如果线上知识库页面空白、搜索失败或策展没有候选，优先检查 `VITE_API_BASE_URL` 或 `BACKEND_API_BASE_URL` 是否指向真正的后端。
+
 ## 给开发同学的提醒
 
 普通接口请求优先用 `apiFetch()`。

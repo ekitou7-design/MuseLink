@@ -12,6 +12,14 @@ scripts/import-artifacts.ts
 
 它负责把外部文物数据导入 MuseLink。
 
+知识库相关还有一个重要目录：
+
+```text
+scripts/data-prep/
+```
+
+它负责把已导入文物整理成 AI-ready 数据、RAG JSONL 文档和知识图谱关系候选。当前已基于 92 件文物生成 v2 派生数据，适合用于 RAG 技术验证、智能策展候选和后续人工审核。
+
 ## 常用命令
 
 在项目根目录运行：
