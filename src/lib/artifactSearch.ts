@@ -13,6 +13,11 @@ import {
   artifactRemarksRaw,
 } from "./dbDisplay";
 
+function tagText(tag: Artifact["tags"][number]): string {
+  if (typeof tag === "string") return tag;
+  return [tag.type, tag.name].filter(Boolean).join(" ");
+}
+
 /** Concatenated searchable text for keyword matching（含同义字段归并值 + 原始键上的字符串，小写由调用方处理）。 */
 export function artifactSearchBlob(a: Artifact): string {
   const o = a as unknown as Record<string, unknown>;
@@ -38,7 +43,7 @@ export function artifactSearchBlob(a: Artifact): string {
     o["年代"],
     o.imageUrl,
     o.image_url,
-    ...(a.tags ?? []),
+    ...(a.tags ?? []).map(tagText),
   ]
     .map((x) => (x === null || x === undefined ? "" : String(x)))
     .filter((s) => s !== "")
@@ -63,7 +68,7 @@ function scoreTokenHits(a: Artifact, tokens: string[]): number {
   const material = String(artifactMaterialRaw(a) ?? "").toLowerCase();
   const culture = String(artifactCultureRaw(a) ?? "").toLowerCase();
   const origin = String(artifactOriginRaw(a) ?? "").toLowerCase();
-  const tags = (a.tags ?? []).map((t) => t.toLowerCase());
+  const tags = (a.tags ?? []).map((t) => tagText(t).toLowerCase());
   for (const t of tokens) {
     if (name.includes(t)) score += 12;
     else if (museum.includes(t)) score += 9;

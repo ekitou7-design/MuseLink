@@ -15,6 +15,12 @@ import {
 } from "../lib/dbDisplay";
 
 const CURATION_CANDIDATE_LIMIT = 72;
+
+function tagText(tag: Artifact["tags"][number]): string {
+  if (typeof tag === "string") return tag;
+  return [tag.type, tag.name].filter(Boolean).join(" ");
+}
+
 const CURATION_STOP_WORDS = new Set([
   "帮我",
   "策划",
@@ -109,7 +115,7 @@ function artifactText(artifact: Artifact): string {
     artifactOriginRaw(artifact),
     artifactCategoryRaw(artifact),
     artifactDescriptionRaw(artifact),
-    ...(artifact.tags ?? []),
+    ...(artifact.tags ?? []).map(tagText),
   ]
     .map((value) => String(value ?? "").toLowerCase())
     .join(" ");

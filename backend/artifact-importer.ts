@@ -76,8 +76,11 @@ const AUTO_FIELD_ALIASES: Partial<Record<keyof Artifact, string[]>> = {
   material: ["material", "materials", "medium", "材质", "质地", "材料"],
   culture: ["culture", "文化", "文化类型", "分类", "主题"],
   origin: ["origin", "provenance", "findspot", "place", "出土地", "发现地", "来源", "产地", "遗址", "地点"],
+  shortIntro: ["shortIntro", "short_intro", "summary", "一句话简介", "短简介", "摘要"],
   description: ["description", "summary", "intro", "简介", "介绍", "说明", "描述", "文物简介", "藏品介绍", "备注", "details"],
   imageUrl: ["imageUrl", "image", "image_url", "img", "图片", "图像", "图片URL", "图片链接", "照片", "url", "thumbnail"],
+  sourceUrl: ["sourceUrl", "source_url", "sourceLink", "来源链接", "数据来源", "原文链接"],
+  attributes: ["attributes", "扩展属性", "扩展信息"],
   tags: ["tags", "keywords", "标签", "关键词", "关键字"],
   favsCount: ["favsCount", "hot", "views", "likes", "热度", "收藏数", "浏览量"],
   category: ["category", "文物类别", "藏品类别", "类型", "classification", "kind"],
@@ -93,8 +96,10 @@ const TEXT_FIELD_LABELS: Partial<Record<keyof Artifact, string[]>> = {
   material: ["材质", "质地", "材料"],
   culture: ["文化", "文化类型", "分类"],
   origin: ["出土地", "发现地", "来源", "产地", "遗址", "地点"],
+  shortIntro: ["一句话简介", "短简介", "摘要"],
   description: ["简介", "介绍", "说明", "描述", "文物简介", "藏品介绍"],
   imageUrl: ["图片", "图像", "图片URL", "图片链接", "照片"],
+  sourceUrl: ["来源链接", "数据来源", "原文链接"],
   tags: ["标签", "关键词", "关键字"],
   category: ["类别", "文物类别", "藏品类别", "类型"],
   level: ["等级", "级别", "文物等级", "保护级别"],
@@ -123,8 +128,11 @@ const DEFAULT_IMPORT_TEMPLATE: ArtifactImportJob = {
     material: ["材质", "material"],
     culture: ["文化", "culture"],
     origin: ["出土地", "origin", "unearthedAt"],
+    shortIntro: ["一句话简介", "shortIntro", "short_intro", "summary"],
     description: ["简介", "description", "summary"],
     imageUrl: ["图片", "imageUrl", "image"],
+    sourceUrl: ["来源链接", "sourceUrl", "source_url"],
+    attributes: ["attributes", "扩展属性", "扩展信息"],
     tags: ["标签", "tags"],
     favsCount: ["热度", "favsCount"],
     category: ["类别", "category"],
@@ -413,6 +421,71 @@ function coerceTags(value: unknown): string[] {
     .filter(Boolean);
 }
 
+function coerceAttributes(value: unknown): NonNullable<Artifact["attributes"]> {
+  const parsed = (() => {
+    if (typeof value === "string") {
+      const text = value.trim();
+      if (!text) return [];
+      try {
+        return JSON.parse(text);
+      } catch {
+        return [];
+      }
+    }
+    return value;
+  })();
+
+  if (!Array.isArray(parsed)) return [];
+
+  const groups = new Map<string, { order: number; items: { name: string; value: string; order: number }[] }>();
+  const add = (groupRaw: unknown, nameRaw: unknown, valueRaw: unknown, orderRaw: unknown) => {
+    const name = coerceString(nameRaw).trim();
+    const valueText = coerceString(valueRaw).trim();
+    if (!name || !valueText) return;
+    const group = coerceString(groupRaw, "基础信息").trim() || "基础信息";
+    const parsedOrder = Number(orderRaw);
+    const order = Number.isFinite(parsedOrder) ? parsedOrder : 0;
+    const existing = groups.get(group) || { order, items: [] };
+    existing.order = Math.min(existing.order, order);
+    existing.items.push({ name, value: valueText, order });
+    groups.set(group, existing);
+  };
+
+  for (const raw of parsed) {
+    if (!isPlainObject(raw)) continue;
+    if (Array.isArray(raw.items)) {
+      for (const itemRaw of raw.items) {
+        if (!isPlainObject(itemRaw)) continue;
+        add(
+          raw.group ?? raw.attribute_group,
+          itemRaw.name ?? itemRaw.attribute_name,
+          itemRaw.value ?? itemRaw.attribute_value,
+          itemRaw.sortOrder ?? itemRaw.sort_order,
+        );
+      }
+    } else {
+      add(
+        raw.group ?? raw.attribute_group,
+        raw.name ?? raw.attribute_name,
+        raw.value ?? raw.attribute_value,
+        raw.sortOrder ?? raw.sort_order,
+      );
+    }
+  }
+
+  return Array.from(groups.entries())
+    .map(([group, entry]) => ({
+      group,
+      order: entry.order,
+      items: entry.items
+        .sort((a, b) => a.order - b.order)
+        .map((item) => ({ name: item.name, value: item.value })),
+    }))
+    .filter((group) => group.items.length > 0)
+    .sort((a, b) => a.order - b.order)
+    .map(({ group, items }) => ({ group, items }));
+}
+
 function slugify(input: string) {
   const normalized = input
     .toLowerCase()
@@ -550,14 +623,26 @@ function normalizeArtifactRecord(
   const material = coerceString(resolveImportField(record, "material", mapping, defaults), "未知");
   const culture = coerceString(resolveImportField(record, "culture", mapping, defaults), "馆藏文物");
   const origin = coerceString(resolveImportField(record, "origin", mapping, { ...defaults, origin: defaults.origin || museum }), museum);
+  const shortIntro = coerceString(resolveImportField(record, "shortIntro", mapping, defaults));
   const description = coerceString(
-    resolveImportField(record, "description", mapping, { ...defaults, description: defaults.description || `${museum}馆藏文物：${name}` }),
-    `${museum}馆藏文物：${name}`,
+    resolveImportField(record, "description", mapping, defaults),
+    "",
   );
   const imageUrl = coerceString(
     resolveImportField(record, "imageUrl", mapping, defaults),
     "",
   );
+  const sourceUrl = coerceString(resolveImportField(record, "sourceUrl", mapping, defaults));
+  const mappedAttributes = coerceAttributes(resolveImportField(record, "attributes", mapping, defaults));
+  const flatAttributes = coerceAttributes([
+    {
+      group: record.attribute_group ?? record["属性分组"] ?? record["扩展分组"],
+      name: record.attribute_name ?? record["属性名称"] ?? record["扩展名称"],
+      value: record.attribute_value ?? record["属性值"] ?? record["扩展值"],
+      sortOrder: record.sort_order ?? record.sortOrder ?? record["排序"],
+    },
+  ]);
+  const attributes = mappedAttributes.length > 0 ? mappedAttributes : flatAttributes;
   const tags = (() => {
     const mappedValue = resolveImportField(record, "tags", mapping, defaults);
     if (mappedValue !== undefined && mappedValue !== null && mappedValue !== "") {
@@ -582,8 +667,11 @@ function normalizeArtifactRecord(
     material,
     culture,
     origin,
+    ...(shortIntro.trim() ? { shortIntro: shortIntro.trim() } : {}),
     description,
     imageUrl,
+    ...(sourceUrl.trim() ? { sourceUrl: sourceUrl.trim() } : {}),
+    ...(attributes.length > 0 ? { attributes } : {}),
     tags,
     favsCount,
     ...(category.trim() ? { category: category.trim() } : {}),

@@ -7,6 +7,7 @@ import { exhibitionRoutes } from "./routes/exhibitionRoutes";
 import { likeRoutes } from "./routes/likeRoutes";
 import { museumRoutes } from "./routes/museumRoutes";
 import { db } from "./db/client";
+import { migrateArtifactDetails } from "./db/migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./db/upgradeArtifactsMuseumFk";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
@@ -35,6 +36,7 @@ app.listen(port, "0.0.0.0", () => {
     if (up.migrated) {
       console.log("Upgraded DB: artifacts.museum → museum_id + museums");
     }
+    await migrateArtifactDetails(db);
   } catch (err) {
     console.error("DB upgrade failed:", err);
   }

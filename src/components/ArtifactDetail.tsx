@@ -1,92 +1,191 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, Heart, ImageOff, Loader2, Sparkles, X } from "lucide-react";
-import type { Artifact } from "../types";
+import { ArrowLeft, ExternalLink, Heart, ImageOff, Loader2, Sparkles, Tag, X } from "lucide-react";
+import type { Artifact, ArtifactAttributeGroup } from "../types";
+import { apiFetch } from "../lib/api";
 import { curatorService } from "../services/curatorService";
 import { SafeImage } from "./SafeImage";
 
 /** 文物详情顶栏标题（非业务字段）。 */
 const DETAIL_NAV_TITLE = "文物详情";
 const IMAGE_UNAVAILABLE_TEXT = "暂无图片";
-const DB_EMPTY_PLACEHOLDER = "暂无信息";
+const INFO_EMPTY_PLACEHOLDER = "暂无信息";
+const INTRO_EMPTY_PLACEHOLDER = "暂无简介";
+const DESCRIPTION_EMPTY_PLACEHOLDER = "暂无介绍";
+const MORE_EMPTY_PLACEHOLDER = "暂无更多信息";
 
 type ArtifactDbField =
-  | "图片链接"
-  | "所属博物馆"
-  | "文物名称"
-  | "朝代"
-  | "类别"
-  | "等级"
-  | "材质"
-  | "尺寸"
-  | "备注";
-
-type BackendMappedField =
   | "imageUrl"
-  | "museum"
+  | "museumName"
   | "name"
-  | "period"
+  | "dynasty"
   | "category"
-  | "level"
+  | "shortIntro"
+  | "description"
+  | "sourceUrl"
   | "material"
   | "dimensions"
-  | "remarks";
+  | "size"
+  | "level"
+  | "remarks"
+  | "remark"
+  | "note";
 
-const FIELD_SOURCES: Record<ArtifactDbField, readonly [ArtifactDbField, BackendMappedField?]> = {
-  图片链接: ["图片链接", "imageUrl"],
-  所属博物馆: ["所属博物馆", "museum"],
-  文物名称: ["文物名称", "name"],
-  朝代: ["朝代", "period"],
-  类别: ["类别", "category"],
-  等级: ["等级", "level"],
-  材质: ["材质", "material"],
-  尺寸: ["尺寸", "dimensions"],
-  备注: ["备注", "remarks"],
+const FIELD_SOURCES: Record<ArtifactDbField, readonly string[]> = {
+  imageUrl: ["imageUrl", "image_url", "图片链接", "图片", "image", "thumbnail"],
+  museumName: ["museumName", "museum", "所属博物馆", "博物馆", "馆藏单位", "收藏单位", "馆名"],
+  name: ["name", "文物名称", "名称", "藏品名称", "题名", "title"],
+  dynasty: ["dynasty", "period", "era", "朝代", "时代", "年代"],
+  category: ["category", "类别", "文物类别", "藏品类别", "类型", "classification"],
+  shortIntro: ["shortIntro", "short_intro", "一句话简介", "短简介", "摘要", "summary"],
+  description: ["description", "详细介绍", "文物描述", "文物简介", "简介", "介绍", "说明"],
+  sourceUrl: ["sourceUrl", "source_url", "来源链接", "数据来源", "source", "sourceLink"],
+  material: ["material", "材质", "质地", "材料"],
+  dimensions: ["dimensions", "尺寸", "规格", "体量", "长宽高"],
+  size: ["size", "尺寸", "规格", "体量", "长宽高"],
+  level: ["level", "等级", "级别", "文物等级", "保护级别"],
+  remarks: ["remarks", "备注", "附注", "notes", "note"],
+  remark: ["remark", "备注", "附注", "notes", "note"],
+  note: ["note", "notes", "备注", "附注"],
 };
-
-const OPTIONAL_FIELDS: ArtifactDbField[] = [
-  "类别",
-  "等级",
-  "材质",
-  "尺寸",
-];
 
 function artifactDbValue(artifact: Artifact, field: ArtifactDbField): unknown {
   const record = artifact as unknown as Record<string, unknown>;
-  const sources = FIELD_SOURCES[field];
-  for (const source of sources) {
+  for (const source of FIELD_SOURCES[field]) {
     const value = record?.[source];
     if (value !== null && value !== undefined && value !== "") return value;
   }
-  return record?.[sources[0]];
+  return "";
 }
 
-function isEmptyRequiredValue(raw: unknown): boolean {
-  return raw === null || raw === undefined || raw === "";
-}
-
-function isEmptyOptionalValue(raw: unknown): boolean {
+function isBlankValue(raw: unknown): boolean {
   if (raw === null || raw === undefined) return true;
   if (typeof raw === "string") {
     const value = raw.trim();
-    return value === "" || value === "未知" || value === DB_EMPTY_PLACEHOLDER;
+    return value === "" || value === "undefined" || value === "null";
   }
   return false;
 }
 
-function displayRequiredValue(raw: unknown): string {
-  if (isEmptyRequiredValue(raw)) return DB_EMPTY_PLACEHOLDER;
+function isBlankAttributeValue(raw: unknown): boolean {
+  if (isBlankValue(raw)) return true;
+  if (typeof raw === "string") {
+    const value = raw.trim();
+    return value === "未知" || value === INFO_EMPTY_PLACEHOLDER;
+  }
+  return false;
+}
+
+function displayValue(raw: unknown, fallback = INFO_EMPTY_PLACEHOLDER): string {
+  if (isBlankValue(raw)) return fallback;
   if (typeof raw === "string") return raw;
   return String(raw);
 }
 
-function displayOptionalValue(raw: unknown): string {
-  return typeof raw === "string" ? raw : String(raw);
+function normalizeAttributeGroups(artifact: Artifact): ArtifactAttributeGroup[] {
+  const rawAttributes = (artifact as unknown as Record<string, unknown>).attributes;
+  const groups = new Map<string, { order: number; items: { name: string; value: string; order: number }[] }>();
+
+  const addItem = (groupRaw: unknown, nameRaw: unknown, valueRaw: unknown, orderRaw: unknown) => {
+    if (isBlankAttributeValue(valueRaw) || isBlankValue(nameRaw)) return;
+    const group = displayValue(groupRaw, "基础信息");
+    const name = displayValue(nameRaw);
+    const value = displayValue(valueRaw);
+    const order = Number(orderRaw);
+    const sortOrder = Number.isFinite(order) ? order : 0;
+    const existing = groups.get(group) || { order: sortOrder, items: [] };
+    existing.order = Math.min(existing.order, sortOrder);
+    existing.items.push({ name, value, order: sortOrder });
+    groups.set(group, existing);
+  };
+
+  if (Array.isArray(rawAttributes)) {
+    for (const rawGroup of rawAttributes) {
+      const groupRecord = rawGroup as Record<string, unknown>;
+      if (Array.isArray(groupRecord?.items)) {
+        for (const rawItem of groupRecord.items) {
+          const item = rawItem as Record<string, unknown>;
+          addItem(
+            groupRecord.group ?? groupRecord.attribute_group,
+            item.name ?? item.attribute_name,
+            item.value ?? item.attribute_value,
+            item.sortOrder ?? item.sort_order,
+          );
+        }
+      } else {
+        addItem(
+          groupRecord.group ?? groupRecord.attribute_group,
+          groupRecord.name ?? groupRecord.attribute_name,
+          groupRecord.value ?? groupRecord.attribute_value,
+          groupRecord.sortOrder ?? groupRecord.sort_order,
+        );
+      }
+    }
+  }
+
+  const normalized = Array.from(groups.entries())
+    .map(([group, entry]) => ({
+      group,
+      order: entry.order,
+      items: entry.items
+        .sort((a, b) => a.order - b.order)
+        .map((item) => ({ name: item.name, value: item.value })),
+    }))
+    .filter((group) => group.items.length > 0)
+    .sort((a, b) => a.order - b.order)
+    .map(({ group, items }) => ({ group, items }));
+
+  if (normalized.length > 0) return normalized;
+
+  const legacyItems = [
+    { group: "基础信息", name: "材质", value: artifactDbValue(artifact, "material"), sortOrder: 1 },
+    {
+      group: "基础信息",
+      name: "尺寸",
+      value: artifactDbValue(artifact, "dimensions") || artifactDbValue(artifact, "size"),
+      sortOrder: 2,
+    },
+    { group: "基础信息", name: "等级", value: artifactDbValue(artifact, "level"), sortOrder: 3 },
+    {
+      group: "其他信息",
+      name: "备注",
+      value: artifactDbValue(artifact, "remarks") || artifactDbValue(artifact, "remark") || artifactDbValue(artifact, "note"),
+      sortOrder: 4,
+    },
+  ].filter((item) => !isBlankAttributeValue(item.value));
+
+  if (legacyItems.length === 0) return [];
+  return [
+    {
+      group: "基础信息",
+      items: legacyItems
+        .filter((item) => item.group === "基础信息")
+        .map((item) => ({ name: item.name, value: displayValue(item.value) })),
+    },
+    {
+      group: "其他信息",
+      items: legacyItems
+        .filter((item) => item.group === "其他信息")
+        .map((item) => ({ name: item.name, value: displayValue(item.value) })),
+    },
+  ].filter((group) => group.items.length > 0);
+}
+
+function normalizeTags(artifact: Artifact): Array<{ type: string; name: string }> {
+  return (Array.isArray(artifact.tags) ? artifact.tags : [])
+    .map((tag) => {
+      if (typeof tag === "string") return { type: "文化标签", name: tag };
+      return {
+        type: displayValue(tag.type, "文化标签"),
+        name: displayValue(tag.name, ""),
+      };
+    })
+    .filter((tag) => !isBlankValue(tag.name) && tag.name !== INFO_EMPTY_PLACEHOLDER);
 }
 
 function RequiredValue({ value }: { value: unknown }) {
-  const synthetic = isEmptyRequiredValue(value);
-  return <span className={synthetic ? "text-gray-400" : undefined}>{displayRequiredValue(value)}</span>;
+  const synthetic = isBlankValue(value);
+  return <span className={synthetic ? "text-gray-400" : undefined}>{displayValue(value)}</span>;
 }
 
 export type ArtifactDetailProps = {
@@ -107,28 +206,45 @@ export function ArtifactDetail({
   onArtifactClick,
 }: ArtifactDetailProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [detailArtifact, setDetailArtifact] = useState<Artifact | null>(null);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [heroImageFailed, setHeroImageFailed] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [recommendations, setRecommendations] = useState<Artifact[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
 
-  const rawImageUrl = artifactDbValue(artifact, "图片链接");
+  const currentArtifact = detailArtifact ?? artifact;
+  const rawImageUrl = artifactDbValue(currentArtifact, "imageUrl");
   const imageUrl = typeof rawImageUrl === "string" ? rawImageUrl : "";
+
+  useEffect(() => {
+    let active = true;
+    setDetailArtifact(null);
+
+    const fetchDetail = async () => {
+      try {
+        const data = await apiFetch<{ artifact?: Artifact }>(
+          `/api/artifacts/${encodeURIComponent(String(artifact.id))}?source=merged`,
+        );
+        if (active && data.artifact) {
+          setDetailArtifact(data.artifact);
+        }
+      } catch (error) {
+        console.warn("Fetch artifact detail failed, using list artifact:", error);
+      }
+    };
+
+    void fetchDetail();
+    return () => {
+      active = false;
+    };
+  }, [artifact.id]);
 
   useEffect(() => {
     setHeroImageFailed(false);
     setHeroImageLoaded(false);
     scrollRef.current?.scrollTo({ top: 0, behavior: "auto" });
-  }, [artifact.id, imageUrl]);
-
-  useEffect(() => {
-    const id = artifact.id;
-    console.log("当前文物ID:", id);
-    console.log("数据库返回的文物详情:", artifact);
-    console.log("图片链接:", (artifact as unknown as Record<string, unknown>)?.["图片链接"]);
-    console.log("后端映射图片链接 imageUrl:", (artifact as unknown as Record<string, unknown>)?.imageUrl);
-  }, [artifact]);
+  }, [currentArtifact.id, imageUrl]);
 
   useEffect(() => {
     let active = true;
@@ -136,7 +252,7 @@ export function ArtifactDetail({
     const fetchRecs = async () => {
       setLoadingRecs(true);
       try {
-        const recs = await curatorService.getRelatedArtifacts(artifact, allArtifacts);
+        const recs = await curatorService.getRelatedArtifacts(currentArtifact, allArtifacts);
         if (!active) return;
         const mappedRecs = recs
           .map((r) => allArtifacts.find((a) => a.id === r.artifactId))
@@ -154,26 +270,26 @@ export function ArtifactDetail({
     return () => {
       active = false;
     };
-  }, [artifact, allArtifacts]);
+  }, [currentArtifact, allArtifacts]);
 
   const hasImageUrl = imageUrl.trim() !== "";
 
   const onFavoriteTap = useCallback(() => {
-    void toggleFavorite(artifact.id);
-  }, [artifact.id, toggleFavorite]);
+    void toggleFavorite(currentArtifact.id);
+  }, [currentArtifact.id, toggleFavorite]);
 
-  const extendedItems = OPTIONAL_FIELDS.map((field) => {
-    const raw = artifactDbValue(artifact, field);
-    if (isEmptyOptionalValue(raw)) return null;
-    return { field, label: field, value: displayOptionalValue(raw) };
-  }).filter(Boolean) as { field: ArtifactDbField; label: string; value: string }[];
+  const nameRaw = artifactDbValue(currentArtifact, "name");
+  const museumRaw = artifactDbValue(currentArtifact, "museumName");
+  const dynastyRaw = artifactDbValue(currentArtifact, "dynasty");
+  const categoryRaw = artifactDbValue(currentArtifact, "category");
+  const shortIntroRaw = artifactDbValue(currentArtifact, "shortIntro");
+  const descriptionRaw = artifactDbValue(currentArtifact, "description");
+  const sourceUrlRaw = artifactDbValue(currentArtifact, "sourceUrl");
+  const sourceUrl = typeof sourceUrlRaw === "string" ? sourceUrlRaw.trim() : "";
+  const nameForAlt = displayValue(nameRaw);
 
-  const museumRaw = artifactDbValue(artifact, "所属博物馆");
-  const nameRaw = artifactDbValue(artifact, "文物名称");
-  const eraRaw = artifactDbValue(artifact, "朝代");
-  const remarksRaw = artifactDbValue(artifact, "备注");
-  const showRemarks = !isEmptyOptionalValue(remarksRaw);
-  const nameForAlt = displayRequiredValue(nameRaw);
+  const attributeGroups = useMemo(() => normalizeAttributeGroups(currentArtifact), [currentArtifact]);
+  const tags = useMemo(() => normalizeTags(currentArtifact), [currentArtifact]);
 
   return (
     <motion.div
@@ -247,54 +363,96 @@ export function ArtifactDetail({
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gray-100 p-4 text-center">
             <ImageOff size={32} className="text-gray-300" />
-            <span className="text-sm text-gray-500">
-              {IMAGE_UNAVAILABLE_TEXT}
-            </span>
+            <span className="text-sm text-gray-500">{IMAGE_UNAVAILABLE_TEXT}</span>
           </div>
         )}
       </section>
 
-      <section className="mx-4 mt-4 rounded-2xl px-4 py-4 text-left" style={{ backgroundColor: "#F8F9FA" }}>
+      <section className="mx-4 mt-4 rounded-2xl px-4 py-5 text-left" style={{ backgroundColor: "#F8F9FA" }}>
         <p className="break-words text-[22px] font-bold leading-tight text-gray-950">
           <RequiredValue value={nameRaw} />
         </p>
-        <p className="mt-2 break-words text-[15px] font-normal leading-relaxed text-gray-600">
-          <RequiredValue value={museumRaw} />
-          <span className="px-1 text-gray-300">·</span>
-          <RequiredValue value={eraRaw} />
+        <dl className="mt-4 grid grid-cols-1 gap-3 text-[14px] leading-relaxed text-gray-700">
+          <div className="flex gap-3">
+            <dt className="w-20 shrink-0 text-gray-400">所属博物馆</dt>
+            <dd className="min-w-0 flex-1 break-words"><RequiredValue value={museumRaw} /></dd>
+          </div>
+          <div className="flex gap-3">
+            <dt className="w-20 shrink-0 text-gray-400">时代/朝代</dt>
+            <dd className="min-w-0 flex-1 break-words"><RequiredValue value={dynastyRaw} /></dd>
+          </div>
+          <div className="flex gap-3">
+            <dt className="w-20 shrink-0 text-gray-400">类别</dt>
+            <dd className="min-w-0 flex-1 break-words"><RequiredValue value={categoryRaw} /></dd>
+          </div>
+        </dl>
+        <p className="mt-4 whitespace-pre-wrap break-words text-[15px] leading-relaxed text-gray-600">
+          {displayValue(shortIntroRaw, INTRO_EMPTY_PLACEHOLDER)}
         </p>
       </section>
 
-      {extendedItems.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 px-4 pt-5">
-          {extendedItems.map((item) => (
-            <div
-              key={item.field}
-              className="flex min-h-24 flex-col justify-center rounded-2xl px-4 py-5 text-left"
-              style={{ backgroundColor: "#F8F9FA" }}
-            >
-              <p className="text-xs font-normal leading-tight" style={{ color: "#999999" }}>
-                {item.label}
-              </p>
-              <p
-                className="mt-1.5 break-words text-[17px] font-bold leading-snug"
-                style={{ color: "#111111" }}
-              >
-                {item.value}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
+      <section className="mx-4 mt-5 rounded-2xl px-4 py-5 text-left" style={{ backgroundColor: "#F8F9FA" }}>
+        <h2 className="text-sm font-bold text-gray-900">详细介绍</h2>
+        <p className="mt-3 whitespace-pre-wrap break-words text-[15px] leading-relaxed text-gray-700">
+          {displayValue(descriptionRaw, DESCRIPTION_EMPTY_PLACEHOLDER)}
+        </p>
+      </section>
 
-      {showRemarks ? (
+      <section className="mx-4 mt-5 rounded-2xl px-4 py-5 text-left" style={{ backgroundColor: "#F8F9FA" }}>
+        <h2 className="text-sm font-bold text-gray-900">扩展信息</h2>
+        {attributeGroups.length > 0 ? (
+          <div className="mt-4 space-y-5">
+            {attributeGroups.map((group) => (
+              <div key={group.group}>
+                <h3 className="break-words text-xs font-bold text-amber-700">{group.group}</h3>
+                <dl className="mt-2 divide-y divide-gray-100">
+                  {group.items.map((item) => (
+                    <div key={`${group.group}-${item.name}`} className="flex gap-4 py-2.5 text-sm leading-relaxed">
+                      <dt className="w-20 shrink-0 break-words text-gray-400">{item.name}</dt>
+                      <dd className="min-w-0 flex-1 whitespace-pre-wrap break-words text-gray-800">{item.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-gray-400">{MORE_EMPTY_PLACEHOLDER}</p>
+        )}
+      </section>
+
+      {tags.length > 0 ? (
         <section className="mx-4 mt-5 rounded-2xl px-4 py-5 text-left" style={{ backgroundColor: "#F8F9FA" }}>
-          <p className="text-xs font-normal leading-tight" style={{ color: "#999999" }}>
-            备注
-          </p>
-          <p className="mt-2 whitespace-pre-wrap break-words text-[16px] font-normal leading-relaxed" style={{ color: "#111111" }}>
-            {displayOptionalValue(remarksRaw)}
-          </p>
+          <h2 className="flex items-center gap-2 text-sm font-bold text-gray-900">
+            <Tag size={15} className="text-amber-700" />
+            标签信息
+          </h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span
+                key={`${tag.type}-${tag.name}`}
+                className="max-w-full rounded-full bg-white px-3 py-1.5 text-xs leading-tight text-gray-700 shadow-sm"
+              >
+                <span className="text-gray-400">{tag.type}</span>
+                <span className="px-1 text-gray-300">/</span>
+                <span className="break-words">{tag.name}</span>
+              </span>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {sourceUrl ? (
+        <section className="mx-4 mt-5 rounded-2xl px-4 py-5 text-left" style={{ backgroundColor: "#F8F9FA" }}>
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex min-w-0 items-center justify-between gap-3 text-sm font-bold text-gray-900"
+          >
+            <span>数据来源</span>
+            <ExternalLink size={16} className="shrink-0 text-amber-700" />
+          </a>
         </section>
       ) : null}
 
@@ -315,15 +473,15 @@ export function ArtifactDetail({
               className="w-40 shrink-0 space-y-2 text-left"
             >
               <SafeImage
-                src={String(artifactDbValue(item, "图片链接") ?? "")}
-                alt={displayRequiredValue(artifactDbValue(item, "文物名称"))}
+                src={String(artifactDbValue(item, "imageUrl") ?? "")}
+                alt={displayValue(artifactDbValue(item, "name"))}
                 className="aspect-square overflow-hidden rounded-2xl bg-gray-100"
               />
               <p className="break-words text-xs font-bold leading-snug text-gray-900">
-                {displayRequiredValue(artifactDbValue(item, "文物名称"))}
+                {displayValue(artifactDbValue(item, "name"))}
               </p>
               <p className="break-words text-[10px] leading-snug text-gray-400">
-                {displayRequiredValue(artifactDbValue(item, "所属博物馆"))}
+                {displayValue(artifactDbValue(item, "museumName"))}
               </p>
             </button>
           ))}

@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import dotenv from "dotenv";
 import { db } from "./client";
+import { migrateArtifactDetails } from "./migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./upgradeArtifactsMuseumFk";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
@@ -19,6 +20,7 @@ async function main() {
   if (up.migrated) {
     console.log("DB migrate: upgraded artifacts.museum → museum_id + museums");
   }
+  await migrateArtifactDetails(db);
   await db.end();
   console.log("DB migrate OK");
 }
@@ -30,4 +32,3 @@ main().catch(async (err) => {
   } catch {}
   process.exit(1);
 });
-

@@ -1,0 +1,1605 @@
+[
+  {
+    "sourceArtifactId": "WW-白果青田石印-47",
+    "targetArtifactId": "WW-青玉环-52",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-白果青田石印-47",
+    "targetArtifactId": "WW-青玉玦-53",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-白果青田石印-47",
+    "targetArtifactId": "WW-清环钮青玉印-51",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-白果青田石印-47",
+    "targetArtifactId": "WW-玉饰件-54",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-明吴湘人物屏-90",
+    "targetArtifactId": "WW-清叶道芬竹院逢僧轴-91",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-明周日庠草书七绝诗卷-89",
+    "targetArtifactId": "WW-明吴湘人物屏-90",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-明周日庠草书七绝诗卷-89",
+    "targetArtifactId": "WW-清叶道芬竹院逢僧轴-91",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-青玉环-52",
+    "targetArtifactId": "WW-青玉玦-53",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-青玉环-52",
+    "targetArtifactId": "WW-玉饰件-54",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-青玉玦-53",
+    "targetArtifactId": "WW-玉饰件-54",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清白玉鼻烟壶-19",
+    "targetArtifactId": "WW-白果青田石印-47",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清白玉鼻烟壶-19",
+    "targetArtifactId": "WW-青玉环-52",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清白玉鼻烟壶-19",
+    "targetArtifactId": "WW-青玉玦-53",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清白玉鼻烟壶-19",
+    "targetArtifactId": "WW-清浮雕猿猴黄玉鼻烟壶-20",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清白玉鼻烟壶-19",
+    "targetArtifactId": "WW-清环钮青玉印-51",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清薜澱仿黄公望秋溪萧寺图轴-86",
+    "targetArtifactId": "WW-明吴湘人物屏-90",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清薜澱仿黄公望秋溪萧寺图轴-86",
+    "targetArtifactId": "WW-明周日庠草书七绝诗卷-89",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清薜澱仿黄公望秋溪萧寺图轴-86",
+    "targetArtifactId": "WW-清刘渡雪栈图轴-87",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清薜澱仿黄公望秋溪萧寺图轴-86",
+    "targetArtifactId": "WW-清叶道芬竹院逢僧轴-91",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清薜澱仿黄公望秋溪萧寺图轴-86",
+    "targetArtifactId": "WW-现代齐白石荔枝鹌鹑立轴-88",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕盖耳青玉鼻烟壶-18",
+    "targetArtifactId": "WW-青玉环-52",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕盖耳青玉鼻烟壶-18",
+    "targetArtifactId": "WW-青玉玦-53",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕盖耳青玉鼻烟壶-18",
+    "targetArtifactId": "WW-清浮雕猿猴黄玉鼻烟壶-20",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕盖耳青玉鼻烟壶-18",
+    "targetArtifactId": "WW-清环钮青玉印-51",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕盖耳青玉鼻烟壶-18",
+    "targetArtifactId": "WW-现代玉雕巧作子母鸡-22",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕猿猴黄玉鼻烟壶-20",
+    "targetArtifactId": "WW-清环钮青玉印-51",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕猿猴黄玉鼻烟壶-20",
+    "targetArtifactId": "WW-现代玉雕巧作子母鸡-22",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕猿猴黄玉鼻烟壶-20",
+    "targetArtifactId": "WW-玉饰件-54",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清傅雯指画寿同山岳图轴-85",
+    "targetArtifactId": "WW-明吴湘人物屏-90",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清傅雯指画寿同山岳图轴-85",
+    "targetArtifactId": "WW-明周日庠草书七绝诗卷-89",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清傅雯指画寿同山岳图轴-85",
+    "targetArtifactId": "WW-清刘渡雪栈图轴-87",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清傅雯指画寿同山岳图轴-85",
+    "targetArtifactId": "WW-清叶道芬竹院逢僧轴-91",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清傅雯指画寿同山岳图轴-85",
+    "targetArtifactId": "WW-现代齐白石荔枝鹌鹑立轴-88",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清环钮青玉印-51",
+    "targetArtifactId": "WW-玉饰件-54",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清刘渡雪栈图轴-87",
+    "targetArtifactId": "WW-明吴湘人物屏-90",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清刘渡雪栈图轴-87",
+    "targetArtifactId": "WW-明周日庠草书七绝诗卷-89",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清刘渡雪栈图轴-87",
+    "targetArtifactId": "WW-清叶道芬竹院逢僧轴-91",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清狮钮青玉印-9",
+    "targetArtifactId": "WW-清玉鼻烟壶-16",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清狮钮青玉印-9",
+    "targetArtifactId": "WW-现代玉雕巧作子母鸡-22",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清翁同龢行书手札册-83",
+    "targetArtifactId": "WW-现代金振之摹周昉簪花仕女卷-84",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清翁同龢行书手札册-83",
+    "targetArtifactId": "WW-现代齐白石荔枝鹌鹑立轴-88",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-清玉鼻烟壶-16",
+    "targetArtifactId": "WW-现代玉雕巧作子母鸡-22",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：玉器文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-唐人首陶□-38",
+    "targetArtifactId": "WW-清白地堆花鼻烟壶（无盖）-44",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：陶瓷文化",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-现代金振之摹周昉簪花仕女卷-84",
+    "targetArtifactId": "WW-现代齐白石荔枝鹌鹑立轴-88",
+    "relationType": "同文化主题",
+    "relationReason": "同文化主题：书画艺术",
+    "confidence": 0.86
+  },
+  {
+    "sourceArtifactId": "WW-\"王恭厂二百七十号\"铜铳-80",
+    "targetArtifactId": "WW-清象牙镇纸-82",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-春秋嵌红铜螭虎纹盖鼎-61",
+    "targetArtifactId": "WW-\"王恭厂二百七十号\"铜铳-80",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-春秋嵌红铜螭虎纹盖鼎-61",
+    "targetArtifactId": "WW-春秋战国曲刃青铜短剑-76",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-春秋嵌红铜螭虎纹盖鼎-61",
+    "targetArtifactId": "WW-汉双环耳铜钫-74",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-春秋嵌红铜螭虎纹盖鼎-61",
+    "targetArtifactId": "WW-金六耳铜锅-72",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-春秋嵌红铜螭虎纹盖鼎-61",
+    "targetArtifactId": "WW-明\"胜字九百囗囗号\"铜铳-79",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-春秋战国曲刃青铜短剑-76",
+    "targetArtifactId": "WW-\"王恭厂二百七十号\"铜铳-80",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-春秋战国曲刃青铜短剑-76",
+    "targetArtifactId": "WW-明\"胜字九百囗囗号\"铜铳-79",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-春秋战国曲刃青铜短剑-76",
+    "targetArtifactId": "WW-明\"胜字五百九号\"铜铳-78",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-春秋战国曲刃青铜短剑-76",
+    "targetArtifactId": "WW-明\"一百九十四号\"铜铳-77",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-汉双环耳铜钫-74",
+    "targetArtifactId": "WW-\"王恭厂二百七十号\"铜铳-80",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-汉双环耳铜钫-74",
+    "targetArtifactId": "WW-明\"胜字九百囗囗号\"铜铳-79",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-汉双环耳铜钫-74",
+    "targetArtifactId": "WW-明\"胜字五百九号\"铜铳-78",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-汉双环耳铜钫-74",
+    "targetArtifactId": "WW-明\"一百九十四号\"铜铳-77",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-金六耳铜锅-72",
+    "targetArtifactId": "WW-\"王恭厂二百七十号\"铜铳-80",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-金六耳铜锅-72",
+    "targetArtifactId": "WW-明\"胜字九百囗囗号\"铜铳-79",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-金六耳铜锅-72",
+    "targetArtifactId": "WW-明\"胜字五百九号\"铜铳-78",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-金六耳铜锅-72",
+    "targetArtifactId": "WW-明\"一百九十四号\"铜铳-77",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽-金灰陶罐形扑满-0",
+    "targetArtifactId": "WW-民国巴林石印-1",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽-金灰陶罐形扑满-0",
+    "targetArtifactId": "WW-民国浮雕造像巴林石印-10",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽-金灰陶罐形扑满-0",
+    "targetArtifactId": "WW-民国国民党匪军证章、肩章、帽徽等-50",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽-金灰陶罐形扑满-0",
+    "targetArtifactId": "WW-民国秋江为康有为刻“开天天室”印-55",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽-金灰陶罐形扑满-0",
+    "targetArtifactId": "WW-民国伪满各种证章-36",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金带扣-71",
+    "targetArtifactId": "WW-辽铜鎏金龙纹铊尾-75",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金带扣-71",
+    "targetArtifactId": "WW-辽铜鎏金双龙椭圆形带饰-81",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金带扣-71",
+    "targetArtifactId": "WW-辽铜鎏金双鱼形饰件-73",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金花瓣形饰形-58",
+    "targetArtifactId": "WW-辽铜鎏金带扣-71",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金花瓣形饰形-58",
+    "targetArtifactId": "WW-辽铜鎏金活带扣-70",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金花瓣形饰形-58",
+    "targetArtifactId": "WW-辽铜鎏金卷草纹带箍-64",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金花瓣形饰形-58",
+    "targetArtifactId": "WW-辽铜鎏金卷纹带饰-67",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金花瓣形饰形-58",
+    "targetArtifactId": "WW-辽铜鎏金扣钉-69",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金活带扣-70",
+    "targetArtifactId": "WW-辽铜鎏金带扣-71",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金活带扣-70",
+    "targetArtifactId": "WW-辽铜鎏金龙纹铊尾-75",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金活带扣-70",
+    "targetArtifactId": "WW-辽铜鎏金双龙椭圆形带饰-81",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金活带扣-70",
+    "targetArtifactId": "WW-辽铜鎏金双鱼形饰件-73",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金节约-57",
+    "targetArtifactId": "WW-辽铜鎏金卷草纹带箍-64",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金节约-57",
+    "targetArtifactId": "WW-辽铜鎏金卷纹带饰-67",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金节约-57",
+    "targetArtifactId": "WW-辽铜鎏金扣钉-69",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金节约-57",
+    "targetArtifactId": "WW-辽铜鎏金龙纹\"圭\"字形铊尾-63",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金节约-57",
+    "targetArtifactId": "WW-辽铜鎏金龙纹铊尾-75",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金卷草纹带箍-64",
+    "targetArtifactId": "WW-辽铜鎏金卷纹带饰-67",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金卷草纹带箍-64",
+    "targetArtifactId": "WW-辽铜鎏金扣钉-69",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金卷草纹带箍-64",
+    "targetArtifactId": "WW-辽铜鎏金龙纹铊尾-75",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金卷纹带饰-67",
+    "targetArtifactId": "WW-辽铜鎏金扣钉-69",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金卷纹带饰-67",
+    "targetArtifactId": "WW-辽铜鎏金龙纹铊尾-75",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金扣钉-69",
+    "targetArtifactId": "WW-辽铜鎏金双龙椭圆形带饰-81",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金龙纹\"圭\"字形铊尾-63",
+    "targetArtifactId": "WW-辽铜鎏金双龙椭圆形带饰-81",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金龙纹\"圭\"字形铊尾-63",
+    "targetArtifactId": "WW-辽铜鎏金双龙戏珠纹带饰-66",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金龙纹\"圭\"字形铊尾-63",
+    "targetArtifactId": "WW-辽铜鎏金双鱼形饰件-73",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金双龙纹铊尾-60",
+    "targetArtifactId": "WW-辽铜鎏金龙纹\"圭\"字形铊尾-63",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金双龙纹铊尾-60",
+    "targetArtifactId": "WW-辽铜鎏金双龙椭圆形带饰-81",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金双龙纹铊尾-60",
+    "targetArtifactId": "WW-辽铜鎏金双龙戏珠纹带饰-66",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金双龙纹铊尾-60",
+    "targetArtifactId": "WW-辽铜鎏金双鱼形饰件-73",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金双龙纹铊尾-60",
+    "targetArtifactId": "WW-辽铜鎏金雁形饰件-62",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金双龙戏珠纹带饰-66",
+    "targetArtifactId": "WW-辽铜鎏金双鱼形饰件-73",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金铜铃-59",
+    "targetArtifactId": "WW-辽铜鎏金双龙戏珠纹带饰-66",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金铜铃-59",
+    "targetArtifactId": "WW-辽铜鎏金雁形饰件-62",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽铜鎏金雁形饰件-62",
+    "targetArtifactId": "WW-辽铜鎏金双龙戏珠纹带饰-66",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽银面具-56",
+    "targetArtifactId": "WW-辽铜鎏金铜铃-59",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-辽银面具-56",
+    "targetArtifactId": "WW-辽铜鎏金雁形饰件-62",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国巴林石印-1",
+    "targetArtifactId": "WW-民国浮雕造像巴林石印-10",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国巴林石印-1",
+    "targetArtifactId": "WW-民国国民党匪军证章、肩章、帽徽等-50",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国巴林石印-1",
+    "targetArtifactId": "WW-民国秋江为康有为刻“开天天室”印-55",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国巴林石印-1",
+    "targetArtifactId": "WW-民国伪满各种证章-36",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国浮雕造像巴林石印-10",
+    "targetArtifactId": "WW-民国国民党匪军证章、肩章、帽徽等-50",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国浮雕造像巴林石印-10",
+    "targetArtifactId": "WW-民国秋江为康有为刻“开天天室”印-55",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国浮雕造像巴林石印-10",
+    "targetArtifactId": "WW-民国伪满各种证章-36",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国国民党匪军证章、肩章、帽徽等-50",
+    "targetArtifactId": "WW-民国秋江为康有为刻“开天天室”印-55",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国国民党匪军证章、肩章、帽徽等-50",
+    "targetArtifactId": "WW-明\"胜字九百囗囗号\"铜铳-79",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国红十字银质章-34",
+    "targetArtifactId": "WW-辽铜鎏金铜铃-59",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国红十字银质章-34",
+    "targetArtifactId": "WW-辽铜鎏金雁形饰件-62",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国红十字银质章-34",
+    "targetArtifactId": "WW-辽银面具-56",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国红十字银质章-34",
+    "targetArtifactId": "WW-民国日本短刀-35",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国秋江为康有为刻“开天天室”印-55",
+    "targetArtifactId": "WW-明\"胜字五百九号\"铜铳-78",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国日本短刀-35",
+    "targetArtifactId": "WW-辽铜鎏金铜铃-59",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国日本短刀-35",
+    "targetArtifactId": "WW-辽银面具-56",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：金属工艺",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国伪满各种证章-36",
+    "targetArtifactId": "WW-明-清鱼鳞图册-39",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国伪满各种证章-36",
+    "targetArtifactId": "WW-明\"胜字五百九号\"铜铳-78",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-明-清鱼鳞图册-39",
+    "targetArtifactId": "WW-明\"一百九十四号\"铜铳-77",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-明-清鱼鳞图册-39",
+    "targetArtifactId": "WW-明钮铸铭文铜镜-68",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-明-清鱼鳞图册-39",
+    "targetArtifactId": "WW-清白料贴花博古鼻烟壶（无盖）-42",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-明-清鱼鳞图册-39",
+    "targetArtifactId": "WW-清代花翎-48",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-明\"一百九十四号\"铜铳-77",
+    "targetArtifactId": "WW-清象牙镇纸-82",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-明钮铸铭文铜镜-68",
+    "targetArtifactId": "WW-清象牙镇纸-82",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清按院颁契尾-28",
+    "targetArtifactId": "WW-明钮铸铭文铜镜-68",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清按院颁契尾-28",
+    "targetArtifactId": "WW-清白料贴花博古鼻烟壶（无盖）-42",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清按院颁契尾-28",
+    "targetArtifactId": "WW-清代花翎-48",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清按院颁契尾-28",
+    "targetArtifactId": "WW-清浮雕葡萄纹纽寿山石印-30",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清按院颁契尾-28",
+    "targetArtifactId": "WW-清高丽发笺-32",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清白地贴花鼻烟壶-13",
+    "targetArtifactId": "WW-明钮铸铭文铜镜-68",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清白地贴花鼻烟壶-13",
+    "targetArtifactId": "WW-清白料贴花博古鼻烟壶（无盖）-42",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清白地贴花鼻烟壶-13",
+    "targetArtifactId": "WW-清代花翎-48",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清白地贴花鼻烟壶-13",
+    "targetArtifactId": "WW-清督催查验牙印-23",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清白地贴花鼻烟壶-13",
+    "targetArtifactId": "WW-清浮雕葡萄纹纽寿山石印-30",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清白料贴花博古鼻烟壶（无盖）-42",
+    "targetArtifactId": "WW-明钮铸铭文铜镜-68",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清白料贴花博古鼻烟壶（无盖）-42",
+    "targetArtifactId": "WW-清代花翎-48",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮大田石椭圆印-8",
+    "targetArtifactId": "WW-清代花翎-48",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮大田石椭圆印-8",
+    "targetArtifactId": "WW-清督催查验牙印-23",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮大田石椭圆印-8",
+    "targetArtifactId": "WW-清浮雕葡萄纹纽寿山石印-30",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮大田石椭圆印-8",
+    "targetArtifactId": "WW-清浮雕人物玛瑙鼻烟壶-14",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮大田石椭圆印-8",
+    "targetArtifactId": "WW-清高丽发笺-32",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮寿山石印-7",
+    "targetArtifactId": "WW-清督催查验牙印-23",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮寿山石印-7",
+    "targetArtifactId": "WW-清浮雕葡萄纹纽寿山石印-30",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮寿山石印-7",
+    "targetArtifactId": "WW-清浮雕人物玛瑙鼻烟壶-14",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮寿山石印-7",
+    "targetArtifactId": "WW-清高丽发笺-32",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清螭钮寿山石印-7",
+    "targetArtifactId": "WW-清红鼻烟壶-45",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清雕钮天然木根印-3",
+    "targetArtifactId": "WW-清豆瓣青田石印-5",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清雕钮天然木根印-3",
+    "targetArtifactId": "WW-清督催查验牙印-23",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清雕钮天然木根印-3",
+    "targetArtifactId": "WW-清浮雕梅花天台石印-4",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清雕钮天然木根印-3",
+    "targetArtifactId": "WW-清浮雕葡萄纹纽寿山石印-30",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清雕钮天然木根印-3",
+    "targetArtifactId": "WW-清浮雕人物玛瑙鼻烟壶-14",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清豆瓣青田石印-5",
+    "targetArtifactId": "WW-清督催查验牙印-23",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清豆瓣青田石印-5",
+    "targetArtifactId": "WW-清浮雕人物玛瑙鼻烟壶-14",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清豆瓣青田石印-5",
+    "targetArtifactId": "WW-清浮雕树石昌化长方石印-6",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清豆瓣青田石印-5",
+    "targetArtifactId": "WW-清高丽发笺-32",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕瓜瓞天台石印-2",
+    "targetArtifactId": "WW-清浮雕梅花天台石印-4",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕瓜瓞天台石印-2",
+    "targetArtifactId": "WW-清浮雕人物玛瑙鼻烟壶-14",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕瓜瓞天台石印-2",
+    "targetArtifactId": "WW-清浮雕树石昌化长方石印-6",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕瓜瓞天台石印-2",
+    "targetArtifactId": "WW-清高丽发笺-32",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕瓜瓞天台石印-2",
+    "targetArtifactId": "WW-清红鼻烟壶-45",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕梅花天台石印-4",
+    "targetArtifactId": "WW-清浮雕树石昌化长方石印-6",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕梅花天台石印-4",
+    "targetArtifactId": "WW-清红鼻烟壶-45",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕梅花天台石印-4",
+    "targetArtifactId": "WW-清描金冰梅玉版粉笺-49",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕树石昌化长方石印-6",
+    "targetArtifactId": "WW-清红鼻烟壶-45",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清浮雕树石昌化长方石印-6",
+    "targetArtifactId": "WW-清描金冰梅玉版粉笺-49",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清红鼻烟壶-45",
+    "targetArtifactId": "WW-清描金冰梅玉版粉笺-49",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清描金冰梅玉版粉笺-49",
+    "targetArtifactId": "WW-清三兽足铜火盆-65",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清描金冰梅玉版粉笺-49",
+    "targetArtifactId": "WW-清象牙镇纸-82",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画花鸟玻璃鼻烟壶-46",
+    "targetArtifactId": "WW-清三兽足铜火盆-65",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画花鸟玻璃鼻烟壶-46",
+    "targetArtifactId": "WW-清象牙镇纸-82",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水玻璃鼻烟壶-15",
+    "targetArtifactId": "WW-清内画花鸟玻璃鼻烟壶-46",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水玻璃鼻烟壶-15",
+    "targetArtifactId": "WW-清内画山水清供玻璃鼻烟壶-17",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水玻璃鼻烟壶-15",
+    "targetArtifactId": "WW-清洒金笺-33",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水玻璃鼻烟壶-15",
+    "targetArtifactId": "WW-清三兽足铜火盆-65",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水玻璃鼻烟壶-15",
+    "targetArtifactId": "WW-清烧蓝蟠螭玻璃地鼻烟壶-43",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水花鸟鼻烟壶-12",
+    "targetArtifactId": "WW-清内画花鸟玻璃鼻烟壶-46",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水花鸟鼻烟壶-12",
+    "targetArtifactId": "WW-清内画山水清供玻璃鼻烟壶-17",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水花鸟鼻烟壶-12",
+    "targetArtifactId": "WW-清洒金笺-33",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水花鸟鼻烟壶-12",
+    "targetArtifactId": "WW-清三兽足铜火盆-65",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水花鸟鼻烟壶-12",
+    "targetArtifactId": "WW-清烧蓝蟠螭玻璃地鼻烟壶-43",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水清供玻璃鼻烟壶-17",
+    "targetArtifactId": "WW-清内画花鸟玻璃鼻烟壶-46",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水清供玻璃鼻烟壶-17",
+    "targetArtifactId": "WW-清洒金笺-33",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清内画山水清供玻璃鼻烟壶-17",
+    "targetArtifactId": "WW-清三兽足铜火盆-65",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清洒金笺-33",
+    "targetArtifactId": "WW-清烧蓝蟠螭玻璃地鼻烟壶-43",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清洒金笺-33",
+    "targetArtifactId": "WW-现代象牙雕蟹笼-40",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清狮钮青玉印-9",
+    "targetArtifactId": "WW-清玉鼻烟壶-16",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：礼仪审美",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清狮钮青玉印-9",
+    "targetArtifactId": "WW-现代玉雕巧作子母鸡-22",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：礼仪审美",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清寿山石印-11",
+    "targetArtifactId": "WW-清烧蓝蟠螭玻璃地鼻烟壶-43",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清寿山石印-11",
+    "targetArtifactId": "WW-清雍正制“玉音”端砚-31",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清寿山石印-11",
+    "targetArtifactId": "WW-清朱墨-26",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清寿山石印-11",
+    "targetArtifactId": "WW-西汉铁器残块-29",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清寿山石印-11",
+    "targetArtifactId": "WW-现代贝彫柳蝉掛幅-25",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清翁同龢行书手札册-83",
+    "targetArtifactId": "WW-现代金振之摹周昉簪花仕女卷-84",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：艺术欣赏",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清翁同龢行书手札册-83",
+    "targetArtifactId": "WW-现代齐白石荔枝鹌鹑立轴-88",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：艺术欣赏",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清雍正制“玉音”端砚-31",
+    "targetArtifactId": "WW-清烧蓝蟠螭玻璃地鼻烟壶-43",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清雍正制“玉音”端砚-31",
+    "targetArtifactId": "WW-现代象牙雕蟹笼-40",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清雍正制“玉音”端砚-31",
+    "targetArtifactId": "WW-现代象牙雕岳飞战金岳插屏-41",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清雍正制“玉音”端砚-31",
+    "targetArtifactId": "WW-现代竹编三叠式长方提盒-37",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清朱墨-26",
+    "targetArtifactId": "WW-西汉铁器残块-29",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清朱墨-26",
+    "targetArtifactId": "WW-现代象牙雕蟹笼-40",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清朱墨-26",
+    "targetArtifactId": "WW-现代象牙雕岳飞战金岳插屏-41",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-清朱墨-26",
+    "targetArtifactId": "WW-现代竹编三叠式长方提盒-37",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-唐人首陶□-38",
+    "targetArtifactId": "WW-清白地堆花鼻烟壶（无盖）-44",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：日用器物",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-西汉铁器残块-29",
+    "targetArtifactId": "WW-现代象牙雕蟹笼-40",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-西汉铁器残块-29",
+    "targetArtifactId": "WW-现代象牙雕岳飞战金岳插屏-41",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-西汉铁器残块-29",
+    "targetArtifactId": "WW-现代竹编三叠式长方提盒-37",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-现代贝彫柳蝉掛幅-25",
+    "targetArtifactId": "WW-现代象牙雕蟹笼-40",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-现代贝彫柳蝉掛幅-25",
+    "targetArtifactId": "WW-现代象牙雕岳飞战金岳插屏-41",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-现代贝彫柳蝉掛幅-25",
+    "targetArtifactId": "WW-现代竹编三叠式长方提盒-37",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-现代贝彫柳蝉掛幅-25",
+    "targetArtifactId": "WW-元-清地契-27",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-现代贝雕虾蟹掛幅-24",
+    "targetArtifactId": "WW-现代象牙雕岳飞战金岳插屏-41",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-现代贝雕虾蟹掛幅-24",
+    "targetArtifactId": "WW-现代竹编三叠式长方提盒-37",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-现代贝雕虾蟹掛幅-24",
+    "targetArtifactId": "WW-元-清地契-27",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-现代牙雕鹌鹑黍穗盒-21",
+    "targetArtifactId": "WW-现代贝雕虾蟹掛幅-24",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-现代牙雕鹌鹑黍穗盒-21",
+    "targetArtifactId": "WW-元-清地契-27",
+    "relationType": "同策展主题",
+    "relationReason": "同策展主题：馆藏精品",
+    "confidence": 0.82
+  },
+  {
+    "sourceArtifactId": "WW-民国红十字银质章-34",
+    "targetArtifactId": "WW-辽银面具-56",
+    "relationType": "同材质",
+    "relationReason": "同材质：银",
+    "confidence": 0.76
+  },
+  {
+    "sourceArtifactId": "WW-清狮钮青玉印-9",
+    "targetArtifactId": "WW-清玉鼻烟壶-16",
+    "relationType": "同材质",
+    "relationReason": "同材质：宝玉石",
+    "confidence": 0.76
+  },
+  {
+    "sourceArtifactId": "WW-元-清地契-27",
+    "targetArtifactId": "WW-清翁同龢行书手札册-83",
+    "relationType": "同材质",
+    "relationReason": "同材质：纸",
+    "confidence": 0.76
+  },
+  {
+    "sourceArtifactId": "WW-清玉鼻烟壶-16",
+    "targetArtifactId": "WW-清白地堆花鼻烟壶（无盖）-44",
+    "relationType": "同时代",
+    "relationReason": "同时代：清(1616~1911)",
+    "confidence": 0.72
+  },
+  {
+    "sourceArtifactId": "WW-现代贝雕虾蟹掛幅-24",
+    "targetArtifactId": "WW-元-清地契-27",
+    "relationType": "同时代",
+    "relationReason": "同时代：其他",
+    "confidence": 0.72
+  },
+  {
+    "sourceArtifactId": "WW-民国日本短刀-35",
+    "targetArtifactId": "WW-清白地堆花鼻烟壶（无盖）-44",
+    "relationType": "同馆藏",
+    "relationReason": "同馆藏：辽宁省博物馆",
+    "confidence": 0.6
+  },
+  {
+    "sourceArtifactId": "WW-民国日本短刀-35",
+    "targetArtifactId": "WW-唐人首陶□-38",
+    "relationType": "同馆藏",
+    "relationReason": "同馆藏：辽宁省博物馆",
+    "confidence": 0.6
+  },
+  {
+    "sourceArtifactId": "WW-清白地堆花鼻烟壶（无盖）-44",
+    "targetArtifactId": "WW-现代金振之摹周昉簪花仕女卷-84",
+    "relationType": "同馆藏",
+    "relationReason": "同馆藏：辽宁省博物馆",
+    "confidence": 0.6
+  },
+  {
+    "sourceArtifactId": "WW-唐人首陶□-38",
+    "targetArtifactId": "WW-现代金振之摹周昉簪花仕女卷-84",
+    "relationType": "同馆藏",
+    "relationReason": "同馆藏：辽宁省博物馆",
+    "confidence": 0.6
+  },
+  {
+    "sourceArtifactId": "WW-现代牙雕鹌鹑黍穗盒-21",
+    "targetArtifactId": "WW-唐人首陶□-38",
+    "relationType": "同馆藏",
+    "relationReason": "同馆藏：辽宁省博物馆",
+    "confidence": 0.6
+  }
+]

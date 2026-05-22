@@ -27,10 +27,30 @@ create table if not exists artifacts (
   name text not null,
   dynasty text not null,
   museum_id bigint not null references museums(id) on delete restrict,
+  category text not null default '',
+  short_intro text not null default '',
   description text not null,
   image_url text not null,
+  source_url text not null default '',
   tags text[] not null default '{}'::text[],
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table artifacts add column if not exists category text not null default '';
+alter table artifacts add column if not exists short_intro text not null default '';
+alter table artifacts add column if not exists source_url text not null default '';
+alter table artifacts add column if not exists updated_at timestamptz not null default now();
+
+create table if not exists artifact_attributes (
+  id bigserial primary key,
+  artifact_id bigint not null references artifacts(id) on delete cascade,
+  attribute_group text not null default '基础信息',
+  attribute_name text not null,
+  attribute_value text not null default '',
+  sort_order int not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create table if not exists exhibitions (
@@ -64,6 +84,6 @@ create table if not exists likes (
 -- Helpful indexes
 create index if not exists idx_artifacts_museum_id on artifacts(museum_id);
 create index if not exists idx_artifacts_dynasty on artifacts(dynasty);
+create index if not exists idx_artifact_attributes_artifact_id on artifact_attributes(artifact_id, sort_order, id);
 create index if not exists idx_exhibitions_user_id on exhibitions(user_id);
 create index if not exists idx_exhibition_items_exhibition on exhibition_items(exhibition_id, order_index);
-

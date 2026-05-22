@@ -3,12 +3,14 @@ import dotenv from "dotenv";
 import { db } from "./client";
 import { ensureSeedArtifacts } from "./seedArtifacts";
 import { ensureSeedMuseums } from "./seedMuseums";
+import { migrateArtifactDetails } from "./migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./upgradeArtifactsMuseumFk";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
 async function main() {
   await upgradeArtifactsMuseumFk(db);
+  await migrateArtifactDetails(db);
   const museums = await ensureSeedMuseums(db);
   console.log(`Seeded/updated provincial museums: ${museums.count}`);
   const result = await ensureSeedArtifacts(db);

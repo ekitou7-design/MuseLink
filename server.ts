@@ -5,7 +5,19 @@ import { fileURLToPath } from "url";
 import { ARTIFACTS as SEED_ARTIFACTS } from "./src/data/artifacts";
 import type { Artifact } from "./src/types";
 import { rankArtifactsByKeywordQuery } from "./src/lib/artifactSearch";
-import { artifactCultureRaw, artifactEraRaw, artifactMaterialRaw, artifactMuseumRaw } from "./src/lib/dbDisplay";
+import {
+  artifactCategoryRaw,
+  artifactCultureRaw,
+  artifactDescriptionRaw,
+  artifactDimensionsRaw,
+  artifactEraRaw,
+  artifactImageUrlRaw,
+  artifactLevelRaw,
+  artifactMaterialRaw,
+  artifactMuseumRaw,
+  artifactNameRaw,
+  artifactRemarksRaw,
+} from "./src/lib/dbDisplay";
 import {
   executeArtifactImport,
   getArtifactImportTemplate,
@@ -210,6 +222,164 @@ function filterArtifacts(
   }
 
   return rankArtifactsByKeywordQuery(subset, keyword).slice(0, limit);
+}
+
+function isBlankArtifactDetailValue(value: unknown) {
+  if (value === null || value === undefined) return true;
+  if (typeof value === "string") {
+    const normalized = value.trim();
+    return normalized === "" || normalized === "undefined" || normalized === "null";
+  }
+  return false;
+}
+
+function isBlankAttributeValue(value: unknown) {
+  if (isBlankArtifactDetailValue(value)) return true;
+  if (typeof value === "string") {
+    const normalized = value.trim();
+    return normalized === "未知" || normalized === "暂无信息";
+  }
+  return false;
+}
+
+function firstArtifactValue(artifact: unknown, keys: string[]) {
+  const record = (artifact || {}) as Record<string, unknown>;
+  for (const key of keys) {
+    const value = record[key];
+    if (!isBlankArtifactDetailValue(value)) return value;
+  }
+  return "";
+}
+
+function stringValue(value: unknown) {
+  if (isBlankArtifactDetailValue(value)) return "";
+  return typeof value === "string" ? value : String(value);
+}
+
+function addArtifactAttribute(
+  groups: Map<string, { order: number; items: { name: string; value: string; order: number }[] }>,
+  groupRaw: unknown,
+  nameRaw: unknown,
+  valueRaw: unknown,
+  sortOrderRaw: unknown,
+) {
+  if (isBlankArtifactDetailValue(nameRaw) || isBlankAttributeValue(valueRaw)) return;
+  const group = stringValue(groupRaw) || "基础信息";
+  const name = stringValue(nameRaw);
+  const value = stringValue(valueRaw);
+  const parsedOrder = Number(sortOrderRaw);
+  const order = Number.isFinite(parsedOrder) ? parsedOrder : 0;
+  const existing = groups.get(group) || { order, items: [] };
+  existing.order = Math.min(existing.order, order);
+  existing.items.push({ name, value, order });
+  groups.set(group, existing);
+}
+
+function normalizeArtifactAttributes(artifact: Artifact) {
+  const record = artifact as unknown as Record<string, unknown>;
+  const groups = new Map<string, { order: number; items: { name: string; value: string; order: number }[] }>();
+  const rawAttributes = record.attributes;
+
+  if (Array.isArray(rawAttributes)) {
+    for (const raw of rawAttributes) {
+      const groupRecord = raw as Record<string, unknown>;
+      if (Array.isArray(groupRecord.items)) {
+        for (const rawItem of groupRecord.items) {
+          const item = rawItem as Record<string, unknown>;
+          addArtifactAttribute(
+            groups,
+            groupRecord.group ?? groupRecord.attribute_group,
+            item.name ?? item.attribute_name,
+            item.value ?? item.attribute_value,
+            item.sortOrder ?? item.sort_order,
+          );
+        }
+      } else {
+        addArtifactAttribute(
+          groups,
+          groupRecord.group ?? groupRecord.attribute_group,
+          groupRecord.name ?? groupRecord.attribute_name,
+          groupRecord.value ?? groupRecord.attribute_value,
+          groupRecord.sortOrder ?? groupRecord.sort_order,
+        );
+      }
+    }
+  }
+
+  if (groups.size === 0) {
+    addArtifactAttribute(groups, "基础信息", "材质", firstArtifactValue(artifact, ["material", "材质"]), 1);
+    addArtifactAttribute(
+      groups,
+      "基础信息",
+      "尺寸",
+      firstArtifactValue(artifact, ["dimensions", "size", "尺寸", "规格", "体量"]),
+      2,
+    );
+    addArtifactAttribute(groups, "基础信息", "等级", firstArtifactValue(artifact, ["level", "等级", "级别", "文物等级"]), 3);
+    addArtifactAttribute(
+      groups,
+      "其他信息",
+      "备注",
+      firstArtifactValue(artifact, ["remarks", "remark", "note", "notes", "备注", "附注"]),
+      4,
+    );
+  }
+
+  return Array.from(groups.entries())
+    .map(([group, entry]) => ({
+      group,
+      order: entry.order,
+      items: entry.items
+        .sort((a, b) => a.order - b.order)
+        .map((item) => ({ name: item.name, value: item.value })),
+    }))
+    .filter((group) => group.items.length > 0)
+    .sort((a, b) => a.order - b.order)
+    .map(({ group, items }) => ({ group, items }));
+}
+
+function normalizeArtifactTags(tags: unknown) {
+  if (!Array.isArray(tags)) return [];
+  return tags
+    .map((tag) => {
+      if (typeof tag === "string") return { type: "文化标签", name: tag };
+      if (tag && typeof tag === "object") {
+        const record = tag as Record<string, unknown>;
+        return {
+          type: stringValue(record.type) || "文化标签",
+          name: stringValue(record.name),
+        };
+      }
+      return { type: "文化标签", name: stringValue(tag) };
+    })
+    .filter((tag) => !isBlankArtifactDetailValue(tag.name) && tag.name !== "暂无信息");
+}
+
+function buildArtifactDetail(artifact: Artifact) {
+  const record = artifact as unknown as Record<string, unknown>;
+  const museumName = stringValue(record.museumName) || stringValue(artifactMuseumRaw(artifact));
+  const dynasty = stringValue(record.dynasty) || stringValue(artifactEraRaw(artifact));
+  const imageUrl = stringValue(record.imageUrl) || stringValue(artifactImageUrlRaw(artifact));
+  const sourceUrl = stringValue(record.sourceUrl) || stringValue(record.source_url) || stringValue(record["来源链接"]);
+
+  return {
+    ...artifact,
+    id: String(record.id ?? ""),
+    name: stringValue(record.name) || stringValue(artifactNameRaw(artifact)),
+    museumName,
+    museum: museumName,
+    dynasty,
+    period: dynasty,
+    category: stringValue(record.category) || stringValue(artifactCategoryRaw(artifact)),
+    imageUrl,
+    image_url: imageUrl,
+    shortIntro: stringValue(record.shortIntro) || stringValue(record.short_intro) || stringValue(record["一句话简介"]),
+    description: stringValue(record.description) || stringValue(artifactDescriptionRaw(artifact)),
+    sourceUrl,
+    source_url: sourceUrl,
+    attributes: normalizeArtifactAttributes(artifact),
+    tags: normalizeArtifactTags(record.tags),
+  };
 }
 
 let relicSearchDbReady: Promise<{
@@ -474,6 +644,26 @@ async function startServer() {
         source: resolvedSource,
         total: filteredArtifacts.length,
         artifacts: filteredArtifacts,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  app.get("/api/artifacts/:id", async (req, res) => {
+    try {
+      const source = getSingleQueryParam(req.query.source as string | string[] | undefined) || "auto";
+      const { artifacts, source: resolvedSource } = await resolveArtifactsSource(source);
+      const id = decodeURIComponent(req.params.id);
+      const artifact = artifacts.find((item) => String(item.id) === id);
+
+      if (!artifact) {
+        return res.status(404).json({ error: "Artifact not found." });
+      }
+
+      res.json({
+        source: resolvedSource,
+        artifact: buildArtifactDetail(artifact),
       });
     } catch (error) {
       res.status(500).json({ error: error instanceof Error ? error.message : String(error) });

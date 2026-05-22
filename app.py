@@ -28,6 +28,55 @@ def pick(item, *keys):
             return value
     return ""
 
+def parse_attributes(item):
+    raw_attributes = item.get('attributes') or item.get('扩展属性') or item.get('扩展信息')
+    if raw_attributes:
+        try:
+            parsed = json.loads(raw_attributes) if isinstance(raw_attributes, str) else raw_attributes
+        except Exception:
+            parsed = []
+        if isinstance(parsed, list):
+            groups = {}
+            for raw in parsed:
+                if not isinstance(raw, dict):
+                    continue
+                if isinstance(raw.get('items'), list):
+                    group_name = clean_value(raw.get('group') or raw.get('attribute_group')) or '基础信息'
+                    for item_raw in raw.get('items'):
+                        if not isinstance(item_raw, dict):
+                            continue
+                        add_attribute(groups, group_name, item_raw.get('name') or item_raw.get('attribute_name'), item_raw.get('value') or item_raw.get('attribute_value'), item_raw.get('sortOrder') or item_raw.get('sort_order'))
+                else:
+                    add_attribute(groups, raw.get('group') or raw.get('attribute_group'), raw.get('name') or raw.get('attribute_name'), raw.get('value') or raw.get('attribute_value'), raw.get('sortOrder') or raw.get('sort_order'))
+            return groups_to_attributes(groups)
+
+    groups = {}
+    add_attribute(groups, item.get('attribute_group') or item.get('属性分组') or item.get('扩展分组'), item.get('attribute_name') or item.get('属性名称') or item.get('扩展名称'), item.get('attribute_value') or item.get('属性值') or item.get('扩展值'), item.get('sort_order') or item.get('sortOrder') or item.get('排序'))
+    return groups_to_attributes(groups)
+
+def add_attribute(groups, group, name, value, sort_order=0):
+    name_text = clean_value(name)
+    value_text = clean_value(value)
+    if not name_text or not value_text:
+        return
+    group_text = clean_value(group) or '基础信息'
+    try:
+        order = int(float(clean_value(sort_order) or 0))
+    except Exception:
+        order = 0
+    groups.setdefault(group_text, []).append({"name": name_text, "value": value_text, "sortOrder": order})
+
+def groups_to_attributes(groups):
+    attributes = []
+    for group, items in groups.items():
+        valid_items = sorted(items, key=lambda x: x.get("sortOrder", 0))
+        if valid_items:
+            attributes.append({
+                "group": group,
+                "items": [{"name": item["name"], "value": item["value"]} for item in valid_items]
+            })
+    return attributes
+
 def detect_museum(item, default_museum=None):
     museum = pick(item, *MUSEUM_KEYS)
 
@@ -65,20 +114,28 @@ def build_artifact(item, index, default_museum=None):
     dimensions = pick(item, '尺寸', '规格', '体量', '长宽高', 'size', 'dimensions')
     remark = pick(item, '备注', '附注', '说明', 'notes', 'remarks', 'remark')
     origin = pick(item, '出土地', '出土地点 / 来源', '来源', '发现地', 'origin', 'provenance')
+    short_intro = pick(item, '一句话简介', '短简介', '摘要', 'shortIntro', 'short_intro', 'summary')
     description = pick(item, '文物描述', '文物简介', '简介', '介绍', 'description', 'summary')
+    source_url = pick(item, '来源链接', '数据来源', '原文链接', 'sourceUrl', 'source_url', 'sourceLink')
     museum = detect_museum(item, default_museum)
     img_url = pick(item, '图片链接', '高精度图片链接', '图片URL', '图片', '照片', 'imageUrl', 'image_url', 'image', 'img', 'thumbnail')
+    attributes = parse_attributes(item)
 
     artifact = {
         "id": pick(item, '文物唯一编号', '文物编号', '藏品编号', '编号', 'id') or f"WW-{name}-{index}",
         "name": name,
+        "museumName": museum,
         "museum": museum,
+        "dynasty": period,
         "period": period,
         "material": material,
         "culture": pick(item, '文化', '文化类型', 'culture') or "中华文化",
         "origin": origin,
+        "shortIntro": short_intro,
         "description": description,
         "imageUrl": img_url,
+        "sourceUrl": source_url,
+        "attributes": attributes,
         "tags": [tag for tag in [category, material, level, "新导入"] if tag],
         "favsCount": 0,
         "图片链接": img_url,
@@ -459,7 +516,9 @@ def edit_item(index):
             'material': ['材质', '质地', 'material'],
             'dimensions': ['尺寸', '规格', 'dimensions', 'size'],
             'origin': ['出土地', '出土地点 / 来源', '来源', 'origin'],
+            'short_intro': ['一句话简介', '短简介', '摘要', 'shortIntro'],
             'image_url': ['图片链接', '高精度图片链接', '图片URL', 'imageUrl', 'image_url'],
+            'source_url': ['来源链接', '数据来源', '原文链接', 'sourceUrl', 'source_url'],
             'culture': ['文化', '文化类型', 'culture'],
             'description': ['文物描述', '文物简介', '简介', 'description'],
             'remarks': ['备注', '附注', 'notes', 'remarks'],
@@ -486,7 +545,9 @@ def edit_item(index):
         {"name": "material", "label": "材质", "value": pick(item, '材质', '质地', '材料', 'material', 'medium'), "type": "input"},
         {"name": "dimensions", "label": "尺寸", "value": pick(item, '尺寸', '规格', '体量', '长宽高', 'size', 'dimensions'), "type": "input"},
         {"name": "origin", "label": "出土地 / 来源", "value": pick(item, '出土地', '出土地点 / 来源', '来源', '发现地', 'origin', 'provenance'), "type": "input"},
+        {"name": "short_intro", "label": "一句话简介", "value": pick(item, '一句话简介', '短简介', '摘要', 'shortIntro', 'short_intro', 'summary'), "type": "input"},
         {"name": "image_url", "label": "图片链接", "value": pick(item, '图片链接', '高精度图片链接', '图片URL', '图片', '照片', 'imageUrl', 'image_url', 'image', 'img', 'thumbnail'), "type": "input"},
+        {"name": "source_url", "label": "来源链接", "value": pick(item, '来源链接', '数据来源', '原文链接', 'sourceUrl', 'source_url'), "type": "input"},
         {"name": "culture", "label": "文化", "value": pick(item, '文化', '文化类型', 'culture'), "type": "input"},
         {"name": "description", "label": "简介 / 描述", "value": pick(item, '文物描述', '文物简介', '简介', '介绍', 'description', 'summary'), "type": "textarea"},
         {"name": "remarks", "label": "备注", "value": pick(item, '备注', '附注', '说明', 'notes', 'remarks', 'remark'), "type": "textarea"},

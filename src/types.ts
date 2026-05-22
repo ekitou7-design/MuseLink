@@ -1,15 +1,35 @@
+export type ArtifactAttributeItem = {
+  name: string;
+  value: string;
+};
+
+export type ArtifactAttributeGroup = {
+  group: string;
+  items: ArtifactAttributeItem[];
+};
+
+export type ArtifactTag = string | {
+  type?: string;
+  name: string;
+};
+
 export interface Artifact {
   id: string;
   name: string;
+  museumName?: string;
   museum: string;
   /** 年代/朝代/时代：与 `dynasty`、`era`、中文键「朝代」「时代」「年代」等同义，展示时由 `artifactEraRaw` 归并。 */
   period: string;
+  dynasty?: string;
   material: string;
   culture: string;
   origin: string;
+  shortIntro?: string;
   description: string;
   imageUrl: string;
-  tags: string[];
+  sourceUrl?: string;
+  tags: ArtifactTag[];
+  attributes?: ArtifactAttributeGroup[];
   favsCount: number;
   /** Optional extended fields (populated when present in source data / imports). */
   category?: string;

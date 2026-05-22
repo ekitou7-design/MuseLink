@@ -11,10 +11,25 @@ export type ArtifactRow = {
   dynasty: string;
   museum_id: number;
   museum: string;
+  category?: string;
+  short_intro?: string;
   description: string;
   image_url: string;
+  source_url?: string;
   tags: string[];
   created_at: string;
+  updated_at?: string;
+};
+
+export type ArtifactAttributeRow = {
+  id: number;
+  artifact_id: number;
+  attribute_group: string;
+  attribute_name: string;
+  attribute_value: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
 };
 
 export type MuseumRow = {
@@ -49,4 +64,3 @@ export type LikeRow = {
   target_id: number;
   created_at: string;
 };
-
