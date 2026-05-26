@@ -98,6 +98,9 @@ import { ManageArtifactsModal } from './modules/exhibitions/components/ManageArt
 import { ManualExhibitionModal } from './modules/exhibitions/components/ManualExhibitionModal';
 import { AIExhibitionModal } from './modules/curation/components/AIExhibitionModal';
 import { ExploreTabBar } from './modules/artifacts/components/ExploreTabBar';
+import { normalizeArtifacts } from './modules/artifacts/normalizers/artifactNormalizers';
+import { normalizeExhibition, normalizeExhibitions } from './modules/exhibitions/normalizers/exhibitionNormalizers';
+import { getSlideshowArtifacts, mergeArtifactsById } from './shared/lib/domainUtils';
 
 // --- Components ---
 
@@ -125,118 +128,6 @@ const TEST_EDITOR_RECOMMENDED_EXHIBITION: Exhibition = {
 const isEditorRecommendationPlaceholder = (exhibition: Exhibition | null) => (
   exhibition?.id === TEST_EDITOR_RECOMMENDED_EXHIBITION_ID
 );
-
-const normalizeExhibition = (raw: unknown): Exhibition | null => {
-  const source = ((raw as any)?.exhibition ?? raw) as any;
-  if (!source || typeof source !== 'object') return null;
-
-  const artifactIds = Array.isArray(source.artifactIds)
-    ? source.artifactIds
-    : Array.isArray(source.artifact_ids)
-      ? source.artifact_ids
-      : [];
-  const createdAt = String(source.createdAt ?? source.created_at ?? new Date().toISOString());
-
-  return {
-    id: String(source.id ?? ''),
-    userId: source.userId ?? source.user_id ?? '',
-    userName: String(source.userName ?? source.user_name ?? source.curatorName ?? '博悟用户'),
-    userPhoto: String(source.userPhoto ?? source.user_photo ?? ''),
-    title: String(source.title ?? source.theme ?? '未命名展陈'),
-    intro: String(source.intro ?? source.description ?? source.theme ?? ''),
-    coverUrl: String(source.coverUrl ?? source.cover_url ?? ''),
-    artifactIds: artifactIds.map((id: unknown) => String(id)),
-    isPublic: Boolean(source.isPublic ?? source.is_public),
-    likesCount: Number(source.likesCount ?? source.likes_count ?? 0),
-    favsCount: Number(source.favsCount ?? source.favs_count ?? 0),
-    commentsCount: Number(source.commentsCount ?? source.comments_count ?? 0),
-    bgmUrl: source.bgmUrl ?? source.bgm_url,
-    slideshowSettings: source.slideshowSettings ?? source.slideshow_settings,
-    createdAt,
-    updatedAt: String(source.updatedAt ?? source.updated_at ?? createdAt),
-  };
-};
-
-const findArtifactsByIds = (artifactIds: string[] | undefined, artifacts: Artifact[]) => {
-  if (!Array.isArray(artifactIds) || artifactIds.length === 0) return [];
-  const byId = new Map(artifacts.map((artifact) => [String(artifact.id), artifact]));
-  return artifactIds
-    .map((id) => byId.get(String(id)))
-    .filter((artifact): artifact is Artifact => Boolean(artifact));
-};
-
-const getSlideshowArtifacts = (exhibition: Exhibition | null, artifacts: Artifact[]) => {
-  if (!exhibition) return [];
-  if (!Array.isArray(exhibition.artifactIds) || exhibition.artifactIds.length === 0) return [];
-  const matched = findArtifactsByIds(exhibition.artifactIds, artifacts);
-  return matched.length > 0 ? matched : artifacts.slice(0, Math.min(12, artifacts.length));
-};
-
-const normalizeExhibitions = (items: unknown): Exhibition[] => (
-  Array.isArray(items)
-    ? items.map(normalizeExhibition).filter((item): item is Exhibition => Boolean(item && item.id))
-    : []
-);
-
-const normalizeArtifact = (raw: unknown): Artifact => {
-  const source = (raw || {}) as Record<string, unknown>;
-  const tags = Array.isArray(source.tags)
-    ? source.tags
-        .map((tag) => {
-          if (tag && typeof tag === 'object' && !Array.isArray(tag)) {
-            const record = tag as Record<string, unknown>;
-            const name = String(record.name ?? '');
-            return name ? { type: String(record.type ?? '文化标签'), name } : null;
-          }
-          return String(tag);
-        })
-        .filter(Boolean) as Artifact['tags']
-    : [];
-  const period = String(source.period ?? source.dynasty ?? source.era ?? source['朝代'] ?? '');
-  const imageUrl = String(source.imageUrl ?? source.image_url ?? source['图片链接'] ?? '');
-  const museum = String(source.museumName ?? source.museum ?? source['所属博物馆'] ?? '');
-  const shortIntro = source.shortIntro ?? source.short_intro ?? source['一句话简介'] ?? source.summary;
-  const sourceUrl = source.sourceUrl ?? source.source_url ?? source['来源链接'];
-
-  return {
-    ...source,
-    id: String(source.id ?? ''),
-    name: String(source.name ?? source['文物名称'] ?? ''),
-    museum,
-    museumName: museum,
-    period,
-    dynasty: period,
-    material: String(source.material ?? source['材质'] ?? ''),
-    culture: String(source.culture ?? source['文化'] ?? ''),
-    origin: String(source.origin ?? source['出土地'] ?? ''),
-    description: String(source.description ?? source['简介'] ?? ''),
-    shortIntro: shortIntro === undefined ? undefined : String(shortIntro),
-    imageUrl,
-    image_url: imageUrl,
-    sourceUrl: sourceUrl === undefined ? undefined : String(sourceUrl),
-    source_url: sourceUrl === undefined ? undefined : String(sourceUrl),
-    tags,
-    attributes: Array.isArray(source.attributes) ? source.attributes as Artifact['attributes'] : undefined,
-    favsCount: Number(source.favsCount ?? source.favs_count ?? 0),
-    category: source.category === undefined ? undefined : String(source.category),
-    level: source.level === undefined ? undefined : String(source.level),
-    dimensions: source.dimensions === undefined ? undefined : String(source.dimensions),
-    remarks: source.remarks === undefined ? undefined : String(source.remarks),
-  } as Artifact;
-};
-
-const normalizeArtifacts = (items: unknown): Artifact[] => (
-  Array.isArray(items)
-    ? items.map(normalizeArtifact).filter((artifact) => artifact.id && artifact.name)
-    : []
-);
-
-const mergeArtifactsById = (base: Artifact[], incoming: Artifact[]) => {
-  const map = new Map<string, Artifact>();
-  base.forEach((artifact) => map.set(String(artifact.id), artifact));
-  incoming.forEach((artifact) => map.set(String(artifact.id), artifact));
-  return Array.from(map.values());
-};
 
 // --- Main App ---
 
