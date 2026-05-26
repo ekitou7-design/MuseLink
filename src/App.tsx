@@ -54,11 +54,10 @@ import {
   MicOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { apiFetch, apiUrl } from './lib/api';
 import { logout as jwtLogout, me as fetchMe } from './lib/authClient';
 import { Artifact, Exhibition, Favorite, UserProfile, Message, Comment, SlideshowSettings, Museum } from './types';
 import { MOCK_ARTIFACTS } from './constants';
-import { curatorService } from './services/curatorService';
+import { curatorService } from './modules/curation/services/curationService';
 import ReactMarkdown from 'react-markdown';
 import { ProfileEditModal } from './components/ProfileEditModal';
 import { SlideshowOverlay } from './components/SlideshowOverlay';
@@ -79,6 +78,24 @@ import {
 } from './lib/dbDisplay';
 import { AmbientAudioPlayer, isAmbientBgmUrl } from './lib/ambientAudio';
 import { PROVINCIAL_MUSEUMS } from '../backend/provincial-museums';
+import { fetchMergedArtifacts, searchRelics } from './modules/artifacts/services/artifactsService';
+import { fetchMergedMuseums } from './modules/museums/services/museumsService';
+import {
+  createExhibition as createExhibitionRequest,
+  deleteExhibition as deleteExhibitionRequest,
+  fetchFavoriteExhibitionDetails,
+  fetchMyExhibitions,
+  fetchSquareExhibitions,
+  toggleFavoriteExhibition,
+  updateExhibition as updateExhibitionRequest,
+} from './modules/exhibitions/services/exhibitionsService';
+import {
+  fetchFavoriteArtifactIds,
+  fetchFavoriteExhibitionIds,
+  toggleFavoriteArtifact,
+} from './modules/profile/services/profileService';
+import { ArtifactCard } from './modules/artifacts/components/ArtifactCard';
+import { ExhibitionCard } from './modules/exhibitions/components/ExhibitionCard';
 
 // --- Components ---
 
@@ -159,13 +176,6 @@ const normalizeExhibitions = (items: unknown): Exhibition[] => (
     ? items.map(normalizeExhibition).filter((item): item is Exhibition => Boolean(item && item.id))
     : []
 );
-
-type RelicSearchResponse = {
-  artifacts?: unknown[];
-  relics?: unknown[];
-  total?: number;
-  keyword?: string;
-};
 
 const normalizeArtifact = (raw: unknown): Artifact => {
   const source = (raw || {}) as Record<string, unknown>;
@@ -1319,93 +1329,6 @@ const Banner = ({ artifacts }: { artifacts: Artifact[] }) => {
   );
 };
 
-const ArtifactCard = ({ artifact, onClick }: { artifact: Artifact, onClick: () => void }) => {
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      onClick={onClick}
-      className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 cursor-pointer group break-inside-avoid mb-1.5"
-    >
-      <SafeImage 
-        src={String(artifactImageUrlRaw(artifact) ?? '')} 
-        alt={typeof artifactNameRaw(artifact) === 'string' ? (artifactNameRaw(artifact) as string) : ''} 
-        className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-      <div className="p-1.5 space-y-0.5">
-        <h3 className="min-w-0 break-words font-serif font-bold text-[11px] text-gray-900">{displayDbString(artifactNameRaw(artifact))}</h3>
-        <p className="min-w-0 break-words text-[9px] text-gray-400">{displayDbString(artifactMuseumRaw(artifact))}</p>
-      </div>
-    </motion.div>
-  );
-};
-
-const ExhibitionCard = ({
-  exhibition,
-  onClick,
-  isFavorite = false,
-  onFavoriteClick,
-  showFavoriteButton = false,
-}: {
-  exhibition: Exhibition,
-  onClick: () => void,
-  isFavorite?: boolean,
-  onFavoriteClick?: () => void,
-  showFavoriteButton?: boolean,
-}) => {
-  const artifactCount = exhibition.artifactIds?.length ?? 0;
-
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      onClick={onClick}
-      className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 cursor-pointer group break-inside-avoid mb-1.5"
-    >
-      <div className="aspect-[4/5] relative">
-        <SafeImage 
-           src={exhibition.coverUrl} 
-           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-         />
-        <div className="absolute top-1.5 right-1.5 px-1 py-0.5 bg-black/30 backdrop-blur-sm text-white text-[7px] font-bold rounded force-nowrap">
-          {artifactCount}件
-        </div>
-        {showFavoriteButton && (
-          <button
-            type="button"
-            aria-label={isFavorite ? '取消收藏展陈' : '收藏展陈'}
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              onFavoriteClick?.();
-            }}
-            className={cn(
-              "absolute bottom-1.5 right-1.5 h-8 w-8 rounded-full backdrop-blur-md shadow-sm flex items-center justify-center transition-all active:scale-95",
-              isFavorite ? "bg-amber-800 text-white" : "bg-white/90 text-amber-800"
-            )}
-          >
-            {isFavorite ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
-          </button>
-        )}
-      </div>
-      <div className="p-1.5 space-y-1">
-        <h3 className="min-w-0 break-words font-serif font-bold text-[11px] text-gray-900">{exhibition.title}</h3>
-        <div className="flex min-w-0 items-center gap-1">
-          {exhibition.userPhoto && (
-            <SafeImage 
-               src={exhibition.userPhoto} 
-               className="h-3 w-3 flex-shrink-0 rounded-full" 
-             />
-          )}
-          <span className="min-w-0 break-words text-[9px] font-medium text-gray-500">{exhibition.userName}</span>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
 const MuseumSelectorOverlay = ({ 
   isOpen, 
   onClose, 
@@ -1671,7 +1594,7 @@ export default function App() {
     setRelicSearchLoading(true);
     setRelicSearchError('');
     try {
-      const data = await apiFetch<RelicSearchResponse>(`/api/relics/search?keyword=${encodeURIComponent(keyword)}&limit=200`);
+      const data = await searchRelics(keyword, 200);
       if (relicSearchSeq.current !== requestId) return;
       const remoteArtifacts = normalizeArtifacts(data.artifacts ?? data.relics ?? []);
       const localArtifacts = remoteArtifacts.length > 0
@@ -1934,7 +1857,7 @@ export default function App() {
       setFavoriteExhibitions([]);
       return;
     }
-    const response = await apiFetch<{ exhibitions: Exhibition[] }>('/api/users/me/fav-exhibitions/details');
+    const response = await fetchFavoriteExhibitionDetails();
     setFavoriteExhibitions(normalizeExhibitions(response.exhibitions));
   };
 
@@ -1944,10 +1867,7 @@ export default function App() {
       return;
     }
     try {
-      const res = await apiFetch<{ favExhibitions: string[]; isFavorite: boolean; favsCount: number }>('/api/users/me/fav-exhibitions/toggle', {
-        method: 'POST',
-        body: JSON.stringify({ exhibitionId: id }),
-      });
+      const res = await toggleFavoriteExhibition(id);
       setFavExhibitionIds(res.favExhibitions);
       setSquareExhibitions(prev => prev.map(exh => exh.id === id ? { ...exh, favsCount: res.favsCount } : exh));
       setMyExhibitions(prev => prev.map(exh => exh.id === id ? { ...exh, favsCount: res.favsCount } : exh));
@@ -1970,10 +1890,7 @@ export default function App() {
   const handleUpdateExhibition = async (updated: Partial<Exhibition>) => {
     if (!user || !editingExhibition) return;
     try {
-      const response = await apiFetch<Exhibition>(`/api/exhibitions/${editingExhibition.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(updated),
-      });
+      const response = await updateExhibitionRequest(editingExhibition.id, updated);
       const saved = normalizeExhibition(response);
       if (!saved) throw new Error('展陈数据格式异常');
       setMyExhibitions(prev => prev.map(e => e.id === editingExhibition.id ? saved : e));
@@ -1988,7 +1905,7 @@ export default function App() {
   const handleDeleteExhibition = async (id: string) => {
     if (!user) return;
     try {
-      await apiFetch(`/api/exhibitions/${id}`, { method: 'DELETE' });
+      await deleteExhibitionRequest(id);
       setMyExhibitions(prev => prev.filter(e => e.id !== id));
       setIsEditExhibitionOpen(false);
       setEditingExhibition(null);
@@ -2067,11 +1984,11 @@ export default function App() {
           setShowSyncPrompt(true);
         }
 
-        const favs = await apiFetch<{ favorites: string[] }>('/api/users/me/favorites');
+        const favs = await fetchFavoriteArtifactIds();
         setFavorites(favs.favorites || []);
-        const favExh = await apiFetch<{ favExhibitions: string[] }>('/api/users/me/fav-exhibitions');
+        const favExh = await fetchFavoriteExhibitionIds();
         setFavExhibitionIds(favExh.favExhibitions || []);
-        const favExhDetails = await apiFetch<{ exhibitions: Exhibition[] }>('/api/users/me/fav-exhibitions/details');
+        const favExhDetails = await fetchFavoriteExhibitionDetails();
         setFavoriteExhibitions(normalizeExhibitions(favExhDetails.exhibitions));
       } catch {
         setUser(null);
@@ -2100,7 +2017,7 @@ export default function App() {
     const refreshFavoritesFromServerOrLocal = async () => {
       if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
       try {
-        const favs = await apiFetch<{ favorites: string[] }>("/api/users/me/favorites");
+        const favs = await fetchFavoriteArtifactIds();
         setFavorites(favs.favorites || []);
       } catch {
         try {
@@ -2138,14 +2055,7 @@ export default function App() {
 
     const fetchArtifacts = async () => {
       try {
-        const response = await fetch(apiUrl('/api/artifacts?source=merged&limit=5000'), {
-          signal: controller.signal,
-        });
-        if (!response.ok) {
-          throw new Error(`Failed to fetch artifacts: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await fetchMergedArtifacts({ signal: controller.signal });
         if (!controller.signal.aborted && Array.isArray(data.artifacts) && data.artifacts.length > 0) {
           setArtifactPool(data.artifacts);
         }
@@ -2172,14 +2082,7 @@ export default function App() {
 
     const fetchMuseums = async () => {
       try {
-        const response = await fetch(apiUrl('/api/museums?source=merged'), {
-          signal: controller.signal,
-        });
-        if (!response.ok) {
-          throw new Error(`Failed to fetch museums: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await fetchMergedMuseums({ signal: controller.signal });
         if (!controller.signal.aborted && Array.isArray(data.museums)) {
           setMuseumPool(data.museums);
         }
@@ -2210,10 +2113,7 @@ export default function App() {
       setFavorites(prev => isFav ? prev.filter(i => i !== id) : [...prev, id]);
     } else {
       try {
-        const res = await apiFetch<{ favorites: string[] }>('/api/users/me/favorites/toggle', {
-          method: 'POST',
-          body: JSON.stringify({ artifactId: id }),
-        });
+        const res = await toggleFavoriteArtifact(id);
         setFavorites(res.favorites || []);
       } catch (error) {
         console.error("Toggle favorite error:", error);
@@ -2222,9 +2122,7 @@ export default function App() {
   };
 
   const fetchBackendArtifactPool = async () => {
-    const response = await fetch(apiUrl('/api/artifacts?source=merged&limit=5000'));
-    if (!response.ok) throw new Error(`Failed to fetch backend artifacts: ${response.status}`);
-    const data = await response.json();
+    const data = await fetchMergedArtifacts({ errorPrefix: 'Failed to fetch backend artifacts' });
     if (!Array.isArray(data.artifacts) || data.artifacts.length === 0) {
       throw new Error('后端文物库为空，无法生成展览。');
     }
@@ -2257,17 +2155,14 @@ export default function App() {
     if (!aiResult) return;
 
     try {
-      const created = await apiFetch<Exhibition>('/api/exhibitions', {
-        method: 'POST',
-        body: JSON.stringify({
-          title: aiResult.title || '未命名展陈',
-          intro: aiResult.intro || '',
-          coverUrl: aiResult.coverUrl || '',
-          artifactIds: aiResult.artifactIds || [],
-          isPublic: false,
-          bgmUrl: aiResult.bgmUrl,
-          slideshowSettings: aiResult.slideshowSettings,
-        }),
+      const created = await createExhibitionRequest({
+        title: aiResult.title || '未命名展陈',
+        intro: aiResult.intro || '',
+        coverUrl: aiResult.coverUrl || '',
+        artifactIds: aiResult.artifactIds || [],
+        isPublic: false,
+        bgmUrl: aiResult.bgmUrl,
+        slideshowSettings: aiResult.slideshowSettings,
       });
       const normalized = normalizeExhibition(created);
       if (!normalized) throw new Error('展陈数据格式异常');
@@ -2301,17 +2196,14 @@ export default function App() {
 
     setIsCreatingManualExhibition(true);
     try {
-      const created = await apiFetch<Exhibition>('/api/exhibitions', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...draft,
-          slideshowSettings: {
-            duration: 4,
-            transition: 'fade',
-            showIntro: true,
-            loop: true,
-          },
-        }),
+      const created = await createExhibitionRequest({
+        ...draft,
+        slideshowSettings: {
+          duration: 4,
+          transition: 'fade',
+          showIntro: true,
+          loop: true,
+        },
       });
       const normalized = normalizeExhibition(created);
       if (!normalized) throw new Error('展陈数据格式异常');
@@ -2336,13 +2228,13 @@ export default function App() {
   useEffect(() => {
     const fetchExhibitions = async () => {
       try {
-        const square = await apiFetch<{ exhibitions: Exhibition[] }>('/api/exhibitions/square?limit=10');
+        const square = await fetchSquareExhibitions(10);
         setSquareExhibitions(normalizeExhibitions(square.exhibitions));
 
         if (user) {
-          const mine = await apiFetch<{ exhibitions: Exhibition[] }>('/api/exhibitions/mine');
+          const mine = await fetchMyExhibitions();
           setMyExhibitions(normalizeExhibitions(mine.exhibitions));
-          const favoriteDetails = await apiFetch<{ exhibitions: Exhibition[] }>('/api/users/me/fav-exhibitions/details');
+          const favoriteDetails = await fetchFavoriteExhibitionDetails();
           setFavoriteExhibitions(normalizeExhibitions(favoriteDetails.exhibitions));
         } else {
           setMyExhibitions([]);
@@ -2361,14 +2253,11 @@ export default function App() {
     const localHistory = JSON.parse(localStorage.getItem('muselink_history') || '[]');
 
     try {
-      const cloud = await apiFetch<{ favorites: string[] }>('/api/users/me/favorites');
+      const cloud = await fetchFavoriteArtifactIds();
       const cloudSet = new Set(cloud.favorites || []);
       for (const id of localFavs) {
         if (!cloudSet.has(id)) {
-          await apiFetch('/api/users/me/favorites/toggle', {
-            method: 'POST',
-            body: JSON.stringify({ artifactId: id }),
-          });
+          await toggleFavoriteArtifact(id);
         }
       }
 
@@ -2377,7 +2266,7 @@ export default function App() {
       localStorage.removeItem('muselink_history');
       
       // Refresh favorites state
-      const refreshed = await apiFetch<{ favorites: string[] }>('/api/users/me/favorites');
+      const refreshed = await fetchFavoriteArtifactIds();
       setFavorites(refreshed.favorites || []);
       setShowSyncPrompt(false);
     } catch (error) {
