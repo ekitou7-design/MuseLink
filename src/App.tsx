@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   Search, 
-  Compass,
   Library, 
   Sparkles, 
   User, 
@@ -28,33 +27,25 @@ import {
   Loader2,
   X,
   Send,
-  Menu,
   Bell,
   MessageSquare,
   AtSign,
   UserPlus,
-  Info,
   Settings,
-  LogOut,
-  HelpCircle,
-  Copyright,
-  ExternalLink,
   ArrowDown,
   ArrowUp,
   ThumbsUp,
   MessageCircle,
   Globe,
   LayoutGrid,
-  ShieldCheck,
   Palette,
   Languages,
-  Smartphone,
   Trash2,
   Mic,
   MicOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { logout as jwtLogout, me as fetchMe } from './lib/authClient';
+import { me as fetchMe } from './lib/authClient';
 import { Artifact, Exhibition, Favorite, UserProfile, Message, Comment, SlideshowSettings, Museum } from './types';
 import { MOCK_ARTIFACTS } from './constants';
 import { curatorService } from './modules/curation/services/curationService';
@@ -67,14 +58,10 @@ import { BGMGeneratorModal } from './components/BGMGeneratorModal';
 import { cn } from './lib/utils';
 import { artifactSearchBlob, rankArtifactsByKeywordQuery } from './lib/artifactSearch';
 import {
-  DB_EMPTY_PLACEHOLDER,
   artifactEraRaw,
-  artifactDescriptionRaw,
-  artifactImageUrlRaw,
   artifactMuseumRaw,
   artifactNameRaw,
   displayDbString,
-  isStrictDbEmpty,
 } from './lib/dbDisplay';
 import { AmbientAudioPlayer, isAmbientBgmUrl } from './lib/ambientAudio';
 import { PROVINCIAL_MUSEUMS } from '../backend/provincial-museums';
@@ -96,10 +83,18 @@ import {
 } from './modules/profile/services/profileService';
 import { ArtifactCard } from './modules/artifacts/components/ArtifactCard';
 import { ExhibitionCard } from './modules/exhibitions/components/ExhibitionCard';
+import { Banner } from './shared/ui/Banner';
+import { Drawer } from './shared/ui/Drawer';
+import { SettingsModal } from './modules/profile/components/SettingsModal';
+import { MuseumSelectorOverlay } from './modules/museums/components/MuseumSelectorOverlay';
+import { BottomNav } from './app/components/BottomNav';
+import { TopNav } from './app/components/TopNav';
+import { ProfileHeader } from './modules/profile/components/ProfileHeader';
+import { ProfileTabBar } from './modules/profile/components/ProfileTabBar';
+import { SearchOverlayTabs } from './modules/search/components/SearchOverlayTabs';
 
 // --- Components ---
 
-const RECOMMENDATION_BANNER_LIMIT = 5;
 const RECOMMENDED_ARTIFACT_LIMIT = 10;
 const EDITOR_RECOMMENDED_EXHIBITION_LIMIT = 10;
 const ALL_ARTIFACT_PAGE_SIZE = 24;
@@ -236,187 +231,6 @@ const mergeArtifactsById = (base: Artifact[], incoming: Artifact[]) => {
   incoming.forEach((artifact) => map.set(String(artifact.id), artifact));
   return Array.from(map.values());
 };
-
-const Drawer = ({ 
-  isOpen, 
-  onClose, 
-  user, 
-  onLoginClick, 
-  onEditProfile, 
-  onSettingsClick, 
-  onFeatureClick 
-}: { 
-  isOpen: boolean, 
-  onClose: () => void, 
-  user: { id: number; displayName: string; photoURL: string } | null, 
-  onLoginClick: () => void,
-  onEditProfile: () => void,
-  onSettingsClick: () => void,
-  onFeatureClick: (title: string) => void
-}) => (
-  <>
-    <div className={cn("drawer-overlay", isOpen && "open")} onClick={onClose} />
-    <div className={cn("drawer-content p-6 flex flex-col", isOpen && "open")}>
-      {user ? (
-        <div className="space-y-6 mb-10">
-          <div className="flex items-center gap-4 cursor-pointer" onClick={() => { onClose(); window.dispatchEvent(new CustomEvent('change-tab', { detail: 'profile' })); }}>
-            <img src={user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'} className="w-14 h-14 rounded-2xl shadow-sm" />
-            <div>
-              <h3 className="font-bold text-lg text-secondary font-serif">{user?.displayName || '游客'}</h3>
-              <p className="text-xs text-gray-400">点击查看个人主页</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <button 
-              onClick={() => { onClose(); onEditProfile(); }}
-              className="flex items-center justify-center gap-2 py-2.5 bg-neutral text-secondary rounded-xl text-xs font-bold hover:bg-gray-100 transition-all border border-gray-100"
-            >
-              <User size={20} />
-              编辑资料
-            </button>
-            <button 
-              onClick={() => { onClose(); jwtLogout(); window.location.reload(); }}
-              className="flex items-center justify-center gap-2 py-2.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-100 transition-all"
-            >
-              <LogOut size={20} />
-              退出登录
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="mb-10 p-6 bg-neutral rounded-3xl border border-gray-100">
-          <h3 className="font-bold text-secondary mb-2 font-serif">欢迎来到博悟</h3>
-          <p className="text-xs text-gray-500 mb-4 leading-relaxed">登录后即可同步收藏、创建展陈并与同好互动交流。</p>
-          <button 
-            onClick={() => { onClose(); onLoginClick(); }}
-            className="w-full py-2.5 bg-primary text-white rounded-xl text-sm font-bold shadow-lg shadow-primary/20"
-          >
-            立即登录 / 注册
-          </button>
-        </div>
-      )}
-
-      <div className="flex-1 space-y-2">
-        {[
-          { icon: Info, label: '文博资讯与线下展览', color: 'text-blue-500' },
-          { icon: Library, label: '文博知识库', color: 'text-amber-600' },
-          { icon: HelpCircle, label: '使用帮助与反馈', color: 'text-gray-500' },
-          { icon: Settings, label: '通用设置', color: 'text-gray-500', action: onSettingsClick },
-          { icon: Copyright, label: '来源公示与版权声明', color: 'text-gray-400' },
-          { icon: ExternalLink, label: '关于我们', color: 'text-gray-400' },
-        ].map((item) => (
-          <button 
-              key={item.label} 
-              onClick={() => {
-                onClose();
-                if (item.action) item.action();
-                else onFeatureClick(item.label);
-              }}
-              className="w-full flex items-center gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors text-left"
-            >
-              <item.icon size={20} className={item.color} />
-              <span className="text-sm font-medium text-gray-700">{item.label}</span>
-              <ChevronRight size={20} className="ml-auto text-gray-300" />
-            </button>
-        ))}
-      </div>
-
-      <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between text-[10px] text-gray-300 font-medium">
-        <span>版本 1.2.4</span>
-        <span>© 2024 博悟 MuseLink</span>
-      </div>
-    </div>
-  </>
-);
-
-const NotDevelopedModal = ({ isOpen, onClose, title }: { isOpen: boolean, onClose: () => void, title: string }) => (
-  <AnimatePresence>
-    {isOpen && (
-      <motion.div 
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-      >
-        <motion.div 
-          initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
-          className="bg-white rounded-[5px] p-8 max-w-sm w-full shadow-2xl text-center space-y-4"
-          onClick={e => e.stopPropagation()}
-        >
-          <div className="w-16 h-16 bg-neutral rounded-2xl flex items-center justify-center text-primary mx-auto">
-            <Info size={32} />
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-xl font-bold text-secondary font-serif">{title}</h3>
-            <p className="text-sm text-gray-500 leading-relaxed">此功能暂未开发，敬请期待</p>
-          </div>
-          <button 
-            onClick={onClose}
-            className="w-full py-3.5 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20"
-          >
-            我知道了
-          </button>
-        </motion.div>
-      </motion.div>
-    )}
-  </AnimatePresence>
-);
-
-const SettingsModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => (
-  <AnimatePresence>
-    {isOpen && (
-      <motion.div 
-        initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-        className="fixed inset-0 z-[200] bg-gray-50 flex flex-col"
-      >
-        <div className="p-4 flex items-center gap-4 bg-white border-b border-gray-100">
-          <button onClick={onClose} className="p-2 text-gray-400"><ArrowLeft size={24} /></button>
-          <h2 className="text-lg font-bold">通用设置</h2>
-        </div>
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          <div className="space-y-2">
-            <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2">基础设置</h4>
-            <div className="bg-white rounded-3xl overflow-hidden border border-gray-100">
-              {[
-                { icon: Globe, label: '语言设置', value: '简体中文' },
-                { icon: Palette, label: '深色模式', value: '跟随系统' },
-                { icon: Bell, label: '消息推送', value: '已开启' },
-              ].map((item) => (
-                <div key={item.label} className={cn("flex items-center justify-between p-4", item.label !== '语言设置' && "border-t border-gray-50")}>
-                  <div className="flex items-center gap-3">
-                    <item.icon size={18} className="text-gray-400" />
-                    <span className="text-sm font-medium text-gray-700">{item.label}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <span className="text-xs">{item.value}</span>
-                    <ChevronRight size={14} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2">隐私与安全</h4>
-            <div className="bg-white rounded-3xl overflow-hidden border border-gray-100">
-              {[
-                { icon: ShieldCheck, label: '隐私设置' },
-                { icon: Smartphone, label: '账号安全' },
-              ].map((item) => (
-                <div key={item.label} className={cn("flex items-center justify-between p-4", item.label !== '隐私设置' && "border-t border-gray-50")}>
-                  <div className="flex items-center gap-3">
-                    <item.icon size={18} className="text-gray-400" />
-                    <span className="text-sm font-medium text-gray-700">{item.label}</span>
-                  </div>
-                  <ChevronRight size={14} className="text-gray-400" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    )}
-  </AnimatePresence>
-);
 
 const EditExhibitionModal = ({ 
   isOpen, 
@@ -1175,317 +989,6 @@ const AIExhibitionModal = ({
         </motion.div>
       )}
     </AnimatePresence>
-  );
-};
-
-const TopNav = ({ onMenuClick, onSearchClick, onBellClick, onSubmitSearch, searchQuery, setSearchQuery }: any) => (
-  <header className="bg-white sticky top-0 z-[90] px-4 py-3 flex items-center gap-3 border-b border-gray-100">
-    <button onClick={onMenuClick} className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
-      <Menu size={24} />
-    </button>
-    <form
-      className="flex-1"
-      onSubmit={(event) => {
-        event.preventDefault();
-        onSearchClick();
-        onSubmitSearch();
-      }}
-    >
-      <div className="relative group">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" size={20} />
-        <input 
-          type="text" 
-          placeholder="搜索文物、展陈、博物馆、用户" 
-          value={searchQuery}
-          onFocus={onSearchClick}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-gray-100/80 border-none rounded-full py-2 pl-10 pr-10 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
-        />
-        <button
-          type="submit"
-          aria-label="搜索文物"
-          className="absolute right-1.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-white hover:text-primary"
-        >
-          <Search size={14} />
-        </button>
-      </div>
-    </form>
-    <button onClick={onBellClick} className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors relative">
-      <Bell size={24} />
-      <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white" />
-    </button>
-  </header>
-);
-
-const BottomNav = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (t: string) => void }) => (
-  <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-100 px-8 py-3 z-[90] flex justify-between items-center">
-    {[
-      { id: 'explore', icon: Compass, label: '探索' },
-      { id: 'exhibition', icon: Library, label: '展陈' },
-      { id: 'profile', icon: User, label: '我的' },
-    ].map((item) => (
-      <button
-        key={item.id}
-        onClick={() => setActiveTab(item.id)}
-        className={cn(
-          "flex flex-col items-center gap-1 transition-all duration-300",
-          activeTab === item.id ? "text-primary scale-110" : "text-gray-400 hover:text-gray-600"
-        )}
-      >
-        <item.icon size={24} strokeWidth={activeTab === item.id ? 2.5 : 2} />
-        <span className="text-[10px] font-bold">{item.label}</span>
-      </button>
-    ))}
-  </nav>
-);
-
-const Banner = ({ artifacts }: { artifacts: Artifact[] }) => {
-  const [index, setIndex] = useState(0);
-  const banners = useMemo(() => (
-    artifacts
-      .filter((artifact) => !isStrictDbEmpty(artifactNameRaw(artifact)))
-      .slice(0, RECOMMENDATION_BANNER_LIMIT)
-      .map((artifact) => {
-        const museum = displayDbString(artifactMuseumRaw(artifact));
-        const era = displayDbString(artifactEraRaw(artifact));
-        const subtitle = [museum, era]
-          .filter((item) => item && item !== DB_EMPTY_PLACEHOLDER)
-          .join(' · ');
-
-        return {
-          id: artifact.id,
-          title: displayDbString(artifactNameRaw(artifact)),
-          subtitle: subtitle || '馆藏推荐',
-          image: String(artifactImageUrlRaw(artifact) ?? ''),
-          description: displayDbString(artifactDescriptionRaw(artifact)),
-        };
-      })
-  ), [artifacts]);
-
-  useEffect(() => {
-    setIndex(0);
-  }, [banners.length]);
-
-  useEffect(() => {
-    if (banners.length <= 1) return undefined;
-    const timer = setInterval(() => {
-      setIndex(prev => (prev + 1) % banners.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [banners.length]);
-
-  if (banners.length === 0) {
-    return (
-      <div className="relative h-[200px] rounded-[5px] overflow-hidden bg-white border border-gray-100 shadow-xl shadow-primary/10 flex flex-col items-center justify-center text-center px-6">
-        <Library className="mb-3 text-gray-300" size={28} />
-        <p className="text-sm font-bold text-gray-700">暂无可推荐文物</p>
-        <p className="mt-1 text-[10px] text-gray-400">数据库加载后会自动显示馆藏轮播</p>
-      </div>
-    );
-  }
-
-  const activeBanner = banners[index] ?? banners[0];
-
-  return (
-    <div className="relative h-[200px] rounded-[5px] overflow-hidden group shadow-xl shadow-primary/10">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeBanner.id}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.8 }}
-          className="absolute inset-0"
-        >
-          <SafeImage 
-            src={activeBanner.image} 
-            alt={activeBanner.title}
-            className="w-full h-full object-cover" 
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-          <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-tertiary rounded text-[8px] font-bold uppercase tracking-widest whitespace-nowrap">热门推荐</span>
-              <span className="min-w-0 truncate text-[10px] opacity-80 font-medium">{activeBanner.subtitle}</span>
-            </div>
-            <h2 className="truncate text-2xl font-serif font-bold tracking-tight">{activeBanner.title}</h2>
-            <p className="text-[10px] opacity-60 line-clamp-1">{activeBanner.description}</p>
-          </div>
-        </motion.div>
-      </AnimatePresence>
-      
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
-        {banners.map((_, i) => (
-          <div 
-            key={i} 
-            className={cn(
-              "h-1 rounded-full transition-all duration-500",
-              i === index ? "w-6 bg-white" : "w-1.5 bg-white/30"
-            )} 
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const MuseumSelectorOverlay = ({ 
-  isOpen, 
-  onClose, 
-  museumsByProvince, 
-  currentMuseum,
-  museumCounts,
-  onSelect 
-}: { 
-  isOpen: boolean, 
-  onClose: () => void, 
-  museumsByProvince: Record<string, string[]>, 
-  currentMuseum: string,
-  museumCounts: Record<string, number>,
-  onSelect: (museum: string) => void 
-}) => {
-  const provinces = useMemo(() => Object.keys(museumsByProvince), [museumsByProvince]);
-  const [tempProvince, setTempProvince] = useState('');
-  const [tempMuseum, setTempMuseum] = useState('');
-  const [museumSelectorQuery, setMuseumSelectorQuery] = useState('');
-
-  const visibleMuseums = useMemo(() => {
-    const q = museumSelectorQuery.trim().toLowerCase();
-    const names = q
-      ? Array.from(new Set(Object.values(museumsByProvince).flat()))
-      : museumsByProvince[tempProvince] ?? [];
-    return names
-      .filter((name) => !q || name.toLowerCase().includes(q))
-      .slice()
-      .sort((a, b) => (museumCounts[b] ?? 0) - (museumCounts[a] ?? 0) || a.localeCompare(b, 'zh-CN'));
-  }, [museumCounts, museumSelectorQuery, museumsByProvince, tempProvince]);
-
-  // 仅在打开弹窗时初始化一次临时状态，避免后续操作被 useEffect 干扰重置
-  useEffect(() => {
-    if (isOpen) {
-      const prov = provinces.find(p => museumsByProvince[p].includes(currentMuseum)) || provinces[0] || '';
-      setTempProvince(prov);
-      setTempMuseum(currentMuseum);
-      setMuseumSelectorQuery('');
-    }
-  }, [isOpen]); // 移除 provinces 和 currentMuseum 依赖，只在打开时初始化
-
-  if (!isOpen) return null;
-
-  return (
-    <motion.div 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
-      exit={{ opacity: 0 }} 
-      className="fixed inset-0 bg-black/60 z-[200] flex flex-col justify-end"
-    >
-      <motion.div 
-        initial={{ y: '100%' }} 
-        animate={{ y: 0 }} 
-        exit={{ y: '100%' }} 
-        className="bg-white rounded-t-[32px] h-[85vh] flex flex-col overflow-hidden"
-      >
-        {/* Header */}
-        <div className="p-6 pb-4 space-y-4 border-b border-gray-50">
-          <div className="flex items-center gap-4">
-          <button onClick={onClose} className="p-2 -ml-2 text-gray-400 active:bg-gray-100 rounded-full transition-colors">
-            <ArrowLeft size={24} />
-          </button>
-          <h2 className="text-xl font-bold text-gray-900">选择博物馆</h2>
-          </div>
-          <div className="flex items-center gap-2 rounded-2xl bg-gray-50 px-4 py-3">
-            <Search size={16} className="text-gray-400 flex-shrink-0" />
-            <input
-              value={museumSelectorQuery}
-              onChange={(event) => setMuseumSelectorQuery(event.target.value)}
-              placeholder="搜索博物馆"
-              className="min-w-0 flex-1 bg-transparent text-sm font-medium text-gray-700 outline-none placeholder:text-gray-300"
-            />
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* Left: Provinces (30%) */}
-          <div className="w-[30%] bg-gray-50 overflow-y-auto no-scrollbar py-2 border-r border-gray-100">
-            {provinces.map(p => (
-              <button
-                key={p}
-                onClick={() => {
-                  setTempProvince(p);
-                  // 切换省份时，默认选中该省第一个博物馆
-                  if (museumsByProvince[p] && museumsByProvince[p].length > 0) {
-                    setTempMuseum(museumsByProvince[p][0]);
-                  }
-                }}
-                className={cn(
-                  "w-full px-4 py-5 text-left transition-all relative",
-                  tempProvince === p ? "bg-white text-blue-600 font-bold" : "text-gray-500 text-sm"
-                )}
-              >
-                {tempProvince === p && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-blue-600 rounded-r-full" />
-                )}
-                <div className="flex items-center justify-between gap-1">
-                  <span className="truncate">{p}</span>
-                  <span className={cn(
-                    "text-[10px] px-1.5 py-0.5 rounded-full flex-shrink-0",
-                    tempProvince === p ? "bg-blue-50 text-blue-600" : "bg-gray-200 text-gray-400"
-                  )}>
-                    {museumsByProvince[p].length}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Right: Museums (70%) */}
-          <div className="w-[70%] bg-white overflow-y-auto p-4 space-y-3">
-            {visibleMuseums.map(m => (
-              <button
-                key={m}
-                onClick={() => setTempMuseum(m)}
-                className={cn(
-                  "w-full p-4 rounded-2xl text-left transition-all border-2",
-                  tempMuseum === m 
-                    ? "bg-blue-50 border-blue-200 text-blue-700 font-bold shadow-sm" 
-                    : "bg-gray-50 border-transparent text-gray-600 text-sm hover:bg-gray-100"
-                )}
-              >
-                <span className="block break-words leading-snug">{m}</span>
-                <span className={cn(
-                  "mt-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold",
-                  tempMuseum === m ? "bg-white text-blue-600" : "bg-white text-gray-400"
-                )}>
-                  {museumCounts[m] ?? 0} 件馆藏
-                </span>
-              </button>
-            ))}
-            {visibleMuseums.length === 0 && (
-              <div className="py-20 text-center text-gray-300 text-sm italic">
-                未找到匹配的博物馆
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="p-6 border-t border-gray-50 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
-          <button
-            onClick={() => {
-              if (tempMuseum) {
-                onSelect(tempMuseum);
-                onClose();
-              }
-            }}
-            disabled={!tempMuseum}
-            className="w-full py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-100 active:scale-[0.98] transition-all disabled:opacity-50 disabled:grayscale"
-          >
-            确定选择
-          </button>
-        </div>
-      </motion.div>
-    </motion.div>
   );
 };
 
@@ -2775,55 +2278,16 @@ export default function App() {
               {userProfile ? (
                 <>
                   {/* Header Area */}
-                  <div className="relative h-[220px]">
-                    <img src={userProfile.headerUrl} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <div className="absolute bottom-6 left-6 right-6 flex items-end gap-4">
-                      <img src={userProfile.photoURL} className="w-16 h-16 rounded-2xl border-2 border-white/20 shadow-xl" />
-                      <div className="flex-1 text-white pb-1">
-                        <h2 className="text-xl font-bold">{userProfile.displayName}</h2>
-                        <div className="flex items-center gap-4 mt-2 opacity-80">
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm font-bold">{userProfile.stats?.likes || 0}</span>
-                            <span className="text-[10px]">获赞</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm font-bold">{userProfile.stats?.following || 0}</span>
-                            <span className="text-[10px]">关注</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm font-bold">{userProfile.stats?.followers || 0}</span>
-                            <span className="text-[10px]">粉丝</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <ProfileHeader userProfile={userProfile} />
 
                   {/* Profile Tabs */}
-                  <div className="sticky top-[60px] z-30 bg-white flex border-b border-gray-100">
-                    {[
-                      { label: '收藏文物', icon: Heart, count: favoriteArtifacts.length },
-                      { label: '我的展陈', icon: Library, count: myExhibitions.length },
-                      { label: '收藏展陈', icon: Bookmark, count: favExhibitionIds.length }
-                    ].map((tab) => (
-                      <button 
-                        key={tab.label} 
-                        onClick={() => setProfileTab(tab.label)}
-                        className={cn(
-                          "flex-1 py-4 text-xs font-bold transition-all relative flex flex-col items-center justify-center gap-1 force-nowrap",
-                          profileTab === tab.label ? "text-amber-800" : "text-gray-400"
-                        )}
-                      >
-                        <tab.icon size={18} strokeWidth={profileTab === tab.label ? 2.5 : 2} />
-                        <div className="flex items-center gap-1 force-nowrap">
-                          {tab.label}
-                          <span className="text-[10px] opacity-50 font-medium force-nowrap">({tab.count})</span>
-                        </div>
-                        {profileTab === tab.label && <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-1 bg-amber-800 rounded-full" />}
-                      </button>
-                    ))}
-                  </div>
+                  <ProfileTabBar
+                    profileTab={profileTab}
+                    setProfileTab={setProfileTab}
+                    favoriteArtifactsCount={favoriteArtifacts.length}
+                    myExhibitionsCount={myExhibitions.length}
+                    favExhibitionIdsCount={favExhibitionIds.length}
+                  />
 
                   <div className="p-4 space-y-4">
                     <div className="grid grid-cols-1 gap-4">
@@ -3085,26 +2549,10 @@ export default function App() {
                 </button>
               </form>
             </div>
-            <div className="flex border-b border-gray-100">
-              {([
-                { id: 'artifact' as const, label: '文物' },
-                { id: 'exhibition' as const, label: '展陈' },
-                { id: 'museum' as const, label: '博物馆' },
-                { id: 'user' as const, label: '用户' },
-              ]).map(({ id, label }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setSearchOverlayTab(id)}
-                  className={cn(
-                    'flex-1 py-4 text-sm font-bold transition-all',
-                    searchOverlayTab === id ? 'text-amber-800 border-b-2 border-amber-800' : 'text-gray-400',
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+            <SearchOverlayTabs
+              searchOverlayTab={searchOverlayTab}
+              setSearchOverlayTab={setSearchOverlayTab}
+            />
             <div className="flex-1 overflow-y-auto p-4">
               {!searchQuery.trim() ? (
                 <div className="flex flex-col items-center justify-center text-gray-300 space-y-4 py-20">
