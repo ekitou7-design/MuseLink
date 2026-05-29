@@ -6,14 +6,7 @@ import { SafeImage } from '../../../components/SafeImage';
 import { rankArtifactsByKeywordQuery } from '../../../lib/artifactSearch';
 import { artifactMuseumRaw, artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
 import { cn } from '../../../lib/utils';
-
-const findArtifactsByIds = (artifactIds: string[] | undefined, artifacts: Artifact[]) => {
-  if (!artifactIds?.length) return [];
-  const artifactMap = new Map(artifacts.map((artifact) => [String(artifact.id), artifact]));
-  return artifactIds
-    .map((id) => artifactMap.get(String(id)))
-    .filter(Boolean) as Artifact[];
-};
+import { findArtifactsByIds } from '../../../shared/lib/domainUtils';
 
 export const ManualExhibitionModal = ({
   isOpen,

@@ -1,55 +1,21 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   Search, 
   Library, 
   Sparkles, 
   User, 
-  Heart, 
   Plus, 
-  Zap,
-  Play,
-  Pause,
-  Music,
-  Volume2,
-  VolumeX,
-  Repeat,
-  Maximize,
-  Minimize,
-  SkipBack,
-  SkipForward,
-  ChevronRight,
-  History,
-  ArrowLeft,
-  ArrowRight,
-  Share2,
   Bookmark,
   BookmarkCheck,
-  Loader2,
   X,
-  Send,
-  Bell,
-  MessageSquare,
-  AtSign,
-  UserPlus,
-  Settings,
-  ArrowDown,
-  ArrowUp,
-  ThumbsUp,
-  MessageCircle,
   Globe,
   LayoutGrid,
-  Palette,
-  Languages,
-  Trash2,
-  Mic,
-  MicOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { me as fetchMe } from './lib/authClient';
-import { Artifact, Exhibition, Favorite, UserProfile, Message, Comment, SlideshowSettings, Museum } from './types';
+import { Artifact, CuratorTI, Exhibition, UserProfile, Museum } from './types';
 import { MOCK_ARTIFACTS } from './constants';
 import { curatorService } from './modules/curation/services/curationService';
-import ReactMarkdown from 'react-markdown';
 import { ProfileEditModal } from './components/ProfileEditModal';
 import { SlideshowOverlay } from './components/SlideshowOverlay';
 import { SafeImage } from './components/SafeImage';
@@ -59,11 +25,9 @@ import { cn } from './lib/utils';
 import { artifactSearchBlob, rankArtifactsByKeywordQuery } from './lib/artifactSearch';
 import {
   artifactEraRaw,
-  artifactMuseumRaw,
   artifactNameRaw,
   displayDbString,
 } from './lib/dbDisplay';
-import { AmbientAudioPlayer, isAmbientBgmUrl } from './lib/ambientAudio';
 import { PROVINCIAL_MUSEUMS } from '../backend/provincial-museums';
 import { fetchMergedArtifacts, searchRelics } from './modules/artifacts/services/artifactsService';
 import { fetchMergedMuseums } from './modules/museums/services/museumsService';
@@ -80,6 +44,7 @@ import {
   fetchFavoriteArtifactIds,
   fetchFavoriteExhibitionIds,
   toggleFavoriteArtifact,
+  updateMyProfile,
 } from './modules/profile/services/profileService';
 import { ArtifactCard } from './modules/artifacts/components/ArtifactCard';
 import { ExhibitionCard } from './modules/exhibitions/components/ExhibitionCard';
@@ -100,6 +65,8 @@ import { ManualExhibitionModal } from './modules/exhibitions/components/ManualEx
 import { ExhibitionDetail } from './modules/exhibitions/components/ExhibitionDetail';
 import { AIExhibitionModal } from './modules/curation/components/AIExhibitionModal';
 import { AICurationEntry } from './modules/curation/components/AICurationEntry';
+import { CuratorTIQuiz } from './modules/curation/components/CuratorTIQuiz';
+import { ExhibitionTopTabs, type ExhibitionView } from './modules/exhibitions/components/ExhibitionTopTabs';
 import { ExploreTabBar } from './modules/artifacts/components/ExploreTabBar';
 import { normalizeArtifacts } from './modules/artifacts/normalizers/artifactNormalizers';
 import { normalizeExhibition, normalizeExhibitions } from './modules/exhibitions/normalizers/exhibitionNormalizers';
@@ -168,24 +135,19 @@ export default function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [exhFloor, setExhFloor] = useState(1); // 1: My, 2: Square
-  const [pullY, setPullY] = useState(0);
-  const startY = useRef(0);
-  const isPulling = useRef(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
   // AI & Square State
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
-  const [aiKeywords, setAiKeywords] = useState('');
+  const [exhibitionView, setExhibitionView] = useState<ExhibitionView>('ai');
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiResult, setAiResult] = useState<Partial<Exhibition> | null>(null);
+  const [isCuratorTIQuizOpen, setIsCuratorTIQuizOpen] = useState(false);
+  const [isSavingCuratorTI, setIsSavingCuratorTI] = useState(false);
   const [myExhibitions, setMyExhibitions] = useState<Exhibition[]>([]);
   const [squareExhibitions, setSquareExhibitions] = useState<Exhibition[]>([]);
   const [exploreTab, setExploreTab] = useState('推荐');
   const [museumSubTab, setMuseumSubTab] = useState('中国国家博物馆');
   const [eraSubTab, setEraSubTab] = useState('全部');
   const [messageTab, setMessageTab] = useState<'reminders' | 'chats'>('reminders');
-  const [exhSearchQuery, setExhSearchQuery] = useState('');
   const [isExhMultiSelect, setIsExhMultiSelect] = useState(false);
   const [selectedExhIds, setSelectedExhIds] = useState<string[]>([]);
   const [isNotDevelopedOpen, setIsNotDevelopedOpen] = useState(false);
@@ -286,15 +248,12 @@ export default function App() {
   }, [artifactPool, isSearching, lastRelicSearchKeyword, relicSearchResults.length, searchOverlayTab, searchQuery]);
 
   // Artifact Filtering & Sorting
-  const [showFilters, setShowFilters] = useState(false);
   const [filterPeriod, setFilterPeriod] = useState('全部');
   const [filterMuseum, setFilterMuseum] = useState('全部');
   const [filterCulture, setFilterCulture] = useState('全部');
   const [sortBy, setSortBy] = useState<'name' | 'favs' | 'era'>('favs');
   const [allArtifactsQuery, setAllArtifactsQuery] = useState('');
   const [allArtifactsVisibleCount, setAllArtifactsVisibleCount] = useState(ALL_ARTIFACT_PAGE_SIZE);
-  const [favSearchQuery, setFavSearchQuery] = useState('');
-  const [favSortBy, setFavSortBy] = useState<'name' | 'favs'>('favs');
 
   const MUSEUMS = useMemo(() => {
     const names = new Set<string>();
@@ -557,49 +516,23 @@ export default function App() {
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (activeTab !== 'exhibition') return;
-    const scroll = scrollRef.current?.scrollTop || 0;
-    if (scroll <= 0) {
-      startY.current = e.touches[0].clientY;
-      isPulling.current = true;
+  const handleSaveCuratorTI = async (curatorTI: CuratorTI) => {
+    if (!user) {
+      goLogin();
+      return;
     }
-  };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isPulling.current || activeTab !== 'exhibition') return;
-    
-    const currentY = e.touches[0].clientY;
-    const deltaY = currentY - startY.current;
-
-    if (exhFloor === 1 && deltaY > 0) {
-      // Pulling down from Floor 1
-      e.preventDefault();
-      // Apply damping: log or power factor
-      const dampedY = Math.pow(deltaY, 0.8);
-      setPullY(dampedY);
-    } else if (exhFloor === 2 && deltaY < 0) {
-      // Pulling up from Floor 2
-      const scroll = scrollRef.current?.scrollTop || 0;
-      if (scroll <= 0) {
-        e.preventDefault();
-        const dampedY = -Math.pow(Math.abs(deltaY), 0.8);
-        setPullY(dampedY);
-      }
+    setIsSavingCuratorTI(true);
+    try {
+      const updated = await updateMyProfile({ curatorTI });
+      setUserProfile(prev => prev ? { ...prev, ...updated, curatorTI: updated.curatorTI || curatorTI } : updated);
+      setIsCuratorTIQuizOpen(false);
+    } catch (error) {
+      console.error("Save curator TI error:", error);
+      alert(error instanceof Error ? error.message : '策展 TI 保存失败，请稍后重试。');
+    } finally {
+      setIsSavingCuratorTI(false);
     }
-  };
-
-  const handleTouchEnd = () => {
-    if (!isPulling.current) return;
-    isPulling.current = false;
-
-    if (exhFloor === 1 && pullY > 80) {
-      setExhFloor(2);
-    } else if (exhFloor === 2 && pullY < -80) {
-      setExhFloor(1);
-    }
-    
-    setPullY(0);
   };
 
   useEffect(() => {
@@ -619,6 +552,7 @@ export default function App() {
           headerUrl: me.profile?.headerUrl || '',
           role: me.profile?.role || 'user',
           privacySettings: me.profile?.privacySettings || { profileVisibility: 'all' },
+          curatorTI: me.profile?.curatorTI as CuratorTI | undefined,
           stats: me.profile?.stats || { favArtifacts: 0, myExhibitions: 0, favExhibitions: 0, likes: 0, following: 0, followers: 0 },
         } as UserProfile);
 
@@ -1280,90 +1214,88 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="p-4 space-y-10"
+              className="min-h-screen bg-gray-50"
             >
-              {/* 1. AI Curation */}
-              <AICurationEntry onOpen={() => setIsAIModalOpen(true)} />
+              <ExhibitionTopTabs value={exhibitionView} onChange={setExhibitionView} />
 
-              {/* 2. My Curation (Horizontal Scroll) */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 overflow-hidden">
-                    <Library size={18} className="text-primary flex-shrink-0" />
-                    <h2 className="text-lg font-bold text-secondary font-serif force-nowrap">我的策展</h2>
+              {exhibitionView === 'ai' && (
+                <AICurationEntry
+                  curatorTI={userProfile?.curatorTI}
+                  onOpen={() => setIsAIModalOpen(true)}
+                  onOpenQuiz={() => setIsCuratorTIQuizOpen(true)}
+                />
+              )}
+
+              {exhibitionView === 'mine' && (
+                <div className="space-y-5 p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <Library size={18} className="text-primary flex-shrink-0" />
+                      <h2 className="text-lg font-bold text-secondary font-serif force-nowrap">我的策展</h2>
+                    </div>
+                    {user && <span className="text-[10px] font-bold text-primary bg-neutral px-2 py-0.5 rounded-full border border-gray-100 force-nowrap">{myExhibitions.length}</span>}
                   </div>
-                  {user && <span className="text-[10px] font-bold text-primary bg-neutral px-2 py-0.5 rounded-full border border-gray-100 force-nowrap">{myExhibitions.length}</span>}
-                </div>
-                
-                <div className="flex gap-4 overflow-x-auto no-scrollbar -mx-4 px-4 pb-2 snap-x">
+
                   {user ? (
-                    myExhibitions.length > 0 ? (
-                      myExhibitions.map(exh => (
-                        <div 
-                          key={exh.id} 
+                    <div className="grid grid-cols-1 gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setIsManualExhibitionOpen(true)}
+                        className="flex min-h-20 items-center justify-center gap-2 rounded-[5px] border-2 border-dashed border-gray-200 bg-white text-xs font-bold text-gray-400 transition-all hover:border-primary/30 hover:text-primary"
+                      >
+                        <Plus size={18} />
+                        新建策展
+                      </button>
+                      {myExhibitions.map(exh => (
+                        <ExhibitionCard
+                          key={exh.id}
+                          exhibition={exh}
                           onClick={() => setSelectedExhibition(exh)}
-                          className="w-40 flex-shrink-0 space-y-2 cursor-pointer group snap-start"
-                        >
-                          <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
-                            <img src={exh.coverUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform" referrerPolicy="no-referrer" />
-                          </div>
-                          <p className="text-xs font-bold text-gray-800 force-nowrap">{exh.title}</p>
+                        />
+                      ))}
+                      {myExhibitions.length === 0 && (
+                        <div className="py-20 text-center text-gray-300 text-xs italic">
+                          暂无策展内容
                         </div>
-                      ))
-                    ) : (
-                      <div className="w-full py-10 flex flex-col items-center justify-center text-center space-y-2 opacity-40 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
-                        <Library size={24} />
-                        <p className="text-xs force-nowrap">暂无策展内容</p>
-                      </div>
-                    )
+                      )}
+                    </div>
                   ) : (
-                    <div className="w-full py-10 flex flex-col items-center justify-center text-center space-y-3 bg-gray-50 rounded-3xl border border-gray-100">
+                    <div className="flex flex-col items-center justify-center space-y-3 rounded-[5px] border border-gray-100 bg-white py-12 text-center">
                       <p className="text-xs text-gray-400 force-nowrap">登录后查看我的策展</p>
-                      <button onClick={goLogin} className="px-6 py-2 bg-primary text-white rounded-full text-[10px] font-bold shadow-md shadow-primary/20 force-nowrap">立即登录</button>
-                    </div>
-                  )}
-                  {/* Add New Button as a card */}
-                  {user && (
-                    <div 
-                      onClick={() => {
-                        setIsManualExhibitionOpen(true);
-                      }}
-                      className="w-40 flex-shrink-0 aspect-[4/3] rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-300 hover:text-primary hover:border-primary/30 transition-all cursor-pointer snap-start"
-                    >
-                      <Plus size={24} />
-                      <span className="text-[10px] font-bold mt-2 force-nowrap">新建策展</span>
+                      <button onClick={goLogin} className="px-6 py-2 bg-primary text-white rounded-[5px] text-[10px] font-bold shadow-md shadow-primary/20 force-nowrap">立即登录</button>
                     </div>
                   )}
                 </div>
-              </div>
+              )}
 
-              {/* 3. Exhibition Square (Vertical) */}
-              <div id="exhibition-square" className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Globe size={18} className="text-amber-800" />
-                    <h2 className="text-lg font-bold text-gray-900 whitespace-nowrap force-nowrap">展陈广场</h2>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button className="text-[10px] font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full whitespace-nowrap force-nowrap">最热</button>
-                    <button className="text-[10px] font-bold text-gray-400 px-3 py-1 rounded-full whitespace-nowrap force-nowrap">最新</button>
-                  </div>
-                </div>
-
-                <div className="columns-2 gap-1.5">
-                  {squareExhibitions.map(exh => (
-                    <div key={exh.id} className="break-inside-avoid mb-1.5">
-                      <ExhibitionCard 
-                        exhibition={exh} 
-                        onClick={() => setSelectedExhibition(exh)} 
-                        showFavoriteButton={Boolean(user)}
-                        isFavorite={favExhibitionIds.includes(exh.id)}
-                        onFavoriteClick={() => toggleExhibitionFavorite(exh.id)}
-                      />
+              {exhibitionView === 'square' && (
+                <div id="exhibition-square" className="space-y-6 p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Globe size={18} className="text-amber-800" />
+                      <h2 className="text-lg font-bold text-gray-900 whitespace-nowrap force-nowrap">展陈广场</h2>
                     </div>
-                  ))}
+                    <div className="flex items-center gap-2">
+                      <button className="text-[10px] font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full whitespace-nowrap force-nowrap">最热</button>
+                      <button className="text-[10px] font-bold text-gray-400 px-3 py-1 rounded-full whitespace-nowrap force-nowrap">最新</button>
+                    </div>
+                  </div>
+
+                  <div className="columns-2 gap-1.5">
+                    {squareExhibitions.map(exh => (
+                      <div key={exh.id} className="break-inside-avoid mb-1.5">
+                        <ExhibitionCard
+                          exhibition={exh}
+                          onClick={() => setSelectedExhibition(exh)}
+                          showFavoriteButton={Boolean(user)}
+                          isFavorite={favExhibitionIds.includes(exh.id)}
+                          onFavoriteClick={() => toggleExhibitionFavorite(exh.id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </motion.div>
           )}
 
@@ -1378,7 +1310,10 @@ export default function App() {
               {userProfile ? (
                 <>
                   {/* Header Area */}
-                  <ProfileHeader userProfile={userProfile} />
+                  <ProfileHeader
+                    userProfile={userProfile}
+                    onOpenCuratorTIQuiz={() => setIsCuratorTIQuizOpen(true)}
+                  />
 
                   {/* Profile Tabs */}
                   <ProfileTabBar
@@ -1566,6 +1501,14 @@ export default function App() {
         result={aiResult}
         onCollect={handleAICollect}
         artifacts={artifactPool}
+      />
+
+      <CuratorTIQuiz
+        isOpen={isCuratorTIQuizOpen}
+        initialAnswers={userProfile?.curatorTI?.answers}
+        isSaving={isSavingCuratorTI}
+        onClose={() => setIsCuratorTIQuizOpen(false)}
+        onSave={handleSaveCuratorTI}
       />
 
       <SettingsModal 

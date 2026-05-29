@@ -141,7 +141,7 @@
   }
   
   .drawer-overlay {
-    @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] opacity-0 pointer-events-none transition-opacity duration-300;
+    @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-[180] opacity-0 pointer-events-none transition-opacity duration-300;
     top: var(--phone-safe-top);
   }
   .drawer-overlay.open {
@@ -149,7 +149,7 @@
   }
   
   .drawer-content {
-    @apply fixed top-0 left-0 bottom-0 w-3/4 bg-[#FDFBF7] z-[101] -translate-x-full transition-transform duration-300 ease-out shadow-2xl;
+    @apply fixed top-0 left-0 bottom-0 w-3/4 bg-[#FDFBF7] z-[190] -translate-x-full transition-transform duration-300 ease-out shadow-2xl;
     top: var(--phone-safe-top);
   }
   .drawer-content.open {

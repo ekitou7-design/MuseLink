@@ -166,6 +166,18 @@ http://localhost:3001/#/admin
 
 ## 常见问题
 
+### 怎么把智能策展换成 DeepSeek？
+
+后端已经使用 DeepSeek 的 OpenAI 兼容接口。你只需要在项目根目录新建或修改 `.env.local`：
+
+```bash
+DEEPSEEK_API_KEY="你的 DeepSeek API Key"
+DEEPSEEK_BASE_URL="https://api.deepseek.com"
+DEEPSEEK_MODEL="deepseek-v4-flash"
+```
+
+如果想用更强模型，可以把 `DEEPSEEK_MODEL` 改成 `deepseek-v4-pro`。
+
 ### npm install 很慢怎么办？
 
 这是正常的，第一次会下载很多依赖。可以先等几分钟。

@@ -1,10 +1,40 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bookmark, Loader2, Mic, MicOff, Music, Sparkles, X, Zap } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Artifact, Exhibition } from '../../../types';
 import { SafeImage } from '../../../components/SafeImage';
 import { artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
 import { cn } from '../../../lib/utils';
+import {
+  CONTENT_CURATION_QUESTIONS,
+  type CuratorGuideAnswers,
+} from '../data/curatorPreferences';
+
+function buildFreeformGuidePrompt(keywords: string, guideAnswers: CuratorGuideAnswers) {
+  const base = keywords.trim();
+  const guideText = CONTENT_CURATION_QUESTIONS
+    .map((question) => {
+      const answer = guideAnswers[question.id]?.trim();
+      return answer ? `${question.prompt}${answer}` : '';
+    })
+    .filter(Boolean)
+    .join('；');
+
+  if (!guideText) return base;
+  return [
+    base || '请根据我的策展想法生成一个展览',
+    `用户补充的展览内容想法：${guideText}。`,
+    '请优先围绕这些内容想法来确定展览主题、展品选择、叙事线索、知识重点和情感落点。',
+  ].join('\n');
+}
+
+function buildQuestionPlaceholder(question: (typeof CONTENT_CURATION_QUESTIONS)[number]) {
+  const hints = question.options.map((option, index) => {
+    const prefix = String.fromCharCode(65 + index);
+    return `${prefix}. ${option.label}`;
+  }).join(' / ');
+  return `可以参考：${hints}\n也可以写自己的想法`;
+}
 
 export const AIExhibitionModal = ({ 
   isOpen, 
@@ -26,7 +56,10 @@ export const AIExhibitionModal = ({
   const [keywords, setKeywords] = useState('');
   const [generateBGM, setGenerateBGM] = useState(true);
   const [isListening, setIsListening] = useState(false);
+  const [guideAnswers, setGuideAnswers] = useState<CuratorGuideAnswers>({});
   const recognitionRef = useRef<any>(null);
+  const answeredCount = Object.values(guideAnswers).filter((value) => value.trim()).length;
+  const canGenerate = keywords.trim().length > 0 || answeredCount > 0;
 
   const speechSupported = typeof window !== "undefined" && Boolean((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
 
@@ -60,6 +93,14 @@ export const AIExhibitionModal = ({
     recognition.start();
   };
 
+  useEffect(() => {
+    if (!isOpen) {
+      setGuideAnswers({});
+      setKeywords('');
+      setIsListening(false);
+    }
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -73,9 +114,9 @@ export const AIExhibitionModal = ({
             <div className="w-10" />
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
+          <div className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar">
             <div className="space-y-4">
-              <div className="bg-neutral rounded-3xl p-6 border border-gray-100 space-y-4">
+              <div className="bg-neutral rounded-[5px] p-5 border border-gray-100 space-y-4">
                 <div className="flex items-center gap-2 text-primary">
                   <Sparkles size={18} />
                   <span className="text-sm font-bold">一句话生成展览</span>
@@ -85,7 +126,7 @@ export const AIExhibitionModal = ({
                     value={keywords}
                     onChange={e => setKeywords(e.target.value)}
                     placeholder="例如：帮我策划一个关于江南文人生活的展览；或直接说一次旅行中的文化体验、印象深刻的文物、喜欢的建筑风格"
-                    className="w-full bg-white border-none rounded-2xl p-4 pr-14 text-sm min-h-[124px] focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                    className="w-full bg-white border-none rounded-[5px] p-4 pr-14 text-sm min-h-[116px] focus:ring-2 focus:ring-primary/20 transition-all outline-none"
                   />
                   <button
                     type="button"
@@ -98,18 +139,6 @@ export const AIExhibitionModal = ({
                   >
                     {isListening ? <MicOff size={18} /> : <Mic size={18} />}
                   </button>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {["江南文人生活", "宋代器物美学", "旅行中的古建印象"].map((example) => (
-                    <button
-                      key={example}
-                      type="button"
-                      onClick={() => setKeywords(`帮我策划一个关于${example}的展览`)}
-                      className="min-h-9 rounded-[5px] bg-white px-2 text-[10px] font-bold text-gray-600 border border-gray-100"
-                    >
-                      {example}
-                    </button>
-                  ))}
                 </div>
                 
                 <div className="flex items-center justify-between px-2">
@@ -130,16 +159,45 @@ export const AIExhibitionModal = ({
                     )} />
                   </button>
                 </div>
-
-                <button 
-                  onClick={() => onGenerate(keywords, generateBGM)}
-                  disabled={isGenerating || !keywords.trim()}
-                  className="w-full py-3.5 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
-                  {isGenerating ? '正在从后端文物库策展...' : '开口 / 输入即可策展'}
-                </button>
               </div>
+
+              <div className="rounded-[5px] border border-amber-100 bg-amber-50 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">生成前引导</p>
+                    <h3 className="mt-1 text-sm font-bold text-gray-900">尽量具体地写下你想讲的内容</h3>
+                  </div>
+                  <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-amber-800">
+                    内容线索 {answeredCount}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {CONTENT_CURATION_QUESTIONS.map((question) => (
+                  <section key={question.id} className="space-y-3 rounded-[5px] border border-gray-100 bg-white p-4 shadow-sm">
+                    <div className="flex items-start gap-3">
+                      <span className="rounded-[5px] bg-gray-100 px-2 py-1 text-[10px] font-bold text-gray-500">{question.title}</span>
+                      <h3 className="break-words text-sm font-bold leading-snug text-gray-900">{question.prompt}</h3>
+                    </div>
+                    <textarea
+                      value={guideAnswers[question.id] || ''}
+                      onChange={(event) => setGuideAnswers((prev) => ({ ...prev, [question.id]: event.target.value }))}
+                      placeholder={buildQuestionPlaceholder(question)}
+                      className="min-h-[92px] w-full resize-none rounded-[5px] border border-gray-100 bg-gray-50 p-3 text-xs leading-relaxed text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-amber-200 focus:bg-white focus:ring-2 focus:ring-amber-100"
+                    />
+                  </section>
+                ))}
+              </div>
+
+              <button 
+                onClick={() => onGenerate(buildFreeformGuidePrompt(keywords, guideAnswers), generateBGM)}
+                disabled={isGenerating || !canGenerate}
+                className="w-full py-3.5 bg-primary text-white rounded-[5px] font-bold shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
+                {isGenerating ? '正在从后端文物库策展...' : '生成我的展览'}
+              </button>
             </div>
 
             {result && (

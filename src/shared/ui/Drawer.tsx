@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   ChevronRight,
   Copyright,
@@ -8,9 +9,9 @@ import {
   LogOut,
   Settings,
   User,
+  X,
 } from 'lucide-react';
 import { logout as jwtLogout } from '../../lib/authClient';
-import { cn } from '../../lib/utils';
 
 export const Drawer = ({ 
   isOpen, 
@@ -28,12 +29,47 @@ export const Drawer = ({
   onEditProfile: () => void,
   onSettingsClick: () => void,
   onFeatureClick: (title: string) => void
-}) => (
+}) => {
+  const closeDrawer = (event?: { preventDefault?: () => void; stopPropagation?: () => void }) => {
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') closeDrawer();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
   <>
-    <div className={cn("drawer-overlay", isOpen && "open")} onClick={onClose} />
-    <div className={cn("drawer-content p-6 flex flex-col", isOpen && "open")}>
+    <button
+      type="button"
+      aria-label="关闭侧边栏"
+      className="drawer-overlay open"
+      onPointerDown={closeDrawer}
+      onTouchStart={closeDrawer}
+      onClick={closeDrawer}
+    />
+    <aside className="drawer-content open p-6 flex flex-col">
+      <button
+        type="button"
+        aria-label="关闭侧边栏"
+        onPointerDown={closeDrawer}
+        onTouchStart={closeDrawer}
+        onClick={closeDrawer}
+        className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-gray-500 shadow-sm transition-colors hover:bg-gray-100"
+      >
+        <X size={18} />
+      </button>
       {user ? (
-        <div className="space-y-6 mb-10">
+        <div className="space-y-6 mb-10 pr-8">
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => { onClose(); window.dispatchEvent(new CustomEvent('change-tab', { detail: 'profile' })); }}>
             <img src={user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'} className="w-14 h-14 rounded-2xl shadow-sm" />
             <div>
@@ -100,6 +136,7 @@ export const Drawer = ({
         <span>版本 1.2.4</span>
         <span>© 2024 博悟 MuseLink</span>
       </div>
-    </div>
+    </aside>
   </>
-);
+  );
+};

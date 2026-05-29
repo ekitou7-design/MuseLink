@@ -68,7 +68,7 @@ function dedupeArtifacts(artifacts: Artifact[]) {
   return Array.from(unique.values());
 }
 
-function buildModelScopeMessages(userPrompt: string, artifacts: Artifact[]) {
+function buildDeepSeekMessages(userPrompt: string, artifacts: Artifact[]) {
   const artifactLines = artifacts
     .slice(0, 36)
     .map((artifact, index) => {
@@ -116,18 +116,18 @@ function extractJsonObject(text: string) {
     if (start >= 0 && end > start) {
       return JSON.parse(trimmed.slice(start, end + 1));
     }
-    throw new Error("ModelScope response is not valid JSON.");
+    throw new Error("DeepSeek response is not valid JSON.");
   }
 }
 
-function normalizeModelScopeCuration(raw: any, candidates: Artifact[]) {
+function normalizeDeepSeekCuration(raw: any, candidates: Artifact[]) {
   const candidateById = new Map(candidates.map((artifact) => [artifact.id, artifact]));
   const artifactIds = Array.isArray(raw?.artifactIds)
     ? raw.artifactIds.map((id: unknown) => String(id)).filter((id: string) => candidateById.has(id)).slice(0, 12)
     : [];
 
   if (artifactIds.length < 3) {
-    throw new Error("ModelScope returned too few valid artifact IDs.");
+    throw new Error("DeepSeek returned too few valid artifact IDs.");
   }
 
   const coverArtifact = artifactIds.map((id: string) => candidateById.get(id)).find(Boolean);
@@ -139,14 +139,15 @@ function normalizeModelScopeCuration(raw: any, candidates: Artifact[]) {
   };
 }
 
-async function callModelScopeCuration(userPrompt: string, candidates: Artifact[]) {
-  const token = process.env.MODELSCOPE_SDK_TOKEN;
+async function callDeepSeekCuration(userPrompt: string, candidates: Artifact[]) {
+  const token = process.env.DEEPSEEK_API_KEY;
   if (!token) {
-    throw new Error("MODELSCOPE_SDK_TOKEN is not configured.");
+    throw new Error("DEEPSEEK_API_KEY is not configured.");
   }
 
-  const model = process.env.MODELSCOPE_MODEL || "Qwen/Qwen3-30B-A3B-Instruct-2507";
-  const response = await fetch("https://api-inference.modelscope.cn/v1/chat/completions", {
+  const baseUrl = process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com";
+  const model = process.env.DEEPSEEK_MODEL || "deepseek-v4-flash";
+  const response = await fetch(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -154,24 +155,25 @@ async function callModelScopeCuration(userPrompt: string, candidates: Artifact[]
     },
     body: JSON.stringify({
       model,
-      messages: buildModelScopeMessages(userPrompt, candidates),
+      messages: buildDeepSeekMessages(userPrompt, candidates),
       temperature: 0.7,
       max_tokens: 1400,
+      response_format: { type: "json_object" },
     }),
   });
 
   if (!response.ok) {
     const message = await response.text();
-    throw new Error(`ModelScope request failed: ${response.status} ${message.slice(0, 200)}`);
+    throw new Error(`DeepSeek request failed: ${response.status} ${message.slice(0, 200)}`);
   }
 
   const data = await response.json();
   const content = data?.choices?.[0]?.message?.content;
   if (typeof content !== "string" || !content.trim()) {
-    throw new Error("ModelScope response content is empty.");
+    throw new Error("DeepSeek response content is empty.");
   }
 
-  return normalizeModelScopeCuration(extractJsonObject(content), candidates);
+  return normalizeDeepSeekCuration(extractJsonObject(content), candidates);
 }
 
 async function resolveArtifactsSource(source = "auto") {
@@ -748,7 +750,7 @@ async function startServer() {
         return res.status(400).json({ error: "artifacts are required." });
       }
 
-      const result = await callModelScopeCuration(userPrompt, candidates);
+      const result = await callDeepSeekCuration(userPrompt, candidates);
       res.json(result);
     } catch (error) {
       res.status(502).json({ error: error instanceof Error ? error.message : String(error) });

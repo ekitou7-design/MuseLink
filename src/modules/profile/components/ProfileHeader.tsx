@@ -1,6 +1,12 @@
 import { UserProfile } from '../../../types';
 
-export const ProfileHeader = ({ userProfile }: { userProfile: UserProfile }) => (
+export const ProfileHeader = ({
+  userProfile,
+  onOpenCuratorTIQuiz,
+}: {
+  userProfile: UserProfile;
+  onOpenCuratorTIQuiz: () => void;
+}) => (
   <div className="relative h-[220px]">
     <img src={userProfile.headerUrl} className="w-full h-full object-cover" />
     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -22,6 +28,13 @@ export const ProfileHeader = ({ userProfile }: { userProfile: UserProfile }) => 
             <span className="text-[10px]">粉丝</span>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={onOpenCuratorTIQuiz}
+          className="mt-3 max-w-full rounded-[5px] bg-white/15 px-3 py-2 text-left text-[10px] font-bold text-white backdrop-blur-md"
+        >
+          {userProfile.curatorTI ? `策展 TI ${userProfile.curatorTI.code} · ${userProfile.curatorTI.title}` : '测一测我的策展 TI'}
+        </button>
       </div>
     </div>
   </div>

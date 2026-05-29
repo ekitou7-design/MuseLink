@@ -86,6 +86,14 @@ export interface BGM {
   createdAt: string;
 }
 
+export interface CuratorTI {
+  code: string;
+  title: string;
+  description: string;
+  answers: Record<string, string>;
+  updatedAt: string;
+}
+
 export interface Favorite {
   id: string;
   userId: number | string;
@@ -108,6 +116,7 @@ export interface UserProfile {
   privacySettings: {
     profileVisibility: 'all' | 'followers';
   };
+  curatorTI?: CuratorTI;
   stats: {
     favArtifacts: number;
     myExhibitions: number;

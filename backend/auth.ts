@@ -7,6 +7,14 @@ import { getUserDataStatsByUserId } from "./user-data";
 
 export type UserRole = "user" | "admin";
 
+export type CuratorTIRecord = {
+  code: string;
+  title: string;
+  description: string;
+  answers: Record<string, string>;
+  updatedAt: string;
+};
+
 export type AuthUserRecord = {
   id: number; // numeric account id
   museId: string; // login credential, numeric for regular users and named for admin accounts
@@ -24,6 +32,7 @@ export type AuthUserRecord = {
     location?: string;
     role: UserRole;
     privacySettings: { profileVisibility: "all" | "followers" };
+    curatorTI?: CuratorTIRecord;
     stats: {
       favArtifacts: number;
       myExhibitions: number;
@@ -239,6 +248,26 @@ function createContactDisplayName(channel: LoginChannel, target: string) {
     return `MuseLink ${tail}`;
   }
   return target.split("@")[0] || "MuseLink User";
+}
+
+function sanitizeCuratorTI(value: unknown): CuratorTIRecord | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const record = value as Record<string, unknown>;
+  const answersRaw = record.answers;
+  const answers: Record<string, string> = {};
+  if (answersRaw && typeof answersRaw === "object") {
+    Object.entries(answersRaw as Record<string, unknown>).forEach(([key, answer]) => {
+      if (typeof answer === "string") answers[key.slice(0, 40)] = answer.slice(0, 80);
+    });
+  }
+
+  const code = typeof record.code === "string" ? record.code.trim().slice(0, 8) : "";
+  const title = typeof record.title === "string" ? record.title.trim().slice(0, 120) : "";
+  const description = typeof record.description === "string" ? record.description.trim().slice(0, 500) : "";
+  const updatedAt = typeof record.updatedAt === "string" ? record.updatedAt : nowIso();
+  if (!code || !title) return undefined;
+
+  return { code, title, description, answers, updatedAt };
 }
 
 export async function generateMuseId(db: AuthDb): Promise<string> {
@@ -466,6 +495,9 @@ export async function updateUserProfile(userId: number, patch: Partial<AuthUserR
     privacySettings: patch.privacySettings
       ? { ...user.profile.privacySettings, profileVisibility }
       : user.profile.privacySettings,
+    curatorTI: Object.prototype.hasOwnProperty.call(patch, "curatorTI")
+      ? sanitizeCuratorTI(patch.curatorTI)
+      : user.profile.curatorTI,
     stats: user.profile.stats,
   };
 
@@ -496,6 +528,7 @@ export async function listAdminUsers() {
     gender: user.profile.gender || "secret",
     birthday: user.profile.birthday || "",
     location: user.profile.location || "",
+    curatorTI: user.profile.curatorTI,
     profileVisibility: user.profile.privacySettings.profileVisibility,
     contact: {
       email: user.email || "",
