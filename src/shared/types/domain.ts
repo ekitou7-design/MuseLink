@@ -58,6 +58,21 @@ export interface SlideshowSettings {
   loop: boolean;
 }
 
+export interface AICurationSection {
+  title: string;
+  summary: string;
+  artifactIds: string[];
+}
+
+export interface AICurationPlan {
+  theme?: string;
+  opening?: string;
+  sections?: AICurationSection[];
+  artifactNotes?: Record<string, string>;
+  ending?: string;
+  sourceNote?: string;
+}
+
 export interface Exhibition {
   id: string;
   userId: number | string;
@@ -73,6 +88,7 @@ export interface Exhibition {
   commentsCount: number;
   bgmUrl?: string;
   slideshowSettings?: SlideshowSettings;
+  aiCuration?: AICurationPlan;
   createdAt: string;
   updatedAt: string;
 }

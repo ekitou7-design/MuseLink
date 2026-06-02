@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { AuthService } from "../auth/AuthService";
-import { navigate } from "../router/router";
+import { goBackOrNavigate, navigate } from "../router/router";
 import {
   copyToClipboard,
   getStoredMuseId,
@@ -24,6 +24,13 @@ function RegisterSuccessView({
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-emerald-50 via-white to-white p-6">
       <div className="w-full max-w-md bg-white rounded-[32px] shadow-2xl border border-emerald-100 p-7 space-y-6">
+        <button
+          type="button"
+          onClick={() => goBackOrNavigate("/login")}
+          className="text-xs font-bold text-gray-400"
+        >
+          返回
+        </button>
         <div className="space-y-3 text-center">
           <div className="inline-flex items-center rounded-full bg-emerald-700 px-4 py-1.5 text-xs font-black text-white">
             注册成功
@@ -147,6 +154,13 @@ export function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
       <div className="w-full max-w-sm bg-white rounded-3xl shadow-xl border border-gray-100 p-6 space-y-4">
+        <button
+          type="button"
+          onClick={() => goBackOrNavigate("/login")}
+          className="text-xs font-bold text-gray-400"
+        >
+          返回
+        </button>
         <div className="space-y-1">
           <h1 className="text-xl font-black text-gray-900">MuseLink 注册</h1>
           <p className="text-xs text-gray-500">注册后会生成唯一 MuseLink ID（请务必保存）</p>

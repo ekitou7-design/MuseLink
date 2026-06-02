@@ -25,14 +25,14 @@ export const ExhibitionCard = ({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       onClick={onClick}
-      className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 cursor-pointer group break-inside-avoid mb-1.5"
+      className="ios-card mb-3 cursor-pointer overflow-hidden break-inside-avoid group"
     >
       <div className="aspect-[4/5] relative">
         <SafeImage 
            src={exhibition.coverUrl} 
            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
          />
-        <div className="absolute top-1.5 right-1.5 px-1 py-0.5 bg-black/30 backdrop-blur-sm text-white text-[7px] font-bold rounded force-nowrap">
+        <div className="absolute right-2 top-2 rounded-full bg-black/35 px-2 py-1 text-[9px] font-bold text-white backdrop-blur-md force-nowrap">
           {artifactCount}件
         </div>
         {showFavoriteButton && (
@@ -45,7 +45,7 @@ export const ExhibitionCard = ({
               onFavoriteClick?.();
             }}
             className={cn(
-              "absolute bottom-1.5 right-1.5 h-8 w-8 rounded-full backdrop-blur-md shadow-sm flex items-center justify-center transition-all active:scale-95",
+              "absolute bottom-2 right-2 flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-md shadow-sm transition-all active:scale-95",
               isFavorite ? "bg-amber-800 text-white" : "bg-white/90 text-amber-800"
             )}
           >
@@ -53,16 +53,16 @@ export const ExhibitionCard = ({
           </button>
         )}
       </div>
-      <div className="p-1.5 space-y-1">
-        <h3 className="min-w-0 break-words font-serif font-bold text-[11px] text-gray-900">{exhibition.title}</h3>
-        <div className="flex min-w-0 items-center gap-1">
+      <div className="space-y-2 p-3">
+        <h3 className="min-w-0 break-words text-[13px] font-black leading-snug text-gray-950">{exhibition.title}</h3>
+        <div className="flex min-w-0 items-center gap-1.5">
           {exhibition.userPhoto && (
             <SafeImage 
                src={exhibition.userPhoto} 
-               className="h-3 w-3 flex-shrink-0 rounded-full" 
+               className="h-4 w-4 flex-shrink-0 rounded-full" 
              />
           )}
-          <span className="min-w-0 break-words text-[9px] font-medium text-gray-500">{exhibition.userName}</span>
+          <span className="min-w-0 break-words text-[11px] font-medium text-gray-500">{exhibition.userName}</span>
         </div>
       </div>
     </motion.div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Search, 
   Library, 
@@ -10,6 +10,8 @@ import {
   X,
   Globe,
   LayoutGrid,
+  AlertCircle,
+  CheckCircle,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { me as fetchMe } from './lib/authClient';
@@ -66,6 +68,7 @@ import { ExhibitionDetail } from './modules/exhibitions/components/ExhibitionDet
 import { AIExhibitionModal } from './modules/curation/components/AIExhibitionModal';
 import { AICurationEntry } from './modules/curation/components/AICurationEntry';
 import { CuratorTIQuiz } from './modules/curation/components/CuratorTIQuiz';
+import type { CuratorGuideAnswers } from './modules/curation/data/curatorPreferences';
 import { ExhibitionTopTabs, type ExhibitionView } from './modules/exhibitions/components/ExhibitionTopTabs';
 import { ExploreTabBar } from './modules/artifacts/components/ExploreTabBar';
 import { normalizeArtifacts } from './modules/artifacts/normalizers/artifactNormalizers';
@@ -99,6 +102,12 @@ const isEditorRecommendationPlaceholder = (exhibition: Exhibition | null) => (
   exhibition?.id === TEST_EDITOR_RECOMMENDED_EXHIBITION_ID
 );
 
+type ToastState = {
+  id: number;
+  message: string;
+  tone: 'success' | 'error' | 'info';
+} | null;
+
 // --- Main App ---
 
 export default function App() {
@@ -112,6 +121,7 @@ export default function App() {
   const [artifactPool, setArtifactPool] = useState<Artifact[]>(MOCK_ARTIFACTS);
   const [museumPool, setMuseumPool] = useState<Museum[]>([]);
   const [selectedArtifact, setSelectedArtifact] = useState<Artifact | null>(null);
+  const [selectedArtifactLightboxUrl, setSelectedArtifactLightboxUrl] = useState<string | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [relicSearchResults, setRelicSearchResults] = useState<Artifact[]>([]);
@@ -168,6 +178,13 @@ export default function App() {
   const [isBGMGeneratorOpen, setIsBGMGeneratorOpen] = useState(false);
   const [slideshowExhibition, setSlideshowExhibition] = useState<Exhibition | null>(null);
   const [bgmExhibition, setBgmExhibition] = useState<Exhibition | null>(null);
+  const [toast, setToast] = useState<ToastState>(null);
+  const layerHistoryPushedRef = useRef(false);
+  const ignoreNextPopRef = useRef(false);
+
+  const showToast = (message: string, tone: NonNullable<ToastState>['tone'] = 'info') => {
+    setToast({ id: Date.now(), message, tone });
+  };
 
   const openImmersiveExhibition = (exhibition: Exhibition | null) => {
     const normalized = normalizeExhibition(exhibition);
@@ -178,9 +195,220 @@ export default function App() {
     setIsMuseumSelectorOpen(false);
     setIsNotDevelopedOpen(false);
     setSelectedArtifact(null);
+    setSelectedArtifactLightboxUrl(null);
     setSlideshowExhibition(normalized);
     setIsSlideshowOpen(true);
   };
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 3200);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
+
+  const closeAIModal = useCallback(() => {
+    setIsAIModalOpen(false);
+    setAiResult(null);
+  }, []);
+
+  const closeManualExhibition = useCallback(() => {
+    setIsManualExhibitionOpen(false);
+  }, []);
+
+  const closeEditExhibition = useCallback(() => {
+    setIsEditExhibitionOpen(false);
+    setEditingExhibition(null);
+  }, []);
+
+  const closeManageArtifacts = useCallback(() => {
+    setIsManageArtifactsOpen(false);
+  }, []);
+
+  const closeBGMGenerator = useCallback(() => {
+    setIsBGMGeneratorOpen(false);
+    setBgmExhibition(null);
+  }, []);
+
+  const closeSlideshow = useCallback(() => {
+    setIsSlideshowOpen(false);
+    setSlideshowExhibition(null);
+  }, []);
+
+  const exitExhibitionMultiSelect = useCallback(() => {
+    setIsExhMultiSelect(false);
+    setSelectedExhIds([]);
+  }, []);
+
+  const closeTopLayer = useCallback(() => {
+    if (isSlideshowOpen) {
+      closeSlideshow();
+      return true;
+    }
+    if (isBGMGeneratorOpen) {
+      closeBGMGenerator();
+      return true;
+    }
+    if (isManageArtifactsOpen) {
+      closeManageArtifacts();
+      return true;
+    }
+    if (isEditExhibitionOpen) {
+      closeEditExhibition();
+      return true;
+    }
+    if (isManualExhibitionOpen) {
+      closeManualExhibition();
+      return true;
+    }
+    if (isAIModalOpen) {
+      closeAIModal();
+      return true;
+    }
+    if (isCuratorTIQuizOpen) {
+      setIsCuratorTIQuizOpen(false);
+      return true;
+    }
+    if (isSettingsOpen) {
+      setIsSettingsOpen(false);
+      return true;
+    }
+    if (isProfileEditOpen) {
+      setIsProfileEditOpen(false);
+      return true;
+    }
+    if (showSyncPrompt) {
+      setShowSyncPrompt(false);
+      return true;
+    }
+    if (isMuseumSelectorOpen) {
+      setIsMuseumSelectorOpen(false);
+      return true;
+    }
+    if (isExhMultiSelect) {
+      exitExhibitionMultiSelect();
+      return true;
+    }
+    if (selectedArtifactLightboxUrl) {
+      setSelectedArtifactLightboxUrl(null);
+      return true;
+    }
+    if (selectedArtifact) {
+      setSelectedArtifact(null);
+      setSelectedArtifactLightboxUrl(null);
+      return true;
+    }
+    if (selectedExhibition) {
+      setSelectedExhibition(null);
+      return true;
+    }
+    if (isSearching) {
+      setIsSearching(false);
+      return true;
+    }
+    if (isMessaging) {
+      setIsMessaging(false);
+      return true;
+    }
+    if (isDrawerOpen) {
+      setIsDrawerOpen(false);
+      return true;
+    }
+    if (isNotDevelopedOpen) {
+      setIsNotDevelopedOpen(false);
+      return true;
+    }
+    return false;
+  }, [
+    closeAIModal,
+    closeBGMGenerator,
+    closeEditExhibition,
+    closeManageArtifacts,
+    closeManualExhibition,
+    closeSlideshow,
+    exitExhibitionMultiSelect,
+    isAIModalOpen,
+    isBGMGeneratorOpen,
+    isCuratorTIQuizOpen,
+    isDrawerOpen,
+    isEditExhibitionOpen,
+    isExhMultiSelect,
+    isManageArtifactsOpen,
+    isManualExhibitionOpen,
+    isMessaging,
+    isMuseumSelectorOpen,
+    isNotDevelopedOpen,
+    isProfileEditOpen,
+    isSearching,
+    isSettingsOpen,
+    isSlideshowOpen,
+    selectedArtifact,
+    selectedArtifactLightboxUrl,
+    selectedExhibition,
+    showSyncPrompt,
+  ]);
+
+  const hasOpenLayer = Boolean(
+    isSlideshowOpen ||
+      isBGMGeneratorOpen ||
+      isManageArtifactsOpen ||
+      isEditExhibitionOpen ||
+      isManualExhibitionOpen ||
+      isAIModalOpen ||
+      isCuratorTIQuizOpen ||
+      isSettingsOpen ||
+      isProfileEditOpen ||
+      showSyncPrompt ||
+      isMuseumSelectorOpen ||
+      isExhMultiSelect ||
+      selectedArtifactLightboxUrl ||
+      selectedArtifact ||
+      selectedExhibition ||
+      isSearching ||
+      isMessaging ||
+      isDrawerOpen ||
+      isNotDevelopedOpen,
+  );
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (closeTopLayer()) {
+        event.preventDefault();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [closeTopLayer]);
+
+  useEffect(() => {
+    const onPopState = () => {
+      if (ignoreNextPopRef.current) {
+        ignoreNextPopRef.current = false;
+        return;
+      }
+      if (!hasOpenLayer) return;
+      layerHistoryPushedRef.current = false;
+      closeTopLayer();
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [closeTopLayer, hasOpenLayer]);
+
+  useEffect(() => {
+    if (hasOpenLayer && !layerHistoryPushedRef.current) {
+      window.history.pushState({ ...(window.history.state || {}), muselinkLayer: true }, "", window.location.href);
+      layerHistoryPushedRef.current = true;
+      return;
+    }
+
+    if (!hasOpenLayer && layerHistoryPushedRef.current) {
+      layerHistoryPushedRef.current = false;
+      if (window.history.state?.muselinkLayer) {
+        ignoreNextPopRef.current = true;
+        window.history.back();
+      }
+    }
+  }, [hasOpenLayer]);
 
   const executeRelicSearch = async (rawKeyword = searchQuery) => {
     const keyword = rawKeyword.trim();
@@ -486,6 +714,7 @@ export default function App() {
       }
     } catch (error) {
       console.error("Toggle exhibition favorite error:", error);
+      showToast('收藏展览失败，请稍后重试。', 'error');
     }
   };
 
@@ -499,8 +728,10 @@ export default function App() {
       setSelectedExhibition(prev => prev?.id === saved.id ? saved : prev);
       setIsEditExhibitionOpen(false);
       setEditingExhibition(null);
+      showToast('展览已更新', 'success');
     } catch (err) {
       console.error(err);
+      showToast(err instanceof Error ? err.message : '更新展览失败，请稍后重试。', 'error');
     }
   };
 
@@ -511,8 +742,10 @@ export default function App() {
       setMyExhibitions(prev => prev.filter(e => e.id !== id));
       setIsEditExhibitionOpen(false);
       setEditingExhibition(null);
+      showToast('展览已删除', 'success');
     } catch (err) {
       console.error(err);
+      showToast(err instanceof Error ? err.message : '删除展览失败，请稍后重试。', 'error');
     }
   };
 
@@ -527,9 +760,10 @@ export default function App() {
       const updated = await updateMyProfile({ curatorTI });
       setUserProfile(prev => prev ? { ...prev, ...updated, curatorTI: updated.curatorTI || curatorTI } : updated);
       setIsCuratorTIQuizOpen(false);
+      showToast('策展 TI 已保存', 'success');
     } catch (error) {
       console.error("Save curator TI error:", error);
-      alert(error instanceof Error ? error.message : '策展 TI 保存失败，请稍后重试。');
+      showToast(error instanceof Error ? error.message : '策展 TI 保存失败，请稍后重试。', 'error');
     } finally {
       setIsSavingCuratorTI(false);
     }
@@ -576,7 +810,10 @@ export default function App() {
       }
     })();
     const handleTabChange = (e: any) => setActiveTab(e.detail);
-    const handleOpenArtifact = (e: any) => setSelectedArtifact(e.detail);
+    const handleOpenArtifact = (e: any) => {
+      setSelectedArtifactLightboxUrl(null);
+      setSelectedArtifact(e.detail);
+    };
     
     window.addEventListener('change-tab', handleTabChange);
     window.addEventListener('open-artifact', handleOpenArtifact);
@@ -694,6 +931,7 @@ export default function App() {
         setFavorites(res.favorites || []);
       } catch (error) {
         console.error("Toggle favorite error:", error);
+        showToast('收藏失败，请稍后重试。', 'error');
       }
     }
   };
@@ -707,18 +945,25 @@ export default function App() {
     return data.artifacts as Artifact[];
   };
 
-  const handleAIGenerate = async (keywords: string, generateBGM: boolean) => {
+  const handleAIGenerate = async (
+    keywords: string,
+    generateBGM: boolean,
+    guideAnswers: CuratorGuideAnswers = {},
+  ) => {
     setIsGenerating(true);
     try {
       const backendArtifacts = await fetchBackendArtifactPool();
-      const result = await curatorService.generateExhibition(keywords, backendArtifacts);
+      const result = await curatorService.generateExhibition(keywords, backendArtifacts, { guideAnswers });
       const coverArtifact = backendArtifacts.find((artifact) => result.artifactIds?.includes(artifact.id));
       const coverUrl = result.coverUrl || coverArtifact?.imageUrl || '';
       const bgmUrl = generateBGM ? 'ambient://rain-ocean-wind' : undefined;
       setAiResult({ ...result, coverUrl, bgmUrl });
+      if ((result as any).generationNotice) {
+        showToast(String((result as any).generationNotice), 'info');
+      }
     } catch (e) {
       console.error("AI Generation failed:", e);
-      alert(e instanceof Error ? e.message : '策展生成失败，请稍后重试。');
+      showToast(e instanceof Error ? e.message : '策展生成失败，请稍后重试。', 'error');
     } finally {
       setIsGenerating(false);
     }
@@ -740,6 +985,7 @@ export default function App() {
         isPublic: false,
         bgmUrl: aiResult.bgmUrl,
         slideshowSettings: aiResult.slideshowSettings,
+        aiCuration: aiResult.aiCuration,
       });
       const normalized = normalizeExhibition(created);
       if (!normalized) throw new Error('展陈数据格式异常');
@@ -754,8 +1000,10 @@ export default function App() {
       setSelectedExhibition(normalized);
       setIsAIModalOpen(false);
       setAiResult(null);
+      showToast('已保存到我的策展', 'success');
     } catch (e) {
       console.error("Collection failed:", e);
+      showToast(e instanceof Error ? e.message : '保存展览失败，请稍后重试。', 'error');
     }
   };
 
@@ -767,7 +1015,7 @@ export default function App() {
       return;
     }
     if (draft.artifactIds.length === 0) {
-      alert('请至少选择一件文物。');
+      showToast('请至少选择一件文物。', 'error');
       return;
     }
 
@@ -794,9 +1042,10 @@ export default function App() {
       } : prev);
       setSelectedExhibition(normalized);
       setIsManualExhibitionOpen(false);
+      showToast('手动展览已创建', 'success');
     } catch (e) {
       console.error("Manual exhibition creation failed:", e);
-      alert(e instanceof Error ? e.message : '新建策展失败，请稍后重试。');
+      showToast(e instanceof Error ? e.message : '新建策展失败，请稍后重试。', 'error');
     } finally {
       setIsCreatingManualExhibition(false);
     }
@@ -863,7 +1112,7 @@ export default function App() {
   const activeSlideshowExhibition = slideshowExhibition || selectedExhibition;
 
   return (
-    <div className="h-full overflow-y-auto overflow-x-hidden bg-gray-50 pb-20 font-sans selection:bg-amber-100 no-scrollbar">
+    <div className="h-full overflow-y-auto overflow-x-hidden bg-[#F6F3EE] pb-[var(--app-bottom-nav-height)] font-sans selection:bg-amber-100 no-scrollbar">
       <Drawer 
         isOpen={isDrawerOpen} 
         onClose={() => setIsDrawerOpen(false)} 
@@ -889,7 +1138,7 @@ export default function App() {
         setSearchQuery={setSearchQuery}
       />
 
-      <main className="max-w-2xl mx-auto min-h-[calc(100vh-120px)]">
+      <main className="mx-auto min-h-[calc(100vh-149px)] max-w-2xl">
         <AnimatePresence mode="wait">
           {activeTab === 'explore' && (
             <motion.div
@@ -1214,7 +1463,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="min-h-screen bg-gray-50"
+              className="min-h-screen bg-[var(--app-page-bg)]"
             >
               <ExhibitionTopTabs value={exhibitionView} onChange={setExhibitionView} />
 
@@ -1240,11 +1489,18 @@ export default function App() {
                     <div className="grid grid-cols-1 gap-4">
                       <button
                         type="button"
-                        onClick={() => setIsManualExhibitionOpen(true)}
-                        className="flex min-h-20 items-center justify-center gap-2 rounded-[5px] border-2 border-dashed border-gray-200 bg-white text-xs font-bold text-gray-400 transition-all hover:border-primary/30 hover:text-primary"
+                        onClick={() => setIsAIModalOpen(true)}
+                        className="flex min-h-20 items-center justify-center gap-2 rounded-[5px] border border-primary/10 bg-neutral text-xs font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-white"
                       >
-                        <Plus size={18} />
-                        新建策展
+                        <Sparkles size={18} />
+                        生成个人展览
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsManualExhibitionOpen(true)}
+                        className="text-center text-[10px] font-bold text-gray-400 transition-colors hover:text-primary"
+                      >
+                        手动新建
                       </button>
                       {myExhibitions.map(exh => (
                         <ExhibitionCard
@@ -1254,8 +1510,16 @@ export default function App() {
                         />
                       ))}
                       {myExhibitions.length === 0 && (
-                        <div className="py-20 text-center text-gray-300 text-xs italic">
-                          暂无策展内容
+                        <div className="space-y-3 rounded-[5px] border border-gray-100 bg-white py-12 text-center">
+                          <p className="text-xs font-bold text-gray-500">还没有自己的展览</p>
+                          <p className="text-[10px] text-gray-400">用一句话或几个问题，让 AI 生成第一个个人展览。</p>
+                          <button
+                            type="button"
+                            onClick={() => setIsAIModalOpen(true)}
+                            className="mx-auto rounded-[5px] bg-primary px-4 py-2 text-[10px] font-bold text-white shadow-md shadow-primary/20"
+                          >
+                            用 AI 生成第一个展览
+                          </button>
                         </div>
                       )}
                     </div>
@@ -1294,6 +1558,12 @@ export default function App() {
                       </div>
                     ))}
                   </div>
+                  {squareExhibitions.length === 0 && (
+                    <div className="rounded-[5px] border border-gray-100 bg-white py-14 text-center">
+                      <p className="text-xs font-bold text-gray-500">展陈广场还没有公开展览</p>
+                      <p className="mt-1 text-[10px] text-gray-400">保存个人展览后，可以在编辑中选择公开发布。</p>
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>
@@ -1325,7 +1595,7 @@ export default function App() {
                   />
 
                   <div className="p-4 space-y-4">
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-4">
                       {profileTab === '收藏文物' && (
                         <div className="space-y-8">
                           <div className="space-y-6">
@@ -1333,18 +1603,25 @@ export default function App() {
                               <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest force-nowrap">我的收藏</h4>
                               <span className="text-[10px] font-bold text-gray-300 force-nowrap">{favoriteArtifacts.length} 件</span>
                             </div>
-                            <div className="columns-2 gap-1.5">
+                            <div className="columns-2 gap-3">
                               {favoriteArtifacts
                                 .map(artifact => (
-                                  <div key={`fav-wrapper-${artifact.id}`} className="break-inside-avoid mb-1.5">
+                                  <div key={`fav-wrapper-${artifact.id}`} className="mb-3 break-inside-avoid">
                                     <ArtifactCard artifact={artifact} onClick={() => setSelectedArtifact(artifact)} />
                                   </div>
                                 ))
                               }
                             </div>
                             {favoriteArtifacts.length === 0 && (
-                              <div className="py-12 text-center text-gray-300 text-[10px] italic force-nowrap">
-                                暂无收藏，快去探索吧
+                              <div className="space-y-3 rounded-[5px] border border-gray-100 bg-white py-12 text-center">
+                                <p className="text-xs font-bold text-gray-500">还没有收藏文物</p>
+                                <button
+                                  type="button"
+                                  onClick={() => setActiveTab('explore')}
+                                  className="rounded-[5px] bg-neutral px-4 py-2 text-[10px] font-bold text-primary"
+                                >
+                                  去探索馆藏
+                                </button>
                               </div>
                             )}
                           </div>
@@ -1374,34 +1651,46 @@ export default function App() {
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-1 gap-4">
-                            {myExhibitions.map(exh => (
-                              <div key={`my-exh-wrapper-${exh.id}`} className="relative">
-                                <ExhibitionCard 
-                                  exhibition={exh} 
-                                  onClick={() => isExhMultiSelect ? (
-                                    setSelectedExhIds(prev => prev.includes(exh.id) ? prev.filter(id => id !== exh.id) : [...prev, exh.id])
-                                  ) : setSelectedExhibition(exh)} 
-                                />
-                                {isExhMultiSelect && (
-                                  <div 
-                                    onClick={() => setSelectedExhIds(prev => prev.includes(exh.id) ? prev.filter(id => id !== exh.id) : [...prev, exh.id])}
-                                    className={cn(
-                                      "absolute top-4 right-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all z-10",
-                                      selectedExhIds.includes(exh.id) ? "bg-amber-800 border-amber-800 text-white" : "bg-white/80 border-white text-transparent"
-                                    )}
-                                  >
-                                    <Plus size={14} className={cn(selectedExhIds.includes(exh.id) && "rotate-45")} />
-                                  </div>
-                                )}
+                          {myExhibitions.length > 0 ? (
+                            <div className="columns-2 gap-3">
+                              {myExhibitions.map(exh => (
+                                <div key={`my-exh-wrapper-${exh.id}`} className="relative mb-3 break-inside-avoid">
+                                  <ExhibitionCard 
+                                    exhibition={exh} 
+                                    onClick={() => isExhMultiSelect ? (
+                                      setSelectedExhIds(prev => prev.includes(exh.id) ? prev.filter(id => id !== exh.id) : [...prev, exh.id])
+                                    ) : setSelectedExhibition(exh)} 
+                                  />
+                                  {isExhMultiSelect && (
+                                    <div 
+                                      onClick={() => setSelectedExhIds(prev => prev.includes(exh.id) ? prev.filter(id => id !== exh.id) : [...prev, exh.id])}
+                                      className={cn(
+                                        "absolute top-4 right-4 z-10 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all",
+                                        selectedExhIds.includes(exh.id) ? "bg-amber-800 border-amber-800 text-white" : "bg-white/80 border-white text-transparent"
+                                      )}
+                                    >
+                                      <Plus size={14} className={cn(selectedExhIds.includes(exh.id) && "rotate-45")} />
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                              <div key="no-my-exhibitions" className="space-y-3 rounded-[5px] border border-gray-100 bg-white py-12 text-center">
+                                <p className="text-xs font-bold text-gray-500">还没有自建展陈</p>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveTab('exhibition');
+                                    setExhibitionView('ai');
+                                    setIsAIModalOpen(true);
+                                  }}
+                                  className="rounded-[5px] bg-primary px-4 py-2 text-[10px] font-bold text-white"
+                                >
+                                  用 AI 生成个人展览
+                                </button>
                               </div>
-                            ))}
-                            {myExhibitions.length === 0 && (
-                              <div key="no-my-exhibitions" className="py-20 text-center text-gray-300 text-xs italic">
-                                暂无自建展陈
-                              </div>
-                            )}
-                          </div>
+                          )}
                         </div>
                       )}
 
@@ -1420,37 +1709,48 @@ export default function App() {
                             </button>
                           </div>
 
-                          <div className="grid grid-cols-1 gap-4">
-                            {favoriteExhibitions.map(exh => {
-                              const id = exh.id;
-                              return (
-                                <div key={`fav-exh-wrapper-${id}`} className="relative">
-                                  <ExhibitionCard 
-                                    exhibition={exh} 
-                                    onClick={() => isExhMultiSelect ? (
-                                      setSelectedExhIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])
-                                    ) : setSelectedExhibition(exh)} 
-                                  />
-                                  {isExhMultiSelect && (
-                                    <div 
-                                      onClick={() => setSelectedExhIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])}
-                                      className={cn(
-                                        "absolute top-4 right-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all z-10",
-                                        selectedExhIds.includes(id) ? "bg-amber-800 border-amber-800 text-white" : "bg-white/80 border-white text-transparent"
-                                      )}
-                                    >
-                                      <Plus size={14} className={cn(selectedExhIds.includes(id) && "rotate-45")} />
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
-                            {favoriteExhibitions.length === 0 && (
-                              <div key="no-fav-exhibitions" className="py-20 text-center text-gray-300 text-xs italic">
-                                暂无收藏展陈
+                          {favoriteExhibitions.length > 0 ? (
+                            <div className="columns-2 gap-3">
+                              {favoriteExhibitions.map(exh => {
+                                const id = exh.id;
+                                return (
+                                  <div key={`fav-exh-wrapper-${id}`} className="relative mb-3 break-inside-avoid">
+                                    <ExhibitionCard 
+                                      exhibition={exh} 
+                                      onClick={() => isExhMultiSelect ? (
+                                        setSelectedExhIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])
+                                      ) : setSelectedExhibition(exh)} 
+                                    />
+                                    {isExhMultiSelect && (
+                                      <div 
+                                        onClick={() => setSelectedExhIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])}
+                                        className={cn(
+                                          "absolute top-4 right-4 z-10 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all",
+                                          selectedExhIds.includes(id) ? "bg-amber-800 border-amber-800 text-white" : "bg-white/80 border-white text-transparent"
+                                        )}
+                                      >
+                                        <Plus size={14} className={cn(selectedExhIds.includes(id) && "rotate-45")} />
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                              <div key="no-fav-exhibitions" className="space-y-3 rounded-[5px] border border-gray-100 bg-white py-12 text-center">
+                                <p className="text-xs font-bold text-gray-500">还没有收藏展陈</p>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveTab('exhibition');
+                                    setExhibitionView('square');
+                                  }}
+                                  className="rounded-[5px] bg-neutral px-4 py-2 text-[10px] font-bold text-primary"
+                                >
+                                  去展陈广场看看
+                                </button>
                               </div>
-                            )}
-                          </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -1492,14 +1792,42 @@ export default function App() {
 
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
 
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key={toast.id}
+            initial={{ opacity: 0, y: -16, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -16, scale: 0.98 }}
+            className="fixed left-4 right-4 top-5 z-[260] mx-auto flex max-w-md items-center gap-3 rounded-[5px] border border-gray-100 bg-white p-3 shadow-2xl"
+          >
+            <div className={cn(
+              "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full",
+              toast.tone === 'success' ? "bg-emerald-50 text-emerald-600" : toast.tone === 'error' ? "bg-rose-50 text-rose-500" : "bg-amber-50 text-primary"
+            )}>
+              {toast.tone === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
+            </div>
+            <p className="min-w-0 flex-1 break-words text-xs font-bold leading-relaxed text-gray-700">{toast.message}</p>
+            <button type="button" onClick={() => setToast(null)} className="rounded-full p-1 text-gray-300 hover:bg-gray-50 hover:text-gray-500">
+              <X size={14} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Overlays */}
       <AIExhibitionModal 
         isOpen={isAIModalOpen}
-        onClose={() => setIsAIModalOpen(false)}
-        onGenerate={(keywords, generateBGM) => handleAIGenerate(keywords, generateBGM)}
+        onClose={closeAIModal}
+        onGenerate={(keywords, generateBGM, guideAnswers) => handleAIGenerate(keywords, generateBGM, guideAnswers)}
         isGenerating={isGenerating}
         result={aiResult}
         onCollect={handleAICollect}
+        onManualCreate={() => {
+          setIsAIModalOpen(false);
+          setAiResult(null);
+          setIsManualExhibitionOpen(true);
+        }}
         artifacts={artifactPool}
       />
 
@@ -1518,7 +1846,7 @@ export default function App() {
 
       <ManualExhibitionModal
         isOpen={isManualExhibitionOpen}
-        onClose={() => setIsManualExhibitionOpen(false)}
+        onClose={closeManualExhibition}
         onCreate={handleCreateManualExhibition}
         artifacts={artifactPool}
         isCreating={isCreatingManualExhibition}
@@ -1526,10 +1854,7 @@ export default function App() {
 
       <EditExhibitionModal 
         isOpen={isEditExhibitionOpen} 
-        onClose={() => {
-          setIsEditExhibitionOpen(false);
-          setEditingExhibition(null);
-        }} 
+        onClose={closeEditExhibition} 
         exhibition={editingExhibition}
         onUpdate={handleUpdateExhibition}
         onDelete={handleDeleteExhibition}
@@ -1549,7 +1874,7 @@ export default function App() {
 
       <ManageArtifactsModal 
         isOpen={isManageArtifactsOpen}
-        onClose={() => setIsManageArtifactsOpen(false)}
+        onClose={closeManageArtifacts}
         exhibition={editingExhibition}
         onUpdateArtifacts={(ids) => handleUpdateExhibition({ artifactIds: ids })}
         artifacts={artifactPool}
@@ -1614,7 +1939,7 @@ export default function App() {
         {isBGMGeneratorOpen && bgmExhibition && (
           <BGMGeneratorModal 
             isOpen={isBGMGeneratorOpen}
-            onClose={() => setIsBGMGeneratorOpen(false)}
+            onClose={closeBGMGenerator}
             exhibition={bgmExhibition}
             onBind={(url) => {
               handleUpdateExhibition({ bgmUrl: url });
@@ -1627,11 +1952,19 @@ export default function App() {
           <ArtifactDetail 
             key={`artifact-detail-${selectedArtifact.id}`}
             artifact={selectedArtifact} 
-            onClose={() => setSelectedArtifact(null)} 
+            onClose={() => {
+              setSelectedArtifact(null);
+              setSelectedArtifactLightboxUrl(null);
+            }} 
             allArtifacts={artifactPool}
             isFavorite={favorites.includes(selectedArtifact.id)}
             toggleFavorite={toggleFavorite}
-            onArtifactClick={(a: Artifact) => setSelectedArtifact(a)}
+            onArtifactClick={(a: Artifact) => {
+              setSelectedArtifactLightboxUrl(null);
+              setSelectedArtifact(a);
+            }}
+            lightboxUrl={selectedArtifactLightboxUrl}
+            setLightboxUrl={setSelectedArtifactLightboxUrl}
           />
         )}
       </AnimatePresence>
@@ -1641,8 +1974,7 @@ export default function App() {
           key={`immersive-${activeSlideshowExhibition.id}`}
           isOpen={isSlideshowOpen}
           onClose={() => {
-            setIsSlideshowOpen(false);
-            setSlideshowExhibition(null);
+            closeSlideshow();
           }}
           exhibition={activeSlideshowExhibition}
           artifacts={getSlideshowArtifacts(activeSlideshowExhibition, artifactPool)}

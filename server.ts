@@ -68,7 +68,75 @@ function dedupeArtifacts(artifacts: Artifact[]) {
   return Array.from(unique.values());
 }
 
-function buildDeepSeekMessages(userPrompt: string, artifacts: Artifact[]) {
+type CuratorGuideAnswersPayload = Record<string, string>;
+
+function sanitizeGuideAnswers(value: unknown): CuratorGuideAnswersPayload {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>)
+      .map(([key, answer]) => [key, String(answer ?? "").trim().slice(0, 500)])
+      .filter(([key, answer]) => key && answer),
+  );
+}
+
+function sanitizeGuideSummary(value: unknown, guideAnswers: CuratorGuideAnswersPayload): string {
+  const summary = typeof value === "string" ? value.trim() : "";
+  if (summary) return summary.slice(0, 3000);
+  return Object.entries(guideAnswers)
+    .map(([key, answer]) => `${key}: ${answer}`)
+    .join("；")
+    .slice(0, 3000);
+}
+
+function normalizeAICuration(raw: any, artifactIds: string[]) {
+  const artifactIdSet = new Set(artifactIds);
+  const sections = Array.isArray(raw?.sections)
+    ? raw.sections
+        .map((section: any) => ({
+          title: String(section?.title || "").slice(0, 60),
+          summary: String(section?.summary || "").slice(0, 500),
+          artifactIds: Array.isArray(section?.artifactIds)
+            ? section.artifactIds.map((id: unknown) => String(id)).filter((id: string) => artifactIdSet.has(id)).slice(0, 8)
+            : [],
+        }))
+        .filter((section: any) => section.title || section.summary || section.artifactIds.length > 0)
+        .slice(0, 5)
+    : [];
+  const artifactNotes = raw?.artifactNotes && typeof raw.artifactNotes === "object" && !Array.isArray(raw.artifactNotes)
+    ? Object.fromEntries(
+        Object.entries(raw.artifactNotes)
+          .map(([id, note]) => [String(id), String(note ?? "").slice(0, 240)])
+          .filter(([id, note]) => artifactIdSet.has(id) && note),
+      )
+    : {};
+
+  const plan = {
+    theme: String(raw?.theme || "").slice(0, 80),
+    opening: String(raw?.opening || "").slice(0, 700),
+    sections,
+    artifactNotes,
+    ending: String(raw?.ending || "").slice(0, 700),
+    sourceNote: String(raw?.sourceNote || "").slice(0, 300),
+  };
+
+  return Boolean(
+    plan.theme ||
+      plan.opening ||
+      plan.sections.length > 0 ||
+      Object.keys(plan.artifactNotes).length > 0 ||
+      plan.ending ||
+      plan.sourceNote,
+  )
+    ? plan
+    : undefined;
+}
+
+function buildDeepSeekMessages(
+  userPrompt: string,
+  artifacts: Artifact[],
+  guideSummary = "",
+  guideAnswers: CuratorGuideAnswersPayload = {},
+) {
   const artifactLines = artifacts
     .slice(0, 36)
     .map((artifact, index) => {
@@ -94,10 +162,13 @@ function buildDeepSeekMessages(userPrompt: string, artifacts: Artifact[]) {
     {
       role: "user",
       content:
-        `用户策展需求：${userPrompt}\n\n` +
+        `一句话策展需求：${userPrompt || "用户未填写一句话，请根据策展问题回答生成个人展览。"}\n\n` +
+        `策展问题回答摘要：${guideSummary || "无"}\n\n` +
+        `结构化问题回答 JSON：${JSON.stringify(guideAnswers)}\n\n` +
         `候选文物：\n${artifactLines}\n\n` +
-        "请返回 JSON：{\"title\":\"展陈标题\",\"intro\":\"600字以内中文展陈前言和分单元说明\",\"artifactIds\":[\"候选文物id\"],\"coverUrl\":\"可为空\"}。" +
-        "artifactIds 选择 6 到 12 个，必须来自候选文物 id。",
+        "请生成一个个人化展览：主题、叙事线索、知识重点和情感落点都要回应用户的一句话需求或问题回答；如果只有问题回答，也要据此完整生成。" +
+        "请返回 JSON：{\"title\":\"展陈标题\",\"intro\":\"300字以内中文展陈摘要\",\"artifactIds\":[\"候选文物id\"],\"coverUrl\":\"可为空\",\"aiCuration\":{\"theme\":\"主题\",\"opening\":\"开场语\",\"sections\":[{\"title\":\"单元标题\",\"summary\":\"单元说明\",\"artifactIds\":[\"候选文物id\"]}],\"artifactNotes\":{\"候选文物id\":\"一句话策展理由\"},\"ending\":\"结尾语\",\"sourceNote\":\"来源说明\"}}。" +
+        "artifactIds 选择 6 到 12 个，必须来自候选文物 id；不要编造候选列表外的文物、馆藏来源或历史细节。",
     },
   ];
 }
@@ -136,10 +207,16 @@ function normalizeDeepSeekCuration(raw: any, candidates: Artifact[]) {
     intro: String(raw?.intro || "").slice(0, 1800),
     artifactIds,
     coverUrl: String(raw?.coverUrl || coverArtifact?.imageUrl || ""),
+    aiCuration: normalizeAICuration(raw?.aiCuration, artifactIds),
   };
 }
 
-async function callDeepSeekCuration(userPrompt: string, candidates: Artifact[]) {
+async function callDeepSeekCuration(
+  userPrompt: string,
+  candidates: Artifact[],
+  guideSummary = "",
+  guideAnswers: CuratorGuideAnswersPayload = {},
+) {
   const token = process.env.DEEPSEEK_API_KEY;
   if (!token) {
     throw new Error("DEEPSEEK_API_KEY is not configured.");
@@ -155,7 +232,7 @@ async function callDeepSeekCuration(userPrompt: string, candidates: Artifact[]) 
     },
     body: JSON.stringify({
       model,
-      messages: buildDeepSeekMessages(userPrompt, candidates),
+      messages: buildDeepSeekMessages(userPrompt, candidates, guideSummary, guideAnswers),
       temperature: 0.7,
       max_tokens: 1400,
       response_format: { type: "json_object" },
@@ -602,6 +679,7 @@ async function startServer() {
         isPublic: Boolean(req.body?.isPublic),
         bgmUrl: typeof req.body?.bgmUrl === "string" ? req.body.bgmUrl : undefined,
         slideshowSettings: req.body?.slideshowSettings,
+        aiCuration: req.body?.aiCuration,
       });
       res.json(exhibition);
     } catch (error) {
@@ -742,15 +820,17 @@ async function startServer() {
       }
 
       const userPrompt = typeof req.body?.userPrompt === "string" ? req.body.userPrompt.trim() : "";
+      const guideAnswers = sanitizeGuideAnswers(req.body?.guideAnswers);
+      const guideSummary = sanitizeGuideSummary(req.body?.guideSummary, guideAnswers);
       const candidates = Array.isArray(req.body?.artifacts) ? (req.body.artifacts as Artifact[]) : [];
-      if (!userPrompt) {
-        return res.status(400).json({ error: "userPrompt is required." });
+      if (!userPrompt && !guideSummary) {
+        return res.status(400).json({ error: "userPrompt or guideAnswers is required." });
       }
       if (candidates.length === 0) {
         return res.status(400).json({ error: "artifacts are required." });
       }
 
-      const result = await callDeepSeekCuration(userPrompt, candidates);
+      const result = await callDeepSeekCuration(userPrompt, candidates, guideSummary, guideAnswers);
       res.json(result);
     } catch (error) {
       res.status(502).json({ error: error instanceof Error ? error.message : String(error) });

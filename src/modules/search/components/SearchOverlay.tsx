@@ -48,11 +48,11 @@ export const SearchOverlay = ({
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
-    className="fixed inset-x-0 bottom-0 bg-white z-[100] flex flex-col"
+    className="fixed inset-x-0 bottom-0 z-[100] flex flex-col bg-[var(--app-page-bg)]"
     style={{ top: 'var(--phone-safe-top)' }}
   >
-    <div className="p-4 flex items-center gap-4 border-b border-gray-100">
-      <button onClick={() => setIsSearching(false)} className="p-2 text-gray-400"><ArrowLeft size={24} /></button>
+    <div className="ios-title-bar flex items-center gap-3 border-b border-black/5 bg-[var(--app-bar-bg)] px-5 backdrop-blur-xl">
+      <button onClick={() => setIsSearching(false)} className="flex h-10 w-10 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100"><ArrowLeft size={24} /></button>
       <form
         className="flex-1 relative"
         onSubmit={(event) => {
@@ -60,14 +60,14 @@ export const SearchOverlay = ({
           executeRelicSearch();
         }}
       >
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-700" size={16} />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={16} />
         <input
           autoFocus
           type="text"
           placeholder="搜索文物、展陈、博物馆、用户"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-gray-100 border-none rounded-full py-2 pl-10 pr-12 text-sm"
+          className="ios-input h-11 w-full border-none py-0 pl-11 pr-12 text-[15px] outline-none"
         />
         <button
           type="submit"
@@ -83,7 +83,7 @@ export const SearchOverlay = ({
       searchOverlayTab={searchOverlayTab}
       setSearchOverlayTab={setSearchOverlayTab}
     />
-    <div className="flex-1 overflow-y-auto p-4">
+    <div className="flex-1 overflow-y-auto p-5">
       {!searchQuery.trim() ? (
         <div className="flex flex-col items-center justify-center text-gray-300 space-y-4 py-20">
           <Search size={64} strokeWidth={1} />
@@ -110,9 +110,9 @@ export const SearchOverlay = ({
         ) : searchArtifactResults.length === 0 ? (
           <p className="text-center text-sm text-gray-400 py-16">暂无相关文物</p>
         ) : (
-          <div className="columns-2 gap-2">
+          <div className="columns-2 gap-3">
             {searchArtifactResults.map((artifact) => (
-              <div key={artifact.id} className="break-inside-avoid mb-2">
+              <div key={artifact.id} className="break-inside-avoid">
                 <ArtifactCard
                   artifact={artifact}
                   onClick={() => {

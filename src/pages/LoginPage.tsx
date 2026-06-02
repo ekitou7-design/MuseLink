@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { AuthService } from "../auth/AuthService";
-import { navigate } from "../router/router";
+import { goBackOrNavigate, navigate } from "../router/router";
 import type { LoginChannel } from "../lib/authClient";
+import { UserSession } from "../auth/UserSession";
 
 const CODE_LENGTH = 6;
 
@@ -127,6 +128,13 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F7F4ED] p-6">
       <main className="w-full max-w-sm bg-white border border-stone-200 rounded-[5px] shadow-xl p-6 space-y-5">
+        <button
+          type="button"
+          onClick={() => goBackOrNavigate(UserSession.snapshot().isLoggedIn ? "/home" : "/login")}
+          className="text-xs font-bold text-stone-400 transition-colors hover:text-amber-800"
+        >
+          返回
+        </button>
         <div className="space-y-1">
           <h1 className="text-2xl font-black text-stone-950">MuseLink 登录</h1>
           <p className="text-sm text-stone-500">

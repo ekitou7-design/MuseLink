@@ -31,6 +31,14 @@ export function navigate(to: RoutePath, query?: Record<string, string | null | u
   window.location.hash = `#${to}${search ? `?${search}` : ""}`;
 }
 
+export function goBackOrNavigate(fallback: RoutePath) {
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+  navigate(fallback);
+}
+
 export function getRouteSearchParams(hash = window.location.hash) {
   const { query } = splitHash(hash);
   return new URLSearchParams(query);

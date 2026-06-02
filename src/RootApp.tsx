@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useRoute, navigate } from "./router/router";
 import { LoginPage } from "./pages/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
 import { HomePage } from "./pages/HomePage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { AdminPage } from "./pages/AdminPage";
@@ -28,7 +29,7 @@ export default function RootApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (route === "/register") return <LoginPage />;
+  if (route === "/register") return <RegisterPage />;
   if (route === "/home") return <AuthGuard><HomePage /></AuthGuard>;
   if (route === "/profile") return <AuthGuard><ProfilePage /></AuthGuard>;
   if (route === "/admin") return <AdminGuard><AdminPage /></AdminGuard>;

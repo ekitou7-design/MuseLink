@@ -26,6 +26,7 @@ export const normalizeExhibition = (raw: unknown): Exhibition | null => {
     commentsCount: Number(source.commentsCount ?? source.comments_count ?? 0),
     bgmUrl: source.bgmUrl ?? source.bgm_url,
     slideshowSettings: source.slideshowSettings ?? source.slideshow_settings,
+    aiCuration: source.aiCuration ?? source.ai_curation,
     createdAt,
     updatedAt: String(source.updatedAt ?? source.updated_at ?? createdAt),
   };

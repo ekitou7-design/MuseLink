@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { UserSession } from "../auth/UserSession";
 import { AuthService } from "../auth/AuthService";
-import { navigate } from "../router/router";
+import { goBackOrNavigate, navigate } from "../router/router";
 
 export function ProfilePage() {
   const [museId, setMuseId] = useState<string | null>(null);
@@ -21,6 +21,13 @@ export function ProfilePage() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-md mx-auto space-y-4">
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+          <button
+            type="button"
+            onClick={() => goBackOrNavigate("/home")}
+            className="mb-4 text-xs font-bold text-gray-400"
+          >
+            返回首页
+          </button>
           <div className="text-sm font-black text-gray-900">个人中心</div>
           <div className="text-xs text-gray-500 mt-1">你的 MuseLink 身份</div>
           <div className="mt-4 bg-gray-50 rounded-2xl p-4">

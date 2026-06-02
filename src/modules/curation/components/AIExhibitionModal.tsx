@@ -10,30 +10,20 @@ import {
   type CuratorGuideAnswers,
 } from '../data/curatorPreferences';
 
-function buildFreeformGuidePrompt(keywords: string, guideAnswers: CuratorGuideAnswers) {
-  const base = keywords.trim();
-  const guideText = CONTENT_CURATION_QUESTIONS
-    .map((question) => {
-      const answer = guideAnswers[question.id]?.trim();
-      return answer ? `${question.prompt}${answer}` : '';
-    })
-    .filter(Boolean)
-    .join('；');
-
-  if (!guideText) return base;
-  return [
-    base || '请根据我的策展想法生成一个展览',
-    `用户补充的展览内容想法：${guideText}。`,
-    '请优先围绕这些内容想法来确定展览主题、展品选择、叙事线索、知识重点和情感落点。',
-  ].join('\n');
-}
-
 function buildQuestionPlaceholder(question: (typeof CONTENT_CURATION_QUESTIONS)[number]) {
   const hints = question.options.map((option, index) => {
     const prefix = String.fromCharCode(65 + index);
     return `${prefix}. ${option.label}`;
   }).join(' / ');
   return `可以参考：${hints}\n也可以写自己的想法`;
+}
+
+function cleanGuideAnswers(guideAnswers: CuratorGuideAnswers): CuratorGuideAnswers {
+  return Object.fromEntries(
+    Object.entries(guideAnswers)
+      .map(([id, value]) => [id, value.trim()])
+      .filter(([, value]) => value),
+  );
 }
 
 export const AIExhibitionModal = ({ 
@@ -43,14 +33,16 @@ export const AIExhibitionModal = ({
   isGenerating, 
   result,
   onCollect,
+  onManualCreate,
   artifacts
 }: { 
   isOpen: boolean, 
   onClose: () => void, 
-  onGenerate: (keywords: string, generateBGM: boolean) => void,
+  onGenerate: (keywords: string, generateBGM: boolean, guideAnswers: CuratorGuideAnswers) => void,
   isGenerating: boolean,
   result: Partial<Exhibition> | null,
   onCollect: () => void,
+  onManualCreate?: () => void,
   artifacts: Artifact[]
 }) => {
   const [keywords, setKeywords] = useState('');
@@ -106,17 +98,17 @@ export const AIExhibitionModal = ({
       {isOpen && (
         <motion.div 
           initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
-          className="fixed inset-0 z-[200] bg-white flex flex-col"
+          className="fixed inset-0 z-[200] flex flex-col overflow-hidden bg-[var(--app-page-bg)]"
         >
-          <div className="p-4 flex items-center justify-between border-b border-gray-100">
+          <div className="ios-title-bar flex shrink-0 items-center justify-between border-b border-gray-100 bg-[var(--app-bar-bg)] px-4 backdrop-blur-xl">
             <button onClick={onClose} className="p-2 text-gray-400"><X size={24} /></button>
             <h2 className="text-lg font-serif font-bold">AI 智能策展</h2>
             <div className="w-10" />
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar">
-            <div className="space-y-4">
-              <div className="bg-neutral rounded-[5px] p-5 border border-gray-100 space-y-4">
+          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-4">
+            <div className="shrink-0 space-y-3">
+              <div className="ios-card space-y-3 border border-gray-100 bg-white p-4">
                 <div className="flex items-center gap-2 text-primary">
                   <Sparkles size={18} />
                   <span className="text-sm font-bold">一句话生成展览</span>
@@ -126,7 +118,7 @@ export const AIExhibitionModal = ({
                     value={keywords}
                     onChange={e => setKeywords(e.target.value)}
                     placeholder="例如：帮我策划一个关于江南文人生活的展览；或直接说一次旅行中的文化体验、印象深刻的文物、喜欢的建筑风格"
-                    className="w-full bg-white border-none rounded-[5px] p-4 pr-14 text-sm min-h-[116px] focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                    className="ios-input min-h-[88px] w-full resize-none border-none bg-[#F7F7F8] p-3 pr-14 text-sm outline-none transition-all focus:ring-2 focus:ring-primary/20"
                   />
                   <button
                     type="button"
@@ -141,7 +133,7 @@ export const AIExhibitionModal = ({
                   </button>
                 </div>
                 
-                <div className="flex items-center justify-between px-2">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Music size={16} className="text-primary" />
                     <span className="text-xs font-bold text-secondary force-nowrap">生成专属背景音乐</span>
@@ -161,21 +153,25 @@ export const AIExhibitionModal = ({
                 </div>
               </div>
 
-              <div className="rounded-[5px] border border-amber-100 bg-amber-50 p-4">
+              <div className="rounded-[5px] border border-amber-100 bg-amber-50 px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">生成前引导</p>
-                    <h3 className="mt-1 text-sm font-bold text-gray-900">尽量具体地写下你想讲的内容</h3>
+                    <h3 className="mt-1 text-sm font-bold text-gray-900">左右滑动回答引导问题</h3>
                   </div>
                   <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-amber-800">
                     内容线索 {answeredCount}
                   </span>
                 </div>
               </div>
+            </div>
 
-              <div className="space-y-3">
+            <div className="min-h-0 flex-1 overflow-hidden">
+              {!result ? (
+                <div className="h-full overflow-x-auto overflow-y-hidden no-scrollbar">
+                  <div className="flex h-full snap-x snap-mandatory gap-3">
                 {CONTENT_CURATION_QUESTIONS.map((question) => (
-                  <section key={question.id} className="space-y-3 rounded-[5px] border border-gray-100 bg-white p-4 shadow-sm">
+                  <section key={question.id} className="ios-card flex h-full w-[86%] shrink-0 snap-center flex-col space-y-3 border border-gray-100 bg-white p-4 shadow-sm">
                     <div className="flex items-start gap-3">
                       <span className="rounded-[5px] bg-gray-100 px-2 py-1 text-[10px] font-bold text-gray-500">{question.title}</span>
                       <h3 className="break-words text-sm font-bold leading-snug text-gray-900">{question.prompt}</h3>
@@ -184,70 +180,100 @@ export const AIExhibitionModal = ({
                       value={guideAnswers[question.id] || ''}
                       onChange={(event) => setGuideAnswers((prev) => ({ ...prev, [question.id]: event.target.value }))}
                       placeholder={buildQuestionPlaceholder(question)}
-                      className="min-h-[92px] w-full resize-none rounded-[5px] border border-gray-100 bg-gray-50 p-3 text-xs leading-relaxed text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-amber-200 focus:bg-white focus:ring-2 focus:ring-amber-100"
+                      className="min-h-0 flex-1 w-full resize-none rounded-[5px] border border-gray-100 bg-gray-50 p-3 text-xs leading-relaxed text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-amber-200 focus:bg-white focus:ring-2 focus:ring-amber-100"
                     />
                   </section>
                 ))}
-              </div>
-
-              <button 
-                onClick={() => onGenerate(buildFreeformGuidePrompt(keywords, guideAnswers), generateBGM)}
-                disabled={isGenerating || !canGenerate}
-                className="w-full py-3.5 bg-primary text-white rounded-[5px] font-bold shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
-                {isGenerating ? '正在从后端文物库策展...' : '生成我的展览'}
-              </button>
-            </div>
-
-            {result && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                className="space-y-6"
-              >
-                <div className="space-y-2">
-                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">AI 策展结果</h3>
-                  <div className="bg-white rounded-[5px] border border-gray-100 overflow-hidden shadow-sm">
-                    <div className="aspect-video relative">
-                      <SafeImage 
-                        src={result.coverUrl} 
-                        className="w-full h-full object-cover" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-
-                      <div className="absolute bottom-4 left-6 right-6 text-white">
-                        <h4 className="text-xl font-serif font-bold">{result.title}</h4>
-                        <p className="break-words text-[10px] opacity-80 mt-1">{result.intro}</p>
-                      </div>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <div className="flex gap-3 overflow-x-auto no-scrollbar">
-                        {result.artifactIds?.map(id => {
-                          const artifact = artifacts.find(a => a.id === id);
-                          if (!artifact) return null;
-                          return (
-                            <div key={`ai-result-art-${id}`} className="w-24 flex-shrink-0 space-y-2">
-                              <SafeImage 
-                                src={artifact.imageUrl} 
-                                className="aspect-square rounded-xl overflow-hidden bg-gray-50"
-                              />
-                              <p className="break-words text-[10px] font-bold text-gray-800">{displayDbString(artifactNameRaw(artifact))}</p>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <button 
-                        onClick={onCollect}
-                        className="w-full py-3 bg-neutral text-primary rounded-xl text-xs font-bold flex items-center justify-center gap-2"
-                      >
-                        <Bookmark size={14} />
-                        收藏并加入我的展陈
-                      </button>
-                    </div>
                   </div>
                 </div>
-              </motion.div>
-            )}
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                  className="ios-card flex h-full flex-col overflow-hidden border border-gray-100 bg-white shadow-sm"
+                >
+                  <div className="relative h-32 shrink-0">
+                    <SafeImage 
+                      src={result.coverUrl} 
+                      className="h-full w-full object-cover" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
+                    <div className="absolute bottom-3 left-4 right-4 text-white">
+                      <h4 className="line-clamp-1 text-lg font-serif font-bold">{result.title}</h4>
+                      <p className="mt-1 line-clamp-2 text-[10px] opacity-85">{result.intro}</p>
+                    </div>
+                  </div>
+                  <div className="min-h-0 flex-1 space-y-3 overflow-hidden p-4">
+                    <div>
+                      <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-400">AI 策展结果</h3>
+                      <p className="mt-1 text-xs leading-relaxed text-gray-500">
+                        这是为你生成的个人展览预览。确认后可以一键保存到“我的策展”。
+                      </p>
+                    </div>
+                    {result.aiCuration && (
+                      <div className="max-h-[42%] space-y-2 overflow-hidden rounded-[5px] bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
+                        {result.aiCuration.opening && (
+                          <p className="line-clamp-3">{result.aiCuration.opening}</p>
+                        )}
+                        {result.aiCuration.sections && result.aiCuration.sections.length > 0 && (
+                          <div className="space-y-1.5">
+                            {result.aiCuration.sections.slice(0, 2).map((section, index) => (
+                              <div key={`${section.title}-${index}`}>
+                                <p className="line-clamp-1 font-bold">{section.title}</p>
+                                <p className="mt-0.5 line-clamp-2 text-amber-900/75">{section.summary}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <div className="flex gap-3 overflow-x-auto overflow-y-hidden no-scrollbar">
+                      {result.artifactIds?.map(id => {
+                        const artifact = artifacts.find(a => a.id === id);
+                        if (!artifact) return null;
+                        return (
+                          <div key={`ai-result-art-${id}`} className="w-24 flex-shrink-0 space-y-2">
+                            <SafeImage 
+                              src={artifact.imageUrl} 
+                              className="aspect-square rounded-xl bg-gray-50 object-cover"
+                            />
+                            <p className="line-clamp-2 text-[10px] font-bold text-gray-800">{displayDbString(artifactNameRaw(artifact))}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            <div className="shrink-0 space-y-2 border-t border-gray-100 bg-[var(--app-page-bg)] pt-3">
+              <button 
+                onClick={() => onGenerate(keywords.trim(), generateBGM, cleanGuideAnswers(guideAnswers))}
+                disabled={isGenerating || !canGenerate}
+                className="flex w-full items-center justify-center gap-2 rounded-[5px] bg-primary py-3.5 font-bold text-white shadow-lg shadow-primary/20 disabled:opacity-50"
+              >
+                {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} />}
+                {isGenerating ? '正在从后端文物库策展...' : '生成个人展览'}
+              </button>
+              {result && (
+                <button 
+                  onClick={onCollect}
+                  className="flex w-full items-center justify-center gap-2 rounded-[5px] bg-white py-3 text-xs font-bold text-primary shadow-sm"
+                >
+                  <Bookmark size={14} />
+                  保存为我的个人展览
+                </button>
+              )}
+              {onManualCreate && (
+                <button
+                  type="button"
+                  onClick={onManualCreate}
+                  className="w-full py-1.5 text-xs font-bold text-gray-400 transition-colors hover:text-primary"
+                >
+                  手动新建
+                </button>
+              )}
+            </div>
           </div>
         </motion.div>
       )}

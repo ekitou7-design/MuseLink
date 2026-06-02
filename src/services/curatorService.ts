@@ -2,6 +2,10 @@ import { Artifact, Exhibition } from "../types";
 import { rankArtifactsByKeywordQuery } from "../lib/artifactSearch";
 import { apiUrl } from "../lib/api";
 import {
+  CONTENT_CURATION_QUESTIONS,
+  type CuratorGuideAnswers,
+} from "../modules/curation/data/curatorPreferences";
+import {
   artifactCategoryRaw,
   artifactCultureRaw,
   artifactDescriptionRaw,
@@ -48,20 +52,50 @@ const CURATION_STOP_WORDS = new Set([
 ]);
 const REMOTE_CURATION_ENDPOINT = "/api/ai/curation";
 
+export type GenerateExhibitionOptions = {
+  guideAnswers?: CuratorGuideAnswers;
+};
+
 export interface CurationProvider {
   getRelatedArtifacts(
     currentArtifact: Artifact,
     allArtifacts: Artifact[],
   ): Promise<{ artifactId: string; reason: string }[]>;
-  generateExhibition(userPrompt: string, allArtifacts: Artifact[]): Promise<Partial<Exhibition>>;
+  generateExhibition(
+    userPrompt: string,
+    allArtifacts: Artifact[],
+    options?: GenerateExhibitionOptions,
+  ): Promise<Partial<Exhibition>>;
+}
+
+function buildGuideSummary(guideAnswers: CuratorGuideAnswers = {}): string {
+  return CONTENT_CURATION_QUESTIONS
+    .map((question) => {
+      const answer = guideAnswers[question.id]?.trim();
+      return answer ? `${question.title} ${question.prompt}${answer}` : "";
+    })
+    .filter(Boolean)
+    .join("；");
+}
+
+function buildEffectivePrompt(userPrompt: string, guideAnswers: CuratorGuideAnswers = {}): string {
+  const base = userPrompt.trim();
+  const guideSummary = buildGuideSummary(guideAnswers);
+  if (!guideSummary) return base;
+  return [
+    base || "请根据我的策展问题回答生成一个个人展览",
+    `用户的策展问题回答：${guideSummary}。`,
+    "请优先围绕这些回答确定展览主题、展品选择、叙事线索、知识重点和情感落点。",
+  ].join("\n");
 }
 
 async function retrieveCandidatesForCuration(userPrompt: string, allArtifacts: Artifact[]): Promise<Artifact[]> {
+  const query = userPrompt.trim() || "个人策展 展览 文物";
   try {
     const res = await fetch(apiUrl("/api/rag/search"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q: userPrompt, limit: CURATION_CANDIDATE_LIMIT }),
+      body: JSON.stringify({ q: query, limit: CURATION_CANDIDATE_LIMIT }),
     });
     if (!res.ok) throw new Error(`rag ${res.status}`);
     const data = (await res.json()) as { artifactIds?: string[] };
@@ -72,7 +106,7 @@ async function retrieveCandidatesForCuration(userPrompt: string, allArtifacts: A
   } catch (e) {
     console.warn("检索候选不可用，改用关键词:", e);
   }
-  const kw = rankArtifactsByKeywordQuery(allArtifacts, userPrompt);
+  const kw = rankArtifactsByKeywordQuery(allArtifacts, query);
   if (kw.length > 0) return kw.slice(0, CURATION_CANDIDATE_LIMIT);
   return allArtifacts.slice(0, Math.min(CURATION_CANDIDATE_LIMIT, allArtifacts.length));
 }
@@ -225,6 +259,31 @@ function buildSections(theme: string, pick: Artifact[]) {
     }));
 }
 
+function buildLocalAICuration(theme: string, pick: Artifact[], sourceNote: string) {
+  const sections = buildSections(theme, pick);
+  const artifactNotes = Object.fromEntries(
+    pick.map((artifact, index) => [
+      artifact.id,
+      `第 ${index + 1} 件展品以「${artifactName(artifact)}」回应主题中的一个侧面，可从馆藏单位、年代、材质和简介中读取它与展览叙事的关系。`,
+    ]),
+  );
+
+  return {
+    theme,
+    opening: `这是一场围绕「${theme}」生成的个人展览。它先从一件可感知的器物出发，再把观众带入相关的生活经验、时代背景与审美秩序。`,
+    sections: sections.map((section) => ({
+      title: section.title,
+      summary: `本单元通过 ${section.names.join("、")} 等展品建立观看线索，让观众从展品细节进入更完整的文化语境。`,
+      artifactIds: pick
+        .filter((artifact) => section.names.includes(artifactName(artifact)))
+        .map((artifact) => artifact.id),
+    })),
+    artifactNotes,
+    ending: "当展览回到今天，观众看到的不只是单件文物，而是一组关于生活、工艺、记忆与观看方式的连接。",
+    sourceNote,
+  };
+}
+
 function scoreRelated(candidate: Artifact, current: Artifact): number {
   let s = 0;
   if (
@@ -291,19 +350,24 @@ const localRuleCurationProvider: CurationProvider = {
     }));
   },
 
-  async generateExhibition(userPrompt: string, allArtifacts: Artifact[]): Promise<Partial<Exhibition>> {
+  async generateExhibition(
+    userPrompt: string,
+    allArtifacts: Artifact[],
+    options: GenerateExhibitionOptions = {},
+  ): Promise<Partial<Exhibition>> {
     if (allArtifacts.length === 0) {
       throw new Error("当前后端文物库为空，无法生成展览。");
     }
 
-    const intent = extractCurationIntent(userPrompt);
-    const candidates = await retrieveCandidatesForCuration(userPrompt, allArtifacts);
+    const effectivePrompt = buildEffectivePrompt(userPrompt, options.guideAnswers);
+    const intent = extractCurationIntent(effectivePrompt);
+    const candidates = await retrieveCandidatesForCuration(effectivePrompt, allArtifacts);
     const targetCount = Math.min(15, Math.max(6, Math.min(candidates.length || allArtifacts.length, 12)));
     const pick = diversifyArtifacts(
       candidates.length > 0
         ? candidates
         : [...allArtifacts].sort((a, b) => (b.favsCount ?? 0) - (a.favsCount ?? 0)),
-      userPrompt,
+      effectivePrompt,
       intent.keywords,
       targetCount,
     );
@@ -339,6 +403,11 @@ const localRuleCurationProvider: CurationProvider = {
       intro,
       coverUrl: String(pick[0]?.imageUrl ?? ""),
       artifactIds: pick.map((a) => a.id),
+      aiCuration: buildLocalAICuration(
+        intent.theme,
+        pick,
+        "展品来自后端馆藏库；当前方案由本地策展规则根据馆藏字段生成，未补写数据库之外的具体故事。",
+      ),
     };
   },
 };
@@ -346,15 +415,20 @@ const localRuleCurationProvider: CurationProvider = {
 async function tryRemoteExhibitionGeneration(
   userPrompt: string,
   allArtifacts: Artifact[],
+  options: GenerateExhibitionOptions = {},
 ): Promise<Partial<Exhibition> | null> {
   try {
-    const candidates = await retrieveCandidatesForCuration(userPrompt, allArtifacts);
+    const guideSummary = buildGuideSummary(options.guideAnswers);
+    const effectivePrompt = buildEffectivePrompt(userPrompt, options.guideAnswers);
+    const candidates = await retrieveCandidatesForCuration(effectivePrompt, allArtifacts);
     const res = await fetch(apiUrl(REMOTE_CURATION_ENDPOINT), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         action: "generate-exhibition",
         userPrompt,
+        guideAnswers: options.guideAnswers ?? {},
+        guideSummary,
         artifacts: candidates.slice(0, 36),
       }),
     });
@@ -405,10 +479,12 @@ export function createRemoteCurationProvider(endpoint: string): CurationProvider
         allArtifacts,
       });
     },
-    generateExhibition(userPrompt, allArtifacts) {
+    generateExhibition(userPrompt, allArtifacts, options) {
       return postToProvider<Partial<Exhibition>>("generate-exhibition", {
         userPrompt,
         allArtifacts,
+        guideAnswers: options?.guideAnswers ?? {},
+        guideSummary: buildGuideSummary(options?.guideAnswers),
       });
     },
   };
@@ -419,11 +495,16 @@ export const curatorService: CurationProvider = {
   getRelatedArtifacts(currentArtifact, allArtifacts) {
     return activeCurationProvider.getRelatedArtifacts(currentArtifact, allArtifacts);
   },
-  async generateExhibition(userPrompt, allArtifacts) {
+  async generateExhibition(userPrompt, allArtifacts, options) {
     if (activeCurationProvider === localRuleCurationProvider) {
-      const remoteResult = await tryRemoteExhibitionGeneration(userPrompt, allArtifacts);
+      const remoteResult = await tryRemoteExhibitionGeneration(userPrompt, allArtifacts, options);
       if (remoteResult) return remoteResult;
+      const fallbackResult = await activeCurationProvider.generateExhibition(userPrompt, allArtifacts, options);
+      return {
+        ...fallbackResult,
+        generationNotice: "AI 服务暂不可用，已用本地策展规则生成草案。",
+      } as Partial<Exhibition>;
     }
-    return activeCurationProvider.generateExhibition(userPrompt, allArtifacts);
+    return activeCurationProvider.generateExhibition(userPrompt, allArtifacts, options);
   },
 };

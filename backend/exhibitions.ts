@@ -15,6 +15,7 @@ export type ExhibitionRecord = {
   commentsCount: number;
   bgmUrl?: string;
   slideshowSettings?: unknown;
+  aiCuration?: unknown;
   createdAt: string;
   updatedAt: string;
 };
@@ -77,6 +78,7 @@ export async function createExhibition(input: {
   isPublic: boolean;
   bgmUrl?: string;
   slideshowSettings?: unknown;
+  aiCuration?: unknown;
 }): Promise<ExhibitionRecord> {
   const db = await loadDb();
   const createdAt = nowIso();
@@ -95,6 +97,7 @@ export async function createExhibition(input: {
     commentsCount: 0,
     bgmUrl: input.bgmUrl,
     slideshowSettings: input.slideshowSettings,
+    aiCuration: input.aiCuration,
     createdAt,
     updatedAt: createdAt,
   };

@@ -17,11 +17,12 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Artifact } from '../../../types';
+import { Artifact, Exhibition } from '../../../types';
 import { AmbientAudioPlayer, isAmbientBgmUrl } from '../../../lib/ambientAudio';
 import { rankArtifactsByKeywordQuery } from '../../../lib/artifactSearch';
 import { cn } from '../../../lib/utils';
 import { ArtifactCard } from '../../artifacts/components/ArtifactCard';
+import { artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
 
 export const ExhibitionDetail = ({ 
   exhibition, 
@@ -48,6 +49,7 @@ export const ExhibitionDetail = ({
   );
 
   const isOwner = Boolean(user && String(exhibition.userId) === String(user.id));
+  const aiCuration = (exhibition as Exhibition).aiCuration;
 
   const filteredArtifactIds = useMemo(() => {
     if (!search.trim()) return artifactIds;
@@ -95,7 +97,8 @@ export const ExhibitionDetail = ({
       initial={{ x: '100%' }}
       animate={{ x: 0 }}
       exit={{ x: '100%' }}
-      className="fixed inset-0 bg-white z-[110] overflow-y-auto no-scrollbar flex flex-col"
+      className="fixed inset-0 z-[110] flex flex-col overflow-y-auto bg-[var(--app-page-bg)] no-scrollbar"
+      style={{ top: 'var(--app-status-bar-height)' }}
     >
       {exhibition.bgmUrl && !isAmbientBgm && (
         <audio ref={audioRef} src={exhibition.bgmUrl} loop />
@@ -118,7 +121,7 @@ export const ExhibitionDetail = ({
                 event.stopPropagation();
                 onSlideshowOpen(exhibition);
               }}
-              className="min-w-0 max-w-[calc(100vw-9.5rem)] px-3 sm:px-4 py-2 bg-white text-black backdrop-blur-md rounded-full text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-black/20 force-nowrap active:scale-95"
+              className="flex min-w-0 max-w-[calc(100%-5.5rem)] items-center justify-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-bold text-black shadow-lg shadow-black/20 backdrop-blur-md active:scale-95 sm:px-4 force-nowrap"
             >
               <Sparkles size={20} className="flex-shrink-0" />
               <span className="force-nowrap">进入沉浸展览</span>
@@ -185,6 +188,69 @@ export const ExhibitionDetail = ({
 
       {/* Content Area */}
       <div className="flex-1 p-6 space-y-6">
+        {aiCuration ? (
+          <section className="space-y-5 rounded-[5px] border border-amber-100 bg-amber-50 p-5">
+            <div className="space-y-2">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">AI 结构化策展方案</p>
+              {aiCuration.theme && <h3 className="break-words text-lg font-serif font-bold text-gray-950">{aiCuration.theme}</h3>}
+              {aiCuration.opening && <p className="break-words text-sm leading-relaxed text-gray-700">{aiCuration.opening}</p>}
+            </div>
+
+            {aiCuration.sections && aiCuration.sections.length > 0 && (
+              <div className="space-y-3">
+                {aiCuration.sections.map((section, index) => (
+                  <div key={`${section.title}-${index}`} className="rounded-[5px] bg-white/75 p-4">
+                    <h4 className="break-words text-sm font-bold text-gray-900">{section.title}</h4>
+                    {section.summary && <p className="mt-1 break-words text-xs leading-relaxed text-gray-500">{section.summary}</p>}
+                    {section.artifactIds.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {section.artifactIds.map((id: string) => {
+                          const artifact = artifacts.find((item: Artifact) => item.id === id);
+                          return (
+                            <span key={`${section.title}-${id}`} className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold text-amber-900">
+                              {artifact ? displayDbString(artifactNameRaw(artifact)) : id}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {aiCuration.artifactNotes && Object.keys(aiCuration.artifactNotes).length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-gray-900">展品策展理由</h4>
+                {artifactIds
+                  .filter((id: string) => aiCuration.artifactNotes?.[id])
+                  .map((id: string) => {
+                    const artifact = artifacts.find((item: Artifact) => item.id === id);
+                    return (
+                      <div key={`note-${id}`} className="rounded-[5px] bg-white/75 p-3">
+                        <p className="text-[10px] font-bold text-amber-900">{artifact ? displayDbString(artifactNameRaw(artifact)) : id}</p>
+                        <p className="mt-1 break-words text-xs leading-relaxed text-gray-500">{aiCuration.artifactNotes?.[id]}</p>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
+
+            {aiCuration.ending && <p className="break-words text-sm leading-relaxed text-gray-700">{aiCuration.ending}</p>}
+            {aiCuration.sourceNote && (
+              <p className="break-words border-t border-amber-100 pt-3 text-[10px] leading-relaxed text-amber-800">
+                {aiCuration.sourceNote}
+              </p>
+            )}
+          </section>
+        ) : (
+          exhibition.intro && (
+            <section className="rounded-[5px] border border-gray-100 bg-white p-5">
+              <p className="break-words text-sm leading-relaxed text-gray-600">{exhibition.intro}</p>
+            </section>
+          )
+        )}
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Library size={20} className="text-amber-800" />

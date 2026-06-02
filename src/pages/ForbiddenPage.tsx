@@ -1,5 +1,5 @@
 import React from "react";
-import { navigate } from "../router/router";
+import { goBackOrNavigate } from "../router/router";
 
 export function ForbiddenPage() {
   return (
@@ -15,7 +15,7 @@ export function ForbiddenPage() {
         </div>
 
         <button
-          onClick={() => navigate("/home")}
+          onClick={() => goBackOrNavigate("/home")}
           className="w-full bg-amber-800 text-white rounded-2xl py-3 text-sm font-bold"
         >
           返回首页

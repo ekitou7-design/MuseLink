@@ -11,12 +11,19 @@ export const MessagingOverlay = ({
   messageTab: 'reminders' | 'chats',
   setMessageTab: (tab: 'reminders' | 'chats') => void,
 }) => (
-  <motion.div key="messaging-overlay" initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} className="fixed inset-0 bg-white z-[100] flex flex-col">
-    <div className="p-4 flex items-center gap-4 border-b border-gray-100">
+  <motion.div
+    key="messaging-overlay"
+    initial={{ x: '100%' }}
+    animate={{ x: 0 }}
+    exit={{ x: '100%' }}
+    className="fixed inset-0 z-[100] flex flex-col bg-[var(--app-page-bg)]"
+    style={{ top: 'var(--app-status-bar-height)' }}
+  >
+    <div className="ios-title-bar flex items-center gap-4 border-b border-black/5 bg-[var(--app-bar-bg)] px-4 backdrop-blur-xl">
       <button onClick={() => setIsMessaging(false)} className="p-2 text-gray-400"><ArrowLeft size={20} /></button>
       <h2 className="text-lg font-bold">消息</h2>
     </div>
-    <div className="flex border-b border-gray-100">
+    <div className="ios-mid-bar flex">
       <button 
         onClick={() => setMessageTab('reminders')}
         className={cn("flex-1 py-4 text-sm font-bold transition-all", messageTab === 'reminders' ? "text-amber-800 border-b-2 border-amber-800" : "text-gray-400")}

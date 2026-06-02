@@ -4,8 +4,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Headphones,
-  Map,
-  Mouse,
+  Landmark,
   Pause,
   Play,
   Volume2,
@@ -36,28 +35,28 @@ interface SlideshowOverlayProps {
 
 const sceneThemes = [
   {
-    wall: 'from-[#2f352f] via-[#47513f] to-[#1d211c]',
-    panel: 'bg-[#efe6d1]',
+    wall: 'from-[#100d09] via-[#2b2418] to-[#050403]',
+    panel: 'bg-[#f5ebd7]',
     accent: '#f1d27a',
     text: 'text-[#fff4d3]',
   },
   {
-    wall: 'from-[#242c33] via-[#43576a] to-[#171d23]',
-    panel: 'bg-[#e8edf0]',
-    accent: '#9dc7d8',
-    text: 'text-[#e8f6ff]',
+    wall: 'from-[#070b0e] via-[#1d2a31] to-[#050607]',
+    panel: 'bg-[#eef3f3]',
+    accent: '#d6b36a',
+    text: 'text-[#f3dfad]',
   },
   {
-    wall: 'from-[#3c2622] via-[#6b4437] to-[#201412]',
-    panel: 'bg-[#f1dfcc]',
+    wall: 'from-[#140806] via-[#3a1f18] to-[#090403]',
+    panel: 'bg-[#f3dfc9]',
     accent: '#efbd7a',
     text: 'text-[#ffe4c3]',
   },
   {
-    wall: 'from-[#262336] via-[#514b68] to-[#171521]',
+    wall: 'from-[#0a0810] via-[#272133] to-[#050408]',
     panel: 'bg-[#eee8f5]',
-    accent: '#c7b7ef',
-    text: 'text-[#f0eaff]',
+    accent: '#d8bd72',
+    text: 'text-[#f3dfad]',
   },
 ];
 
@@ -93,6 +92,7 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
     String(artifactImageUrlRaw(safeArtifacts[0]) ?? '');
   const activeBgmUrl = bgmUrl || DEFAULT_AMBIENT_BGM;
   const hasAmbientBgm = isAmbientBgmUrl(activeBgmUrl);
+  const artifactNotes = exhibition.aiCuration?.artifactNotes || {};
 
   const scrollToScene = useCallback((index: number) => {
     const targetIndex = Math.max(0, Math.min(index, sceneCount - 1));
@@ -217,6 +217,7 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
         role="dialog"
         aria-modal="true"
         className="fixed inset-0 z-[400] overflow-hidden bg-[#11100d] text-white"
+        style={{ top: 'var(--app-status-bar-height)' }}
       >
         {!hasAmbientBgm && activeBgmUrl && <audio ref={audioRef} src={activeBgmUrl} loop muted={isMuted} />}
 
@@ -225,40 +226,50 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
           onScroll={handleScroll}
           className="h-full w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-smooth no-scrollbar"
         >
-          <div className="flex h-full w-max">
-            <section className="relative h-full w-screen snap-start overflow-hidden bg-[#191611]">
-              <SafeImage src={coverImage} className="absolute inset-0 h-full w-full object-cover opacity-70" />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.82),rgba(0,0,0,0.34)_45%,rgba(0,0,0,0.72))]" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_38%,rgba(255,219,142,0.18),transparent_34%)]" />
+          <div className="flex h-full w-full">
+            <section className="relative h-full min-w-full snap-start overflow-hidden bg-[#080604]">
+              <SafeImage src={coverImage} className="absolute inset-0 h-full w-full scale-105 object-cover opacity-52" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.46),rgba(0,0,0,0.78)_45%,rgba(0,0,0,0.94))]" />
+              <div className="absolute left-1/2 top-0 h-[56%] w-[72%] -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(242,205,132,0.36),transparent_68%)]" />
+              <div className="absolute left-[14%] top-0 h-[72%] w-px rotate-12 bg-gradient-to-b from-[#f6d58d]/30 to-transparent" />
+              <div className="absolute right-[18%] top-0 h-[64%] w-px -rotate-12 bg-gradient-to-b from-[#f6d58d]/20 to-transparent" />
+              <div className="absolute inset-x-8 bottom-24 h-px bg-gradient-to-r from-transparent via-[#d8bd72]/45 to-transparent" />
 
-              <div className="relative z-10 flex h-full items-center px-7 py-24 md:px-16">
-                <div className="max-w-xl">
-                  <div className="mb-5 inline-flex items-center gap-2 border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.26em] text-white/76 backdrop-blur-md">
-                    <Headphones size={16} />
-                    Immersive Exhibition
+              <div className="relative z-10 flex h-full min-h-0 flex-col justify-end px-5 pb-32 pt-20 md:px-12">
+                <motion.div
+                  initial={{ opacity: 0, y: 26 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="flex max-h-[calc(100%-1rem)] min-h-0 max-w-full flex-col gap-4 overflow-hidden rounded-[5px] border border-[#d8bd72]/22 bg-black/42 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.58)] backdrop-blur-xl"
+                >
+                  <div className="flex shrink-0 items-center justify-between gap-3">
+                    <div className="inline-flex min-w-0 items-center gap-2 border border-[#d8bd72]/28 bg-[#d8bd72]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#f3dfad] force-nowrap">
+                      <Headphones size={16} />
+                      Immersive Exhibition
+                    </div>
+                    <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.22em] text-white/42">
+                      {safeArtifacts.length} Objects
+                    </span>
                   </div>
-                  <h1 className="break-words font-serif text-4xl font-bold leading-tight text-[#fff4d3] md:text-7xl">
-                    {exhibition.title}
-                  </h1>
-                  {exhibition.intro && (
-                    <p className="mt-6 max-h-[28vh] overflow-y-auto whitespace-pre-wrap break-words text-sm leading-7 text-white/72 no-scrollbar md:max-w-lg">
-                      {exhibition.intro}
-                    </p>
-                  )}
+                  <div className="flex min-h-0 flex-1 flex-col gap-4">
+                    <h1 className="max-h-[32vh] max-w-full overflow-y-auto whitespace-normal break-words font-serif text-3xl font-bold leading-tight text-[#fff4d3] no-scrollbar [overflow-wrap:anywhere] md:text-5xl">
+                      {exhibition.title}
+                    </h1>
+                    {exhibition.intro && (
+                      <p className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap break-words text-sm leading-7 text-white/70 no-scrollbar [overflow-wrap:anywhere]">
+                        {exhibition.intro}
+                      </p>
+                    )}
+                  </div>
                   <button
                     type="button"
                     onClick={() => scrollToScene(1)}
-                    className="mt-8 inline-flex items-center gap-3 border border-[#f1d27a]/60 bg-[#f1d27a] px-6 py-3 text-sm font-bold text-[#191611] shadow-[0_16px_50px_rgba(0,0,0,0.32)] active:scale-95"
+                    className="inline-flex h-12 shrink-0 items-center justify-center gap-3 border border-[#f1d27a]/70 bg-[#f1d27a] px-5 text-sm font-bold text-[#16110a] shadow-[0_18px_56px_rgba(0,0,0,0.42)] active:scale-95"
                   >
                     开始浏览
                     <ChevronRight size={18} />
                   </button>
-                </div>
-              </div>
-
-              <div className="absolute bottom-24 right-6 z-10 hidden items-center gap-3 text-[#fff4d3] md:flex">
-                <Mouse size={18} />
-                <span className="font-serif text-sm font-bold tracking-[0.18em]">横向滚动浏览展厅</span>
+                </motion.div>
               </div>
             </section>
 
@@ -269,68 +280,76 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
               const museum = displayDbString(artifactMuseumRaw(artifact));
               const era = displayDbString(artifactEraRaw(artifact));
               const description = displayDbString(artifactDescriptionRaw(artifact));
+              const note = artifactNotes[artifact.id] || description || '这件展品的资料仍在整理中。';
 
               return (
                 <section
                   key={`immersive-scene-${artifact.id}`}
                   className={cn(
-                    'relative grid h-full w-screen snap-start overflow-hidden bg-gradient-to-br px-5 pb-28 pt-20 md:grid-cols-[minmax(280px,0.92fr)_minmax(360px,0.8fr)] md:items-center md:gap-10 md:px-16 md:pb-24',
+                    'relative flex h-full min-w-full snap-start flex-col overflow-hidden bg-gradient-to-br px-5 pb-24 pt-16',
                     theme.wall,
                   )}
                 >
-                  <SafeImage src={image} className="absolute inset-0 h-full w-full scale-110 object-cover opacity-12 blur-2xl" />
-                  <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/45 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/55 to-transparent" />
-                  <div className="pointer-events-none absolute left-[10vw] top-[12vh] h-[60vh] w-px bg-white/14" />
-                  <div className="pointer-events-none absolute right-[12vw] top-[18vh] h-[42vh] w-px bg-white/10" />
+                  <SafeImage src={image} className="absolute inset-0 h-full w-full scale-125 object-cover opacity-10 blur-2xl" />
+                  <div className="absolute inset-x-0 top-0 h-[42%] bg-[radial-gradient(ellipse_at_top,rgba(246,213,141,0.28),transparent_68%)]" />
+                  <div className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-black/80 to-transparent" />
+                  <div className="pointer-events-none absolute left-[12%] top-[8%] h-[58%] w-px bg-gradient-to-b from-[#f6d58d]/30 to-transparent" />
+                  <div className="pointer-events-none absolute right-[14%] top-[10%] h-[46%] w-px bg-gradient-to-b from-white/16 to-transparent" />
 
                   <motion.div
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ root: viewportRef, amount: 0.45 }}
                     transition={{ duration: 0.6 }}
-                    className="relative z-10 mx-auto flex h-[48vh] w-full max-w-[min(68vh,520px)] items-center justify-center md:h-[68vh]"
+                    className="relative z-10 flex min-h-0 flex-[0.95] items-center justify-center pt-4"
                   >
-                    <div className={cn('relative h-full w-full border-[10px] border-[#2c2119] p-4 shadow-[0_40px_120px_rgba(0,0,0,0.46)]', theme.panel)}>
-                      <div className="absolute -left-5 top-10 h-20 w-5 bg-black/20" />
-                      <div className="absolute -right-5 bottom-10 h-20 w-5 bg-black/20" />
-                      <SafeImage src={image} className="h-full w-full object-contain bg-black/5" />
+                    <div className="relative flex h-full max-h-[42vh] w-full items-center justify-center">
+                      <div className="absolute left-1/2 top-[-12%] h-[34%] w-[62%] -translate-x-1/2 rounded-full bg-[#f6d58d]/26 blur-2xl" />
+                      <div className="absolute bottom-1 h-7 w-[72%] rounded-full bg-black/50 blur-xl" />
+                      <div className="relative flex h-full w-[82%] items-center justify-center border border-[#f4d487]/28 bg-white/[0.055] p-3 shadow-[0_34px_110px_rgba(0,0,0,0.62)] backdrop-blur-md">
+                        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_32%,rgba(255,255,255,0.05)_62%,transparent)]" />
+                        <div className="absolute -left-2 top-8 h-20 w-2 bg-[#f4d487]/18" />
+                        <div className="absolute -right-2 bottom-8 h-20 w-2 bg-black/32" />
+                        <SafeImage src={image} className="relative z-10 h-full w-full object-contain bg-black/10" />
+                      </div>
+                      <div className="absolute bottom-0 h-3 w-[58%] border border-[#d8bd72]/20 bg-black/50 shadow-[0_12px_34px_rgba(0,0,0,0.5)]" />
                     </div>
                   </motion.div>
 
                   <motion.div
-                    initial={{ opacity: 0, x: 28 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 22 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ root: viewportRef, amount: 0.45 }}
                     transition={{ duration: 0.7, delay: 0.08 }}
-                    className="relative z-10 mx-auto mt-6 flex w-full max-w-xl gap-5 md:mt-0"
+                    className="relative z-10 mt-3 flex max-h-[34vh] min-h-0 shrink-0 flex-col rounded-[5px] border border-[#d8bd72]/24 bg-black/56 p-4 shadow-[0_26px_80px_rgba(0,0,0,0.56)] backdrop-blur-xl"
                   >
-                    <div className="hidden shrink-0 flex-col items-center gap-3 md:flex">
-                      <span className="font-serif text-[11px] font-bold tracking-[0.32em] text-white/50 [writing-mode:vertical-rl]">
-                        CHAPTER {String(index + 1).padStart(2, '0')}
-                      </span>
-                      <span className="h-20 w-px bg-white/28" />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="mb-4 flex items-center gap-2 text-white/58">
-                        <Map size={16} />
-                        <span className="text-[10px] font-bold uppercase tracking-[0.22em]">
-                          {museum} · {era}
-                        </span>
+                    <div className="mb-3 flex min-h-0 shrink-0 items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <div className="mb-2 flex items-center gap-2 text-[#d8bd72]/78">
+                          <Landmark size={16} />
+                          <span className="truncate text-[10px] font-bold uppercase tracking-[0.18em]">
+                            {museum} · {era}
+                          </span>
+                        </div>
+                        <h2 className={cn('max-h-20 overflow-y-auto break-words font-serif text-xl font-bold leading-tight no-scrollbar [overflow-wrap:anywhere]', theme.text)}>
+                          {name}
+                        </h2>
                       </div>
-                      <h2 className={cn('break-words font-serif text-3xl font-bold leading-tight md:text-5xl', theme.text)}>
-                        {name}
-                      </h2>
-                      {settings.showIntro && (
-                        <p className="mt-6 max-h-[26vh] overflow-y-auto whitespace-pre-wrap break-words text-sm font-light leading-7 text-white/74 no-scrollbar">
-                          {description || '这件展品的资料仍在整理中。'}
-                        </p>
-                      )}
-                      <div className="mt-7 flex items-center gap-3">
+                      <span className="shrink-0 border border-[#d8bd72]/24 px-2 py-1 text-[10px] font-bold tracking-[0.18em] text-[#d8bd72]/75">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                    {settings.showIntro && (
+                      <p className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap break-words text-xs leading-6 text-white/68 no-scrollbar [overflow-wrap:anywhere]">
+                        {note}
+                      </p>
+                    )}
+                    <div className="mt-4 flex shrink-0 items-center justify-between">
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={goPrev}
-                          className="flex h-10 w-10 items-center justify-center border border-white/16 bg-white/10 backdrop-blur-md active:scale-95 disabled:opacity-30"
+                          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d8bd72]/24 bg-white/8 text-[#f3dfad] backdrop-blur-md active:scale-95 disabled:opacity-30"
                           disabled={currentIndex === 0}
                         >
                           <ChevronLeft size={20} />
@@ -338,14 +357,14 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
                         <button
                           type="button"
                           onClick={goNext}
-                          className="flex h-10 w-10 items-center justify-center border border-white/16 bg-white/10 backdrop-blur-md active:scale-95"
+                          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d8bd72]/24 bg-white/8 text-[#f3dfad] backdrop-blur-md active:scale-95"
                         >
                           <ChevronRight size={20} />
                         </button>
-                        <span className="text-xs font-bold text-white/45">
-                          {index + 1} / {safeArtifacts.length}
-                        </span>
                       </div>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/42">
+                        {index + 1} / {safeArtifacts.length}
+                      </span>
                     </div>
                   </motion.div>
                 </section>
@@ -356,8 +375,8 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
 
         <div className="absolute left-0 right-0 top-0 z-30 flex items-start justify-between px-4 py-4 md:px-7 md:py-6">
           <div className="min-w-0 pr-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-white/45">MuseLink</p>
-            <p className="mt-1 max-w-[64vw] truncate font-serif text-sm font-bold text-white/85">{exhibition.title}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#d8bd72]/58">MuseLink Gallery</p>
+            <p className="mt-1 max-w-[64%] truncate font-serif text-sm font-bold text-white/82">{exhibition.title}</p>
           </div>
           <div className="flex items-center gap-2">
             {activeBgmUrl && (
@@ -365,7 +384,7 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
                 type="button"
                 onClick={toggleAudio}
                 className={cn(
-                  'flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-black/25 text-white backdrop-blur-md transition-all active:scale-95',
+                  'flex h-10 w-10 items-center justify-center rounded-full border border-[#d8bd72]/18 bg-black/36 text-[#f3dfad] shadow-[0_12px_34px_rgba(0,0,0,0.32)] backdrop-blur-xl transition-all active:scale-95',
                   isAudioPlaying && !isMuted && 'animate-spin',
                 )}
                 style={isAudioPlaying && !isMuted ? { animationDuration: '3s' } : undefined}
@@ -378,7 +397,7 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
               type="button"
               onClick={() => setAutoRoam((value) => !value)}
               className={cn(
-                'flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-black/25 text-white backdrop-blur-md transition-all active:scale-95',
+                'flex h-10 w-10 items-center justify-center rounded-full border border-[#d8bd72]/18 bg-black/36 text-[#f3dfad] shadow-[0_12px_34px_rgba(0,0,0,0.32)] backdrop-blur-xl transition-all active:scale-95',
                 autoRoam && 'bg-[#f1d27a] text-black',
               )}
               aria-label={autoRoam ? '暂停自动浏览' : '自动浏览'}
@@ -388,7 +407,7 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-black/25 text-white backdrop-blur-md transition-all active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8bd72]/18 bg-black/36 text-[#f3dfad] shadow-[0_12px_34px_rgba(0,0,0,0.32)] backdrop-blur-xl transition-all active:scale-95"
               aria-label="关闭沉浸展览"
             >
               <X size={20} />
@@ -396,15 +415,15 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 z-30 px-4 pb-5 pt-12 md:px-10">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-3 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.22em] text-white/48">
+        <div className="absolute bottom-0 left-0 right-0 z-30 px-4 pb-5 pt-10 md:px-10">
+          <div className="mx-auto rounded-[5px] border border-[#d8bd72]/16 bg-black/36 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.44)] backdrop-blur-xl">
+            <div className="mb-3 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-[#f3dfad]/50">
               <span>{currentIndex === 0 ? 'Home' : `Scene ${String(currentIndex).padStart(2, '0')}`}</span>
               <span>{Math.round(progress)}%</span>
             </div>
-            <div className="relative h-2 rounded-full bg-white/25">
+            <div className="relative h-px bg-[#d8bd72]/26">
               <motion.div
-                className="absolute left-0 top-0 h-full rounded-full bg-[#e62b17]"
+                className="absolute left-0 top-0 h-full bg-[#f1d27a]"
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.24 }}
               />
@@ -417,8 +436,8 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
                     type="button"
                     onClick={() => scrollToScene(index)}
                     className={cn(
-                      'group absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.12)] transition-all',
-                      index === currentIndex && 'bg-[#e62b17] shadow-[0_0_0_6px_rgba(230,43,23,0.22)]',
+                      'group absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#d8bd72]/70 bg-[#120e09] shadow-[0_0_0_4px_rgba(216,189,114,0.10)] transition-all',
+                      index === currentIndex && 'h-4 w-4 bg-[#f1d27a] shadow-[0_0_0_7px_rgba(241,210,122,0.18)]',
                     )}
                     style={{ left: `${left}%` }}
                     aria-label={index === 0 ? '展览首页' : `第 ${index} 个展品`}

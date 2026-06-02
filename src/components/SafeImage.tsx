@@ -18,7 +18,7 @@ export function SafeImage({ src, alt, className, ...props }: SafeImageProps) {
 
   if (isStrictDbEmpty(rawSrc) || error) {
     return (
-      <div className={cn("flex flex-col items-center justify-center bg-gray-100 p-4 text-center", className)}>
+      <div className={cn("flex flex-col items-center justify-center bg-[#F4F2EE] p-4 text-center", className)}>
         <Library className="mb-1 text-gray-300" size={24} />
         {isStrictDbEmpty(rawSrc) ? (
           <span className="text-[10px] text-gray-500">{displayDbString(rawSrc)}</span>
@@ -32,7 +32,7 @@ export function SafeImage({ src, alt, className, ...props }: SafeImageProps) {
   return (
     <div className={cn("relative overflow-hidden", className)}>
       {loading && (
-        <div className="absolute inset-0 flex animate-pulse items-center justify-center bg-gray-100">
+        <div className="absolute inset-0 flex animate-pulse items-center justify-center bg-[#F4F2EE]">
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/20 border-t-primary" />
         </div>
       )}

@@ -15,16 +15,16 @@ export const ArtifactCard = ({ artifact, onClick }: { artifact: Artifact, onClic
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       onClick={onClick}
-      className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 cursor-pointer group break-inside-avoid mb-1.5"
+      className="ios-card mb-3 cursor-pointer overflow-hidden break-inside-avoid group"
     >
       <SafeImage 
         src={String(artifactImageUrlRaw(artifact) ?? '')} 
         alt={typeof artifactNameRaw(artifact) === 'string' ? (artifactNameRaw(artifact) as string) : ''} 
         className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
       />
-      <div className="p-1.5 space-y-0.5">
-        <h3 className="min-w-0 break-words font-serif font-bold text-[11px] text-gray-900">{displayDbString(artifactNameRaw(artifact))}</h3>
-        <p className="min-w-0 break-words text-[9px] text-gray-400">{displayDbString(artifactMuseumRaw(artifact))}</p>
+      <div className="space-y-1 p-3">
+        <h3 className="min-w-0 break-words text-[13px] font-black leading-snug text-gray-950">{displayDbString(artifactNameRaw(artifact))}</h3>
+        <p className="min-w-0 break-words text-[11px] leading-snug text-gray-500">{displayDbString(artifactMuseumRaw(artifact))}</p>
       </div>
     </motion.div>
   );

@@ -195,6 +195,8 @@ export type ArtifactDetailProps = {
   isFavorite: boolean;
   toggleFavorite: (id: string) => void | Promise<void>;
   onArtifactClick: (artifact: Artifact) => void;
+  lightboxUrl?: string | null;
+  setLightboxUrl?: (url: string | null) => void;
 };
 
 export function ArtifactDetail({
@@ -204,16 +206,20 @@ export function ArtifactDetail({
   isFavorite,
   toggleFavorite,
   onArtifactClick,
+  lightboxUrl: controlledLightboxUrl,
+  setLightboxUrl: setControlledLightboxUrl,
 }: ArtifactDetailProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [detailArtifact, setDetailArtifact] = useState<Artifact | null>(null);
-  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const [internalLightboxUrl, setInternalLightboxUrl] = useState<string | null>(null);
   const [heroImageFailed, setHeroImageFailed] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [recommendations, setRecommendations] = useState<Artifact[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
 
   const currentArtifact = detailArtifact ?? artifact;
+  const lightboxUrl = controlledLightboxUrl ?? internalLightboxUrl;
+  const setLightboxUrl = setControlledLightboxUrl ?? setInternalLightboxUrl;
   const rawImageUrl = artifactDbValue(currentArtifact, "imageUrl");
   const imageUrl = typeof rawImageUrl === "string" ? rawImageUrl : "";
 
@@ -299,7 +305,7 @@ export function ArtifactDetail({
       exit={{ y: "100%" }}
       className="fixed inset-0 z-[110] flex flex-col overflow-y-auto bg-white pb-[max(20px,env(safe-area-inset-bottom,0px))]"
     >
-      <header className="sticky top-0 z-30 flex min-h-12 shrink-0 items-center gap-2 border-b border-gray-100 bg-white/90 px-4 pt-[env(safe-area-inset-top,0px)] backdrop-blur-md">
+      <header className="sticky top-0 z-30 flex min-h-12 shrink-0 items-center gap-2 border-b border-gray-100 bg-white/90 px-4 backdrop-blur-md">
         <button
           type="button"
           onClick={onClose}

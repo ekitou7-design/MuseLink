@@ -57,21 +57,21 @@ export const Drawer = ({
       onTouchStart={closeDrawer}
       onClick={closeDrawer}
     />
-    <aside className="drawer-content open p-6 flex flex-col">
+    <aside className="drawer-content open flex flex-col p-5">
       <button
         type="button"
         aria-label="关闭侧边栏"
         onPointerDown={closeDrawer}
         onTouchStart={closeDrawer}
         onClick={closeDrawer}
-        className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-gray-500 shadow-sm transition-colors hover:bg-gray-100"
+        className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-gray-500 shadow-sm transition-colors hover:bg-gray-100"
       >
         <X size={18} />
       </button>
       {user ? (
-        <div className="space-y-6 mb-10 pr-8">
+        <div className="mb-8 space-y-5 pr-8">
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => { onClose(); window.dispatchEvent(new CustomEvent('change-tab', { detail: 'profile' })); }}>
-            <img src={user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'} className="w-14 h-14 rounded-2xl shadow-sm" />
+            <img src={user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200'} className="h-14 w-14 rounded-full shadow-sm" />
             <div>
               <h3 className="font-bold text-lg text-secondary font-serif">{user?.displayName || '游客'}</h3>
               <p className="text-xs text-gray-400">点击查看个人主页</p>
@@ -80,14 +80,14 @@ export const Drawer = ({
           <div className="grid grid-cols-2 gap-3">
             <button 
               onClick={() => { onClose(); onEditProfile(); }}
-              className="flex items-center justify-center gap-2 py-2.5 bg-neutral text-secondary rounded-xl text-xs font-bold hover:bg-gray-100 transition-all border border-gray-100"
+              className="ios-button-medium flex items-center justify-center gap-2 bg-white text-xs font-bold text-secondary transition-all hover:bg-gray-100 border border-black/5"
             >
               <User size={20} />
               编辑资料
             </button>
             <button 
               onClick={() => { onClose(); jwtLogout(); window.location.reload(); }}
-              className="flex items-center justify-center gap-2 py-2.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-100 transition-all"
+              className="ios-button-medium flex items-center justify-center gap-2 bg-rose-50 text-xs font-bold text-rose-600 transition-all hover:bg-rose-100"
             >
               <LogOut size={20} />
               退出登录
@@ -95,12 +95,12 @@ export const Drawer = ({
           </div>
         </div>
       ) : (
-        <div className="mb-10 p-6 bg-neutral rounded-3xl border border-gray-100">
+        <div className="ios-card mb-8 p-5">
           <h3 className="font-bold text-secondary mb-2 font-serif">欢迎来到博悟</h3>
           <p className="text-xs text-gray-500 mb-4 leading-relaxed">登录后即可同步收藏、创建展陈并与同好互动交流。</p>
           <button 
             onClick={() => { onClose(); onLoginClick(); }}
-            className="w-full py-2.5 bg-primary text-white rounded-xl text-sm font-bold shadow-lg shadow-primary/20"
+            className="ios-button-large w-full bg-primary text-sm font-bold text-white shadow-lg shadow-primary/20"
           >
             立即登录 / 注册
           </button>
@@ -123,7 +123,7 @@ export const Drawer = ({
                 if (item.action) item.action();
                 else onFeatureClick(item.label);
               }}
-              className="w-full flex items-center gap-4 p-3 hover:bg-gray-50 rounded-xl transition-colors text-left"
+              className="ios-list-row flex w-full items-center gap-4 rounded-2xl px-3 text-left transition-colors hover:bg-white/80"
             >
               <item.icon size={20} className={item.color} />
               <span className="text-sm font-medium text-gray-700">{item.label}</span>

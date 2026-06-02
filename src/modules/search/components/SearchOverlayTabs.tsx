@@ -7,7 +7,8 @@ export const SearchOverlayTabs = ({
   searchOverlayTab: 'artifact' | 'exhibition' | 'museum' | 'user',
   setSearchOverlayTab: (tab: 'artifact' | 'exhibition' | 'museum' | 'user') => void,
 }) => (
-  <div className="flex border-b border-gray-100">
+  <div className="ios-tab-bar px-5">
+    <div className="ios-text-tabs no-scrollbar">
     {([
       { id: 'artifact' as const, label: '文物' },
       { id: 'exhibition' as const, label: '展陈' },
@@ -19,12 +20,16 @@ export const SearchOverlayTabs = ({
         type="button"
         onClick={() => setSearchOverlayTab(id)}
         className={cn(
-          'flex-1 py-4 text-sm font-bold transition-all',
-          searchOverlayTab === id ? 'text-amber-800 border-b-2 border-amber-800' : 'text-gray-400',
+          'ios-text-tab force-nowrap',
+          searchOverlayTab === id && 'active',
         )}
       >
         {label}
+        {searchOverlayTab === id && (
+          <span className="ios-tab-indicator" />
+        )}
       </button>
     ))}
+    </div>
   </div>
 );

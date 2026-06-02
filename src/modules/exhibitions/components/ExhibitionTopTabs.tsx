@@ -17,16 +17,16 @@ export const ExhibitionTopTabs = ({
   ];
 
   return (
-    <div className="sticky top-[60px] z-40 border-b border-gray-100 bg-white/95 px-3 py-2 backdrop-blur-md">
-      <div className="grid grid-cols-3 gap-1.5 rounded-[5px] bg-gray-100 p-1">
+    <div className="ios-tab-bar sticky top-[60px] z-40 flex items-center px-5">
+      <div className="ios-segment-tabs grid w-full grid-cols-3">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => onChange(tab.id)}
             className={cn(
-              'flex min-h-9 items-center justify-center gap-1 rounded-[5px] text-[11px] font-bold transition-all',
-              value === tab.id ? 'bg-white text-amber-800 shadow-sm' : 'text-gray-500',
+              'flex items-center justify-center gap-1 rounded-full text-[12px] font-bold transition-all',
+              value === tab.id ? 'bg-white text-gray-950 shadow-sm' : 'text-gray-500',
             )}
           >
             <tab.icon size={14} />

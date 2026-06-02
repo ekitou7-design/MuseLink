@@ -1,15 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Times New Roman", Times, serif;
-  --font-serif: "Times New Roman", Times, serif;
-  --font-display: "Times New Roman", Times, serif;
+  --font-sans: "Times New Roman", Times, "SimSun", "宋体", "Songti SC", serif;
+  --font-serif: "Times New Roman", Times, "SimSun", "宋体", "Songti SC", serif;
+  --font-display: "Times New Roman", Times, "SimSun", "宋体", "Songti SC", serif;
   
   --color-primary: #8C7851;
   --color-secondary: #1A1A1A;
   --color-tertiary: #A69066;
-  --color-neutral: #FAFAFA;
+  --color-neutral: #F6F3EE;
 
   --radius-xs: 5px;
   --radius-sm: 5px;
@@ -23,27 +22,46 @@
 
 @layer base {
   * {
-    font-family: "Times New Roman", Times, serif !important;
+    font-family: "Times New Roman", Times, "SimSun", "宋体", "Songti SC", serif !important;
   }
   html {
-    @apply min-h-full bg-[#E8E2D7];
+    @apply min-h-full bg-[#F6F3EE];
   }
   body {
-    @apply min-h-screen bg-[#E8E2D7] text-[#1A1A1A] antialiased overflow-x-hidden font-sans;
+    @apply min-h-screen bg-[#F6F3EE] text-[#1A1A1A] antialiased overflow-x-hidden font-sans;
     display: grid;
     place-items: center;
     padding: 28px;
   }
   #root {
-    --phone-safe-top: 58px;
+    --app-status-bar-height: 62px;
+    --app-title-bar-height: 54px;
+    --app-top-nav-height: 54px;
+    --app-bottom-nav-height: 95px;
+    --app-bottom-indicator-height: 34px;
+    --app-page-bg: #F6F3EE;
+    --app-bar-bg: rgba(246, 243, 238, 0.92);
+    --app-card-bg: rgba(255, 255, 255, 0.84);
+    --app-page-margin: 20px;
+    --app-section-gap: 16px;
+    --app-item-gap: 12px;
+    --app-list-row-height: 52px;
+    --app-button-large-height: 50px;
+    --app-button-medium-height: 34px;
+    --app-button-small-height: 28px;
+    --app-input-large-height: 56px;
+    --app-input-medium-height: 44px;
+    --app-input-small-height: 32px;
+    --app-sticky-subnav-top: var(--app-top-nav-height);
+    --phone-safe-top: var(--app-status-bar-height);
     width: min(100vw, 393px);
     height: min(100svh, 852px);
     min-height: 0;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
-    padding-top: var(--phone-safe-top);
-    background: #FFFFFF;
+    padding-top: var(--app-status-bar-height);
+    background: var(--app-page-bg);
     border: 6px solid #111216;
     border-radius: 45px;
     outline: 1px solid rgba(255, 255, 255, 0.38);
@@ -78,13 +96,13 @@
     transform: translateX(-50%);
   }
   #root::after {
-    content: "9:41";
+    content: "1:12 ◐";
     position: fixed;
     top: 18px;
     left: 33px;
     z-index: 1001;
     color: #111216;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Arial, sans-serif !important;
+    font-family: "Times New Roman", Times, "SimSun", "宋体", "Songti SC", serif !important;
     font-size: 14px;
     font-weight: 700;
     line-height: 1;
@@ -101,33 +119,40 @@
     height: 100%;
   }
   #root .top-\[60px\] {
-    top: 60px;
+    top: var(--app-sticky-subnav-top);
   }
   #root .top-\[110px\] {
-    top: 110px;
+    top: calc(var(--app-sticky-subnav-top) + 50px);
   }
   @media (max-width: 460px) {
     body {
       padding: 0;
     }
     #root {
-      --phone-safe-top: env(safe-area-inset-top, 0px);
+      --phone-safe-top: var(--app-status-bar-height);
       width: 100vw;
       height: 100svh;
       border: none;
       border-radius: 0;
       outline: none;
-      padding-top: var(--phone-safe-top);
+      padding-top: var(--app-status-bar-height);
       box-shadow: none;
     }
-    #root::before,
+    #root::before {
+      top: 12px;
+    }
     #root::after {
-      display: none;
+      top: 18px;
+      left: max(24px, env(safe-area-inset-left, 0px) + 24px);
     }
   }
   svg {
     width: 20px !important;
     height: 20px !important;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -142,7 +167,7 @@
   
   .drawer-overlay {
     @apply fixed inset-0 bg-black/40 backdrop-blur-sm z-[180] opacity-0 pointer-events-none transition-opacity duration-300;
-    top: var(--phone-safe-top);
+    top: var(--app-status-bar-height);
   }
   .drawer-overlay.open {
     @apply opacity-100 pointer-events-auto;
@@ -150,18 +175,166 @@
   
   .drawer-content {
     @apply fixed top-0 left-0 bottom-0 w-3/4 bg-[#FDFBF7] z-[190] -translate-x-full transition-transform duration-300 ease-out shadow-2xl;
-    top: var(--phone-safe-top);
+    top: var(--app-status-bar-height);
   }
   .drawer-content.open {
     @apply translate-x-0;
   }
 
   #root .fixed.inset-0 {
-    top: var(--phone-safe-top);
+    top: var(--app-status-bar-height);
   }
 
   #root .fixed.top-0 {
-    top: var(--phone-safe-top);
+    top: var(--app-status-bar-height);
+  }
+
+  .ios-title-bar {
+    min-height: var(--app-title-bar-height);
+    height: var(--app-title-bar-height);
+  }
+
+  .ios-tab-bar {
+    min-height: 60px;
+    height: 60px;
+    background: var(--app-bar-bg);
+    border-bottom: 1px solid rgba(26, 26, 26, 0.05);
+    backdrop-filter: blur(20px);
+  }
+
+  .ios-mid-bar {
+    min-height: 48px;
+    height: 48px;
+    background: var(--app-bar-bg);
+    border-bottom: 1px solid rgba(26, 26, 26, 0.05);
+    backdrop-filter: blur(20px);
+  }
+
+  .ios-text-tabs {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    gap: 20px;
+    overflow-x: auto;
+  }
+
+  .ios-text-tab {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    min-height: 44px;
+    color: #A3A3A3;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1;
+    transition: color 180ms ease, transform 180ms ease;
+  }
+
+  .ios-text-tab.active {
+    color: #111216;
+    font-size: 19px;
+    font-weight: 800;
+  }
+
+  .ios-tab-indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    height: 3px;
+    width: 18px;
+    border-radius: 999px;
+    background: var(--color-primary);
+    transform: translateX(-50%);
+  }
+
+  .ios-segment-tabs {
+    display: flex;
+    height: 40px;
+    align-items: center;
+    gap: 4px;
+    border-radius: 999px;
+    background: rgba(232, 226, 215, 0.72);
+    padding: 4px;
+  }
+
+  .ios-list-row {
+    min-height: var(--app-list-row-height);
+  }
+
+  .ios-page-pad {
+    padding-left: var(--app-page-margin);
+    padding-right: var(--app-page-margin);
+  }
+
+  .ios-card {
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.84);
+    border: 1px solid rgba(26, 26, 26, 0.06);
+    box-shadow: 0 14px 34px rgba(24, 20, 14, 0.08);
+    backdrop-filter: blur(18px);
+  }
+
+  .ios-pill {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.72), 0 12px 28px rgba(24, 20, 14, 0.10);
+    backdrop-filter: blur(20px);
+  }
+
+  .ios-input {
+    min-height: var(--app-input-medium-height);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.76);
+    border: 1px solid rgba(26, 26, 26, 0.06);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  }
+
+  .ios-button-large {
+    min-height: var(--app-button-large-height);
+    border-radius: 18px;
+  }
+
+  .ios-button-medium {
+    min-height: var(--app-button-medium-height);
+    border-radius: 999px;
+  }
+
+  .ios-button-small {
+    min-height: var(--app-button-small-height);
+    border-radius: 999px;
+  }
+
+  .ios-float-nav {
+    height: var(--app-bottom-nav-height);
+    padding-bottom: var(--app-bottom-indicator-height);
+  }
+
+  #root input:not([type="checkbox"]):not([type="radio"]),
+  #root textarea {
+    border-radius: 18px;
+  }
+
+  #root input:not([type="checkbox"]):not([type="radio"]) {
+    min-height: var(--app-input-medium-height);
+  }
+
+  #root textarea {
+    line-height: 1.55;
+  }
+
+  #root button {
+    letter-spacing: 0;
+  }
+
+  #root .rounded-xl,
+  #root .rounded-2xl,
+  #root .rounded-3xl {
+    border-radius: 20px;
+  }
+
+  #root .columns-2 {
+    column-gap: 12px;
   }
 
   .two-floor-container {

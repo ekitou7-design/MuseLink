@@ -4,7 +4,7 @@ import { UserSession } from "../auth/UserSession";
 import { getAdminStats, getAdminUsers, type AdminStatsResponse, type AdminUserSummary } from "../lib/adminClient";
 import { me } from "../lib/authClient";
 import { ForbiddenPage } from "./ForbiddenPage";
-import { navigate } from "../router/router";
+import { goBackOrNavigate, navigate } from "../router/router";
 
 const genderLabels: Record<AdminUserSummary["gender"], string> = {
   male: "男",
@@ -105,7 +105,7 @@ export function AdminPage() {
 
           <div className="flex gap-3">
             <button
-              onClick={() => navigate("/home")}
+              onClick={() => goBackOrNavigate("/home")}
               className="px-4 py-2 rounded-2xl bg-gray-100 text-gray-700 text-sm font-bold"
             >
               返回前台
