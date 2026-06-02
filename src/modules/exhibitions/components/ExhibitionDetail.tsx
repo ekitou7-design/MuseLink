@@ -23,6 +23,7 @@ import { rankArtifactsByKeywordQuery } from '../../../lib/artifactSearch';
 import { cn } from '../../../lib/utils';
 import { ArtifactCard } from '../../artifacts/components/ArtifactCard';
 import { artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
+import { ExhibitionShareModal } from './ExhibitionShareModal';
 
 export const ExhibitionDetail = ({ 
   exhibition, 
@@ -40,6 +41,7 @@ export const ExhibitionDetail = ({
   const [isMultiSelect, setIsMultiSelect] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isBGMPaused, setIsBGMPaused] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ambientRef = useRef<AmbientAudioPlayer | null>(null);
   const isAmbientBgm = isAmbientBgmUrl(exhibition.bgmUrl);
@@ -126,7 +128,13 @@ export const ExhibitionDetail = ({
               <Sparkles size={20} className="flex-shrink-0" />
               <span className="force-nowrap">进入沉浸展览</span>
             </button>
-            <button className="p-2 bg-black/20 backdrop-blur-md rounded-full text-white"><Share2 size={20} /></button>
+            <button
+              type="button"
+              onClick={() => setIsShareOpen(true)}
+              className="p-2 bg-black/20 backdrop-blur-md rounded-full text-white"
+            >
+              <Share2 size={20} />
+            </button>
             <button 
               onClick={() => {
                 if (isOwner) onBGMGeneratorOpen();
@@ -160,7 +168,11 @@ export const ExhibitionDetail = ({
 
       {/* Interaction Bar */}
       <div className="px-6 py-4 flex items-center justify-around border-b border-gray-50">
-        <button className="flex flex-col items-center gap-1 text-gray-500">
+        <button
+          type="button"
+          onClick={() => setIsShareOpen(true)}
+          className="flex flex-col items-center gap-1 text-gray-500"
+        >
           <Share2 size={20} />
           <span className="text-[10px] font-bold">转发</span>
         </button>
@@ -343,6 +355,12 @@ export const ExhibitionDetail = ({
           </motion.div>
         )}
       </div>
+
+      <ExhibitionShareModal
+        isOpen={isShareOpen}
+        exhibition={exhibition}
+        onClose={() => setIsShareOpen(false)}
+      />
     </motion.div>
   );
 };

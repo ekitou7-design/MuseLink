@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Bookmark, Loader2, Mic, MicOff, Music, Sparkles, X, Zap } from 'lucide-react';
+import { Bookmark, Loader2, Mic, MicOff, Music, Share2, Sparkles, X, Zap } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Artifact, Exhibition } from '../../../types';
 import { SafeImage } from '../../../components/SafeImage';
@@ -9,6 +9,7 @@ import {
   CONTENT_CURATION_QUESTIONS,
   type CuratorGuideAnswers,
 } from '../data/curatorPreferences';
+import { ExhibitionShareModal } from '../../exhibitions/components/ExhibitionShareModal';
 
 function buildQuestionPlaceholder(question: (typeof CONTENT_CURATION_QUESTIONS)[number]) {
   const hints = question.options.map((option, index) => {
@@ -48,6 +49,7 @@ export const AIExhibitionModal = ({
   const [keywords, setKeywords] = useState('');
   const [generateBGM, setGenerateBGM] = useState(true);
   const [isListening, setIsListening] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
   const [guideAnswers, setGuideAnswers] = useState<CuratorGuideAnswers>({});
   const recognitionRef = useRef<any>(null);
   const answeredCount = Object.values(guideAnswers).filter((value) => value.trim()).length;
@@ -90,6 +92,7 @@ export const AIExhibitionModal = ({
       setGuideAnswers({});
       setKeywords('');
       setIsListening(false);
+      setIsShareOpen(false);
     }
   }, [isOpen]);
 
@@ -256,6 +259,16 @@ export const AIExhibitionModal = ({
                 {isGenerating ? '正在从后端文物库策展...' : '生成个人展览'}
               </button>
               {result && (
+                <button
+                  type="button"
+                  onClick={() => setIsShareOpen(true)}
+                  className="flex w-full items-center justify-center gap-2 rounded-[5px] bg-white py-3 text-xs font-bold text-gray-600 shadow-sm"
+                >
+                  <Share2 size={14} />
+                  分享展览
+                </button>
+              )}
+              {result && (
                 <button 
                   onClick={onCollect}
                   className="flex w-full items-center justify-center gap-2 rounded-[5px] bg-white py-3 text-xs font-bold text-primary shadow-sm"
@@ -275,6 +288,13 @@ export const AIExhibitionModal = ({
               )}
             </div>
           </div>
+          {result && (
+            <ExhibitionShareModal
+              isOpen={isShareOpen}
+              exhibition={result}
+              onClose={() => setIsShareOpen(false)}
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>
