@@ -20,12 +20,12 @@
 
 ## 现有知识库数据进度
 
-当前知识库主数据是 `imported-artifacts.json`，里面有 92 件已导入文物。基于这些文物，项目已经生成：
+当前知识库主数据是 `imported-artifacts.json`，里面有 226 件已导入文物，其中 94 件来自国家文物局第三批禁止出境展览文物目录，40 件来自首批禁止出国（境）展览文物专题补充。基于主数据，项目已经生成：
 
-- 92 条 AI-ready v2 文物数据：`imported-artifacts.ai-ready.v2.json`
-- 92 条 RAG JSONL 文档：`rag/artifacts-rag-documents.v2.jsonl`
-- 229 条关系候选：`artifact-relation-seeds.v2.json`
-- 83 个博物馆聚合条目：`imported-museums.json`
+- 92 条 AI-ready v2 文物数据：`imported-artifacts.ai-ready.v2.json`（尚未重新生成）
+- 92 条 RAG JSONL 文档：`rag/artifacts-rag-documents.v2.jsonl`（尚未重新生成）
+- 229 条关系候选：`artifact-relation-seeds.v2.json`（尚未重新生成）
+- 113 个博物馆聚合条目：`imported-museums.json`
 
 这些文件让 App 可以展示文物、搜索文物、生成博物馆列表，并给智能策展和后续外部知识库平台提供材料。
 

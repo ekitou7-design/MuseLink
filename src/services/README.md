@@ -15,7 +15,7 @@
 
 ## 当前知识库能支撑什么
 
-`curatorService.ts` 已经会使用后端 `/api/rag/search` 从知识库里找候选文物。当前检索模式是本地关键词排序，数据来源优先使用 `data/imported-artifacts.json` 的 92 件导入文物。
+`curatorService.ts` 已经会使用后端 `/api/rag/search` 从知识库里找候选文物。当前检索模式是本地关键词排序，数据来源优先使用 `data/imported-artifacts.json` 的 226 件导入文物。
 
 在没有外部 AI 或向量数据库时，它也能基于本地规则完成：
 

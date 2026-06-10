@@ -15,10 +15,10 @@
 
 当前知识库主要由后端负责读取、导入和检索。它已经可以：
 
-- 从 `data/imported-artifacts.json` 读取 92 件导入文物，导入数据存在时优先使用导入库
+- 从 `data/imported-artifacts.json` 读取 226 件导入文物，导入数据存在时优先使用导入库
 - 通过 `/api/artifacts` 提供文物列表，并支持关键词、博物馆、时代、文化筛选
 - 通过 `/api/artifacts/:id` 提供文物详情
-- 通过 `/api/museums` 根据文物自动聚合 83 个博物馆条目
+- 通过 `/api/museums` 根据文物自动聚合 113 个博物馆条目
 - 通过 `/api/rag/search` 给智能策展和相关文物推荐提供关键词检索候选
 - 通过 `/api/import/template`、`/api/import/preview`、`/api/import/run` 支持导入流程
 

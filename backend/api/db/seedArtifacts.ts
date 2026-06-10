@@ -5,17 +5,15 @@ type SeedArtifact = {
   name: string;
   dynasty: string;
   museum: string;
+  category?: string;
+  short_intro?: string;
   description: string;
   image_url: string;
+  source_url?: string;
   tags: string[];
 };
 
 export async function ensureSeedArtifacts(db: { query: (sql: string, params?: any[]) => Promise<any> }) {
-  const existing = await db.query("select count(*)::text as count from artifacts");
-  if (Number(existing.rows[0]?.count || "0") > 0) {
-    return { seeded: false };
-  }
-
   const filePath = path.join(process.cwd(), "backend", "api", "db", "seed-artifacts.json");
   const raw = await fs.readFile(filePath, "utf-8");
   const artifacts = JSON.parse(raw) as SeedArtifact[];
@@ -29,15 +27,30 @@ export async function ensureSeedArtifacts(db: { query: (sql: string, params?: an
     (idRows.rows as { id: number; name: string }[]).map((r) => [r.name, r.id]),
   );
 
+  let count = 0;
   for (const a of artifacts) {
     const museumId = museumIdByName.get(a.museum);
     if (museumId == null) throw new Error(`Missing museum row for: ${a.museum}`);
-    await db.query(
-      `insert into artifacts (name, dynasty, museum_id, description, image_url, tags)
-       values ($1,$2,$3,$4,$5,$6)`,
-      [a.name, a.dynasty, museumId, a.description, a.image_url, a.tags],
+    const result = await db.query(
+      `insert into artifacts (name, dynasty, museum_id, category, short_intro, description, image_url, source_url, tags)
+       select $1,$2,$3,$4,$5,$6,$7,$8,$9
+       where not exists (
+         select 1 from artifacts
+         where name = $1 and museum_id = $3
+       )`,
+      [
+        a.name,
+        a.dynasty,
+        museumId,
+        a.category || "",
+        a.short_intro || "",
+        a.description,
+        a.image_url,
+        a.source_url || "",
+        a.tags,
+      ],
     );
+    count += Number(result.rowCount || 0);
   }
-  return { seeded: true, count: artifacts.length };
+  return { seeded: count > 0, count };
 }
-

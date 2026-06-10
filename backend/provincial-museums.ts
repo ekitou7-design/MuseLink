@@ -149,8 +149,7 @@ export const PROVINCIAL_MUSEUMS: ProvincialMuseumSeed[] = [
   { name: "新疆维吾尔自治区博物馆", location: "新疆维吾尔自治区", region: "西北地区" },
 ];
 
-export const DEFAULT_MUSEUM_IMAGE =
-  "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200";
+export const DEFAULT_MUSEUM_IMAGE = "";
 
 export function buildProvincialMuseumShells(slugify: (input: string) => string, updatedAt: string): Museum[] {
   return PROVINCIAL_MUSEUMS.map((museum) => ({

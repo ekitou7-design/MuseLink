@@ -643,7 +643,7 @@ export default function App() {
          name: fromSeed.name,
          description: `${fromSeed.name}是位于${fromSeed.location}的国家一级博物馆。`,
          location: fromSeed.location,
-         imageUrl: 'https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200',
+         imageUrl: '',
          artifactIds: [],
          artifactCount: 0,
          periods: [],

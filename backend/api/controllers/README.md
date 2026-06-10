@@ -20,7 +20,7 @@
 - 为智能策展提供 `/api/rag/search` 候选文物 ID
 - 处理导入模板、导入预览和执行导入
 
-这些能力目前围绕 `data/imported-artifacts.json` 的 92 件文物工作；AI-ready v2、RAG JSONL 和关系候选由 `scripts/data-prep` 离线生成。
+这些能力目前围绕 `data/imported-artifacts.json` 的 226 件文物工作；AI-ready v2、RAG JSONL 和关系候选由 `scripts/data-prep` 离线生成。
 
 ## 常见 controller
 

@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "updatedAt": "2026-05-19T05:12:44.084Z",
+  "updatedAt": "2026-06-10T05:48:59.132Z",
   "museums": [
     {
       "id": "辽宁省博物馆",
       "name": "辽宁省博物馆",
-      "description": "辽宁省博物馆馆藏文物数据库，当前收录 92 件文物。",
+      "description": "辽宁省博物馆馆藏文物数据库，当前收录 94 件文物。",
       "location": "辽宁省",
       "imageUrl": "https://www.lnmuseum.com.cn/singleMuseum/attach/getImg?fileId=22024462001&type=L&s=2164",
       "artifactIds": [
@@ -100,13 +100,17 @@
         "WW-现代齐白石荔枝鹌鹑立轴-88",
         "WW-明周日庠草书七绝诗卷-89",
         "WW-明吴湘人物屏-90",
-        "WW-清叶道芬竹院逢僧轴-91"
+        "WW-清叶道芬竹院逢僧轴-91",
+        "ncha-third-038",
+        "ncha-first-core-026"
       ],
-      "artifactCount": 92,
+      "artifactCount": 94,
       "periods": [
         "中华人民共和国(1949年10月1日成立)",
         "中华民国(1912~1949)",
+        "五代",
         "其他",
+        "北燕",
         "唐(618~907)",
         "新石器时代",
         "明(1368~1644)",
@@ -134,993 +138,1769 @@
         "铜,金",
         "银",
         "陶",
+        "陶瓷",
         "骨角牙"
       ],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.128Z"
+    },
+    {
+      "id": "中国国家博物馆",
+      "name": "中国国家博物馆",
+      "description": "中国国家博物馆馆藏文物数据库，当前收录 23 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Zilong_Ding.jpg",
+      "artifactIds": [
+        "ncha-third-001",
+        "ncha-third-002",
+        "ncha-third-006",
+        "ncha-third-014",
+        "ncha-third-017",
+        "ncha-third-018",
+        "ncha-third-019",
+        "ncha-third-020",
+        "ncha-third-025",
+        "ncha-third-028",
+        "ncha-third-033",
+        "ncha-third-049",
+        "ncha-third-060",
+        "ncha-third-061",
+        "ncha-third-070",
+        "ncha-third-072",
+        "ncha-third-073",
+        "ncha-first-core-001",
+        "ncha-first-core-002",
+        "ncha-first-core-003",
+        "ncha-first-core-004",
+        "ncha-first-core-005",
+        "ncha-first-core-006"
+      ],
+      "artifactCount": 23,
+      "periods": [
+        "三国吴",
+        "北齐",
+        "唐",
+        "商",
+        "战国",
+        "新石器时代",
+        "西周",
+        "西汉",
+        "隋"
+      ],
+      "materials": [
+        "玉",
+        "陶",
+        "陶瓷",
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.128Z"
+    },
+    {
+      "id": "故宫博物院",
+      "name": "故宫博物院",
+      "description": "故宫博物院馆藏文物数据库，当前收录 11 件文物。",
+      "location": "中央部门",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-024",
+        "ncha-third-031",
+        "ncha-third-032",
+        "ncha-third-041",
+        "ncha-third-042",
+        "ncha-third-043",
+        "ncha-third-046",
+        "ncha-third-077",
+        "ncha-third-078",
+        "ncha-third-080",
+        "ncha-third-082"
+      ],
+      "artifactCount": 11,
+      "periods": [
+        "三国吴",
+        "北宋",
+        "唐",
+        "宋",
+        "战国"
+      ],
+      "materials": [
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "陕西历史博物馆",
+      "name": "陕西历史博物馆",
+      "description": "陕西历史博物馆馆藏文物数据库，当前收录 9 件文物。",
+      "location": "陕西省",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-037",
+        "ncha-third-040",
+        "ncha-third-054",
+        "ncha-third-085",
+        "ncha-third-086",
+        "ncha-third-087",
+        "ncha-third-088",
+        "ncha-first-core-033",
+        "ncha-first-core-034"
+      ],
+      "artifactCount": 9,
+      "periods": [
+        "五代",
+        "唐",
+        "西汉"
+      ],
+      "materials": [
+        "玉",
+        "玛瑙",
+        "银",
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "湖北省博物馆",
+      "name": "湖北省博物馆",
+      "description": "湖北省博物馆馆藏文物数据库，当前收录 8 件文物。",
+      "location": "湖北省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/20230208_Bronze_sword_used_by_King_Goujian_of_Yue_02.jpg",
+      "artifactIds": [
+        "ncha-third-011",
+        "ncha-third-053",
+        "ncha-third-064",
+        "ncha-third-092",
+        "ncha-first-core-021",
+        "ncha-first-core-022",
+        "ncha-first-core-023",
+        "ncha-first-core-024"
+      ],
+      "artifactCount": 8,
+      "periods": [
+        "商",
+        "战国",
+        "春秋",
+        "秦"
+      ],
+      "materials": [
+        "木、漆",
+        "玉",
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "湖南省博物馆",
+      "name": "湖南省博物馆",
+      "description": "湖南省博物馆馆藏文物数据库，当前收录 7 件文物。",
+      "location": "湖南省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Da_He_ding_side.jpg/960px-Da_He_ding_side.jpg",
+      "artifactIds": [
+        "ncha-third-004",
+        "ncha-third-036",
+        "ncha-third-056",
+        "ncha-third-065",
+        "ncha-third-066",
+        "ncha-third-094",
+        "ncha-first-core-040"
+      ],
+      "artifactCount": 7,
+      "periods": [
+        "唐",
+        "商",
+        "战国",
+        "西晋",
+        "西汉"
+      ],
+      "materials": [
+        "帛",
+        "玉",
+        "陶瓷",
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.128Z"
+    },
+    {
+      "id": "宝鸡青铜器博物院",
+      "name": "宝鸡青铜器博物院",
+      "description": "宝鸡青铜器博物院馆藏文物数据库，当前收录 4 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-009",
+        "ncha-third-010",
+        "ncha-first-core-030",
+        "ncha-first-core-031"
+      ],
+      "artifactCount": 4,
+      "periods": [
+        "西周"
+      ],
+      "materials": [
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "上海博物馆",
+      "name": "上海博物馆",
+      "description": "上海博物馆馆藏文物数据库，当前收录 4 件文物。",
+      "location": "上海市",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/%E5%95%86%E9%9E%85%E6%96%B9%E5%8D%87_163919.jpg/960px-%E5%95%86%E9%9E%85%E6%96%B9%E5%8D%87_163919.jpg",
+      "artifactIds": [
+        "ncha-third-012",
+        "ncha-third-081",
+        "ncha-third-091",
+        "ncha-first-core-008"
+      ],
+      "artifactCount": 4,
+      "periods": [
+        "战国",
+        "明",
+        "西周"
+      ],
+      "materials": [
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "浙江省博物馆",
+      "name": "浙江省博物馆",
+      "description": "浙江省博物馆馆藏文物数据库，当前收录 4 件文物。",
+      "location": "浙江省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/%E8%89%AF%E6%B8%9A%E7%A5%9E%E4%BA%BA%E5%85%BD%E9%9D%A2%E7%BA%B9%E7%8E%89%E9%92%BA%2C_2023-09-26_01.jpg/960px-%E8%89%AF%E6%B8%9A%E7%A5%9E%E4%BA%BA%E5%85%BD%E9%9D%A2%E7%BA%B9%E7%8E%89%E9%92%BA%2C_2023-09-26_01.jpg",
+      "artifactIds": [
+        "ncha-third-050",
+        "ncha-third-071",
+        "ncha-first-core-010",
+        "ncha-first-core-011"
+      ],
+      "artifactCount": 4,
+      "periods": [
+        "新石器时代"
+      ],
+      "materials": [
+        "木胎漆器",
+        "玉",
+        "陶"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "广汉三星堆博物馆",
+      "name": "广汉三星堆博物馆",
+      "description": "广汉三星堆博物馆馆藏文物数据库，当前收录 3 件文物。",
+      "location": "四川省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/%E4%B8%89%E6%98%9F%E5%A0%86%E5%87%BA%E5%9C%9F%E9%9D%92%E9%93%9C%E5%A4%A7%E7%AB%8B%E4%BA%BA%E5%83%8F%2C_2017-09-17.jpg/960px-%E4%B8%89%E6%98%9F%E5%A0%86%E5%87%BA%E5%9C%9F%E9%9D%92%E9%93%9C%E5%A4%A7%E7%AB%8B%E4%BA%BA%E5%83%8F%2C_2017-09-17.jpg",
+      "artifactIds": [
+        "ncha-third-005",
+        "ncha-third-059",
+        "ncha-first-core-027"
+      ],
+      "artifactCount": 3,
+      "periods": [
+        "商"
+      ],
+      "materials": [
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.128Z"
+    },
+    {
+      "id": "河北博物院",
+      "name": "河北博物院",
+      "description": "河北博物院馆藏文物数据库，当前收录 3 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/57/Bronze_Square_Table_Stand_Decorated_with_Dragon-and-phoenix.jpg",
+      "artifactIds": [
+        "ncha-first-core-037",
+        "ncha-first-core-038",
+        "ncha-first-core-039"
+      ],
+      "artifactCount": 3,
+      "periods": [
+        "战国",
+        "西汉"
+      ],
+      "materials": [
+        "玉、金丝",
+        "青铜、金银",
+        "青铜鎏金"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "河南博物院",
+      "name": "河南博物院",
+      "description": "河南博物院馆藏文物数据库，当前收录 3 件文物。",
+      "location": "河南省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/20260408_White-Glazed_and_Green-Painted_Vase_with_Long_Neck.jpg/960px-20260408_White-Glazed_and_Green-Painted_Vase_with_Long_Neck.jpg",
+      "artifactIds": [
+        "ncha-third-029",
+        "ncha-first-core-014",
+        "ncha-first-core-015"
+      ],
+      "artifactCount": 3,
+      "periods": [
+        "北齐",
+        "春秋"
+      ],
+      "materials": [
+        "陶瓷",
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "山西博物院",
+      "name": "山西博物院",
+      "description": "山西博物院馆藏文物数据库，当前收录 3 件文物。",
+      "location": "山西省",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-003",
+        "ncha-third-008",
+        "ncha-third-052"
+      ],
+      "artifactCount": 3,
+      "periods": [
+        "商",
+        "西周"
+      ],
+      "materials": [
+        "玉",
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.128Z"
+    },
+    {
+      "id": "安徽省文物考古研究所",
+      "name": "安徽省文物考古研究所",
+      "description": "安徽省文物考古研究所馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-067",
+        "ncha-third-068"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "三国吴"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "定州市博物馆",
+      "name": "定州市博物馆",
+      "description": "定州市博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-044",
+        "ncha-third-055"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "东汉",
+        "北宋"
+      ],
+      "materials": [
+        "玉",
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "甘肃省博物馆",
+      "name": "甘肃省博物馆",
+      "description": "甘肃省博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-022",
+        "ncha-first-core-028"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "东汉",
+        "新石器时代"
+      ],
+      "materials": [
+        "陶瓷",
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "南京博物院",
+      "name": "南京博物院",
+      "description": "南京博物院馆藏文物数据库，当前收录 2 件文物。",
+      "location": "江苏省",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-013",
+        "ncha-third-027"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "战国",
+        "西晋"
+      ],
+      "materials": [
+        "陶瓷",
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "南京市博物馆",
+      "name": "南京市博物馆",
+      "description": "南京市博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-026",
+        "ncha-third-047"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "三国吴",
+        "元"
+      ],
+      "materials": [
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "苏州博物馆",
+      "name": "苏州博物馆",
+      "description": "苏州博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "江苏省",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-039",
+        "ncha-third-069"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "五代",
+        "北宋"
+      ],
+      "materials": [
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "天津博物馆",
+      "name": "天津博物馆",
+      "description": "天津博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "天津市",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/%E7%99%BD%E9%87%89%E9%BE%99%E6%9F%84%E5%8F%8C%E8%81%94%E4%BC%A0%E7%93%B6.png",
+      "artifactIds": [
+        "ncha-third-030",
+        "ncha-first-core-009"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "西周",
+        "隋"
+      ],
+      "materials": [
+        "陶瓷",
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "西安碑林博物馆",
+      "name": "西安碑林博物馆",
+      "description": "西安碑林博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "陕西省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/%E6%98%AD%E9%99%B5%E5%85%AD%E9%AA%8F-%E8%A5%BF%E5%AE%89%E7%A2%91%E6%9E%97%E7%9F%B3%E5%88%BB%E8%89%BA%E6%9C%AF%E5%AE%A4_2023-09-29_01.jpg",
+      "artifactIds": [
+        "ncha-third-079",
+        "ncha-first-core-032"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "唐"
+      ],
+      "materials": [
+        "石"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "新疆维吾尔自治区文物考古研究所",
+      "name": "新疆维吾尔自治区文物考古研究所",
+      "description": "新疆维吾尔自治区文物考古研究所馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-074",
+        "ncha-first-core-036"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "汉",
+        "汉晋"
+      ],
+      "materials": [
+        "锦"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "扬州博物馆",
+      "name": "扬州博物馆",
+      "description": "扬州博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "江苏省",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-034",
+        "ncha-third-048"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "元",
+        "唐"
+      ],
+      "materials": [
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "中国国家图书馆",
+      "name": "中国国家图书馆",
+      "description": "中国国家图书馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-083",
+        "ncha-third-084"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "北宋"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "中国社会科学院考古研究所",
+      "name": "中国社会科学院考古研究所",
+      "description": "中国社会科学院考古研究所馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-021",
+        "ncha-first-core-007"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "商",
+        "新石器时代"
+      ],
+      "materials": [
+        "象牙、绿松石",
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "朱然家族墓地博物馆",
+      "name": "朱然家族墓地博物馆",
+      "description": "朱然家族墓地博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Geta_Unearthed_from_the_Tomb_of_Zhu_Ran_2012-05.JPG",
+      "artifactIds": [
+        "ncha-first-core-017",
+        "ncha-first-core-018"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "三国吴"
+      ],
+      "materials": [
+        "木、漆",
+        "漆"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "安徽博物院",
+      "name": "安徽博物院",
+      "description": "安徽博物院馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-first-core-016"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "战国"
+      ],
+      "materials": [
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "成都金沙遗址博物馆",
+      "name": "成都金沙遗址博物馆",
+      "description": "成都金沙遗址博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/%E9%87%91%E6%B2%99%E9%81%97%E5%9D%80%E5%A4%AA%E9%98%B3%E7%A5%9E%E9%B8%9F_2018.jpg",
+      "artifactIds": [
+        "ncha-third-058"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "商"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "大同市博物馆",
+      "name": "大同市博物馆",
+      "description": "大同市博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-first-core-019"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "北魏"
+      ],
+      "materials": [
+        "木胎漆器"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "敦煌研究院",
+      "name": "敦煌研究院",
+      "description": "敦煌研究院馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-075"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "北魏"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "二里头夏都遗址博物馆",
+      "name": "二里头夏都遗址博物馆",
+      "description": "二里头夏都遗址博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-051"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "夏"
+      ],
+      "materials": [
+        "玉"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "法门寺博物馆",
+      "name": "法门寺博物馆",
+      "description": "法门寺博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/44/Famen_Si_May_2007_052.jpg",
+      "artifactIds": [
+        "ncha-first-core-035"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "唐"
+      ],
+      "materials": [
+        "金银、宝石"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "杭州博物馆",
+      "name": "杭州博物馆",
+      "description": "杭州博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Crystal_Cup%28Warring_States_Period%29_in_Hangzhou_Museum.JPG",
+      "artifactIds": [
+        "ncha-first-core-013"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "战国"
+      ],
+      "materials": [
+        "水晶"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "河北省文物研究所",
+      "name": "河北省文物研究所",
+      "description": "河北省文物研究所馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-062"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "西汉"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "湖南大学",
+      "name": "湖南大学",
+      "description": "湖南大学馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-093"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "秦"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "吉林省博物院",
+      "name": "吉林省博物院",
+      "description": "吉林省博物院馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-045"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "北宋"
+      ],
+      "materials": [
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "荆门市博物馆",
+      "name": "荆门市博物馆",
+      "description": "荆门市博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-090"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "战国"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "辽宁省考古研究所",
+      "name": "辽宁省考古研究所",
+      "description": "辽宁省考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-first-core-025"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "新石器时代"
+      ],
+      "materials": [
+        "陶"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "临安博物馆",
+      "name": "临安博物馆",
+      "description": "临安博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-035"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "唐"
+      ],
+      "materials": [
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "秦始皇兵马俑博物馆",
+      "name": "秦始皇兵马俑博物馆",
+      "description": "秦始皇兵马俑博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "陕西省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e7/RIMG0073.jpg",
+      "artifactIds": [
+        "ncha-first-core-029"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "秦"
+      ],
+      "materials": [
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "清华大学",
+      "name": "清华大学",
+      "description": "清华大学馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-089"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "战国"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "山东省文物考古研究所",
+      "name": "山东省文物考古研究所",
+      "description": "山东省文物考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Painted_Pottery_Dou_with_Octagram_Design.jpg",
+      "artifactIds": [
+        "ncha-third-023"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "新石器时代"
+      ],
+      "materials": [
+        "陶瓷"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "山西省考古研究所",
+      "name": "山西省考古研究所",
+      "description": "山西省考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-first-core-020"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "北齐"
+      ],
+      "materials": [
+        "壁画"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "首都博物馆",
+      "name": "首都博物馆",
+      "description": "首都博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "北京市",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/25/Bo_Ju_Li.jpg",
+      "artifactIds": [
+        "ncha-third-007"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "西周"
+      ],
+      "materials": [
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.128Z"
+    },
+    {
+      "id": "西安博物院",
+      "name": "西安博物院",
+      "description": "西安博物院馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-015"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "西汉"
+      ],
+      "materials": [
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "西藏博物馆",
+      "name": "西藏博物馆",
+      "description": "西藏博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "西藏自治区",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-057"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "元"
+      ],
+      "materials": [
+        "玉"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "新疆维吾尔自治区博物馆",
+      "name": "新疆维吾尔自治区博物馆",
+      "description": "新疆维吾尔自治区博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "新疆维吾尔自治区",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-076"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "北朝"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "云南省博物馆",
+      "name": "云南省博物馆",
+      "description": "云南省博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "云南省",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-third-016"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "西汉"
+      ],
+      "materials": [
+        "青铜"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "浙江省文物考古研究所",
+      "name": "浙江省文物考古研究所",
+      "description": "浙江省文物考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "ncha-first-core-012"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "新石器时代"
+      ],
+      "materials": [
+        "玉"
+      ],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
+    },
+    {
+      "id": "镇江博物馆",
+      "name": "镇江博物馆",
+      "description": "镇江博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Guifu_Lunyu_Yuzhu_Jiuchoutong_-_150725095.JPG/960px-Guifu_Lunyu_Yuzhu_Jiuchoutong_-_150725095.JPG",
+      "artifactIds": [
+        "ncha-third-063"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "唐"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-10T05:48:59.129Z"
     },
     {
       "id": "爱辉历史陈列馆",
       "name": "爱辉历史陈列馆",
       "description": "爱辉历史陈列馆是对应黑龙江省的省级综合性博物馆。",
       "location": "黑龙江省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "安徽省博物馆",
       "name": "安徽省博物馆",
       "description": "安徽省博物馆是对应安徽省的省级综合性博物馆。",
       "location": "安徽省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "八路军太行纪念馆",
       "name": "八路军太行纪念馆",
       "description": "八路军太行纪念馆是对应山西省的省级综合性博物馆。",
       "location": "山西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "北京鲁迅博物馆",
       "name": "北京鲁迅博物馆",
       "description": "北京鲁迅博物馆是对应中央部门的省级综合性博物馆。",
       "location": "中央部门",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "北京天文馆",
       "name": "北京天文馆",
       "description": "北京天文馆是对应北京市的省级综合性博物馆。",
       "location": "北京市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "北京自然博物馆",
       "name": "北京自然博物馆",
       "description": "北京自然博物馆是对应北京市的省级综合性博物馆。",
       "location": "北京市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "成都杜甫草堂博物馆",
       "name": "成都杜甫草堂博物馆",
       "description": "成都杜甫草堂博物馆是对应四川省的省级综合性博物馆。",
       "location": "四川省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "成都武侯祠博物馆",
       "name": "成都武侯祠博物馆",
       "description": "成都武侯祠博物馆是对应四川省的省级综合性博物馆。",
       "location": "四川省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "重庆中国三峡博物馆",
       "name": "重庆中国三峡博物馆",
       "description": "重庆中国三峡博物馆是对应重庆市的省级综合性博物馆。",
       "location": "重庆市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "大庆铁人王进喜纪念馆",
       "name": "大庆铁人王进喜纪念馆",
       "description": "大庆铁人王进喜纪念馆是对应黑龙江省的省级综合性博物馆。",
       "location": "黑龙江省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "邓小平故居陈列馆",
       "name": "邓小平故居陈列馆",
       "description": "邓小平故居陈列馆是对应四川省的省级综合性博物馆。",
       "location": "四川省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "东北烈士纪念馆",
       "name": "东北烈士纪念馆",
       "description": "东北烈士纪念馆是对应黑龙江省的省级综合性博物馆。",
       "location": "黑龙江省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "福建博物院",
       "name": "福建博物院",
       "description": "福建博物院是对应福建省的省级综合性博物馆。",
       "location": "福建省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "古田会议纪念馆",
       "name": "古田会议纪念馆",
       "description": "古田会议纪念馆是对应福建省的省级综合性博物馆。",
       "location": "福建省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "固原博物馆",
       "name": "固原博物馆",
       "description": "固原博物馆是对应宁夏回族自治区的省级综合性博物馆。",
       "location": "宁夏回族自治区",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "故宫博物院",
-      "name": "故宫博物院",
-      "description": "故宫博物院是对应中央部门的省级综合性博物馆。",
-      "location": "中央部门",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "广东省博物馆",
       "name": "广东省博物馆",
       "description": "广东省博物馆是对应广东省的省级综合性博物馆。",
       "location": "广东省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "广汉三星堆博物馆",
-      "name": "广汉三星堆博物馆",
-      "description": "广汉三星堆博物馆是对应四川省的省级综合性博物馆。",
-      "location": "四川省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "广西壮族自治区博物馆",
       "name": "广西壮族自治区博物馆",
       "description": "广西壮族自治区博物馆是对应广西壮族自治区的省级综合性博物馆。",
       "location": "广西壮族自治区",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "汉阳陵博物馆",
       "name": "汉阳陵博物馆",
       "description": "汉阳陵博物馆是对应陕西省的省级综合性博物馆。",
       "location": "陕西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "河北省博物馆",
       "name": "河北省博物馆",
       "description": "河北省博物馆是对应河北省的省级综合性博物馆。",
       "location": "河北省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "河南博物院",
-      "name": "河南博物院",
-      "description": "河南博物院是对应河南省的省级综合性博物馆。",
-      "location": "河南省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "湖北省博物馆",
-      "name": "湖北省博物馆",
-      "description": "湖北省博物馆是对应湖北省的省级综合性博物馆。",
-      "location": "湖北省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "湖南省博物馆",
-      "name": "湖南省博物馆",
-      "description": "湖南省博物馆是对应湖南省的省级综合性博物馆。",
-      "location": "湖南省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "吉林省自然博物馆",
       "name": "吉林省自然博物馆",
       "description": "吉林省自然博物馆是对应吉林省的省级综合性博物馆。",
       "location": "吉林省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "江西省博物馆",
       "name": "江西省博物馆",
       "description": "江西省博物馆是对应江西省的省级综合性博物馆。",
       "location": "江西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "荆州博物馆",
       "name": "荆州博物馆",
       "description": "荆州博物馆是对应湖北省的省级综合性博物馆。",
       "location": "湖北省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "井冈山革命博物馆",
       "name": "井冈山革命博物馆",
       "description": "井冈山革命博物馆是对应江西省的省级综合性博物馆。",
       "location": "江西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "抗美援朝纪念馆",
       "name": "抗美援朝纪念馆",
       "description": "抗美援朝纪念馆是对应辽宁省的省级综合性博物馆。",
       "location": "辽宁省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "刘少奇故居纪念馆",
       "name": "刘少奇故居纪念馆",
       "description": "刘少奇故居纪念馆是对应湖南省的省级综合性博物馆。",
       "location": "湖南省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "旅顺博物馆",
       "name": "旅顺博物馆",
       "description": "旅顺博物馆是对应辽宁省的省级综合性博物馆。",
       "location": "辽宁省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "洛阳博物馆",
       "name": "洛阳博物馆",
       "description": "洛阳博物馆是对应河南省的省级综合性博物馆。",
       "location": "河南省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "南昌八一起义纪念馆",
       "name": "南昌八一起义纪念馆",
       "description": "南昌八一起义纪念馆是对应江西省的省级综合性博物馆。",
       "location": "江西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "南京博物院",
-      "name": "南京博物院",
-      "description": "南京博物院是对应江苏省的省级综合性博物馆。",
-      "location": "江苏省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "南通博物苑",
       "name": "南通博物苑",
       "description": "南通博物苑是对应江苏省的省级综合性博物馆。",
       "location": "江苏省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "南阳汉画馆",
       "name": "南阳汉画馆",
       "description": "南阳汉画馆是对应河南省的省级综合性博物馆。",
       "location": "河南省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "内蒙古博物院",
       "name": "内蒙古博物院",
       "description": "内蒙古博物院是对应内蒙古自治区的省级综合性博物馆。",
       "location": "内蒙古自治区",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "侵华日军南京大屠杀遇难同胞纪念馆",
       "name": "侵华日军南京大屠杀遇难同胞纪念馆",
       "description": "侵华日军南京大屠杀遇难同胞纪念馆是对应江苏省的省级综合性博物馆。",
       "location": "江苏省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "秦始皇兵马俑博物馆",
-      "name": "秦始皇兵马俑博物馆",
-      "description": "秦始皇兵马俑博物馆是对应陕西省的省级综合性博物馆。",
-      "location": "陕西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "青岛市博物馆",
       "name": "青岛市博物馆",
       "description": "青岛市博物馆是对应山东省的省级综合性博物馆。",
       "location": "山东省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "青州市博物馆",
       "name": "青州市博物馆",
       "description": "青州市博物馆是对应山东省的省级综合性博物馆。",
       "location": "山东省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "泉州海外交通史博物馆",
       "name": "泉州海外交通史博物馆",
       "description": "泉州海外交通史博物馆是对应福建省的省级综合性博物馆。",
       "location": "福建省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "瑞金中央革命根据地纪念馆",
       "name": "瑞金中央革命根据地纪念馆",
       "description": "瑞金中央革命根据地纪念馆是对应江西省的省级综合性博物馆。",
       "location": "江西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "厦门华侨博物院",
       "name": "厦门华侨博物院",
       "description": "厦门华侨博物院是对应福建省的省级综合性博物馆。",
       "location": "福建省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "山西博物院",
-      "name": "山西博物院",
-      "description": "山西博物院是对应山西省的省级综合性博物馆。",
-      "location": "山西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "陕西历史博物馆",
-      "name": "陕西历史博物馆",
-      "description": "陕西历史博物馆是对应陕西省的省级综合性博物馆。",
-      "location": "陕西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "上海博物馆",
-      "name": "上海博物馆",
-      "description": "上海博物馆是对应上海市的省级综合性博物馆。",
-      "location": "上海市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "上海鲁迅纪念馆",
       "name": "上海鲁迅纪念馆",
       "description": "上海鲁迅纪念馆是对应上海市的省级综合性博物馆。",
       "location": "上海市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "韶山毛泽东故居纪念馆",
       "name": "韶山毛泽东故居纪念馆",
       "description": "韶山毛泽东故居纪念馆是对应湖南省的省级综合性博物馆。",
       "location": "湖南省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "沈阳-九-一八-历史博物馆",
       "name": "沈阳“九•一八”历史博物馆",
       "description": "沈阳“九•一八”历史博物馆是对应辽宁省的省级综合性博物馆。",
       "location": "辽宁省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "首都博物馆",
-      "name": "首都博物馆",
-      "description": "首都博物馆是对应北京市的省级综合性博物馆。",
-      "location": "北京市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "苏州博物馆",
-      "name": "苏州博物馆",
-      "description": "苏州博物馆是对应江苏省的省级综合性博物馆。",
-      "location": "江苏省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "孙中山故居纪念馆",
       "name": "孙中山故居纪念馆",
       "description": "孙中山故居纪念馆是对应广东省的省级综合性博物馆。",
       "location": "广东省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "天津博物馆",
-      "name": "天津博物馆",
-      "description": "天津博物馆是对应天津市的省级综合性博物馆。",
-      "location": "天津市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "天津自然博物馆",
       "name": "天津自然博物馆",
       "description": "天津自然博物馆是对应天津市的省级综合性博物馆。",
       "location": "天津市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "武汉市博物馆",
       "name": "武汉市博物馆",
       "description": "武汉市博物馆是对应湖北省的省级综合性博物馆。",
       "location": "湖北省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "西安半坡博物馆",
       "name": "西安半坡博物馆",
       "description": "西安半坡博物馆是对应陕西省的省级综合性博物馆。",
       "location": "陕西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "西安碑林博物馆",
-      "name": "西安碑林博物馆",
-      "description": "西安碑林博物馆是对应陕西省的省级综合性博物馆。",
-      "location": "陕西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "西柏坡纪念馆",
       "name": "西柏坡纪念馆",
       "description": "西柏坡纪念馆是对应河北省的省级综合性博物馆。",
       "location": "河北省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "西藏博物馆",
-      "name": "西藏博物馆",
-      "description": "西藏博物馆是对应西藏自治区的省级综合性博物馆。",
-      "location": "西藏自治区",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "西汉南越王博物馆",
       "name": "西汉南越王博物馆",
       "description": "西汉南越王博物馆是对应广东省的省级综合性博物馆。",
       "location": "广东省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "新疆维吾尔自治区博物馆",
-      "name": "新疆维吾尔自治区博物馆",
-      "description": "新疆维吾尔自治区博物馆是对应新疆维吾尔自治区的省级综合性博物馆。",
-      "location": "新疆维吾尔自治区",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "延安革命纪念馆",
       "name": "延安革命纪念馆",
       "description": "延安革命纪念馆是对应陕西省的省级综合性博物馆。",
       "location": "陕西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "扬州博物馆",
-      "name": "扬州博物馆",
-      "description": "扬州博物馆是对应江苏省的省级综合性博物馆。",
-      "location": "江苏省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "云南民族博物馆",
       "name": "云南民族博物馆",
       "description": "云南民族博物馆是对应云南省的省级综合性博物馆。",
       "location": "云南省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "云南省博物馆",
-      "name": "云南省博物馆",
-      "description": "云南省博物馆是对应云南省的省级综合性博物馆。",
-      "location": "云南省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
-    },
-    {
-      "id": "浙江省博物馆",
-      "name": "浙江省博物馆",
-      "description": "浙江省博物馆是对应浙江省的省级综合性博物馆。",
-      "location": "浙江省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "郑州博物馆",
       "name": "郑州博物馆",
       "description": "郑州博物馆是对应河南省的省级综合性博物馆。",
       "location": "河南省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中共一大会址纪念馆",
       "name": "中共一大会址纪念馆",
       "description": "中共一大会址纪念馆是对应上海市的省级综合性博物馆。",
       "location": "上海市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中国地质博物馆",
       "name": "中国地质博物馆",
       "description": "中国地质博物馆是对应中央部门的省级综合性博物馆。",
       "location": "中央部门",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中国海军博物馆",
       "name": "中国海军博物馆",
       "description": "中国海军博物馆是对应山东省的省级综合性博物馆。",
       "location": "山东省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中国航空博物馆",
       "name": "中国航空博物馆",
       "description": "中国航空博物馆是对应中央部门的省级综合性博物馆。",
       "location": "中央部门",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中国甲午战争博物馆",
       "name": "中国甲午战争博物馆",
       "description": "中国甲午战争博物馆是对应山东省的省级综合性博物馆。",
       "location": "山东省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中国科学技术馆",
       "name": "中国科学技术馆",
       "description": "中国科学技术馆是对应中央部门的省级综合性博物馆。",
       "location": "中央部门",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中国煤炭博物馆",
       "name": "中国煤炭博物馆",
       "description": "中国煤炭博物馆是对应山西省的省级综合性博物馆。",
       "location": "山西省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中国闽台缘博物馆",
       "name": "中国闽台缘博物馆",
       "description": "中国闽台缘博物馆是对应福建省的省级综合性博物馆。",
       "location": "福建省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中国人民革命军事博物馆",
       "name": "中国人民革命军事博物馆",
       "description": "中国人民革命军事博物馆是对应中央部门的省级综合性博物馆。",
       "location": "中央部门",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "中国人民抗日战争纪念馆",
       "name": "中国人民抗日战争纪念馆",
       "description": "中国人民抗日战争纪念馆是对应北京市的省级综合性博物馆。",
       "location": "北京市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "周恩来邓颖超纪念馆",
       "name": "周恩来邓颖超纪念馆",
       "description": "周恩来邓颖超纪念馆是对应天津市的省级综合性博物馆。",
       "location": "天津市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "周口店猿人遗址博物馆",
       "name": "周口店猿人遗址博物馆",
       "description": "周口店猿人遗址博物馆是对应北京市的省级综合性博物馆。",
       "location": "北京市",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "自贡恐龙博物馆",
       "name": "自贡恐龙博物馆",
       "description": "自贡恐龙博物馆是对应四川省的省级综合性博物馆。",
       "location": "四川省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     },
     {
       "id": "遵义会议纪念馆",
       "name": "遵义会议纪念馆",
       "description": "遵义会议纪念馆是对应贵州省的省级综合性博物馆。",
       "location": "贵州省",
-      "imageUrl": "https://images.unsplash.com/photo-1566127992631-137a642a90f4?auto=format&fit=crop&q=80&w=1200",
+      "imageUrl": "",
       "artifactIds": [],
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-05-19T05:12:43.878Z"
+      "updatedAt": "2026-06-10T05:48:59.131Z"
     }
   ]
 }
