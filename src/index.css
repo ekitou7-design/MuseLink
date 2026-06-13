@@ -77,38 +77,6 @@
   #root::-webkit-scrollbar {
     display: none;
   }
-  #root::before {
-    content: "";
-    position: fixed;
-    top: 13px;
-    left: 50%;
-    z-index: 1000;
-    width: 126px;
-    height: 36px;
-    border-radius: 999px;
-    background:
-      radial-gradient(circle at 78% 50%, #15171d 0 5px, transparent 6px),
-      linear-gradient(180deg, #050507 0%, #15161a 100%);
-    box-shadow:
-      inset 0 1px 1px rgba(255, 255, 255, 0.08),
-      0 1px 2px rgba(255, 255, 255, 0.08);
-    pointer-events: none;
-    transform: translateX(-50%);
-  }
-  #root::after {
-    content: "1:12 ◐";
-    position: fixed;
-    top: 18px;
-    left: 33px;
-    z-index: 1001;
-    color: #111216;
-    font-family: "Times New Roman", Times, "SimSun", "宋体", "Songti SC", serif !important;
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0;
-    pointer-events: none;
-  }
   #root .min-h-screen {
     min-height: 100%;
   }
@@ -137,13 +105,6 @@
       outline: none;
       padding-top: var(--app-status-bar-height);
       box-shadow: none;
-    }
-    #root::before {
-      top: 12px;
-    }
-    #root::after {
-      top: 18px;
-      left: max(24px, env(safe-area-inset-left, 0px) + 24px);
     }
   }
   svg {

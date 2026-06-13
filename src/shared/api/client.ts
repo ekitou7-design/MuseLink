@@ -18,9 +18,10 @@ function normalizeApiBaseUrl(value: string | undefined) {
 }
 
 export function getApiBaseUrl() {
-  const configuredBaseUrl = normalizeApiBaseUrl(import.meta.env.VITE_API_BASE_URL);
+  const viteEnv = (import.meta as ImportMeta & { env?: { VITE_API_BASE_URL?: string; DEV?: boolean } }).env;
+  const configuredBaseUrl = normalizeApiBaseUrl(viteEnv?.VITE_API_BASE_URL);
   if (configuredBaseUrl) return configuredBaseUrl;
-  return import.meta.env.DEV ? DEFAULT_LOCAL_API_BASE_URL : "";
+  return viteEnv?.DEV || typeof window === "undefined" ? DEFAULT_LOCAL_API_BASE_URL : "";
 }
 
 export function apiUrl(input: string) {

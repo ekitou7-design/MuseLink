@@ -16,6 +16,11 @@ export type ExhibitionRecord = {
   bgmUrl?: string;
   slideshowSettings?: unknown;
   aiCuration?: unknown;
+  exhibitionIntro?: string;
+  units?: unknown;
+  conclusion?: string;
+  selectionReasons?: unknown;
+  artifactRoles?: unknown;
   createdAt: string;
   updatedAt: string;
 };
@@ -79,6 +84,11 @@ export async function createExhibition(input: {
   bgmUrl?: string;
   slideshowSettings?: unknown;
   aiCuration?: unknown;
+  exhibitionIntro?: string;
+  units?: unknown;
+  conclusion?: string;
+  selectionReasons?: unknown;
+  artifactRoles?: unknown;
 }): Promise<ExhibitionRecord> {
   const db = await loadDb();
   const createdAt = nowIso();
@@ -98,6 +108,11 @@ export async function createExhibition(input: {
     bgmUrl: input.bgmUrl,
     slideshowSettings: input.slideshowSettings,
     aiCuration: input.aiCuration,
+    exhibitionIntro: input.exhibitionIntro,
+    units: input.units,
+    conclusion: input.conclusion,
+    selectionReasons: input.selectionReasons,
+    artifactRoles: input.artifactRoles,
     createdAt,
     updatedAt: createdAt,
   };

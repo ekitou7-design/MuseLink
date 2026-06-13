@@ -18,18 +18,13 @@ import { cn } from '../lib/utils';
 import { AmbientAudioPlayer, isAmbientBgmUrl } from '../lib/ambientAudio';
 
 const BGM_STYLES = [
-  { id: 'epic', label: '庄重史诗', icon: '🏛️', description: '恢弘大气，适合青铜器、大型石刻' },
-  { id: 'elegant', label: '清雅国风', icon: '🎋', description: '清新脱俗，适合陶瓷、玉器' },
-  { id: 'quiet', label: '静谧古风', icon: '🌙', description: '宁静深邃，适合书画、古籍' },
-  { id: 'zen', label: '悠远禅意', icon: '🧘', description: '空灵悠远，适合佛造像、茶文化' },
-  { id: 'minimalist', label: '现代极简', icon: '📐', description: '简洁明快，适合现代艺术展' },
-  { id: 'traditional', label: '传统民乐', icon: '🪕', description: '韵味十足，适合民俗、非遗' },
+  { id: 'gallery', label: '展厅氛围', icon: '🏛️', description: '低音量空间环境音，不打扰观展' },
+  { id: 'silent', label: '静默', icon: '🌙', description: '不播放音乐，只保留沉浸视觉' },
 ];
 
 const MOCK_BGMS: BGM[] = [
-  { id: 'bgm1', userId: 'system', title: '雨声与远海', url: 'ambient://rain-ocean-wind', style: 'quiet', createdAt: new Date().toISOString() },
-  { id: 'bgm2', userId: 'system', title: '低频海浪', url: 'ambient://ocean-wind', style: 'zen', createdAt: new Date().toISOString() },
-  { id: 'bgm3', userId: 'system', title: '轻雨白噪音', url: 'ambient://rain', style: 'minimalist', createdAt: new Date().toISOString() },
+  { id: 'bgm1', userId: 'system', title: '展厅氛围', url: 'ambient://gallery', style: 'gallery', createdAt: new Date().toISOString() },
+  { id: 'bgm2', userId: 'system', title: '静默', url: 'ambient://silent', style: 'silent', createdAt: new Date().toISOString() },
 ];
 
 interface BGMGeneratorModalProps {
@@ -65,6 +60,7 @@ export const BGMGeneratorModal: React.FC<BGMGeneratorModalProps> = ({
       await ambientRef.current.start(url);
       return;
     }
+    audio.volume = 0.2;
     audio.src = url;
     await audio.play();
   };
@@ -100,8 +96,7 @@ export const BGMGeneratorModal: React.FC<BGMGeneratorModalProps> = ({
       };
       setGeneratedBGM(newBGM);
       setStep('result');
-      playPreview(newBGM.url).catch(console.error);
-      setIsPlaying(true);
+      setIsPlaying(false);
     }, 3000);
   };
 

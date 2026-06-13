@@ -314,7 +314,7 @@
       "passwordHash": "$2b$12$aSnnbtXpIBG5NWePU1Fi9OEdsFfgj285DZ8f2ESpfe9ZWpz.X2G66",
       "createdAt": "2026-04-21T09:49:04.056Z",
       "profile": {
-        "displayName": "MuseLink 7055731483",
+        "displayName": "ekiii",
         "photoURL": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
         "headerUrl": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1200",
         "bio": "",
@@ -329,7 +329,10 @@
           "likes": 0,
           "following": 0,
           "followers": 0
-        }
+        },
+        "location": "",
+        "birthday": "2002-12-01",
+        "gender": "secret"
       }
     },
     {

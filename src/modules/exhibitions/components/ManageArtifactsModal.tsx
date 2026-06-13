@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Library, Plus, Search } from 'lucide-react';
+import { ArrowLeft, Plus, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Artifact, Exhibition } from '../../../types';
 import { rankArtifactsByKeywordQuery } from '../../../lib/artifactSearch';
-import { artifactMuseumRaw, artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
+import { artifactImageUrlRaw, artifactMuseumRaw, artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
 import { cn } from '../../../lib/utils';
+import { SafeImage } from '../../../components/SafeImage';
 
 export const ManageArtifactsModal = ({ 
   isOpen, 
@@ -87,13 +88,12 @@ export const ManageArtifactsModal = ({
                     )}
                   >
                     <div className="aspect-square">
-                      {artifact.imageUrl ? (
-                        <img src={artifact.imageUrl} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
-                      ) : (
-                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                          <Library className="text-gray-400" size={24} />
-                        </div>
-                      )}
+                      <SafeImage
+                        src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")}
+                        width={180}
+                        height={180}
+                        className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                      />
                     </div>
                     <div className={cn(
                       "absolute inset-0 flex items-center justify-center transition-all",

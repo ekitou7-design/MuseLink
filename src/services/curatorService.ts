@@ -1,4 +1,4 @@
-import { Artifact, Exhibition } from "../types";
+import { Artifact, Exhibition, ExhibitionArtifactRole, ExhibitionUnit } from "../types";
 import { rankArtifactsByKeywordQuery } from "../lib/artifactSearch";
 import { apiUrl } from "../lib/api";
 import {
@@ -259,27 +259,167 @@ function buildSections(theme: string, pick: Artifact[]) {
     }));
 }
 
-function buildLocalAICuration(theme: string, pick: Artifact[], sourceNote: string) {
+function guideIntroForTheme(theme: string, pick: Artifact[]) {
+  const firstName = pick[0] ? artifactName(pick[0]) : "一件展品";
+  return `这场展览从「${firstName}」出发，带你走近「${theme}」背后的器物、时代与审美。展品之间彼此呼应，像一条缓慢展开的参观路线。`;
+}
+
+function conclusionForTheme(theme: string) {
+  return `离开展厅时，愿你带走的不只是关于「${theme}」的知识，也是一种重新观看器物、时间与生活的方式。`;
+}
+
+function reasonForArtifact(artifact: Artifact, index: number) {
+  const name = artifactName(artifact);
+  const era = normalizeText(artifactEraRaw(artifact));
+  const material = normalizeText(artifactMaterialRaw(artifact));
+  const category = normalizeText(artifactCategoryRaw(artifact));
+  const focus = [era, material || category].filter(Boolean).join("、");
+  if (index === 0) return `它作为开篇展品，为观众建立进入展览的第一条线索。`;
+  if (focus) return `它展现了${focus}中的一处关键面貌，帮助观众把主题看得更具体。`;
+  return `它让「${name}」成为连接展览主题与观众经验的一件展品。`;
+}
+
+function roleForIndex(index: number, total: number): ExhibitionArtifactRole {
+  if (index === 0) return "核心展品";
+  if (index === total - 1 && total > 4) return "过渡展品";
+  if (index % 5 === 0) return "过渡展品";
+  if (index % 4 === 0) return "对比展品";
+  return "补充展品";
+}
+
+function buildUnits(theme: string, pick: Artifact[]): ExhibitionUnit[] {
+  const unitNumbers = ["一", "二", "三", "四"];
+
+  if (pick.length < 4) {
+    return [{
+      id: "unit-1",
+      title: "精选展品",
+      description: "本单元汇集本展览中的代表性展品，帮助观众先建立整体印象。",
+      artifactIds: pick.map((artifact) => artifact.id),
+      curatorNote: "展品数量较少，因此以一个紧凑单元呈现完整观看线索。",
+    }];
+  }
+
   const sections = buildSections(theme, pick);
+  const used = new Set<string>();
+  const units = sections.slice(0, 4).map((section, index) => {
+    const unitName = section.title.replace(/^第[一二三四五六七八九十]+单元：?/, "").replace("生活现场", "观看入口");
+    const ids = pick
+      .filter((artifact) => section.names.includes(artifactName(artifact)))
+      .map((artifact) => artifact.id)
+      .filter((id) => {
+        if (used.has(id)) return false;
+        used.add(id);
+        return true;
+      });
+    return {
+      id: `unit-${index + 1}`,
+      title: `第${unitNumbers[index] || index + 1}单元：${unitName || "展览线索"}`,
+      description: `这一单元关注${section.names.slice(0, 3).join("、")}等展品之间的联系，带观众进入展览的一个侧面。`,
+      artifactIds: ids,
+      curatorNote: `本单元作为第${unitNumbers[index] || index + 1}段叙事，帮助观众从展品细节进入更完整的文化语境。`,
+    };
+  }).filter((unit) => unit.artifactIds.length > 0);
+
+  const assigned = new Set(units.flatMap((unit) => unit.artifactIds));
+  const remaining = pick.filter((artifact) => !assigned.has(artifact.id));
+  remaining.forEach((artifact, index) => {
+    const target = units[index % Math.max(1, units.length)];
+    if (target) target.artifactIds.push(artifact.id);
+  });
+
+  const tooSmall = units.length > 1 && units.some((unit) => unit.artifactIds.length < 2);
+  if (tooSmall) {
+    return [{
+      id: "unit-1",
+      title: "精选展品",
+      description: "本单元汇集本展览中的代表性展品，形成一条连续的观看路线。",
+      artifactIds: pick.map((artifact) => artifact.id),
+      curatorNote: "为避免单元过碎，展品统一收束为一个完整单元。",
+    }];
+  }
+
+  return units.length > 0 ? units : [{
+    id: "unit-1",
+    title: "精选展品",
+    description: "本单元汇集本展览中的代表性展品。",
+    artifactIds: pick.map((artifact) => artifact.id),
+    curatorNote: "这些展品共同构成本展的基础观看线索。",
+  }];
+}
+
+function buildSelectionReasons(pick: Artifact[]) {
+  return Object.fromEntries(pick.map((artifact, index) => [artifact.id, reasonForArtifact(artifact, index)]));
+}
+
+function buildArtifactRoles(pick: Artifact[]) {
+  return Object.fromEntries(pick.map((artifact, index) => [artifact.id, roleForIndex(index, pick.length)]));
+}
+
+function completeStructuredExhibition(result: Partial<Exhibition>, allArtifacts: Artifact[], fallbackTheme: string) {
+  const ids = Array.isArray(result.artifactIds) ? result.artifactIds.map(String) : [];
+  const byId = new Map(allArtifacts.map((artifact) => [artifact.id, artifact]));
+  const pick = ids.map((id) => byId.get(id)).filter(Boolean) as Artifact[];
+  if (pick.length === 0) return result;
+
+  const theme = result.aiCuration?.theme || result.title || fallbackTheme;
+  const units = Array.isArray(result.units) && result.units.length > 0 ? result.units : buildUnits(theme, pick);
+  const selectionReasons = {
+    ...buildSelectionReasons(pick),
+    ...(result.selectionReasons || {}),
+  };
+  const artifactRoles = {
+    ...buildArtifactRoles(pick),
+    ...(result.artifactRoles || {}),
+  };
+  const exhibitionIntro = result.exhibitionIntro || result.intro || guideIntroForTheme(theme, pick);
+  const conclusion = result.conclusion || result.aiCuration?.ending || conclusionForTheme(theme);
+
+  return {
+    ...result,
+    intro: exhibitionIntro,
+    exhibitionIntro,
+    units,
+    conclusion,
+    selectionReasons,
+    artifactRoles,
+    aiCuration: {
+      ...result.aiCuration,
+      theme: result.aiCuration?.theme || theme,
+      opening: result.aiCuration?.opening || exhibitionIntro,
+      sections: result.aiCuration?.sections || units.map((unit) => ({
+        title: unit.title,
+        summary: unit.description,
+        artifactIds: unit.artifactIds,
+      })),
+      artifactNotes: {
+        ...selectionReasons,
+        ...(result.aiCuration?.artifactNotes || {}),
+      },
+      ending: result.aiCuration?.ending || conclusion,
+      sourceNote: result.aiCuration?.sourceNote || "展品来自后端馆藏库；结构由 MuseLink 根据展品字段整理。",
+    },
+  } satisfies Partial<Exhibition>;
+}
+
+function buildLocalAICuration(theme: string, pick: Artifact[], sourceNote: string, units: ExhibitionUnit[], selectionReasons: Record<string, string>) {
   const artifactNotes = Object.fromEntries(
     pick.map((artifact, index) => [
       artifact.id,
-      `第 ${index + 1} 件展品以「${artifactName(artifact)}」回应主题中的一个侧面，可从馆藏单位、年代、材质和简介中读取它与展览叙事的关系。`,
+      selectionReasons[artifact.id] || reasonForArtifact(artifact, index),
     ]),
   );
 
   return {
     theme,
-    opening: `这是一场围绕「${theme}」生成的个人展览。它先从一件可感知的器物出发，再把观众带入相关的生活经验、时代背景与审美秩序。`,
-    sections: sections.map((section) => ({
-      title: section.title,
-      summary: `本单元通过 ${section.names.join("、")} 等展品建立观看线索，让观众从展品细节进入更完整的文化语境。`,
-      artifactIds: pick
-        .filter((artifact) => section.names.includes(artifactName(artifact)))
-        .map((artifact) => artifact.id),
+    opening: guideIntroForTheme(theme, pick),
+    sections: units.map((unit) => ({
+      title: unit.title,
+      summary: unit.description,
+      artifactIds: unit.artifactIds,
     })),
     artifactNotes,
-    ending: "当展览回到今天，观众看到的不只是单件文物，而是一组关于生活、工艺、记忆与观看方式的连接。",
+    ending: conclusionForTheme(theme),
     sourceNote,
   };
 }
@@ -377,36 +517,28 @@ const localRuleCurationProvider: CurationProvider = {
     }
 
     const title = `一念成展：${intent.theme}`;
-    const previewNames = pick.slice(0, 4).map(artifactName).join("、");
-    const museum = commonValue(pick, artifactMuseumRaw);
-    const era = commonValue(pick, artifactEraRaw);
-    const material = commonValue(pick, artifactMaterialRaw);
-    const sections = buildSections(intent.theme, pick);
-    const sectionText = sections
-      .map((section) => `\n\n${section.title}\n${section.names.join("、")}`)
-      .join("");
-    const basis = [
-      museum ? `馆藏线索：${museum}` : "",
-      era ? `主要年代：${era}` : "",
-      material ? `高频材质：${material}` : "",
-    ].filter(Boolean).join("；");
-    const intro =
-      `本展围绕「${intent.theme}」，从后端文物库实时筛选 ${pick.length} 件真实馆藏展品，` +
-      `以 ${previewNames}${pick.length > 4 ? " 等" : ""} 建立叙事入口。` +
-      `${basis ? `\n\n${basis}` : ""}` +
-      `\n\n展览逻辑：由日常经验进入器物细节，再回到地域、时代与审美秩序，让观众从“看见一件物”走向“理解一种生活”。` +
-      sectionText +
-      `\n\n导览文案：请从展品名称、馆藏单位、年代、材质和简介中读取线索；系统不会补写数据库中不存在的具体来源或故事。`;
+    const units = buildUnits(intent.theme, pick);
+    const selectionReasons = buildSelectionReasons(pick);
+    const artifactRoles = buildArtifactRoles(pick);
+    const exhibitionIntro = guideIntroForTheme(intent.theme, pick);
+    const conclusion = conclusionForTheme(intent.theme);
 
     return {
       title,
-      intro,
+      intro: exhibitionIntro,
+      exhibitionIntro,
       coverUrl: String(pick[0]?.imageUrl ?? ""),
       artifactIds: pick.map((a) => a.id),
+      units,
+      conclusion,
+      selectionReasons,
+      artifactRoles,
       aiCuration: buildLocalAICuration(
         intent.theme,
         pick,
         "展品来自后端馆藏库；当前方案由本地策展规则根据馆藏字段生成，未补写数据库之外的具体故事。",
+        units,
+        selectionReasons,
       ),
     };
   },
@@ -442,7 +574,7 @@ async function tryRemoteExhibitionGeneration(
     if (!Array.isArray(result.artifactIds) || result.artifactIds.length === 0) {
       throw new Error("remote curation returned no artifactIds");
     }
-    return result;
+    return completeStructuredExhibition(result, allArtifacts, userPrompt || "主题展览");
   } catch (error) {
     console.warn("魔搭策展不可用，改用本地规则:", error);
     return null;
@@ -501,7 +633,7 @@ export const curatorService: CurationProvider = {
       if (remoteResult) return remoteResult;
       const fallbackResult = await activeCurationProvider.generateExhibition(userPrompt, allArtifacts, options);
       return {
-        ...fallbackResult,
+        ...completeStructuredExhibition(fallbackResult, allArtifacts, userPrompt || "主题展览"),
         generationNotice: "AI 服务暂不可用，已用本地策展规则生成草案。",
       } as Partial<Exhibition>;
     }

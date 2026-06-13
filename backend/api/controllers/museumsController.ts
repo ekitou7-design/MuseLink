@@ -8,7 +8,7 @@ export async function listMuseums(_req: Request, res: Response) {
             count(a.id)::int as artifact_count
      from museums m
      left join artifacts a on a.museum_id = m.id
-     group by m.id
+     group by m.id, m.name, m.description, m.location, m.image_url, m.created_at
      order by m.name asc`,
   );
   res.json({ museums: rows.rows });

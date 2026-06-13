@@ -12,6 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import { logout as jwtLogout } from '../../lib/authClient';
+import type { SidebarFeatureId } from '../../modules/profile/data/sidebarContent';
 
 export const Drawer = ({ 
   isOpen, 
@@ -20,7 +21,7 @@ export const Drawer = ({
   onLoginClick, 
   onEditProfile, 
   onSettingsClick, 
-  onFeatureClick 
+  onFeatureClick
 }: { 
   isOpen: boolean, 
   onClose: () => void, 
@@ -28,7 +29,7 @@ export const Drawer = ({
   onLoginClick: () => void,
   onEditProfile: () => void,
   onSettingsClick: () => void,
-  onFeatureClick: (title: string) => void
+  onFeatureClick: (feature: SidebarFeatureId) => void
 }) => {
   const closeDrawer = (event?: { preventDefault?: () => void; stopPropagation?: () => void }) => {
     event?.preventDefault?.();
@@ -109,19 +110,19 @@ export const Drawer = ({
 
       <div className="flex-1 space-y-2">
         {[
-          { icon: Info, label: '文博资讯与线下展览', color: 'text-blue-500' },
-          { icon: Library, label: '文博知识库', color: 'text-amber-600' },
-          { icon: HelpCircle, label: '使用帮助与反馈', color: 'text-gray-500' },
+          { icon: Info, label: '文博资讯与线下展览', color: 'text-blue-500', feature: 'news' as const },
+          { icon: Library, label: '文博知识库', color: 'text-amber-600', feature: 'knowledge' as const },
+          { icon: HelpCircle, label: '使用帮助与反馈', color: 'text-gray-500', feature: 'help' as const },
           { icon: Settings, label: '通用设置', color: 'text-gray-500', action: onSettingsClick },
-          { icon: Copyright, label: '来源公示与版权声明', color: 'text-gray-400' },
-          { icon: ExternalLink, label: '关于我们', color: 'text-gray-400' },
+          { icon: Copyright, label: '来源公示与版权声明', color: 'text-gray-400', feature: 'copyright' as const },
+          { icon: ExternalLink, label: '关于我们', color: 'text-gray-400', feature: 'about' as const },
         ].map((item) => (
           <button 
               key={item.label} 
               onClick={() => {
                 onClose();
                 if (item.action) item.action();
-                else onFeatureClick(item.label);
+                else if (item.feature) onFeatureClick(item.feature);
               }}
               className="ios-list-row flex w-full items-center gap-4 rounded-2xl px-3 text-left transition-colors hover:bg-white/80"
             >

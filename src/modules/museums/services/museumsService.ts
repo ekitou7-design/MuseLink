@@ -8,7 +8,7 @@ export type MuseumsResponse = {
 };
 
 export async function fetchMergedMuseums({ signal }: { signal?: AbortSignal } = {}) {
-  const response = await fetch(apiUrl("/api/museums?source=merged"), { signal });
+  const response = await fetch(apiUrl("/api/museums"), { signal });
   if (!response.ok) {
     throw new Error(`Failed to fetch museums: ${response.status}`);
   }

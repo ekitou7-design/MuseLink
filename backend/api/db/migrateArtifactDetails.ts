@@ -8,18 +8,38 @@ export async function migrateArtifactDetails(db: DbLike): Promise<{ migrated: bo
   await db.query(`alter table artifacts add column if not exists source_url text not null default ''`);
   await db.query(`alter table artifacts add column if not exists updated_at timestamptz not null default now()`);
 
-  await db.query(`
-    create table if not exists artifact_attributes (
-      id bigserial primary key,
-      artifact_id bigint not null references artifacts(id) on delete cascade,
-      attribute_group text not null default '基础信息',
-      attribute_name text not null,
-      attribute_value text not null default '',
-      sort_order int not null default 0,
-      created_at timestamptz not null default now(),
-      updated_at timestamptz not null default now()
-    )
-  `);
+  const attributeTable = await db.query<{ table_name: string }>(
+    `select table_name from information_schema.tables where table_name = 'artifact_attributes'`,
+  );
+  if (attributeTable.rows.length === 0) {
+    try {
+      await db.query(`
+        create table if not exists artifact_attributes (
+          id bigserial primary key,
+          artifact_id bigint not null references artifacts(id) on delete cascade,
+          attribute_group text not null default '基础信息',
+          attribute_name text not null,
+          attribute_value text not null default '',
+          sort_order int not null default 0,
+          created_at timestamptz not null default now(),
+          updated_at timestamptz not null default now()
+        )
+      `);
+    } catch {
+      await db.query(`
+        create table artifact_attributes (
+          id bigserial,
+          artifact_id bigint,
+          attribute_group text,
+          attribute_name text,
+          attribute_value text,
+          sort_order int,
+          created_at timestamptz,
+          updated_at timestamptz
+        )
+      `);
+    }
+  }
   await db.query(
     `create index if not exists idx_artifact_attributes_artifact_id on artifact_attributes(artifact_id, sort_order, id)`,
   );

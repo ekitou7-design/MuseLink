@@ -5,9 +5,19 @@ import { displayDbString, isStrictDbEmpty } from "../lib/dbDisplay";
 
 export type SafeImageProps = React.ImgHTMLAttributes<HTMLImageElement>;
 
+function readImageFallbackEnabled() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem("muselink_general_settings") || "{}");
+    return parsed.imageFallback !== false;
+  } catch {
+    return true;
+  }
+}
+
 export function SafeImage({ src, alt, className, ...props }: SafeImageProps) {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [imageFallbackEnabled, setImageFallbackEnabled] = useState(readImageFallbackEnabled);
 
   const rawSrc = typeof src === "string" ? src : src == null ? "" : String(src);
 
@@ -16,15 +26,25 @@ export function SafeImage({ src, alt, className, ...props }: SafeImageProps) {
     setLoading(true);
   }, [rawSrc]);
 
+  useEffect(() => {
+    const handleSettingsChange = () => setImageFallbackEnabled(readImageFallbackEnabled());
+    window.addEventListener("muselink-settings-change", handleSettingsChange);
+    window.addEventListener("storage", handleSettingsChange);
+    return () => {
+      window.removeEventListener("muselink-settings-change", handleSettingsChange);
+      window.removeEventListener("storage", handleSettingsChange);
+    };
+  }, []);
+
   if (isStrictDbEmpty(rawSrc) || error) {
+    if (!imageFallbackEnabled) {
+      return <div className={cn("bg-transparent", className)} aria-label={alt || "图片不可用"} />;
+    }
+
     return (
       <div className={cn("flex flex-col items-center justify-center bg-[#F4F2EE] p-4 text-center", className)}>
         <Library className="mb-1 text-gray-300" size={24} />
-        {isStrictDbEmpty(rawSrc) ? (
-          <span className="text-[10px] text-gray-500">{displayDbString(rawSrc)}</span>
-        ) : (
-          <span className="break-all whitespace-pre-wrap text-left text-[10px] text-gray-600">{rawSrc}</span>
-        )}
+        <span className="text-[10px] text-gray-500">{isStrictDbEmpty(rawSrc) ? displayDbString(rawSrc) : "图片暂不可用"}</span>
       </div>
     );
   }
@@ -39,6 +59,10 @@ export function SafeImage({ src, alt, className, ...props }: SafeImageProps) {
       <img
         src={rawSrc}
         alt={alt}
+        loading={props.loading ?? "lazy"}
+        decoding={props.decoding ?? "async"}
+        width={props.width ?? 640}
+        height={props.height ?? 480}
         className={cn(className, loading ? "opacity-0" : "opacity-100 transition-opacity duration-300")}
         onLoad={() => setLoading(false)}
         onError={() => {

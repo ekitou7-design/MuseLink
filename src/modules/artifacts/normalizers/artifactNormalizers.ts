@@ -15,7 +15,9 @@ export const normalizeArtifact = (raw: unknown): Artifact => {
         .filter(Boolean) as Artifact['tags']
     : [];
   const period = String(source.period ?? source.dynasty ?? source.era ?? source['朝代'] ?? '');
-  const imageUrl = String(source.imageUrl ?? source.image_url ?? source['图片链接'] ?? '');
+  const localImageUrl = String(source.localImageUrl ?? source.local_image_url ?? '');
+  const localThumbnailUrl = String(source.localThumbnailUrl ?? source.local_thumbnail_url ?? '');
+  const imageUrl = String(localImageUrl || source.imageUrl || source.image_url || source['图片链接'] || '');
   const museum = String(source.museumName ?? source.museum ?? source['所属博物馆'] ?? '');
   const shortIntro = source.shortIntro ?? source.short_intro ?? source['一句话简介'] ?? source.summary;
   const sourceUrl = source.sourceUrl ?? source.source_url ?? source['来源链接'];
@@ -35,6 +37,9 @@ export const normalizeArtifact = (raw: unknown): Artifact => {
     shortIntro: shortIntro === undefined ? undefined : String(shortIntro),
     imageUrl,
     image_url: imageUrl,
+    localImageUrl: localImageUrl || undefined,
+    localThumbnailUrl: localThumbnailUrl || undefined,
+    externalImageUrl: source.externalImageUrl === undefined ? undefined : String(source.externalImageUrl),
     sourceUrl: sourceUrl === undefined ? undefined : String(sourceUrl),
     source_url: sourceUrl === undefined ? undefined : String(sourceUrl),
     tags,

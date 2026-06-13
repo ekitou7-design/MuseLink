@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { ArrowLeft, ExternalLink, Heart, ImageOff, Loader2, Sparkles, Tag, X } from "lucide-react";
 import type { Artifact, ArtifactAttributeGroup } from "../types";
 import { apiFetch } from "../lib/api";
+import { artifactImageUrlRaw } from "../lib/dbDisplay";
 import { curatorService } from "../services/curatorService";
 import { SafeImage } from "./SafeImage";
 
@@ -32,7 +33,7 @@ type ArtifactDbField =
   | "note";
 
 const FIELD_SOURCES: Record<ArtifactDbField, readonly string[]> = {
-  imageUrl: ["imageUrl", "image_url", "图片链接", "图片", "image", "thumbnail"],
+  imageUrl: ["localImageUrl", "local_image_url", "localThumbnailUrl", "local_thumbnail_url", "imageUrl", "image_url", "图片链接", "图片", "image", "thumbnail"],
   museumName: ["museumName", "museum", "所属博物馆", "博物馆", "馆藏单位", "收藏单位", "馆名"],
   name: ["name", "文物名称", "名称", "藏品名称", "题名", "title"],
   dynasty: ["dynasty", "period", "era", "朝代", "时代", "年代"],
@@ -220,7 +221,7 @@ export function ArtifactDetail({
   const currentArtifact = detailArtifact ?? artifact;
   const lightboxUrl = controlledLightboxUrl ?? internalLightboxUrl;
   const setLightboxUrl = setControlledLightboxUrl ?? setInternalLightboxUrl;
-  const rawImageUrl = artifactDbValue(currentArtifact, "imageUrl");
+  const rawImageUrl = artifactImageUrlRaw(currentArtifact, "full");
   const imageUrl = typeof rawImageUrl === "string" ? rawImageUrl : "";
 
   useEffect(() => {
@@ -230,7 +231,7 @@ export function ArtifactDetail({
     const fetchDetail = async () => {
       try {
         const data = await apiFetch<{ artifact?: Artifact }>(
-          `/api/artifacts/${encodeURIComponent(String(artifact.id))}?source=merged`,
+          `/api/artifacts/${encodeURIComponent(String(artifact.id))}`,
         );
         if (active && data.artifact) {
           setDetailArtifact(data.artifact);
@@ -349,6 +350,10 @@ export function ArtifactDetail({
             <img
               src={imageUrl}
               alt={nameForAlt}
+              loading="eager"
+              decoding="async"
+              width={1200}
+              height={900}
               className="block w-full cursor-zoom-in"
               style={{
                 maxHeight: "78vh",
@@ -479,8 +484,10 @@ export function ArtifactDetail({
               className="w-40 shrink-0 space-y-2 text-left"
             >
               <SafeImage
-                src={String(artifactDbValue(item, "imageUrl") ?? "")}
+                src={String(artifactImageUrlRaw(item, "thumbnail") ?? "")}
                 alt={displayValue(artifactDbValue(item, "name"))}
+                width={160}
+                height={160}
                 className="aspect-square overflow-hidden rounded-2xl bg-gray-100"
               />
               <p className="break-words text-xs font-bold leading-snug text-gray-900">
@@ -514,6 +521,10 @@ export function ArtifactDetail({
             <img
               src={lightboxUrl}
               alt={nameForAlt}
+              loading="eager"
+              decoding="async"
+              width={1400}
+              height={1000}
               className="max-h-[85vh] max-w-full object-contain"
               onClick={(e) => e.stopPropagation()}
               referrerPolicy="no-referrer"

@@ -50,6 +50,16 @@ import {
 } from "./backend/exhibitions";
 import { getFavExhibitions, getFavorites, toggleFavExhibition, toggleFavorite } from "./backend/user-data";
 import { buildMuseumsFromArtifacts, syncMuseumStoreFromArtifacts } from "./backend/museums";
+import { db as appDb } from "./backend/api/db/client";
+import { migrateArtifactDetails } from "./backend/api/db/migrateArtifactDetails";
+import { upgradeArtifactsMuseumFk } from "./backend/api/db/upgradeArtifactsMuseumFk";
+import { getArtifactFromDb, listArtifactsFromDb, syncImportedArtifactsToDb } from "./backend/api/db/syncImportedArtifacts";
+import { searchRelics as searchRelicsInDb } from "./backend/api/db/relicSearch";
+import {
+  createArtifact,
+  deleteArtifact,
+  updateArtifact,
+} from "./backend/api/controllers/artifactsController";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -60,13 +70,18 @@ function getSingleQueryParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function dedupeArtifacts(artifacts: Artifact[]) {
-  const unique = new Map<string, Artifact>();
-  artifacts.forEach((artifact) => {
-    unique.set(artifact.id, artifact);
-  });
-  return Array.from(unique.values());
-}
+const unifiedDbReady = (async () => {
+  try {
+    await upgradeArtifactsMuseumFk(appDb);
+    await migrateArtifactDetails(appDb);
+    const sync = await syncImportedArtifactsToDb(appDb);
+    if (!sync.skipped) {
+      console.log(`Synced imported artifacts to unified DB: ${sync.importedCount} file rows, ${sync.inserted} inserted, ${sync.updated} updated`);
+    }
+  } catch (error) {
+    console.error("Unified artifact DB sync failed:", error);
+  }
+})();
 
 type CuratorGuideAnswersPayload = Record<string, string>;
 
@@ -254,28 +269,23 @@ async function callDeepSeekCuration(
 }
 
 async function resolveArtifactsSource(source = "auto") {
-  const importedArtifacts = await getImportedArtifacts();
+  await unifiedDbReady;
 
   if (source === "seed") {
     return { artifacts: SEED_ARTIFACTS, source: "seed" };
   }
 
-  if (source === "imported") {
-    return { artifacts: importedArtifacts, source: "imported" };
+  const dbArtifacts = await listArtifactsFromDb(appDb, 10000);
+  if (dbArtifacts.length > 0) {
+    return { artifacts: dbArtifacts, source: "database" };
   }
 
-  if (source === "merged") {
-    return {
-      artifacts: dedupeArtifacts([...SEED_ARTIFACTS, ...importedArtifacts]),
-      source: "merged",
-    };
-  }
-
+  const importedArtifacts = await getImportedArtifacts();
   if (importedArtifacts.length > 0) {
-    return { artifacts: importedArtifacts, source: "imported" };
+    return { artifacts: importedArtifacts, source: "imported-file-fallback" };
   }
 
-  return { artifacts: SEED_ARTIFACTS, source: "seed" };
+  return { artifacts: SEED_ARTIFACTS, source: "seed-fallback" };
 }
 
 function filterArtifacts(
@@ -461,28 +471,6 @@ function buildArtifactDetail(artifact: Artifact) {
   };
 }
 
-let relicSearchDbReady: Promise<{
-  db: import("./backend/api/db/relicSearch").DbQuery;
-  searchRelics: typeof import("./backend/api/db/relicSearch").searchRelics;
-}> | null = null;
-
-async function getRelicSearchDb() {
-  if (!relicSearchDbReady) {
-    relicSearchDbReady = (async () => {
-      const [{ db }, { searchRelics }] = await Promise.all([
-        import("./backend/api/db/client"),
-        import("./backend/api/db/relicSearch"),
-      ]);
-      return { db, searchRelics };
-    })();
-  }
-  return relicSearchDbReady;
-}
-
-function isExternalRelicDbConfigured() {
-  return Boolean(process.env.DB_HOST || process.env.DB_NAME || process.env.USE_PGMEM === "true" || process.env.USE_PGMEM === "1");
-}
-
 function getAllowedCorsOrigin(origin: string | undefined) {
   const configured = (process.env.CORS_ORIGIN || "*")
     .split(",")
@@ -502,7 +490,7 @@ async function startServer() {
   app.use((req, res, next) => {
     const allowedOrigin = getAllowedCorsOrigin(req.headers.origin);
     res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.setHeader("Vary", "Origin");
     if (req.method === "OPTIONS") {
@@ -597,6 +585,10 @@ async function startServer() {
     }
   });
 
+  app.post("/api/artifacts", requireAdmin, createArtifact);
+  app.put("/api/artifacts/:id", requireAdmin, updateArtifact);
+  app.delete("/api/artifacts/:id", requireAdmin, deleteArtifact);
+
   // --- User profile & favorites ---
   app.get("/api/users/me/profile", authMiddleware, async (req: AuthedRequest, res) => {
     const me = await getUserPublicProfile(req.auth!.userId);
@@ -680,6 +672,11 @@ async function startServer() {
         bgmUrl: typeof req.body?.bgmUrl === "string" ? req.body.bgmUrl : undefined,
         slideshowSettings: req.body?.slideshowSettings,
         aiCuration: req.body?.aiCuration,
+        exhibitionIntro: typeof req.body?.exhibitionIntro === "string" ? req.body.exhibitionIntro : undefined,
+        units: req.body?.units,
+        conclusion: typeof req.body?.conclusion === "string" ? req.body.conclusion : undefined,
+        selectionReasons: req.body?.selectionReasons,
+        artifactRoles: req.body?.artifactRoles,
       });
       res.json(exhibition);
     } catch (error) {
@@ -733,8 +730,19 @@ async function startServer() {
   app.get("/api/artifacts/:id", async (req, res) => {
     try {
       const source = getSingleQueryParam(req.query.source as string | string[] | undefined) || "auto";
-      const { artifacts, source: resolvedSource } = await resolveArtifactsSource(source);
       const id = decodeURIComponent(req.params.id);
+      if (source !== "seed") {
+        await unifiedDbReady;
+        const dbArtifact = await getArtifactFromDb(appDb, id);
+        if (dbArtifact) {
+          return res.json({
+            source: "database",
+            artifact: buildArtifactDetail(dbArtifact),
+          });
+        }
+      }
+
+      const { artifacts, source: resolvedSource } = await resolveArtifactsSource(source);
       const artifact = artifacts.find((item) => String(item.id) === id);
 
       if (!artifact) {
@@ -760,20 +768,11 @@ async function startServer() {
       }
 
       const limit = Number.isFinite(limitValue) ? limitValue : 100;
-      let artifacts: unknown[];
-      let source = "database";
-
-      if (isExternalRelicDbConfigured()) {
-        const { db, searchRelics } = await getRelicSearchDb();
-        artifacts = await searchRelics(db, { keyword, limit });
-      } else {
-        const importedArtifacts = await getImportedArtifacts();
-        artifacts = rankArtifactsByKeywordQuery(importedArtifacts, keyword).slice(0, limit);
-        source = "imported";
-      }
+      await unifiedDbReady;
+      const artifacts = await searchRelicsInDb(appDb, { keyword, limit });
 
       res.json({
-        source,
+        source: "database",
         keyword,
         total: artifacts.length,
         artifacts,
@@ -904,8 +903,10 @@ async function startServer() {
           persistTo: ["file"],
         },
       });
+      await unifiedDbReady;
+      const dbSync = await syncImportedArtifactsToDb(appDb);
       await syncMuseumStoreFromArtifacts(result.artifacts);
-      res.json(result);
+      res.json({ ...result, dbSync });
     } catch (error) {
       res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
     }

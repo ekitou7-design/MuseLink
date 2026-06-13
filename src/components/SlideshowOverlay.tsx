@@ -73,7 +73,7 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
   const ambientRef = useRef<AmbientAudioPlayer | null>(null);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(Boolean(bgmUrl));
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [autoRoam, setAutoRoam] = useState(false);
 
@@ -159,9 +159,8 @@ export const SlideshowOverlay: React.FC<SlideshowOverlayProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      setIsAudioPlaying(true);
-    } else {
+    if (!isOpen) {
+      setIsAudioPlaying(false);
       ambientRef.current?.stop();
       audioRef.current?.pause();
     }

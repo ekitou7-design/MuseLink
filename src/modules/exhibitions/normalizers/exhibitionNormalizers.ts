@@ -27,6 +27,11 @@ export const normalizeExhibition = (raw: unknown): Exhibition | null => {
     bgmUrl: source.bgmUrl ?? source.bgm_url,
     slideshowSettings: source.slideshowSettings ?? source.slideshow_settings,
     aiCuration: source.aiCuration ?? source.ai_curation,
+    exhibitionIntro: source.exhibitionIntro ?? source.exhibition_intro,
+    units: source.units,
+    conclusion: source.conclusion,
+    selectionReasons: source.selectionReasons ?? source.selection_reasons,
+    artifactRoles: source.artifactRoles ?? source.artifact_roles,
     createdAt,
     updatedAt: String(source.updatedAt ?? source.updated_at ?? createdAt),
   };

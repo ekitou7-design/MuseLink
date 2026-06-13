@@ -3,7 +3,7 @@ import { Bookmark, Loader2, Mic, MicOff, Music, Share2, Sparkles, X, Zap } from 
 import { AnimatePresence, motion } from 'motion/react';
 import { Artifact, Exhibition } from '../../../types';
 import { SafeImage } from '../../../components/SafeImage';
-import { artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
+import { artifactImageUrlRaw, artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
 import { cn } from '../../../lib/utils';
 import {
   CONTENT_CURATION_QUESTIONS,
@@ -35,7 +35,8 @@ export const AIExhibitionModal = ({
   result,
   onCollect,
   onManualCreate,
-  artifacts
+  artifacts,
+  initialKeywords = '',
 }: { 
   isOpen: boolean, 
   onClose: () => void, 
@@ -44,10 +45,11 @@ export const AIExhibitionModal = ({
   result: Partial<Exhibition> | null,
   onCollect: () => void,
   onManualCreate?: () => void,
-  artifacts: Artifact[]
+  artifacts: Artifact[],
+  initialKeywords?: string,
 }) => {
   const [keywords, setKeywords] = useState('');
-  const [generateBGM, setGenerateBGM] = useState(true);
+  const [generateBGM, setGenerateBGM] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [guideAnswers, setGuideAnswers] = useState<CuratorGuideAnswers>({});
@@ -95,6 +97,12 @@ export const AIExhibitionModal = ({
       setIsShareOpen(false);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && initialKeywords.trim()) {
+      setKeywords(initialKeywords);
+    }
+  }, [initialKeywords, isOpen]);
 
   return (
     <AnimatePresence>
@@ -236,7 +244,9 @@ export const AIExhibitionModal = ({
                         return (
                           <div key={`ai-result-art-${id}`} className="w-24 flex-shrink-0 space-y-2">
                             <SafeImage 
-                              src={artifact.imageUrl} 
+                              src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")} 
+                              width={96}
+                              height={96}
                               className="aspect-square rounded-xl bg-gray-50 object-cover"
                             />
                             <p className="line-clamp-2 text-[10px] font-bold text-gray-800">{displayDbString(artifactNameRaw(artifact))}</p>

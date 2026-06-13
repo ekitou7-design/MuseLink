@@ -13,6 +13,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "import:artifacts": "node --import tsx scripts/import-artifacts.ts",
+    "cache:artifact-images": "node scripts/cache-artifact-images.mjs",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },

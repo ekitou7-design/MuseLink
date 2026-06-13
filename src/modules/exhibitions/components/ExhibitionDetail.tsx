@@ -1,29 +1,262 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useMemo, useState } from 'react';
 import {
   ArrowLeft,
   Bookmark,
   BookmarkCheck,
+  Check,
   ChevronRight,
   LayoutGrid,
   Library,
   MessageCircle,
-  Music,
-  Pause,
-  Play,
   Plus,
   Search,
   Settings,
   Share2,
   Sparkles,
+  X,
 } from 'lucide-react';
-import { motion } from 'motion/react';
 import { Artifact, Exhibition } from '../../../types';
-import { AmbientAudioPlayer, isAmbientBgmUrl } from '../../../lib/ambientAudio';
 import { rankArtifactsByKeywordQuery } from '../../../lib/artifactSearch';
 import { cn } from '../../../lib/utils';
-import { ArtifactCard } from '../../artifacts/components/ArtifactCard';
-import { artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
+import { AmbientSoundControl } from '../../../components/AmbientSoundControl';
+import { SafeImage } from '../../../components/SafeImage';
+import {
+  artifactDescriptionRaw,
+  artifactEraRaw,
+  artifactImageUrlRaw,
+  artifactMuseumRaw,
+  artifactNameRaw,
+  displayDbString,
+} from '../../../lib/dbDisplay';
 import { ExhibitionShareModal } from './ExhibitionShareModal';
+import {
+  artifactRole,
+  artifactSelectionReason,
+  exhibitionConclusion,
+  exhibitionGuideIntro,
+  normalizeExhibitionUnits,
+} from '../lib/exhibitionUnits';
+
+function tagName(tag: Artifact['tags'][number]) {
+  return typeof tag === 'string' ? tag : tag.name;
+}
+
+function textValue(value: unknown) {
+  return displayDbString(value);
+}
+
+function findArtifactById(artifacts: Artifact[], id: string) {
+  return artifacts.find((item) => item.id === id);
+}
+
+function CuratorPlanDrawer({
+  isOpen,
+  onClose,
+  exhibition,
+  artifacts,
+  units,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  exhibition: Exhibition;
+  artifacts: Artifact[];
+  units: ReturnType<typeof normalizeExhibitionUnits>;
+}) {
+  const aiCuration = exhibition.aiCuration;
+  const guideIntro = exhibitionGuideIntro(exhibition);
+  const conclusion = exhibitionConclusion(exhibition);
+  const artifactIds = units.flatMap((unit) => unit.artifactIds);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.button
+            type="button"
+            aria-label="关闭 AI 策展方案"
+            className="fixed inset-0 z-[150] bg-black/35"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+          <motion.aside
+            className="fixed inset-x-0 bottom-0 z-[151] max-h-[82vh] overflow-hidden rounded-t-[28px] bg-[var(--app-page-bg)] shadow-2xl"
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: 'spring', damping: 30, stiffness: 320 }}
+          >
+            <div className="mx-auto mt-3 h-1.5 w-11 rounded-full bg-gray-300" />
+            <div className="flex items-center justify-between border-b border-black/5 px-5 py-4">
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">AI 策展方案</p>
+                <h3 className="mt-1 truncate text-lg font-serif font-bold text-gray-950">
+                  {aiCuration?.theme || exhibition.title}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-gray-500 shadow-sm"
+                aria-label="关闭"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="max-h-[calc(82vh-84px)] space-y-5 overflow-y-auto px-5 pb-[max(24px,env(safe-area-inset-bottom,0px))] pt-5">
+              {guideIntro && (
+                <section className="rounded-2xl border border-amber-100 bg-white/80 p-4">
+                  <h4 className="text-xs font-bold text-gray-900">展览导语</h4>
+                  <p className="mt-2 break-words text-sm leading-relaxed text-gray-600">{guideIntro}</p>
+                </section>
+              )}
+
+              {units.length > 0 && (
+                <section className="space-y-3">
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">单元结构</h4>
+                  {units.map((unit, index) => (
+                    <div key={unit.id} className="rounded-2xl bg-white p-4 shadow-sm">
+                      <div className="flex items-start gap-3">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-100 text-[10px] font-black text-amber-800">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <h5 className="break-words text-sm font-bold text-gray-950">{unit.title}</h5>
+                          {unit.description && <p className="mt-1 break-words text-xs leading-relaxed text-gray-500">{unit.description}</p>}
+                          {unit.curatorNote && <p className="mt-1 break-words text-[10px] leading-relaxed text-amber-800">{unit.curatorNote}</p>}
+                          {unit.artifactIds.length > 0 && (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              {unit.artifactIds.map((id: string) => {
+                                const artifact = findArtifactById(artifacts, id);
+                                return (
+                                  <span key={`${unit.id}-${id}`} className="max-w-full truncate rounded-full bg-[#F6F3EE] px-2.5 py-1 text-[10px] font-bold text-amber-900">
+                                    {artifact ? textValue(artifactNameRaw(artifact)) : id}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </section>
+              )}
+
+              {artifactIds.length > 0 && (
+                <section className="space-y-3">
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">展品策展理由</h4>
+                  {artifactIds
+                    .map((id: string) => {
+                      const artifact = findArtifactById(artifacts, id);
+                      if (!artifact) return null;
+                      return (
+                        <div key={`note-${id}`} className="rounded-2xl border border-gray-100 bg-white p-4">
+                          <p className="text-xs font-bold text-amber-900">{textValue(artifactNameRaw(artifact))}</p>
+                          <p className="mt-1 break-words text-xs leading-relaxed text-gray-500">{artifactSelectionReason(exhibition, artifact)}</p>
+                        </div>
+                      );
+                    })}
+                </section>
+              )}
+
+              {conclusion && (
+                <section className="rounded-2xl bg-[#F8F5EF] p-4">
+                  <h4 className="text-xs font-bold text-gray-900">结语</h4>
+                  <p className="mt-2 break-words text-sm leading-relaxed text-gray-600">{conclusion}</p>
+                </section>
+              )}
+
+              {aiCuration?.sourceNote && (
+                <p className="break-words border-t border-amber-100 pt-4 text-[10px] leading-relaxed text-amber-800">
+                  {aiCuration.sourceNote}
+                </p>
+              )}
+            </div>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function ExhibitionArtifactRow({
+  artifact,
+  index,
+  isSelected,
+  isMultiSelect,
+  reason,
+  role,
+  onClick,
+}: {
+  artifact: Artifact;
+  index: number;
+  isSelected: boolean;
+  isMultiSelect: boolean;
+  reason: string;
+  role: string;
+  onClick: () => void;
+}) {
+  const tags = (artifact.tags || []).map(tagName).filter(Boolean).slice(0, 3);
+  const description = textValue(artifactDescriptionRaw(artifact));
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex w-full gap-3 rounded-2xl border bg-white p-3 text-left shadow-sm transition-all active:scale-[0.99]",
+        isSelected ? "border-amber-700 ring-2 ring-amber-100" : "border-gray-100",
+      )}
+    >
+      <SafeImage
+        src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")}
+        alt={textValue(artifactNameRaw(artifact))}
+        width={80}
+        height={80}
+        className="h-20 w-20 shrink-0 rounded-2xl bg-gray-100 object-cover"
+      />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start gap-2">
+          <span className="mt-0.5 shrink-0 font-serif text-[11px] font-bold text-amber-700">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <h5 className="line-clamp-2 min-w-0 text-sm font-black leading-snug text-gray-950">
+            {textValue(artifactNameRaw(artifact))}
+          </h5>
+        </div>
+        <p className="mt-1 line-clamp-1 text-[11px] font-medium text-gray-500">
+          {textValue(artifactEraRaw(artifact))} / {textValue(artifactMuseumRaw(artifact))}
+        </p>
+        <p className="mt-1 line-clamp-1 text-[11px] leading-relaxed text-gray-400">{description}</p>
+        <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-amber-800">{reason}</p>
+        {tags.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-800">{role}</span>
+            {tags.map((tag) => (
+              <span key={tag} className="max-w-[7rem] truncate rounded-full bg-[#F6F3EE] px-2 py-0.5 text-[9px] font-bold text-primary">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      {isMultiSelect && (
+        <span
+          className={cn(
+            "mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all",
+            isSelected ? "border-amber-800 bg-amber-800 text-white" : "border-gray-200 bg-white text-transparent",
+          )}
+        >
+          <Check size={14} />
+        </span>
+      )}
+    </button>
+  );
+}
 
 export const ExhibitionDetail = ({ 
   exhibition, 
@@ -34,17 +267,13 @@ export const ExhibitionDetail = ({
   toggleFavorite,
   user,
   onEdit,
-  onSlideshowOpen,
-  onBGMGeneratorOpen
+  onSlideshowOpen
 }: any) => {
   const [search, setSearch] = useState('');
   const [isMultiSelect, setIsMultiSelect] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [isBGMPaused, setIsBGMPaused] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const ambientRef = useRef<AmbientAudioPlayer | null>(null);
-  const isAmbientBgm = isAmbientBgmUrl(exhibition.bgmUrl);
+  const [isPlanOpen, setIsPlanOpen] = useState(false);
   const artifactIds = useMemo(
     () => Array.isArray(exhibition.artifactIds) ? exhibition.artifactIds : [],
     [exhibition.artifactIds],
@@ -52,6 +281,10 @@ export const ExhibitionDetail = ({
 
   const isOwner = Boolean(user && String(exhibition.userId) === String(user.id));
   const aiCuration = (exhibition as Exhibition).aiCuration;
+  const units = useMemo(() => normalizeExhibitionUnits(exhibition as Exhibition), [exhibition]);
+  const guideIntro = exhibitionGuideIntro(exhibition as Exhibition);
+  const conclusion = exhibitionConclusion(exhibition as Exhibition);
+  const planSummary = guideIntro || aiCuration?.opening || '查看展览的叙事结构、单元安排和展品选择理由。';
 
   const filteredArtifactIds = useMemo(() => {
     if (!search.trim()) return artifactIds;
@@ -65,34 +298,15 @@ export const ExhibitionDetail = ({
     setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
-  useEffect(() => {
-    if (!exhibition.bgmUrl) return;
-
-    if (isAmbientBgm) {
-      if (!ambientRef.current) ambientRef.current = new AmbientAudioPlayer();
-      if (!isBGMPaused) {
-        ambientRef.current.start(exhibition.bgmUrl).catch(console.error);
-      } else {
-        ambientRef.current.stop();
-      }
-      return;
-    }
-
-    if (audioRef.current) {
-      audioRef.current.volume = 0.3;
-      if (!isBGMPaused) {
-        audioRef.current.play().catch(console.error);
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  }, [exhibition.bgmUrl, isAmbientBgm, isBGMPaused]);
-
-  useEffect(() => {
-    return () => {
-      ambientRef.current?.dispose();
-    };
-  }, []);
+  const visibleUnits = useMemo(() => {
+    const visible = new Set(filteredArtifactIds);
+    return units
+      .map((unit) => ({
+        ...unit,
+        artifactIds: unit.artifactIds.filter((id) => visible.has(id)),
+      }))
+      .filter((unit) => unit.artifactIds.length > 0);
+  }, [filteredArtifactIds, units]);
 
   return (
     <motion.div
@@ -102,10 +316,6 @@ export const ExhibitionDetail = ({
       className="fixed inset-0 z-[110] flex flex-col overflow-y-auto bg-[var(--app-page-bg)] no-scrollbar"
       style={{ top: 'var(--app-status-bar-height)' }}
     >
-      {exhibition.bgmUrl && !isAmbientBgm && (
-        <audio ref={audioRef} src={exhibition.bgmUrl} loop />
-      )}
-
       {/* Header Area (Playlist Style) */}
       <div className="relative h-[45vh] flex-shrink-0">
         {exhibition.coverUrl && (
@@ -135,14 +345,7 @@ export const ExhibitionDetail = ({
             >
               <Share2 size={20} />
             </button>
-            <button 
-              onClick={() => {
-                if (isOwner) onBGMGeneratorOpen();
-              }}
-              className="p-2 bg-black/20 backdrop-blur-md rounded-full text-white"
-            >
-              <Music size={20} />
-            </button>
+            <AmbientSoundControl triggerClassName="h-10 w-10 bg-black/20 text-white backdrop-blur-md" />
           </div>
         </div>
 
@@ -161,7 +364,7 @@ export const ExhibitionDetail = ({
               <span className="text-xs font-bold opacity-90">{exhibition.userName}</span>
               <ChevronRight size={20} className="opacity-50" />
             </div>
-            <p className="break-words text-[10px] leading-relaxed opacity-70">{exhibition.intro}</p>
+            <p className="line-clamp-2 break-words text-[10px] leading-relaxed opacity-70">{guideIntro || exhibition.intro}</p>
           </div>
         </div>
       </div>
@@ -200,73 +403,36 @@ export const ExhibitionDetail = ({
 
       {/* Content Area */}
       <div className="flex-1 p-6 space-y-6">
-        {aiCuration ? (
-          <section className="space-y-5 rounded-[5px] border border-amber-100 bg-amber-50 p-5">
-            <div className="space-y-2">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">AI 结构化策展方案</p>
-              {aiCuration.theme && <h3 className="break-words text-lg font-serif font-bold text-gray-950">{aiCuration.theme}</h3>}
-              {aiCuration.opening && <p className="break-words text-sm leading-relaxed text-gray-700">{aiCuration.opening}</p>}
-            </div>
-
-            {aiCuration.sections && aiCuration.sections.length > 0 && (
-              <div className="space-y-3">
-                {aiCuration.sections.map((section, index) => (
-                  <div key={`${section.title}-${index}`} className="rounded-[5px] bg-white/75 p-4">
-                    <h4 className="break-words text-sm font-bold text-gray-900">{section.title}</h4>
-                    {section.summary && <p className="mt-1 break-words text-xs leading-relaxed text-gray-500">{section.summary}</p>}
-                    {section.artifactIds.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {section.artifactIds.map((id: string) => {
-                          const artifact = artifacts.find((item: Artifact) => item.id === id);
-                          return (
-                            <span key={`${section.title}-${id}`} className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold text-amber-900">
-                              {artifact ? displayDbString(artifactNameRaw(artifact)) : id}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {aiCuration.artifactNotes && Object.keys(aiCuration.artifactNotes).length > 0 && (
-              <div className="space-y-2">
-                <h4 className="text-xs font-bold text-gray-900">展品策展理由</h4>
-                {artifactIds
-                  .filter((id: string) => aiCuration.artifactNotes?.[id])
-                  .map((id: string) => {
-                    const artifact = artifacts.find((item: Artifact) => item.id === id);
-                    return (
-                      <div key={`note-${id}`} className="rounded-[5px] bg-white/75 p-3">
-                        <p className="text-[10px] font-bold text-amber-900">{artifact ? displayDbString(artifactNameRaw(artifact)) : id}</p>
-                        <p className="mt-1 break-words text-xs leading-relaxed text-gray-500">{aiCuration.artifactNotes?.[id]}</p>
-                      </div>
-                    );
-                  })}
-              </div>
-            )}
-
-            {aiCuration.ending && <p className="break-words text-sm leading-relaxed text-gray-700">{aiCuration.ending}</p>}
-            {aiCuration.sourceNote && (
-              <p className="break-words border-t border-amber-100 pt-3 text-[10px] leading-relaxed text-amber-800">
-                {aiCuration.sourceNote}
-              </p>
-            )}
+        {guideIntro && (
+          <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <p className="break-words text-sm leading-relaxed text-gray-600">{guideIntro}</p>
           </section>
-        ) : (
-          exhibition.intro && (
-            <section className="rounded-[5px] border border-gray-100 bg-white p-5">
-              <p className="break-words text-sm leading-relaxed text-gray-600">{exhibition.intro}</p>
-            </section>
-          )
+        )}
+
+        {(aiCuration || units.length > 0) && (
+          <button
+            type="button"
+            onClick={() => setIsPlanOpen(true)}
+            className="flex w-full items-center gap-3 rounded-2xl border border-amber-100 bg-[#FBF7EE] p-4 text-left shadow-sm transition-all active:scale-[0.99]"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-800">
+              <Sparkles size={18} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-black text-gray-950">{aiCuration ? '查看 AI 策展方案' : '查看展览结构'}</span>
+              <span className="mt-1 line-clamp-2 block break-words text-xs leading-relaxed text-gray-500">{planSummary}</span>
+            </span>
+            <span className="flex shrink-0 items-center gap-1 text-[10px] font-bold text-amber-800">
+              查看
+              <ChevronRight size={16} />
+            </span>
+          </button>
         )}
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Library size={20} className="text-amber-800" />
-            <h4 className="text-sm font-bold text-gray-900">展陈内容 ({artifactIds.length})</h4>
+            <h4 className="text-sm font-bold text-gray-900">展品清单 ({artifactIds.length})</h4>
           </div>
           <div className="flex items-center gap-3">
             <button 
@@ -288,34 +454,48 @@ export const ExhibitionDetail = ({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          {filteredArtifactIds.map((id: string) => {
-            const artifact = artifacts.find((a: Artifact) => a.id === id);
-            if (!artifact) return null;
-            const isSelected = selectedIds.includes(id);
-            return (
-              <div key={`exh-detail-art-${id}`} className="relative">
-                <ArtifactCard artifact={artifact} onClick={() => isMultiSelect ? toggleSelect(id) : onArtifactClick(artifact)} />
-                {isMultiSelect && (
-                  <div 
-                    onClick={() => toggleSelect(id)}
-                    className={cn(
-                      "absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all z-10",
-                      isSelected ? "bg-amber-800 border-amber-800 text-white" : "bg-white/80 border-white text-transparent"
-                    )}
-                  >
-                    <Plus size={14} className={cn(isSelected && "rotate-45")} />
-                  </div>
-                )}
+        <div className="space-y-6">
+          {visibleUnits.map((unit, unitIndex) => (
+            <section key={unit.id} className="space-y-3">
+              <div className="rounded-2xl border border-gray-100 bg-white/70 p-4">
+                <p className="font-serif text-[11px] font-bold text-amber-700">第 {unitIndex + 1} 单元</p>
+                <h5 className="mt-1 break-words text-lg font-serif font-bold text-gray-950">{unit.title}</h5>
+                <p className="mt-2 line-clamp-2 break-words text-xs leading-relaxed text-gray-500">{unit.description}</p>
               </div>
-            );
-          })}
+              <div className="space-y-3">
+                {unit.artifactIds.map((id: string) => {
+                  const artifact = artifacts.find((a: Artifact) => a.id === id);
+                  if (!artifact) return null;
+                  const isSelected = selectedIds.includes(id);
+                  return (
+                    <ExhibitionArtifactRow
+                      key={`exh-detail-art-${unit.id}-${id}`}
+                      artifact={artifact}
+                      index={artifactIds.indexOf(id)}
+                      isSelected={isSelected}
+                      isMultiSelect={isMultiSelect}
+                      reason={artifactSelectionReason(exhibition as Exhibition, artifact)}
+                      role={artifactRole(exhibition as Exhibition, artifact)}
+                      onClick={() => isMultiSelect ? toggleSelect(id) : onArtifactClick(artifact)}
+                    />
+                  );
+                })}
+              </div>
+            </section>
+          ))}
         </div>
 
-        {artifactIds.length === 0 && (
+        {filteredArtifactIds.length === 0 && (
           <div className="py-16 text-center text-gray-300 text-xs italic">
-            这个展览暂时还没有添加文物
+            {artifactIds.length === 0 ? '这个展览暂时还没有添加文物' : '没有找到匹配的展品'}
           </div>
+        )}
+
+        {conclusion && (
+          <section className="rounded-2xl bg-[#F8F5EF] p-5">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">策展结语</p>
+            <p className="mt-2 break-words text-sm leading-relaxed text-gray-700">{conclusion}</p>
+          </section>
         )}
 
         {isMultiSelect && selectedIds.length > 0 && (
@@ -330,36 +510,19 @@ export const ExhibitionDetail = ({
           </div>
         )}
 
-        {/* Floating BGM Control */}
-        {exhibition.bgmUrl && (
-          <motion.div 
-            drag
-            dragConstraints={{ left: -100, right: 100, top: -500, bottom: 0 }}
-            className="fixed bottom-28 right-6 z-[120]"
-          >
-            <button 
-              onClick={() => setIsBGMPaused(!isBGMPaused)}
-              className="w-14 h-14 bg-white rounded-full shadow-2xl border border-gray-100 flex items-center justify-center text-primary relative group"
-            >
-              <div className={cn(
-                "absolute inset-0 bg-primary/5 rounded-full animate-ping",
-                isBGMPaused && "hidden"
-              )} />
-              {isBGMPaused ? <Play size={24} fill="currentColor" className="ml-1" /> : <Pause size={24} fill="currentColor" />}
-              
-              {/* Volume Indicator */}
-              <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-secondary text-white text-[8px] px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity force-nowrap">
-                音量 30%
-              </div>
-            </button>
-          </motion.div>
-        )}
       </div>
 
       <ExhibitionShareModal
         isOpen={isShareOpen}
         exhibition={exhibition}
         onClose={() => setIsShareOpen(false)}
+      />
+      <CuratorPlanDrawer
+        isOpen={isPlanOpen}
+        onClose={() => setIsPlanOpen(false)}
+        exhibition={exhibition as Exhibition}
+        artifacts={artifacts}
+        units={units}
       />
     </motion.div>
   );

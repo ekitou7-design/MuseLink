@@ -1,4 +1,4 @@
-export const DEFAULT_AMBIENT_BGM = 'ambient://rain-ocean-wind';
+export const DEFAULT_AMBIENT_BGM = 'ambient://gallery';
 
 export function isAmbientBgmUrl(url?: string | null) {
   return typeof url === 'string' && url.startsWith('ambient://');
@@ -41,7 +41,7 @@ export class AmbientAudioPlayer {
 
     this.stopNodes();
     this.masterGain = this.context.createGain();
-    this.masterGain.gain.value = 0.22;
+    this.masterGain.gain.value = 0.18;
     this.masterGain.connect(this.context.destination);
     this.buildSoundscape(url);
   }
@@ -54,7 +54,7 @@ export class AmbientAudioPlayer {
 
   setMuted(muted: boolean) {
     if (!this.masterGain || !this.context) return;
-    this.masterGain.gain.setTargetAtTime(muted ? 0 : 0.22, this.context.currentTime, 0.04);
+    this.masterGain.gain.setTargetAtTime(muted ? 0 : 0.18, this.context.currentTime, 0.08);
   }
 
   dispose() {
@@ -66,16 +66,12 @@ export class AmbientAudioPlayer {
   private buildSoundscape(url: string) {
     if (!this.context || !this.masterGain) return;
     const mode = url.replace('ambient://', '');
-    const includeRain = mode.includes('rain') || mode.includes('all');
-    const includeOcean = mode.includes('ocean') || mode.includes('sea') || mode.includes('all');
-    const includeWind = mode.includes('wind') || mode.includes('all');
 
-    if (includeRain) this.addFilteredNoise({ type: 'highpass', frequency: 1600, gain: 0.055 });
-    if (includeOcean) this.addFilteredNoise({ type: 'lowpass', frequency: 360, gain: 0.2, lfo: true });
-    if (includeWind) this.addFilteredNoise({ type: 'bandpass', frequency: 720, q: 0.7, gain: 0.09, lfo: true });
-    if (!includeRain && !includeOcean && !includeWind) {
-      this.addFilteredNoise({ type: 'lowpass', frequency: 520, gain: 0.18, lfo: true });
-    }
+    if (mode.includes('silent')) return;
+
+    // Conservative museum ambience: low, slow, soft room tone only.
+    this.addFilteredNoise({ type: 'lowpass', frequency: 240, gain: 0.13, lfo: true });
+    this.addFilteredNoise({ type: 'bandpass', frequency: 420, q: 0.35, gain: 0.035, lfo: true });
   }
 
   private addFilteredNoise(options: {

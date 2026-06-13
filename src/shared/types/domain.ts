@@ -27,6 +27,10 @@ export interface Artifact {
   shortIntro?: string;
   description: string;
   imageUrl: string;
+  image_url?: string;
+  localImageUrl?: string;
+  localThumbnailUrl?: string;
+  externalImageUrl?: string;
   sourceUrl?: string;
   tags: ArtifactTag[];
   attributes?: ArtifactAttributeGroup[];
@@ -36,6 +40,14 @@ export interface Artifact {
   level?: string;
   dimensions?: string;
   remarks?: string;
+}
+
+export interface ArtifactRecommendation {
+  artifact: Artifact;
+  recommendationScore: number;
+  reason: string;
+  reasons: string[];
+  matchedTags: string[];
 }
 
 export interface Museum {
@@ -73,6 +85,16 @@ export interface AICurationPlan {
   sourceNote?: string;
 }
 
+export type ExhibitionArtifactRole = '核心展品' | '补充展品' | '过渡展品' | '对比展品';
+
+export interface ExhibitionUnit {
+  id: string;
+  title: string;
+  description: string;
+  artifactIds: string[];
+  curatorNote?: string;
+}
+
 export interface Exhibition {
   id: string;
   userId: number | string;
@@ -89,6 +111,11 @@ export interface Exhibition {
   bgmUrl?: string;
   slideshowSettings?: SlideshowSettings;
   aiCuration?: AICurationPlan;
+  exhibitionIntro?: string;
+  units?: ExhibitionUnit[];
+  conclusion?: string;
+  selectionReasons?: Record<string, string>;
+  artifactRoles?: Record<string, ExhibitionArtifactRole>;
   createdAt: string;
   updatedAt: string;
 }

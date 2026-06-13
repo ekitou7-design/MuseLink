@@ -60,23 +60,21 @@ export const SearchOverlay = ({
           executeRelicSearch();
         }}
       >
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={16} />
+        <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={16} />
         <input
           autoFocus
           type="text"
           placeholder="搜索文物、展陈、博物馆、用户"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="ios-input h-11 w-full border-none py-0 pl-11 pr-12 text-[15px] outline-none"
+          className="ios-input h-11 w-full border-none py-0 pl-11 pr-4 text-[15px] leading-[44px] outline-none placeholder:leading-[44px]"
         />
-        <button
-          type="submit"
-          disabled={relicSearchLoading}
-          aria-label="搜索文物"
-          className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-amber-800 transition-colors hover:bg-white disabled:opacity-60"
-        >
-          {relicSearchLoading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-        </button>
+        {relicSearchLoading ? (
+          <Loader2
+            size={16}
+            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 animate-spin text-amber-800"
+          />
+        ) : null}
       </form>
     </div>
     <SearchOverlayTabs
@@ -105,7 +103,7 @@ export const SearchOverlay = ({
         ) : lastRelicSearchKeyword !== searchQuery.trim() ? (
           <div className="flex flex-col items-center justify-center text-gray-300 space-y-4 py-20">
             <Search size={48} strokeWidth={1} />
-            <p className="text-sm font-medium">点击搜索按钮或按回车搜索文物</p>
+            <p className="text-sm font-medium">按回车搜索文物</p>
           </div>
         ) : searchArtifactResults.length === 0 ? (
           <p className="text-center text-sm text-gray-400 py-16">暂无相关文物</p>

@@ -14,22 +14,15 @@ export const TopNav = ({ onMenuClick, onSearchClick, onBellClick, onSubmitSearch
       }}
     >
       <div className="relative group">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" size={20} />
+        <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-primary" size={20} />
         <input
           type="text"
           placeholder="搜索文物、展陈、博物馆、用户"
           value={searchQuery}
           onFocus={onSearchClick}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="ios-input h-11 w-full border-none py-0 pl-11 pr-11 text-[15px] outline-none transition-all focus:ring-2 focus:ring-primary/15"
+          className="ios-input h-11 w-full border-none py-0 pl-12 pr-4 text-[15px] leading-[44px] outline-none transition-all placeholder:leading-[44px] focus:ring-2 focus:ring-primary/15"
         />
-        <button
-          type="submit"
-          aria-label="搜索文物"
-          className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-white hover:text-primary"
-        >
-          <Search size={14} />
-        </button>
       </div>
     </form>
     <button onClick={onBellClick} className="relative flex h-10 w-10 items-center justify-center rounded-full text-gray-700 transition-colors hover:bg-gray-100">

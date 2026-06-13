@@ -32,6 +32,14 @@ import {
 } from './lib/dbDisplay';
 import { PROVINCIAL_MUSEUMS } from '../backend/provincial-museums';
 import { fetchMergedArtifacts, searchRelics } from './modules/artifacts/services/artifactsService';
+import {
+  buildArtifactRecommendations,
+  readRecommendationPreferences,
+  readSearchHistory,
+  rememberRecentText,
+  writeRecommendationPreferences,
+  writeSearchHistory,
+} from './modules/artifacts/services/recommendationService';
 import { fetchMergedMuseums } from './modules/museums/services/museumsService';
 import {
   createExhibition as createExhibitionRequest,
@@ -53,6 +61,7 @@ import { ExhibitionCard } from './modules/exhibitions/components/ExhibitionCard'
 import { Banner } from './shared/ui/Banner';
 import { Drawer } from './shared/ui/Drawer';
 import { SettingsModal } from './modules/profile/components/SettingsModal';
+import { ProfileFeaturePanel } from './modules/profile/components/ProfileFeaturePanel';
 import { MuseumSelectorOverlay } from './modules/museums/components/MuseumSelectorOverlay';
 import { BottomNav } from './app/components/BottomNav';
 import { TopNav } from './app/components/TopNav';
@@ -74,10 +83,11 @@ import { ExploreTabBar } from './modules/artifacts/components/ExploreTabBar';
 import { normalizeArtifacts } from './modules/artifacts/normalizers/artifactNormalizers';
 import { normalizeExhibition, normalizeExhibitions } from './modules/exhibitions/normalizers/exhibitionNormalizers';
 import { getSlideshowArtifacts, mergeArtifactsById } from './shared/lib/domainUtils';
+import type { SidebarFeatureId } from './modules/profile/data/sidebarContent';
 
 // --- Components ---
 
-const RECOMMENDED_ARTIFACT_LIMIT = 10;
+const RECOMMENDED_ARTIFACT_LIMIT = 8;
 const EDITOR_RECOMMENDED_EXHIBITION_LIMIT = 10;
 const ALL_ARTIFACT_PAGE_SIZE = 24;
 const TEST_EDITOR_RECOMMENDED_EXHIBITION_ID = 'editor-recommendation-test-exhibition';
@@ -144,6 +154,8 @@ export default function App() {
     const saved = localStorage.getItem('muselink_history');
     return saved ? JSON.parse(saved) : [];
   });
+  const [searchHistory, setSearchHistory] = useState<string[]>(() => readSearchHistory());
+  const [recommendationPreferences, setRecommendationPreferences] = useState<string[]>(() => readRecommendationPreferences());
 
   // AI & Square State
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -160,8 +172,7 @@ export default function App() {
   const [messageTab, setMessageTab] = useState<'reminders' | 'chats'>('reminders');
   const [isExhMultiSelect, setIsExhMultiSelect] = useState(false);
   const [selectedExhIds, setSelectedExhIds] = useState<string[]>([]);
-  const [isNotDevelopedOpen, setIsNotDevelopedOpen] = useState(false);
-  const [notDevelopedTitle, setNotDevelopedTitle] = useState('');
+  const [activeSidebarFeature, setActiveSidebarFeature] = useState<SidebarFeatureId | null>(null);
   const [isEditExhibitionOpen, setIsEditExhibitionOpen] = useState(false);
   const [isManualExhibitionOpen, setIsManualExhibitionOpen] = useState(false);
   const [isCreatingManualExhibition, setIsCreatingManualExhibition] = useState(false);
@@ -178,6 +189,7 @@ export default function App() {
   const [isBGMGeneratorOpen, setIsBGMGeneratorOpen] = useState(false);
   const [slideshowExhibition, setSlideshowExhibition] = useState<Exhibition | null>(null);
   const [bgmExhibition, setBgmExhibition] = useState<Exhibition | null>(null);
+  const [aiInitialKeywords, setAiInitialKeywords] = useState('');
   const [toast, setToast] = useState<ToastState>(null);
   const layerHistoryPushedRef = useRef(false);
   const ignoreNextPopRef = useRef(false);
@@ -193,7 +205,7 @@ export default function App() {
     setIsMessaging(false);
     setIsBGMGeneratorOpen(false);
     setIsMuseumSelectorOpen(false);
-    setIsNotDevelopedOpen(false);
+    setActiveSidebarFeature(null);
     setSelectedArtifact(null);
     setSelectedArtifactLightboxUrl(null);
     setSlideshowExhibition(normalized);
@@ -209,6 +221,7 @@ export default function App() {
   const closeAIModal = useCallback(() => {
     setIsAIModalOpen(false);
     setAiResult(null);
+    setAiInitialKeywords('');
   }, []);
 
   const closeManualExhibition = useCallback(() => {
@@ -272,6 +285,10 @@ export default function App() {
       setIsSettingsOpen(false);
       return true;
     }
+    if (activeSidebarFeature) {
+      setActiveSidebarFeature(null);
+      return true;
+    }
     if (isProfileEditOpen) {
       setIsProfileEditOpen(false);
       return true;
@@ -313,12 +330,9 @@ export default function App() {
       setIsDrawerOpen(false);
       return true;
     }
-    if (isNotDevelopedOpen) {
-      setIsNotDevelopedOpen(false);
-      return true;
-    }
     return false;
   }, [
+    activeSidebarFeature,
     closeAIModal,
     closeBGMGenerator,
     closeEditExhibition,
@@ -336,7 +350,6 @@ export default function App() {
     isManualExhibitionOpen,
     isMessaging,
     isMuseumSelectorOpen,
-    isNotDevelopedOpen,
     isProfileEditOpen,
     isSearching,
     isSettingsOpen,
@@ -356,6 +369,7 @@ export default function App() {
       isAIModalOpen ||
       isCuratorTIQuizOpen ||
       isSettingsOpen ||
+      activeSidebarFeature ||
       isProfileEditOpen ||
       showSyncPrompt ||
       isMuseumSelectorOpen ||
@@ -365,8 +379,7 @@ export default function App() {
       selectedExhibition ||
       isSearching ||
       isMessaging ||
-      isDrawerOpen ||
-      isNotDevelopedOpen,
+      isDrawerOpen,
   );
 
   useEffect(() => {
@@ -424,6 +437,11 @@ export default function App() {
       return;
     }
 
+    setSearchHistory(prev => {
+      const next = rememberRecentText(prev, keyword);
+      writeSearchHistory(next);
+      return next;
+    });
     setRelicSearchLoading(true);
     setRelicSearchError('');
     try {
@@ -610,14 +628,23 @@ export default function App() {
     return museums.filter((museum) => museum.name.toLowerCase().includes(q));
   }, [MUSEUMS, artifactPool, museumPool, searchQuery]);
 
-  const recommendedArtifacts = useMemo(
-    () => artifactPool.slice().sort((a, b) => b.favsCount - a.favsCount),
-    [artifactPool]
+  const recommendedArtifactResults = useMemo(
+    () => buildArtifactRecommendations(
+      artifactPool,
+      {
+        favoriteArtifactIds: favorites,
+        viewHistoryIds: history,
+        searchKeywords: searchHistory,
+        curationKeywords: recommendationPreferences,
+      },
+      RECOMMENDED_ARTIFACT_LIMIT,
+    ),
+    [artifactPool, favorites, history, recommendationPreferences, searchHistory]
   );
 
-  const previewRecommendedArtifacts = useMemo(
-    () => recommendedArtifacts.slice(0, RECOMMENDED_ARTIFACT_LIMIT),
-    [recommendedArtifacts]
+  const recommendedArtifacts = useMemo(
+    () => recommendedArtifactResults.map((item) => item.artifact),
+    [recommendedArtifactResults]
   );
 
   const editorRecommendedExhibitions = useMemo(
@@ -950,13 +977,21 @@ export default function App() {
     generateBGM: boolean,
     guideAnswers: CuratorGuideAnswers = {},
   ) => {
+    const preferenceText = [keywords, ...Object.values(guideAnswers)].join(' ').trim();
+    if (preferenceText) {
+      setRecommendationPreferences(prev => {
+        const next = rememberRecentText(prev, preferenceText);
+        writeRecommendationPreferences(next);
+        return next;
+      });
+    }
     setIsGenerating(true);
     try {
       const backendArtifacts = await fetchBackendArtifactPool();
       const result = await curatorService.generateExhibition(keywords, backendArtifacts, { guideAnswers });
       const coverArtifact = backendArtifacts.find((artifact) => result.artifactIds?.includes(artifact.id));
       const coverUrl = result.coverUrl || coverArtifact?.imageUrl || '';
-      const bgmUrl = generateBGM ? 'ambient://rain-ocean-wind' : undefined;
+      const bgmUrl = generateBGM ? 'ambient://gallery' : undefined;
       setAiResult({ ...result, coverUrl, bgmUrl });
       if ((result as any).generationNotice) {
         showToast(String((result as any).generationNotice), 'info');
@@ -986,6 +1021,11 @@ export default function App() {
         bgmUrl: aiResult.bgmUrl,
         slideshowSettings: aiResult.slideshowSettings,
         aiCuration: aiResult.aiCuration,
+        exhibitionIntro: aiResult.exhibitionIntro,
+        units: aiResult.units,
+        conclusion: aiResult.conclusion,
+        selectionReasons: aiResult.selectionReasons,
+        artifactRoles: aiResult.artifactRoles,
       });
       const normalized = normalizeExhibition(created);
       if (!normalized) throw new Error('展陈数据格式异常');
@@ -1040,6 +1080,14 @@ export default function App() {
         ...prev,
         stats: { ...prev.stats, myExhibitions: (prev.stats?.myExhibitions || 0) + 1 },
       } : prev);
+      const manualPreference = [draft.title, draft.intro].join(' ').trim();
+      if (manualPreference) {
+        setRecommendationPreferences(prev => {
+          const next = rememberRecentText(prev, manualPreference);
+          writeRecommendationPreferences(next);
+          return next;
+        });
+      }
       setSelectedExhibition(normalized);
       setIsManualExhibitionOpen(false);
       showToast('手动展览已创建', 'success');
@@ -1120,10 +1168,7 @@ export default function App() {
         onLoginClick={goLogin}
         onEditProfile={() => setIsProfileEditOpen(true)}
         onSettingsClick={() => setIsSettingsOpen(true)}
-        onFeatureClick={(title) => {
-          setNotDevelopedTitle(title);
-          setIsNotDevelopedOpen(true);
-        }}
+        onFeatureClick={(feature) => setActiveSidebarFeature(feature)}
       />
       
       <TopNav 
@@ -1191,13 +1236,23 @@ export default function App() {
                         </h2>
                         
                         <div className="columns-2 gap-1.5">
-                          {previewRecommendedArtifacts.map(artifact => (
-                            <div key={artifact.id} className="break-inside-avoid mb-1.5">
+                          {recommendedArtifactResults.map(recommendation => (
+                            <div key={recommendation.artifact.id} className="break-inside-avoid mb-1.5">
                               <ArtifactCard 
-                                artifact={artifact} 
+                                artifact={recommendation.artifact}
+                                recommendation={recommendation}
+                                isFavorite={favorites.includes(recommendation.artifact.id)}
+                                onFavoriteClick={() => toggleFavorite(recommendation.artifact.id)}
+                                onCurationClick={() => {
+                                  const artifactName = displayDbString(artifactNameRaw(recommendation.artifact));
+                                  const tags = recommendation.matchedTags.slice(0, 3).join('、');
+                                  setAiResult(null);
+                                  setAiInitialKeywords(`围绕“${artifactName}”生成一个主题展览${tags ? `，重点参考：${tags}` : ''}`);
+                                  setIsAIModalOpen(true);
+                                }}
                                 onClick={() => {
-                                  setSelectedArtifact(artifact);
-                                  addToHistory(artifact.id);
+                                  setSelectedArtifact(recommendation.artifact);
+                                  addToHistory(recommendation.artifact.id);
                                 }} 
                               />
                             </div>
@@ -1829,6 +1884,7 @@ export default function App() {
           setIsManualExhibitionOpen(true);
         }}
         artifacts={artifactPool}
+        initialKeywords={aiInitialKeywords}
       />
 
       <CuratorTIQuiz
@@ -1842,6 +1898,19 @@ export default function App() {
       <SettingsModal 
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+
+      <ProfileFeaturePanel
+        isOpen={Boolean(activeSidebarFeature)}
+        feature={activeSidebarFeature}
+        onClose={() => setActiveSidebarFeature(null)}
+        onCreateCuration={(keywords) => {
+          setActiveSidebarFeature(null);
+          setAiResult(null);
+          setAiInitialKeywords(keywords);
+          setIsAIModalOpen(true);
+          showToast("已带入策展主题，可以继续调整后生成。", "success");
+        }}
       />
 
       <ManualExhibitionModal

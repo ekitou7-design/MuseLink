@@ -1,117 +1,123 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-10T05:48:59.132Z",
+  "updatedAt": "2026-06-13T11:46:31.674Z",
   "museums": [
     {
       "id": "辽宁省博物馆",
       "name": "辽宁省博物馆",
-      "description": "辽宁省博物馆馆藏文物数据库，当前收录 94 件文物。",
+      "description": "辽宁省博物馆馆藏文物数据库，当前收录 98 件文物。",
       "location": "辽宁省",
-      "imageUrl": "https://www.lnmuseum.com.cn/singleMuseum/attach/getImg?fileId=22024462001&type=L&s=2164",
+      "imageUrl": "/artifact-images/WW-辽-金灰陶罐形扑满-0-a30314c3.jpg",
       "artifactIds": [
-        "WW-辽-金灰陶罐形扑满-0",
-        "WW-民国巴林石印-1",
-        "WW-清浮雕瓜瓞天台石印-2",
-        "WW-清雕钮天然木根印-3",
-        "WW-清浮雕梅花天台石印-4",
-        "WW-清豆瓣青田石印-5",
-        "WW-清浮雕树石昌化长方石印-6",
-        "WW-清螭钮寿山石印-7",
-        "WW-清螭钮大田石椭圆印-8",
-        "WW-清狮钮青玉印-9",
-        "WW-民国浮雕造像巴林石印-10",
-        "WW-清寿山石印-11",
-        "WW-清内画山水花鸟鼻烟壶-12",
-        "WW-清白地贴花鼻烟壶-13",
-        "WW-清浮雕人物玛瑙鼻烟壶-14",
-        "WW-清内画山水玻璃鼻烟壶-15",
-        "WW-清玉鼻烟壶-16",
-        "WW-清内画山水清供玻璃鼻烟壶-17",
-        "WW-清浮雕盖耳青玉鼻烟壶-18",
-        "WW-清白玉鼻烟壶-19",
-        "WW-清浮雕猿猴黄玉鼻烟壶-20",
-        "WW-现代牙雕鹌鹑黍穗盒-21",
-        "WW-现代玉雕巧作子母鸡-22",
-        "WW-清督催查验牙印-23",
-        "WW-现代贝雕虾蟹掛幅-24",
-        "WW-现代贝彫柳蝉掛幅-25",
-        "WW-清朱墨-26",
-        "WW-元-清地契-27",
-        "WW-清按院颁契尾-28",
-        "WW-西汉铁器残块-29",
-        "WW-清浮雕葡萄纹纽寿山石印-30",
-        "WW-清雍正制“玉音”端砚-31",
-        "WW-清高丽发笺-32",
-        "WW-清洒金笺-33",
-        "WW-民国红十字银质章-34",
-        "WW-民国日本短刀-35",
-        "WW-民国伪满各种证章-36",
-        "WW-现代竹编三叠式长方提盒-37",
-        "WW-唐人首陶□-38",
-        "WW-明-清鱼鳞图册-39",
-        "WW-现代象牙雕蟹笼-40",
-        "WW-现代象牙雕岳飞战金岳插屏-41",
-        "WW-清白料贴花博古鼻烟壶（无盖）-42",
-        "WW-清烧蓝蟠螭玻璃地鼻烟壶-43",
-        "WW-清白地堆花鼻烟壶（无盖）-44",
-        "WW-清红鼻烟壶-45",
-        "WW-清内画花鸟玻璃鼻烟壶-46",
-        "WW-白果青田石印-47",
-        "WW-清代花翎-48",
-        "WW-清描金冰梅玉版粉笺-49",
-        "WW-民国国民党匪军证章、肩章、帽徽等-50",
-        "WW-清环钮青玉印-51",
-        "WW-青玉环-52",
-        "WW-青玉玦-53",
-        "WW-玉饰件-54",
-        "WW-民国秋江为康有为刻“开天天室”印-55",
-        "WW-辽银面具-56",
-        "WW-辽铜鎏金节约-57",
-        "WW-辽铜鎏金花瓣形饰形-58",
-        "WW-辽铜鎏金铜铃-59",
-        "WW-辽铜鎏金双龙纹铊尾-60",
-        "WW-春秋嵌红铜螭虎纹盖鼎-61",
-        "WW-辽铜鎏金雁形饰件-62",
-        "WW-辽铜鎏金龙纹\"圭\"字形铊尾-63",
-        "WW-辽铜鎏金卷草纹带箍-64",
-        "WW-清三兽足铜火盆-65",
-        "WW-辽铜鎏金双龙戏珠纹带饰-66",
-        "WW-辽铜鎏金卷纹带饰-67",
-        "WW-明钮铸铭文铜镜-68",
-        "WW-辽铜鎏金扣钉-69",
-        "WW-辽铜鎏金活带扣-70",
-        "WW-辽铜鎏金带扣-71",
-        "WW-金六耳铜锅-72",
-        "WW-辽铜鎏金双鱼形饰件-73",
-        "WW-汉双环耳铜钫-74",
-        "WW-辽铜鎏金龙纹铊尾-75",
-        "WW-春秋战国曲刃青铜短剑-76",
-        "WW-明\"一百九十四号\"铜铳-77",
-        "WW-明\"胜字五百九号\"铜铳-78",
-        "WW-明\"胜字九百囗囗号\"铜铳-79",
-        "WW-\"王恭厂二百七十号\"铜铳-80",
-        "WW-辽铜鎏金双龙椭圆形带饰-81",
-        "WW-清象牙镇纸-82",
-        "WW-清翁同龢行书手札册-83",
-        "WW-现代金振之摹周昉簪花仕女卷-84",
-        "WW-清傅雯指画寿同山岳图轴-85",
-        "WW-清薜澱仿黄公望秋溪萧寺图轴-86",
-        "WW-清刘渡雪栈图轴-87",
-        "WW-现代齐白石荔枝鹌鹑立轴-88",
-        "WW-明周日庠草书七绝诗卷-89",
-        "WW-明吴湘人物屏-90",
-        "WW-清叶道芬竹院逢僧轴-91",
-        "ncha-third-038",
-        "ncha-first-core-026"
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84",
+        "85",
+        "86",
+        "87",
+        "88",
+        "89",
+        "90",
+        "91",
+        "92",
+        "130",
+        "212",
+        "257",
+        "261",
+        "270",
+        "280"
       ],
-      "artifactCount": 94,
+      "artifactCount": 98,
       "periods": [
         "中华人民共和国(1949年10月1日成立)",
         "中华民国(1912~1949)",
         "五代",
         "其他",
+        "北宋",
         "北燕",
         "唐(618~907)",
+        "唐朝",
         "新石器时代",
         "明(1368~1644)",
         "春秋时代(前770~前476)",
@@ -121,60 +127,108 @@
         "辽(907~1125)",
         "金(1115~1234)"
       ],
-      "materials": [
-        "其他动物质",
-        "其他有机质",
-        "其他金属",
-        "宝玉石",
-        "暂无信息",
-        "木",
-        "毛",
-        "玻璃",
-        "瓷",
-        "石",
-        "纸",
-        "铁",
-        "铜",
-        "铜,金",
-        "银",
-        "陶",
-        "陶瓷",
-        "骨角牙"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "故宫博物院",
+      "name": "故宫博物院",
+      "description": "故宫博物院馆藏文物数据库，当前收录 40 件文物。",
+      "location": "中央部门",
+      "imageUrl": "",
+      "artifactIds": [
+        "116",
+        "123",
+        "124",
+        "133",
+        "134",
+        "135",
+        "138",
+        "169",
+        "170",
+        "172",
+        "174",
+        "254",
+        "255",
+        "256",
+        "258",
+        "260",
+        "262",
+        "263",
+        "264",
+        "265",
+        "268",
+        "269",
+        "271",
+        "272",
+        "273",
+        "276",
+        "277",
+        "278",
+        "279",
+        "281",
+        "282",
+        "283",
+        "284",
+        "285",
+        "286",
+        "287",
+        "288",
+        "289",
+        "290",
+        "291"
       ],
-      "updatedAt": "2026-06-10T05:48:59.128Z"
+      "artifactCount": 40,
+      "periods": [
+        "三国吴",
+        "东晋",
+        "五代",
+        "北宋",
+        "南宋",
+        "唐",
+        "唐朝",
+        "宋",
+        "宋代",
+        "战国",
+        "西晋",
+        "隋朝"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国国家博物馆",
       "name": "中国国家博物馆",
-      "description": "中国国家博物馆馆藏文物数据库，当前收录 23 件文物。",
+      "description": "中国国家博物馆馆藏文物数据库，当前收录 24 件文物。",
       "location": "",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Zilong_Ding.jpg",
+      "imageUrl": "/artifact-images/ncha-third-001-166d402e.jpg",
       "artifactIds": [
-        "ncha-third-001",
-        "ncha-third-002",
-        "ncha-third-006",
-        "ncha-third-014",
-        "ncha-third-017",
-        "ncha-third-018",
-        "ncha-third-019",
-        "ncha-third-020",
-        "ncha-third-025",
-        "ncha-third-028",
-        "ncha-third-033",
-        "ncha-third-049",
-        "ncha-third-060",
-        "ncha-third-061",
-        "ncha-third-070",
-        "ncha-third-072",
-        "ncha-third-073",
-        "ncha-first-core-001",
-        "ncha-first-core-002",
-        "ncha-first-core-003",
-        "ncha-first-core-004",
-        "ncha-first-core-005",
-        "ncha-first-core-006"
+        "93",
+        "94",
+        "98",
+        "106",
+        "109",
+        "110",
+        "111",
+        "112",
+        "117",
+        "120",
+        "125",
+        "141",
+        "152",
+        "153",
+        "162",
+        "164",
+        "165",
+        "187",
+        "188",
+        "189",
+        "190",
+        "191",
+        "192",
+        "292"
       ],
-      "artifactCount": 23,
+      "artifactCount": 24,
       "periods": [
         "三国吴",
         "北齐",
@@ -186,181 +240,161 @@
         "西汉",
         "隋"
       ],
-      "materials": [
-        "玉",
-        "陶",
-        "陶瓷",
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.128Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
-      "id": "故宫博物院",
-      "name": "故宫博物院",
-      "description": "故宫博物院馆藏文物数据库，当前收录 11 件文物。",
-      "location": "中央部门",
-      "imageUrl": "",
+      "id": "湖南省博物馆",
+      "name": "湖南省博物馆",
+      "description": "湖南省博物馆馆藏文物数据库，当前收录 11 件文物。",
+      "location": "湖南省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Da_He_ding_side.jpg/960px-Da_He_ding_side.jpg",
       "artifactIds": [
-        "ncha-third-024",
-        "ncha-third-031",
-        "ncha-third-032",
-        "ncha-third-041",
-        "ncha-third-042",
-        "ncha-third-043",
-        "ncha-third-046",
-        "ncha-third-077",
-        "ncha-third-078",
-        "ncha-third-080",
-        "ncha-third-082"
+        "96",
+        "128",
+        "148",
+        "157",
+        "158",
+        "186",
+        "226",
+        "246",
+        "247",
+        "248",
+        "249"
       ],
       "artifactCount": 11,
       "periods": [
-        "三国吴",
-        "北宋",
         "唐",
-        "宋",
-        "战国"
+        "商",
+        "战国中晚期",
+        "西晋",
+        "西汉",
+        "西漢"
       ],
-      "materials": [
-        "陶瓷"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "陕西历史博物馆",
       "name": "陕西历史博物馆",
-      "description": "陕西历史博物馆馆藏文物数据库，当前收录 9 件文物。",
+      "description": "陕西历史博物馆馆藏文物数据库，当前收录 10 件文物。",
       "location": "陕西省",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Sancai_musicians_on_camel%2C_front.jpg",
       "artifactIds": [
-        "ncha-third-037",
-        "ncha-third-040",
-        "ncha-third-054",
-        "ncha-third-085",
-        "ncha-third-086",
-        "ncha-third-087",
-        "ncha-third-088",
-        "ncha-first-core-033",
-        "ncha-first-core-034"
+        "129",
+        "132",
+        "146",
+        "177",
+        "178",
+        "179",
+        "180",
+        "219",
+        "220",
+        "237"
       ],
-      "artifactCount": 9,
+      "artifactCount": 10,
       "periods": [
         "五代",
         "唐",
+        "西周",
         "西汉"
       ],
-      "materials": [
-        "玉",
-        "玛瑙",
-        "银",
-        "陶瓷"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "湖北省博物馆",
       "name": "湖北省博物馆",
-      "description": "湖北省博物馆馆藏文物数据库，当前收录 8 件文物。",
+      "description": "湖北省博物馆馆藏文物数据库，当前收录 9 件文物。",
       "location": "湖北省",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/20230208_Bronze_sword_used_by_King_Goujian_of_Yue_02.jpg",
       "artifactIds": [
-        "ncha-third-011",
-        "ncha-third-053",
-        "ncha-third-064",
-        "ncha-third-092",
-        "ncha-first-core-021",
-        "ncha-first-core-022",
-        "ncha-first-core-023",
-        "ncha-first-core-024"
+        "103",
+        "145",
+        "156",
+        "184",
+        "207",
+        "208",
+        "209",
+        "210",
+        "233"
       ],
-      "artifactCount": 8,
+      "artifactCount": 9,
       "periods": [
         "商",
         "战国",
         "春秋",
         "秦"
       ],
-      "materials": [
-        "木、漆",
-        "玉",
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
-      "id": "湖南省博物馆",
-      "name": "湖南省博物馆",
-      "description": "湖南省博物馆馆藏文物数据库，当前收录 7 件文物。",
-      "location": "湖南省",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Da_He_ding_side.jpg/960px-Da_He_ding_side.jpg",
+      "id": "上海博物馆",
+      "name": "上海博物馆",
+      "description": "上海博物馆馆藏文物数据库，当前收录 8 件文物。",
+      "location": "上海市",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/%E5%95%86%E9%9E%85%E6%96%B9%E5%8D%87_163919.jpg/960px-%E5%95%86%E9%9E%85%E6%96%B9%E5%8D%87_163919.jpg",
       "artifactIds": [
-        "ncha-third-004",
-        "ncha-third-036",
-        "ncha-third-056",
-        "ncha-third-065",
-        "ncha-third-066",
-        "ncha-third-094",
-        "ncha-first-core-040"
+        "104",
+        "173",
+        "183",
+        "194",
+        "228",
+        "259",
+        "267",
+        "274"
       ],
-      "artifactCount": 7,
+      "artifactCount": 8,
       "periods": [
-        "唐",
-        "商",
+        "北宋",
+        "唐朝",
         "战国",
-        "西晋",
-        "西汉"
+        "明",
+        "西周"
       ],
-      "materials": [
-        "帛",
-        "玉",
-        "陶瓷",
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.128Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "宝鸡青铜器博物院",
       "name": "宝鸡青铜器博物院",
       "description": "宝鸡青铜器博物院馆藏文物数据库，当前收录 4 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Hu_Gui_02.jpg",
       "artifactIds": [
-        "ncha-third-009",
-        "ncha-third-010",
-        "ncha-first-core-030",
-        "ncha-first-core-031"
+        "101",
+        "102",
+        "216",
+        "217"
       ],
       "artifactCount": 4,
       "periods": [
-        "西周"
+        "西周",
+        "西周早期"
       ],
-      "materials": [
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
-      "id": "上海博物馆",
-      "name": "上海博物馆",
-      "description": "上海博物馆馆藏文物数据库，当前收录 4 件文物。",
-      "location": "上海市",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/%E5%95%86%E9%9E%85%E6%96%B9%E5%8D%87_163919.jpg/960px-%E5%95%86%E9%9E%85%E6%96%B9%E5%8D%87_163919.jpg",
+      "id": "广汉三星堆博物馆",
+      "name": "广汉三星堆博物馆",
+      "description": "广汉三星堆博物馆馆藏文物数据库，当前收录 4 件文物。",
+      "location": "四川省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/%E4%B8%89%E6%98%9F%E5%A0%86%E5%87%BA%E5%9C%9F%E9%9D%92%E9%93%9C%E5%A4%A7%E7%AB%8B%E4%BA%BA%E5%83%8F%2C_2017-09-17.jpg/960px-%E4%B8%89%E6%98%9F%E5%A0%86%E5%87%BA%E5%9C%9F%E9%9D%92%E9%93%9C%E5%A4%A7%E7%AB%8B%E4%BA%BA%E5%83%8F%2C_2017-09-17.jpg",
       "artifactIds": [
-        "ncha-third-012",
-        "ncha-third-081",
-        "ncha-third-091",
-        "ncha-first-core-008"
+        "97",
+        "151",
+        "213",
+        "234"
       ],
       "artifactCount": 4,
       "periods": [
-        "战国",
-        "明",
-        "西周"
+        "商",
+        "未知"
       ],
-      "materials": [
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "浙江省博物馆",
@@ -369,64 +403,54 @@
       "location": "浙江省",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/%E8%89%AF%E6%B8%9A%E7%A5%9E%E4%BA%BA%E5%85%BD%E9%9D%A2%E7%BA%B9%E7%8E%89%E9%92%BA%2C_2023-09-26_01.jpg/960px-%E8%89%AF%E6%B8%9A%E7%A5%9E%E4%BA%BA%E5%85%BD%E9%9D%A2%E7%BA%B9%E7%8E%89%E9%92%BA%2C_2023-09-26_01.jpg",
       "artifactIds": [
-        "ncha-third-050",
-        "ncha-third-071",
-        "ncha-first-core-010",
-        "ncha-first-core-011"
+        "142",
+        "163",
+        "196",
+        "197"
       ],
       "artifactCount": 4,
       "periods": [
         "新石器时代"
       ],
-      "materials": [
-        "木胎漆器",
-        "玉",
-        "陶"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
-      "id": "广汉三星堆博物馆",
-      "name": "广汉三星堆博物馆",
-      "description": "广汉三星堆博物馆馆藏文物数据库，当前收录 3 件文物。",
-      "location": "四川省",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/%E4%B8%89%E6%98%9F%E5%A0%86%E5%87%BA%E5%9C%9F%E9%9D%92%E9%93%9C%E5%A4%A7%E7%AB%8B%E4%BA%BA%E5%83%8F%2C_2017-09-17.jpg/960px-%E4%B8%89%E6%98%9F%E5%A0%86%E5%87%BA%E5%9C%9F%E9%9D%92%E9%93%9C%E5%A4%A7%E7%AB%8B%E4%BA%BA%E5%83%8F%2C_2017-09-17.jpg",
+      "id": "法门寺博物馆",
+      "name": "法门寺博物馆",
+      "description": "法门寺博物馆馆藏文物数据库，当前收录 3 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/44/Famen_Si_May_2007_052.jpg",
       "artifactIds": [
-        "ncha-third-005",
-        "ncha-third-059",
-        "ncha-first-core-027"
+        "221",
+        "240",
+        "241"
       ],
       "artifactCount": 3,
       "periods": [
-        "商"
+        "唐"
       ],
-      "materials": [
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.128Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "河北博物院",
       "name": "河北博物院",
       "description": "河北博物院馆藏文物数据库，当前收录 3 件文物。",
       "location": "",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/57/Bronze_Square_Table_Stand_Decorated_with_Dragon-and-phoenix.jpg",
+      "imageUrl": "/artifact-images/ncha-first-core-037-112281c1.jpg",
       "artifactIds": [
-        "ncha-first-core-037",
-        "ncha-first-core-038",
-        "ncha-first-core-039"
+        "223",
+        "224",
+        "225"
       ],
       "artifactCount": 3,
       "periods": [
         "战国",
         "西汉"
       ],
-      "materials": [
-        "玉、金丝",
-        "青铜、金银",
-        "青铜鎏金"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "河南博物院",
@@ -435,42 +459,76 @@
       "location": "河南省",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/20260408_White-Glazed_and_Green-Painted_Vase_with_Long_Neck.jpg/960px-20260408_White-Glazed_and_Green-Painted_Vase_with_Long_Neck.jpg",
       "artifactIds": [
-        "ncha-third-029",
-        "ncha-first-core-014",
-        "ncha-first-core-015"
+        "121",
+        "200",
+        "201"
       ],
       "artifactCount": 3,
       "periods": [
         "北齐",
-        "春秋"
+        "春秋",
+        "春秋中期"
       ],
-      "materials": [
-        "陶瓷",
-        "青铜"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "南京博物院",
+      "name": "南京博物院",
+      "description": "南京博物院馆藏文物数据库，当前收录 3 件文物。",
+      "location": "江苏省",
+      "imageUrl": "",
+      "artifactIds": [
+        "105",
+        "119",
+        "253"
       ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "artifactCount": 3,
+      "periods": [
+        "南朝",
+        "战国",
+        "西晋"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "山西博物院",
       "name": "山西博物院",
       "description": "山西博物院馆藏文物数据库，当前收录 3 件文物。",
       "location": "山西省",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Shanxi_Museum_-_dragon-shaped_gong.jpg",
       "artifactIds": [
-        "ncha-third-003",
-        "ncha-third-008",
-        "ncha-third-052"
+        "95",
+        "100",
+        "144"
       ],
       "artifactCount": 3,
       "periods": [
         "商",
         "西周"
       ],
-      "materials": [
-        "玉",
-        "青铜"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "西安碑林博物馆",
+      "name": "西安碑林博物馆",
+      "description": "西安碑林博物馆馆藏文物数据库，当前收录 3 件文物。",
+      "location": "陕西省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/%E6%98%AD%E9%99%B5%E5%85%AD%E9%AA%8F-%E8%A5%BF%E5%AE%89%E7%A2%91%E6%9E%97%E7%9F%B3%E5%88%BB%E8%89%BA%E6%9C%AF%E5%AE%A4_2023-09-29_01.jpg",
+      "artifactIds": [
+        "171",
+        "218",
+        "239"
       ],
-      "updatedAt": "2026-06-10T05:48:59.128Z"
+      "artifactCount": 3,
+      "periods": [
+        "唐",
+        "唐景云年间"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "安徽省文物考古研究所",
@@ -479,15 +537,15 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-067",
-        "ncha-third-068"
+        "159",
+        "160"
       ],
       "artifactCount": 2,
       "periods": [
         "三国吴"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "定州市博物馆",
@@ -496,61 +554,70 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-044",
-        "ncha-third-055"
+        "136",
+        "147"
       ],
       "artifactCount": 2,
       "periods": [
         "东汉",
         "北宋"
       ],
-      "materials": [
-        "玉",
-        "陶瓷"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "甘肃省博物馆",
       "name": "甘肃省博物馆",
       "description": "甘肃省博物馆馆藏文物数据库，当前收录 2 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/20210529_Man-shaped_color_pottery_vase_on_display_at_Zhengzhou_Museum.jpg",
       "artifactIds": [
-        "ncha-third-022",
-        "ncha-first-core-028"
+        "114",
+        "214"
       ],
       "artifactCount": 2,
       "periods": [
         "东汉",
         "新石器时代"
       ],
-      "materials": [
-        "陶瓷",
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
-      "id": "南京博物院",
-      "name": "南京博物院",
-      "description": "南京博物院馆藏文物数据库，当前收录 2 件文物。",
-      "location": "江苏省",
-      "imageUrl": "",
+      "id": "杭州博物馆",
+      "name": "杭州博物馆",
+      "description": "杭州博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Crystal_Cup%28Warring_States_Period%29_in_Hangzhou_Museum.JPG",
       "artifactIds": [
-        "ncha-third-013",
-        "ncha-third-027"
+        "199",
+        "229"
       ],
       "artifactCount": 2,
       "periods": [
         "战国",
-        "西晋"
+        "戰國"
       ],
-      "materials": [
-        "陶瓷",
-        "青铜"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "河北省文物研究所",
+      "name": "河北省文物研究所",
+      "description": "河北省文物研究所馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "154",
+        "243"
       ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "artifactCount": 2,
+      "periods": [
+        "战国",
+        "西汉"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "南京市博物馆",
@@ -559,38 +626,85 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-026",
-        "ncha-third-047"
+        "118",
+        "139"
       ],
       "artifactCount": 2,
       "periods": [
         "三国吴",
         "元"
       ],
-      "materials": [
-        "陶瓷"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "南越王博物院",
+      "name": "南越王博物院",
+      "description": "南越王博物院馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Bronze%20screen%20parts%20at%20Nanyue%20King%20Museum%2005.jpg",
+      "artifactIds": [
+        "244",
+        "245"
       ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "artifactCount": 2,
+      "periods": [
+        "西汉"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "秦始皇兵马俑博物馆",
+      "name": "秦始皇兵马俑博物馆",
+      "description": "秦始皇兵马俑博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "location": "陕西省",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e7/RIMG0073.jpg",
+      "artifactIds": [
+        "215",
+        "236"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "秦"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "山西省艺术博物馆-纯阳宫",
+      "name": "山西省艺术博物馆（纯阳宫）",
+      "description": "山西省艺术博物馆（纯阳宫）馆藏文物数据库，当前收录 2 件文物。",
+      "location": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E5%A4%AA%E5%8E%9F%E7%BA%AF%E9%98%B3%E5%AE%AB%E5%94%90%E4%BB%A3%E6%AD%A6%E5%91%A8%E5%A4%A9%E6%8E%88%E4%BA%8C%E5%B9%B4%E6%B6%85%E6%A7%83%E5%8F%98%E7%9B%B8%E7%A2%91-%E7%A6%81%E6%AD%A2%E5%87%BA%E5%A2%83%E5%B1%95%E8%A7%88%E6%96%87%E7%89%A9%E4%B9%8B%E4%B8%80.jpg",
+      "artifactIds": [
+        "231",
+        "232"
+      ],
+      "artifactCount": 2,
+      "periods": [
+        "唐"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "苏州博物馆",
       "name": "苏州博物馆",
       "description": "苏州博物馆馆藏文物数据库，当前收录 2 件文物。",
       "location": "江苏省",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E8%99%8E%E4%B8%98%E5%87%BA%E5%9C%9F%E4%BA%94%E4%BB%A3%E8%B6%8A%E7%AA%91%E8%8E%B2%E8%8A%B1%E5%BC%8F%E6%89%98%E7%9B%8F.jpg",
       "artifactIds": [
-        "ncha-third-039",
-        "ncha-third-069"
+        "131",
+        "161"
       ],
       "artifactCount": 2,
       "periods": [
         "五代",
         "北宋"
       ],
-      "materials": [
-        "陶瓷"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "天津博物馆",
@@ -599,38 +713,16 @@
       "location": "天津市",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/%E7%99%BD%E9%87%89%E9%BE%99%E6%9F%84%E5%8F%8C%E8%81%94%E4%BC%A0%E7%93%B6.png",
       "artifactIds": [
-        "ncha-third-030",
-        "ncha-first-core-009"
+        "122",
+        "195"
       ],
       "artifactCount": 2,
       "periods": [
         "西周",
         "隋"
       ],
-      "materials": [
-        "陶瓷",
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
-    },
-    {
-      "id": "西安碑林博物馆",
-      "name": "西安碑林博物馆",
-      "description": "西安碑林博物馆馆藏文物数据库，当前收录 2 件文物。",
-      "location": "陕西省",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/%E6%98%AD%E9%99%B5%E5%85%AD%E9%AA%8F-%E8%A5%BF%E5%AE%89%E7%A2%91%E6%9E%97%E7%9F%B3%E5%88%BB%E8%89%BA%E6%9C%AF%E5%AE%A4_2023-09-29_01.jpg",
-      "artifactIds": [
-        "ncha-third-079",
-        "ncha-first-core-032"
-      ],
-      "artifactCount": 2,
-      "periods": [
-        "唐"
-      ],
-      "materials": [
-        "石"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "新疆维吾尔自治区文物考古研究所",
@@ -639,18 +731,16 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-074",
-        "ncha-first-core-036"
+        "166",
+        "222"
       ],
       "artifactCount": 2,
       "periods": [
         "汉",
         "汉晋"
       ],
-      "materials": [
-        "锦"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "扬州博物馆",
@@ -659,18 +749,16 @@
       "location": "江苏省",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-034",
-        "ncha-third-048"
+        "126",
+        "140"
       ],
       "artifactCount": 2,
       "periods": [
         "元",
         "唐"
       ],
-      "materials": [
-        "陶瓷"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国国家图书馆",
@@ -679,36 +767,33 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-083",
-        "ncha-third-084"
+        "175",
+        "176"
       ],
       "artifactCount": 2,
       "periods": [
         "北宋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国社会科学院考古研究所",
       "name": "中国社会科学院考古研究所",
       "description": "中国社会科学院考古研究所馆藏文物数据库，当前收录 2 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E9%99%B6%E5%BD%A9%E7%BB%98%E9%BE%99%E7%BA%B9%E7%9B%98%2C_2024-06-22_01.jpg",
       "artifactIds": [
-        "ncha-third-021",
-        "ncha-first-core-007"
+        "113",
+        "193"
       ],
       "artifactCount": 2,
       "periods": [
         "商",
         "新石器时代"
       ],
-      "materials": [
-        "象牙、绿松石",
-        "陶瓷"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "朱然家族墓地博物馆",
@@ -717,36 +802,31 @@
       "location": "",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Geta_Unearthed_from_the_Tomb_of_Zhu_Ran_2012-05.JPG",
       "artifactIds": [
-        "ncha-first-core-017",
-        "ncha-first-core-018"
+        "203",
+        "204"
       ],
       "artifactCount": 2,
       "periods": [
-        "三国吴"
+        "三国（吴）"
       ],
-      "materials": [
-        "木、漆",
-        "漆"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "安徽博物院",
       "name": "安徽博物院",
       "description": "安徽博物院馆藏文物数据库，当前收录 1 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/%E9%93%B8%E5%AE%A2%E5%A4%A7%E9%BC%8E2.jpg",
       "artifactIds": [
-        "ncha-first-core-016"
+        "202"
       ],
       "artifactCount": 1,
       "periods": [
-        "战国"
+        "戰國"
       ],
-      "materials": [
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "成都金沙遗址博物馆",
@@ -755,32 +835,30 @@
       "location": "",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/%E9%87%91%E6%B2%99%E9%81%97%E5%9D%80%E5%A4%AA%E9%98%B3%E7%A5%9E%E9%B8%9F_2018.jpg",
       "artifactIds": [
-        "ncha-third-058"
+        "150"
       ],
       "artifactCount": 1,
       "periods": [
         "商"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "大同市博物馆",
       "name": "大同市博物馆",
       "description": "大同市博物馆馆藏文物数据库，当前收录 1 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/%E5%BD%A9%E7%BB%98%E4%BA%BA%E7%89%A9%E6%95%85%E4%BA%8B%E6%BC%86%E5%B1%8F%2C_2024-01-06.jpg",
       "artifactIds": [
-        "ncha-first-core-019"
+        "205"
       ],
       "artifactCount": 1,
       "periods": [
         "北魏"
       ],
-      "materials": [
-        "木胎漆器"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "敦煌研究院",
@@ -789,84 +867,46 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-075"
+        "167"
       ],
       "artifactCount": 1,
       "periods": [
         "北魏"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "二里头夏都遗址博物馆",
       "name": "二里头夏都遗址博物馆",
       "description": "二里头夏都遗址博物馆馆藏文物数据库，当前收录 1 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/20250529_Seven-hole_jade_knife_in_the_Erlitou_Site_Museum_of_the_Xia_Capital.jpg",
       "artifactIds": [
-        "ncha-third-051"
+        "143"
       ],
       "artifactCount": 1,
       "periods": [
         "夏"
       ],
-      "materials": [
-        "玉"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
-      "id": "法门寺博物馆",
-      "name": "法门寺博物馆",
-      "description": "法门寺博物馆馆藏文物数据库，当前收录 1 件文物。",
-      "location": "",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/44/Famen_Si_May_2007_052.jpg",
-      "artifactIds": [
-        "ncha-first-core-035"
-      ],
-      "artifactCount": 1,
-      "periods": [
-        "唐"
-      ],
-      "materials": [
-        "金银、宝石"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
-    },
-    {
-      "id": "杭州博物馆",
-      "name": "杭州博物馆",
-      "description": "杭州博物馆馆藏文物数据库，当前收录 1 件文物。",
-      "location": "",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Crystal_Cup%28Warring_States_Period%29_in_Hangzhou_Museum.JPG",
-      "artifactIds": [
-        "ncha-first-core-013"
-      ],
-      "artifactCount": 1,
-      "periods": [
-        "战国"
-      ],
-      "materials": [
-        "水晶"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
-    },
-    {
-      "id": "河北省文物研究所",
-      "name": "河北省文物研究所",
-      "description": "河北省文物研究所馆藏文物数据库，当前收录 1 件文物。",
+      "id": "贵州省博物馆",
+      "name": "贵州省博物馆",
+      "description": "贵州省博物馆馆藏文物数据库，当前收录 1 件文物。",
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-062"
+        "266"
       ],
       "artifactCount": 1,
       "periods": [
-        "西汉"
+        "北宋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "湖南大学",
@@ -875,14 +915,14 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-093"
+        "185"
       ],
       "artifactCount": 1,
       "periods": [
         "秦"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "吉林省博物院",
@@ -891,32 +931,46 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-045"
+        "137"
       ],
       "artifactCount": 1,
       "periods": [
         "北宋"
       ],
-      "materials": [
-        "陶瓷"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "江西省博物馆",
+      "name": "江西省博物馆",
+      "description": "江西省博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "江西省",
+      "imageUrl": "",
+      "artifactIds": [
+        "252"
       ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "artifactCount": 1,
+      "periods": [
+        "元"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "荆门市博物馆",
       "name": "荆门市博物馆",
       "description": "荆门市博物馆馆藏文物数据库，当前收录 1 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E9%83%AD%E5%BA%97%E6%A5%9A%E7%AE%80%E3%80%8A%E8%80%81%E5%AD%90%E7%94%B2%E3%80%8B.jpg",
       "artifactIds": [
-        "ncha-third-090"
+        "182"
       ],
       "artifactCount": 1,
       "periods": [
         "战国"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "辽宁省考古研究所",
@@ -925,52 +979,110 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-first-core-025"
+        "211"
       ],
       "artifactCount": 1,
       "periods": [
-        "新石器时代"
+        "新石器时代晚期"
       ],
-      "materials": [
-        "陶"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "临安博物馆",
       "name": "临安博物馆",
       "description": "临安博物馆馆藏文物数据库，当前收录 1 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E5%94%90%E8%B6%8A%E7%AA%91%E9%9D%92%E9%87%89%E8%A4%90%E5%BD%A9%E4%BA%91%E7%BA%B9%E4%BA%94%E8%B6%B3%E7%82%89%2C_2017-05-20_01.jpg",
       "artifactIds": [
-        "ncha-third-035"
+        "127"
       ],
       "artifactCount": 1,
       "periods": [
         "唐"
       ],
-      "materials": [
-        "陶瓷"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
-      "id": "秦始皇兵马俑博物馆",
-      "name": "秦始皇兵马俑博物馆",
-      "description": "秦始皇兵马俑博物馆馆藏文物数据库，当前收录 1 件文物。",
-      "location": "陕西省",
-      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e7/RIMG0073.jpg",
+      "id": "茂陵博物馆",
+      "name": "茂陵博物馆",
+      "description": "茂陵博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E8%8C%82%E9%99%B5%E9%A9%AC%E8%B8%8F%E5%8C%88%E5%A5%B4%E7%9F%B3%E9%9B%95.JPG",
       "artifactIds": [
-        "ncha-first-core-029"
+        "238"
       ],
       "artifactCount": 1,
       "periods": [
-        "秦"
+        "西汉"
       ],
-      "materials": [
-        "青铜"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "绵阳市博物馆",
+      "name": "绵阳市博物馆",
+      "description": "绵阳市博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "235"
       ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "artifactCount": 1,
+      "periods": [
+        "东汉"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "南京大学",
+      "name": "南京大学",
+      "description": "南京大学馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "275"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "五代"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "宁夏文物考古研究所",
+      "name": "宁夏文物考古研究所",
+      "description": "宁夏文物考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E5%90%89%E7%A5%A5%E9%81%8D%E8%87%B3%E5%8F%A3%E5%92%8C%E6%9C%AC%E7%BB%AD%E5%B0%81%E9%9D%A2.jpg",
+      "artifactIds": [
+        "251"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "西夏"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "青海省文物考古研究所",
+      "name": "青海省文物考古研究所",
+      "description": "青海省文物考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "",
+      "artifactIds": [
+        "250"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "北朝"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "清华大学",
@@ -979,14 +1091,14 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-089"
+        "181"
       ],
       "artifactCount": 1,
       "periods": [
         "战国"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "山东省文物考古研究所",
@@ -995,34 +1107,30 @@
       "location": "",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Painted_Pottery_Dou_with_Octagram_Design.jpg",
       "artifactIds": [
-        "ncha-third-023"
+        "115"
       ],
       "artifactCount": 1,
       "periods": [
         "新石器时代"
       ],
-      "materials": [
-        "陶瓷"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "山西省考古研究所",
       "name": "山西省考古研究所",
       "description": "山西省考古研究所馆藏文物数据库，当前收录 1 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Riders%20on%20Horseback%2C%20Northern%20Qi%20Dynasty.jpg",
       "artifactIds": [
-        "ncha-first-core-020"
+        "206"
       ],
       "artifactCount": 1,
       "periods": [
         "北齐"
       ],
-      "materials": [
-        "壁画"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "首都博物馆",
@@ -1031,16 +1139,14 @@
       "location": "北京市",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/25/Bo_Ju_Li.jpg",
       "artifactIds": [
-        "ncha-third-007"
+        "99"
       ],
       "artifactCount": 1,
       "periods": [
         "西周"
       ],
-      "materials": [
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.128Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "西安博物院",
@@ -1049,16 +1155,14 @@
       "location": "",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-015"
+        "107"
       ],
       "artifactCount": 1,
       "periods": [
         "西汉"
       ],
-      "materials": [
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "西藏博物馆",
@@ -1067,16 +1171,30 @@
       "location": "西藏自治区",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-057"
+        "149"
       ],
       "artifactCount": 1,
       "periods": [
         "元"
       ],
-      "materials": [
-        "玉"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "新疆考古研究所",
+      "name": "新疆考古研究所",
+      "description": "新疆考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Five%20stars%20rising%20east%20benefit%20China.jpg",
+      "artifactIds": [
+        "242"
       ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "artifactCount": 1,
+      "periods": [
+        "东汉至魏、晋"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "新疆维吾尔自治区博物馆",
@@ -1085,50 +1203,46 @@
       "location": "新疆维吾尔自治区",
       "imageUrl": "",
       "artifactIds": [
-        "ncha-third-076"
+        "168"
       ],
       "artifactCount": 1,
       "periods": [
         "北朝"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "云南省博物馆",
       "name": "云南省博物馆",
       "description": "云南省博物馆馆藏文物数据库，当前收录 1 件文物。",
       "location": "云南省",
-      "imageUrl": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E6%9D%80%E4%BA%BA%E7%A5%AD%E6%9F%B1%E9%93%9C%E8%B4%AE%E8%B4%9D%E5%99%A8.jpg",
       "artifactIds": [
-        "ncha-third-016"
+        "108"
       ],
       "artifactCount": 1,
       "periods": [
         "西汉"
       ],
-      "materials": [
-        "青铜"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "浙江省文物考古研究所",
       "name": "浙江省文物考古研究所",
       "description": "浙江省文物考古研究所馆藏文物数据库，当前收录 1 件文物。",
       "location": "",
-      "imageUrl": "",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Jade_Cong_King%2C_2018-06-09_01.jpg",
       "artifactIds": [
-        "ncha-first-core-012"
+        "198"
       ],
       "artifactCount": 1,
       "periods": [
         "新石器时代"
       ],
-      "materials": [
-        "玉"
-      ],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "镇江博物馆",
@@ -1137,14 +1251,46 @@
       "location": "",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Guifu_Lunyu_Yuzhu_Jiuchoutong_-_150725095.JPG/960px-Guifu_Lunyu_Yuzhu_Jiuchoutong_-_150725095.JPG",
       "artifactIds": [
-        "ncha-third-063"
+        "155"
       ],
       "artifactCount": 1,
       "periods": [
         "唐"
       ],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.129Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "中国国家博物馆故宫博物院",
+      "name": "中国国家博物馆故宫博物院",
+      "description": "中国国家博物馆故宫博物院馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Empress%20crown%2C%20NMC%2C%202016-09-09%2001.jpg",
+      "artifactIds": [
+        "227"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "明"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
+    },
+    {
+      "id": "淄博市博物馆",
+      "name": "淄博市博物馆",
+      "description": "淄博市博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "location": "",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Rectangle%20dragon-veins%20copper%20mirror.jpg",
+      "artifactIds": [
+        "230"
+      ],
+      "artifactCount": 1,
+      "periods": [
+        "西汉"
+      ],
+      "materials": [],
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "爱辉历史陈列馆",
@@ -1156,7 +1302,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "安徽省博物馆",
@@ -1168,7 +1314,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "八路军太行纪念馆",
@@ -1180,7 +1326,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "北京鲁迅博物馆",
@@ -1192,7 +1338,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "北京天文馆",
@@ -1204,7 +1350,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "北京自然博物馆",
@@ -1216,7 +1362,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "成都杜甫草堂博物馆",
@@ -1228,7 +1374,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "成都武侯祠博物馆",
@@ -1240,7 +1386,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "重庆中国三峡博物馆",
@@ -1252,7 +1398,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "大庆铁人王进喜纪念馆",
@@ -1264,7 +1410,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "邓小平故居陈列馆",
@@ -1276,7 +1422,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "东北烈士纪念馆",
@@ -1288,7 +1434,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "福建博物院",
@@ -1300,7 +1446,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "古田会议纪念馆",
@@ -1312,7 +1458,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "固原博物馆",
@@ -1324,7 +1470,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "广东省博物馆",
@@ -1336,7 +1482,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "广西壮族自治区博物馆",
@@ -1348,7 +1494,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "汉阳陵博物馆",
@@ -1360,7 +1506,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "河北省博物馆",
@@ -1372,7 +1518,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "吉林省自然博物馆",
@@ -1384,19 +1530,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
-    },
-    {
-      "id": "江西省博物馆",
-      "name": "江西省博物馆",
-      "description": "江西省博物馆是对应江西省的省级综合性博物馆。",
-      "location": "江西省",
-      "imageUrl": "",
-      "artifactIds": [],
-      "artifactCount": 0,
-      "periods": [],
-      "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "荆州博物馆",
@@ -1408,7 +1542,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "井冈山革命博物馆",
@@ -1420,7 +1554,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "抗美援朝纪念馆",
@@ -1432,7 +1566,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "刘少奇故居纪念馆",
@@ -1444,7 +1578,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "旅顺博物馆",
@@ -1456,7 +1590,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "洛阳博物馆",
@@ -1468,7 +1602,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "南昌八一起义纪念馆",
@@ -1480,7 +1614,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "南通博物苑",
@@ -1492,7 +1626,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "南阳汉画馆",
@@ -1504,7 +1638,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "内蒙古博物院",
@@ -1516,7 +1650,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "侵华日军南京大屠杀遇难同胞纪念馆",
@@ -1528,7 +1662,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "青岛市博物馆",
@@ -1540,7 +1674,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "青州市博物馆",
@@ -1552,7 +1686,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "泉州海外交通史博物馆",
@@ -1564,7 +1698,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "瑞金中央革命根据地纪念馆",
@@ -1576,7 +1710,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "厦门华侨博物院",
@@ -1588,7 +1722,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "上海鲁迅纪念馆",
@@ -1600,7 +1734,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "韶山毛泽东故居纪念馆",
@@ -1612,7 +1746,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "沈阳-九-一八-历史博物馆",
@@ -1624,7 +1758,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "孙中山故居纪念馆",
@@ -1636,7 +1770,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "天津自然博物馆",
@@ -1648,7 +1782,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "武汉市博物馆",
@@ -1660,7 +1794,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "西安半坡博物馆",
@@ -1672,7 +1806,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "西柏坡纪念馆",
@@ -1684,7 +1818,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "西汉南越王博物馆",
@@ -1696,7 +1830,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "延安革命纪念馆",
@@ -1708,7 +1842,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "云南民族博物馆",
@@ -1720,7 +1854,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "郑州博物馆",
@@ -1732,7 +1866,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中共一大会址纪念馆",
@@ -1744,7 +1878,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国地质博物馆",
@@ -1756,7 +1890,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国海军博物馆",
@@ -1768,7 +1902,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国航空博物馆",
@@ -1780,7 +1914,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国甲午战争博物馆",
@@ -1792,7 +1926,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国科学技术馆",
@@ -1804,7 +1938,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国煤炭博物馆",
@@ -1816,7 +1950,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国闽台缘博物馆",
@@ -1828,7 +1962,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国人民革命军事博物馆",
@@ -1840,7 +1974,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "中国人民抗日战争纪念馆",
@@ -1852,7 +1986,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "周恩来邓颖超纪念馆",
@@ -1864,7 +1998,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "周口店猿人遗址博物馆",
@@ -1876,7 +2010,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "自贡恐龙博物馆",
@@ -1888,7 +2022,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     },
     {
       "id": "遵义会议纪念馆",
@@ -1900,7 +2034,7 @@
       "artifactCount": 0,
       "periods": [],
       "materials": [],
-      "updatedAt": "2026-06-10T05:48:59.131Z"
+      "updatedAt": "2026-06-13T11:46:31.423Z"
     }
   ]
 }

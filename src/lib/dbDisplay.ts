@@ -42,7 +42,11 @@ export const ARTIFACT_FIELD_CONFIG = {
     keys: ["museum", "museumName", "博物馆", "所属博物馆", "馆藏单位", "收藏单位", "馆名"],
   },
   era: { id: "era", label: "朝代", keys: ["朝代", "dynasty", "时代", "period", "era", "年代"] },
-  imageUrl: { id: "imageUrl", label: "图片链接", keys: ["imageUrl", "image_url", "image", "图片", "图片链接", "thumbnail"] },
+  imageUrl: {
+    id: "imageUrl",
+    label: "图片链接",
+    keys: ["localImageUrl", "local_image_url", "imageUrl", "image_url", "image", "图片", "图片链接", "thumbnail"],
+  },
   category: { id: "category", label: "类别", keys: ["category", "类别", "文物类别", "类型", "classification"] },
   level: { id: "level", label: "等级", keys: ["level", "等级", "级别", "文物等级"] },
   material: { id: "material", label: "材质", keys: ["material", "材质", "medium", "质地", "材料"] },
@@ -77,8 +81,11 @@ export function artifactEraRaw(artifact: unknown): unknown {
   return coalesceArtifactField(artifact, ARTIFACT_FIELD_CONFIG.era.keys);
 }
 
-export function artifactImageUrlRaw(artifact: unknown): unknown {
-  return coalesceArtifactField(artifact, ARTIFACT_FIELD_CONFIG.imageUrl.keys);
+export function artifactImageUrlRaw(artifact: unknown, variant: "full" | "thumbnail" = "full"): unknown {
+  const imageKeys = variant === "thumbnail"
+    ? ["localThumbnailUrl", "local_thumbnail_url", "thumbnail", "localImageUrl", "local_image_url", "imageUrl", "image_url", "image", "图片", "图片链接"]
+    : ARTIFACT_FIELD_CONFIG.imageUrl.keys;
+  return coalesceArtifactField(artifact, imageKeys);
 }
 
 export function artifactMuseumRaw(artifact: unknown): unknown {

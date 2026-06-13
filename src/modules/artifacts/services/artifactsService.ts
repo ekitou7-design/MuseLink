@@ -29,7 +29,7 @@ export async function fetchMergedArtifacts({
   signal?: AbortSignal;
   errorPrefix?: string;
 } = {}) {
-  const response = await fetch(apiUrl(`/api/artifacts?source=merged&limit=${limit}`), { signal });
+  const response = await fetch(apiUrl(`/api/artifacts?limit=${limit}`), { signal });
   if (!response.ok) {
     throw new Error(`${errorPrefix}: ${response.status}`);
   }

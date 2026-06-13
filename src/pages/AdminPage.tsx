@@ -1,10 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import type { Artifact } from "../types";
 import { AuthService } from "../auth/AuthService";
 import { UserSession } from "../auth/UserSession";
+import { apiFetch } from "../lib/api";
 import { getAdminStats, getAdminUsers, type AdminStatsResponse, type AdminUserSummary } from "../lib/adminClient";
 import { me } from "../lib/authClient";
 import { ForbiddenPage } from "./ForbiddenPage";
 import { goBackOrNavigate, navigate } from "../router/router";
+import { SafeImage } from "../components/SafeImage";
+import { artifactImageUrlRaw } from "../lib/dbDisplay";
+
+type AdminTab = "artifacts" | "import" | "users";
+
+type ArtifactFormState = {
+  id?: string;
+  name: string;
+  museum: string;
+  dynasty: string;
+  category: string;
+  shortIntro: string;
+  description: string;
+  imageUrl: string;
+  sourceUrl: string;
+  tags: string;
+  material: string;
+  dimensions: string;
+  level: string;
+  remarks: string;
+};
+
+const emptyForm: ArtifactFormState = {
+  name: "",
+  museum: "",
+  dynasty: "",
+  category: "",
+  shortIntro: "",
+  description: "",
+  imageUrl: "",
+  sourceUrl: "",
+  tags: "",
+  material: "",
+  dimensions: "",
+  level: "",
+  remarks: "",
+};
 
 const genderLabels: Record<AdminUserSummary["gender"], string> = {
   male: "男",
@@ -13,20 +52,94 @@ const genderLabels: Record<AdminUserSummary["gender"], string> = {
   secret: "保密",
 };
 
+function text(value: unknown) {
+  if (value === null || value === undefined) return "";
+  return String(value);
+}
+
+function tagNames(tags: Artifact["tags"] | undefined) {
+  if (!Array.isArray(tags)) return "";
+  return tags
+    .map((tag) => (typeof tag === "string" ? tag : tag.name))
+    .filter(Boolean)
+    .join("，");
+}
+
+function attributeValue(artifact: Artifact, name: string) {
+  const groups = Array.isArray(artifact.attributes) ? artifact.attributes : [];
+  for (const group of groups) {
+    const item = group.items.find((entry) => entry.name === name);
+    if (item?.value) return item.value;
+  }
+  return "";
+}
+
+function formFromArtifact(artifact: Artifact): ArtifactFormState {
+  return {
+    id: text(artifact.id),
+    name: text(artifact.name),
+    museum: text(artifact.museumName || artifact.museum),
+    dynasty: text(artifact.dynasty || artifact.period),
+    category: text(artifact.category),
+    shortIntro: text(artifact.shortIntro),
+    description: text(artifact.description),
+    imageUrl: text(artifact.imageUrl || (artifact as any).image_url),
+    sourceUrl: text(artifact.sourceUrl || (artifact as any).source_url),
+    tags: tagNames(artifact.tags),
+    material: text(artifact.material || attributeValue(artifact, "材质")),
+    dimensions: text(artifact.dimensions || attributeValue(artifact, "尺寸")),
+    level: text(artifact.level || attributeValue(artifact, "等级")),
+    remarks: text(artifact.remarks || attributeValue(artifact, "备注")),
+  };
+}
+
+function buildArtifactPayload(form: ArtifactFormState) {
+  const attributes = [
+    { group: "基础信息", items: [{ name: "材质", value: form.material }, { name: "尺寸", value: form.dimensions }, { name: "等级", value: form.level }] },
+    { group: "其他信息", items: [{ name: "备注", value: form.remarks }] },
+  ].map((group) => ({
+    ...group,
+    items: group.items.filter((item) => item.value.trim()),
+  })).filter((group) => group.items.length > 0);
+
+  return {
+    name: form.name.trim(),
+    museum: form.museum.trim(),
+    dynasty: form.dynasty.trim(),
+    category: form.category.trim(),
+    shortIntro: form.shortIntro.trim(),
+    description: form.description.trim(),
+    imageUrl: form.imageUrl.trim(),
+    sourceUrl: form.sourceUrl.trim(),
+    tags: form.tags.split(/[,，、\n]/).map((tag) => tag.trim()).filter(Boolean),
+    attributes,
+  };
+}
+
 function formatDate(value: string) {
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
+  if (Number.isNaN(date.getTime())) return value;
   return date.toLocaleString("zh-CN", { hour12: false });
 }
 
 export function AdminPage() {
+  const [tab, setTab] = useState<AdminTab>("artifacts");
   const [users, setUsers] = useState<AdminUserSummary[]>([]);
   const [stats, setStats] = useState<AdminStatsResponse | null>(null);
+  const [artifacts, setArtifacts] = useState<Artifact[]>([]);
+  const [form, setForm] = useState<ArtifactFormState>(emptyForm);
+  const [query, setQuery] = useState("");
+  const [importText, setImportText] = useState("");
+  const [importResult, setImportResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [forbidden, setForbidden] = useState(false);
+
+  const loadArtifacts = async () => {
+    const data = await apiFetch<{ artifacts?: Artifact[] }>("/api/artifacts?limit=5000");
+    setArtifacts(Array.isArray(data.artifacts) ? data.artifacts : []);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -39,24 +152,22 @@ export function AdminPage() {
       try {
         const currentUser = await me();
         if (currentUser.profile.role !== "admin") {
-          if (!cancelled) {
-            setForbidden(true);
-          }
+          if (!cancelled) setForbidden(true);
           return;
         }
 
-        const [usersResponse, statsResponse] = await Promise.all([getAdminUsers(), getAdminStats()]);
-        if (cancelled) {
-          return;
-        }
+        const [usersResponse, statsResponse, artifactsResponse] = await Promise.all([
+          getAdminUsers(),
+          getAdminStats(),
+          apiFetch<{ artifacts?: Artifact[] }>("/api/artifacts?limit=5000"),
+        ]);
+        if (cancelled) return;
 
         setUsers(usersResponse.users);
         setStats(statsResponse);
+        setArtifacts(Array.isArray(artifactsResponse.artifacts) ? artifactsResponse.artifacts : []);
       } catch (e) {
-        if (cancelled) {
-          return;
-        }
-
+        if (cancelled) return;
         const message = e instanceof Error ? e.message : String(e);
         if (message.includes("Forbidden")) {
           setForbidden(true);
@@ -68,9 +179,7 @@ export function AdminPage() {
         }
         setError(message);
       } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+        if (!cancelled) setLoading(false);
       }
     };
 
@@ -80,112 +189,315 @@ export function AdminPage() {
     };
   }, []);
 
+  const filteredArtifacts = useMemo(() => {
+    const keyword = query.trim().toLowerCase();
+    if (!keyword) return artifacts;
+    return artifacts.filter((artifact) => {
+      const haystack = [
+        artifact.name,
+        artifact.museumName,
+        artifact.museum,
+        artifact.dynasty,
+        artifact.period,
+        artifact.category,
+        artifact.shortIntro,
+        artifact.description,
+        tagNames(artifact.tags),
+      ].map(text).join(" ").toLowerCase();
+      return haystack.includes(keyword);
+    });
+  }, [artifacts, query]);
+
   const onLogout = async () => {
     await AuthService.logout();
     navigate("/login");
   };
 
-  if (forbidden) {
-    return <ForbiddenPage />;
-  }
+  const onSaveArtifact = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setSaving(true);
+    setError(null);
+
+    try {
+      const payload = buildArtifactPayload(form);
+      if (!payload.name || !payload.museum) {
+        throw new Error("请填写文物名称和馆藏单位。");
+      }
+
+      const path = form.id ? `/api/artifacts/${encodeURIComponent(form.id)}` : "/api/artifacts";
+      await apiFetch(path, {
+        method: form.id ? "PUT" : "POST",
+        body: JSON.stringify(payload),
+      });
+      setForm(emptyForm);
+      await loadArtifacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onEditArtifact = (artifact: Artifact) => {
+    setTab("artifacts");
+    setForm(formFromArtifact(artifact));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const onDeleteArtifact = async (artifact: Artifact) => {
+    const name = artifact.name || artifact.id;
+    if (!window.confirm(`确定要删除「${name}」吗？`)) return;
+    setSaving(true);
+    setError(null);
+
+    try {
+      await apiFetch(`/api/artifacts/${encodeURIComponent(String(artifact.id))}`, { method: "DELETE" });
+      if (form.id === String(artifact.id)) setForm(emptyForm);
+      await loadArtifacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const loadImportTemplate = async () => {
+    setError(null);
+    try {
+      const data = await apiFetch<{ template: unknown }>("/api/import/template");
+      setImportText(JSON.stringify(data.template, null, 2));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const runImport = async () => {
+    setSaving(true);
+    setError(null);
+    setImportResult(null);
+
+    try {
+      const job = JSON.parse(importText);
+      const result = await apiFetch<{ validRecords?: number; fileStoreCount?: number; dbSync?: { inserted: number; updated: number } }>(
+        "/api/import/run",
+        { method: "POST", body: JSON.stringify(job) },
+      );
+      setImportResult(
+        `导入成功：${result.validRecords ?? 0} 条有效记录，文件库 ${result.fileStoreCount ?? 0} 条，DB 新增 ${result.dbSync?.inserted ?? 0}、更新 ${result.dbSync?.updated ?? 0}。`,
+      );
+      await loadArtifacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (forbidden) return <ForbiddenPage />;
 
   const regularUserCount = stats ? Math.max(stats.totalUsers - stats.adminCount, 0) : 0;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-1">
-            <div className="text-xs font-black uppercase tracking-[0.24em] text-amber-800">Admin Console</div>
-            <div className="text-2xl font-black text-gray-900">MuseLink 后台管理</div>
-            <div className="text-sm text-gray-500">
-              当前管理员：{UserSession.getMuseId() || "jiangzhong"}，可查看系统用户与账号统计。
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={() => goBackOrNavigate("/home")}
-              className="px-4 py-2 rounded-2xl bg-gray-100 text-gray-700 text-sm font-bold"
-            >
-              返回前台
-            </button>
-            <button
-              onClick={onLogout}
-              className="px-4 py-2 rounded-2xl bg-rose-50 text-rose-700 text-sm font-bold"
-            >
-              退出登录
-            </button>
-          </div>
-        </div>
-
-        {loading && (
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 text-sm text-gray-500">
-            正在加载后台数据...
-          </div>
-        )}
-
-        {!loading && error && (
-          <div className="bg-rose-50 border border-rose-100 rounded-3xl p-6 text-sm text-rose-700">
-            后台数据加载失败：{error}
-          </div>
-        )}
-
-        {!loading && !error && stats && (
-          <>
-            <div className="grid gap-4 md:grid-cols-4">
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-                <div className="text-xs font-bold uppercase tracking-[0.24em] text-gray-400">Total Users</div>
-                <div className="mt-3 text-3xl font-black text-gray-900">{stats.totalUsers}</div>
-                <div className="mt-1 text-sm text-gray-500">系统中的用户总数</div>
-              </div>
-
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-                <div className="text-xs font-bold uppercase tracking-[0.24em] text-gray-400">Admins</div>
-                <div className="mt-3 text-3xl font-black text-amber-800">{stats.adminCount}</div>
-                <div className="mt-1 text-sm text-gray-500">拥有后台权限的账号数量</div>
-              </div>
-
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-                <div className="text-xs font-bold uppercase tracking-[0.24em] text-gray-400">Members</div>
-                <div className="mt-3 text-3xl font-black text-emerald-700">{regularUserCount}</div>
-                <div className="mt-1 text-sm text-gray-500">普通用户账号数量</div>
-              </div>
-
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-                <div className="text-xs font-bold uppercase tracking-[0.24em] text-gray-400">Contacts</div>
-                <div className="mt-3 text-3xl font-black text-sky-700">{stats.usersWithContact}</div>
-                <div className="mt-1 text-sm text-gray-500">绑定手机或邮箱的用户</div>
+      <div className="mx-auto max-w-7xl space-y-6">
+        <header className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <div className="text-xs font-black uppercase tracking-[0.24em] text-amber-800">Admin Console</div>
+              <h1 className="mt-1 text-2xl font-black text-gray-900">MuseLink 后台管理</h1>
+              <div className="mt-1 text-sm text-gray-500">
+                当前管理员：{UserSession.getMuseId() || "jiangzhong"}，管理统一文物库、导入任务和用户数据。
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-4">
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
-                <div className="text-xs font-bold text-gray-400">MuseLink ID</div>
-                <div className="mt-2 text-2xl font-black text-gray-900">{stats.museIdCount}</div>
+            <div className="flex flex-wrap gap-3">
+              <button onClick={() => goBackOrNavigate("/home")} className="rounded-2xl bg-gray-100 px-4 py-2 text-sm font-bold text-gray-700">
+                返回前台
+              </button>
+              <button onClick={onLogout} className="rounded-2xl bg-rose-50 px-4 py-2 text-sm font-bold text-rose-700">
+                退出登录
+              </button>
+            </div>
+          </div>
+
+          <nav className="mt-6 flex flex-wrap gap-2">
+            {[
+              ["artifacts", "文物管理"],
+              ["import", "导入文物"],
+              ["users", "用户统计"],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                onClick={() => setTab(id as AdminTab)}
+                className={`rounded-2xl px-4 py-2 text-sm font-black ${
+                  tab === id ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+        </header>
+
+        {loading && <div className="rounded-3xl border border-gray-100 bg-white p-6 text-sm text-gray-500 shadow-sm">正在加载后台数据...</div>}
+        {!loading && error && <div className="rounded-3xl border border-rose-100 bg-rose-50 p-6 text-sm text-rose-700">后台操作失败：{error}</div>}
+
+        {!loading && tab === "artifacts" && (
+          <div className="grid gap-6 lg:grid-cols-[420px_minmax(0,1fr)]">
+            <form onSubmit={onSaveArtifact} className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-lg font-black text-gray-900">{form.id ? "编辑文物" : "新增文物"}</h2>
+                  <div className="mt-1 text-xs text-gray-500">{form.id ? `ID ${form.id}` : "写入统一 artifacts 表"}</div>
+                </div>
+                {form.id && (
+                  <button type="button" onClick={() => setForm(emptyForm)} className="rounded-xl bg-gray-100 px-3 py-2 text-xs font-bold text-gray-700">
+                    取消编辑
+                  </button>
+                )}
               </div>
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
-                <div className="text-xs font-bold text-gray-400">密码登录账号</div>
-                <div className="mt-2 text-2xl font-black text-gray-900">{stats.passwordLoginCount}</div>
-              </div>
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
-                <div className="text-xs font-bold text-gray-400">验证码登录账号</div>
-                <div className="mt-2 text-2xl font-black text-gray-900">{stats.codeLoginCount}</div>
-              </div>
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
-                <div className="text-xs font-bold text-gray-400">公开展陈</div>
-                <div className="mt-2 text-2xl font-black text-gray-900">
-                  {stats.publicExhibitions}/{stats.totalExhibitions}
+
+              <div className="mt-5 grid gap-3">
+                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="文物名称 *" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                <input value={form.museum} onChange={(e) => setForm({ ...form, museum: e.target.value })} placeholder="馆藏单位 *" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                <div className="grid gap-3 md:grid-cols-2">
+                  <input value={form.dynasty} onChange={(e) => setForm({ ...form, dynasty: e.target.value })} placeholder="时代/朝代" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                  <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="类别" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                </div>
+                <input value={form.shortIntro} onChange={(e) => setForm({ ...form, shortIntro: e.target.value })} placeholder="一句话简介" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="文物描述" rows={5} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="图片 URL" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                <input value={form.sourceUrl} onChange={(e) => setForm({ ...form, sourceUrl: e.target.value })} placeholder="来源 URL" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                <input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="标签，用逗号分隔" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                <div className="grid gap-3 md:grid-cols-2">
+                  <input value={form.material} onChange={(e) => setForm({ ...form, material: e.target.value })} placeholder="材质" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                  <input value={form.dimensions} onChange={(e) => setForm({ ...form, dimensions: e.target.value })} placeholder="尺寸" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <input value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })} placeholder="等级" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                  <input value={form.remarks} onChange={(e) => setForm({ ...form, remarks: e.target.value })} placeholder="备注" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 </div>
               </div>
-            </div>
 
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="px-6 py-5 border-b border-gray-100">
-                <div className="text-lg font-black text-gray-900">用户列表</div>
-                <div className="text-sm text-gray-500 mt-1">管理员可查看用户资料、联系方式状态与内容数据统计。</div>
+              <button disabled={saving} className="mt-5 w-full rounded-2xl bg-gray-900 px-4 py-3 text-sm font-black text-white disabled:opacity-50">
+                {saving ? "保存中..." : form.id ? "保存修改" : "新增文物"}
+              </button>
+            </form>
+
+            <section className="rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="flex flex-col gap-3 border-b border-gray-100 p-6 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="text-lg font-black text-gray-900">文物列表</h2>
+                  <div className="mt-1 text-sm text-gray-500">统一 artifacts 表当前 {artifacts.length} 条，筛选显示 {filteredArtifacts.length} 条。</div>
+                </div>
+                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索名称、博物馆、时代、标签" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500 md:w-80" />
               </div>
 
+              <div className="max-h-[760px] overflow-auto">
+                <table className="min-w-full text-sm">
+                  <thead className="sticky top-0 bg-gray-50 text-gray-500">
+                    <tr>
+                      <th className="px-5 py-3 text-left font-bold">文物</th>
+                      <th className="px-5 py-3 text-left font-bold">馆藏/时代</th>
+                      <th className="px-5 py-3 text-left font-bold">标签</th>
+                      <th className="px-5 py-3 text-right font-bold">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredArtifacts.map((artifact) => (
+                      <tr key={artifact.id} className="border-t border-gray-100">
+                        <td className="px-5 py-4 align-top">
+                          <div className="flex min-w-72 gap-3">
+                            <SafeImage
+                              src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")}
+                              alt={artifact.name || "文物图片"}
+                              width={56}
+                              height={56}
+                              className="h-14 w-14 rounded-2xl bg-gray-100 object-cover"
+                            />
+                            <div>
+                              <div className="font-black text-gray-900">{artifact.name || "未命名文物"}</div>
+                              <div className="mt-1 line-clamp-2 text-xs text-gray-500">{artifact.shortIntro || artifact.description || "暂无简介"}</div>
+                              <div className="mt-1 font-mono text-[11px] text-gray-400">#{artifact.id}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4 align-top text-gray-700">
+                          <div>{artifact.museumName || artifact.museum || "-"}</div>
+                          <div className="mt-1 text-xs text-gray-400">{artifact.dynasty || artifact.period || "-"}</div>
+                        </td>
+                        <td className="px-5 py-4 align-top text-gray-500">
+                          <div className="max-w-64">{tagNames(artifact.tags) || "-"}</div>
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                          <div className="flex justify-end gap-2">
+                            <button type="button" onClick={() => onEditArtifact(artifact)} className="rounded-xl bg-amber-50 px-3 py-2 text-xs font-black text-amber-800">
+                              编辑
+                            </button>
+                            <button type="button" onClick={() => onDeleteArtifact(artifact)} className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-black text-rose-700">
+                              删除
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {!loading && tab === "import" && (
+          <section className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="text-lg font-black text-gray-900">导入文物</h2>
+                <div className="mt-1 text-sm text-gray-500">导入执行接口固定为 /api/import/run，完成后同步到统一 artifacts 表。</div>
+              </div>
+              <button onClick={loadImportTemplate} className="rounded-2xl bg-gray-100 px-4 py-2 text-sm font-bold text-gray-700">
+                填入导入模板
+              </button>
+            </div>
+
+            <textarea
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              placeholder='粘贴导入任务 JSON，例如 {"sourceType":"inline","format":"json","records":[...],"mode":"append"}'
+              rows={18}
+              className="mt-5 w-full rounded-2xl border border-gray-200 px-4 py-3 font-mono text-sm outline-none focus:border-amber-500"
+            />
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <button disabled={saving || !importText.trim()} onClick={runImport} className="rounded-2xl bg-gray-900 px-5 py-3 text-sm font-black text-white disabled:opacity-50">
+                {saving ? "导入中..." : "执行导入"}
+              </button>
+              {importResult && <span className="text-sm font-bold text-emerald-700">{importResult}</span>}
+            </div>
+          </section>
+        )}
+
+        {!loading && tab === "users" && stats && (
+          <>
+            <div className="grid gap-4 md:grid-cols-4">
+              {[
+                ["Total Users", stats.totalUsers, "系统中的用户总数"],
+                ["Admins", stats.adminCount, "拥有后台权限的账号数量"],
+                ["Members", regularUserCount, "普通用户账号数量"],
+                ["Contacts", stats.usersWithContact, "绑定手机或邮箱的用户"],
+              ].map(([label, value, desc]) => (
+                <div key={label} className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+                  <div className="text-xs font-bold uppercase tracking-[0.24em] text-gray-400">{label}</div>
+                  <div className="mt-3 text-3xl font-black text-gray-900">{value}</div>
+                  <div className="mt-1 text-sm text-gray-500">{desc}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="border-b border-gray-100 px-6 py-5">
+                <div className="text-lg font-black text-gray-900">用户列表</div>
+                <div className="mt-1 text-sm text-gray-500">管理员可查看用户资料、联系方式状态与内容数据统计。</div>
+              </div>
               <div className="overflow-x-auto">
                 <table className="min-w-full text-sm">
                   <thead className="bg-gray-50 text-gray-500">
@@ -203,92 +515,37 @@ export function AdminPage() {
                       <tr key={user.id} className="border-t border-gray-100">
                         <td className="px-5 py-4 align-top">
                           <div className="flex min-w-64 items-start gap-3">
-                            <img
-                              src={user.photoURL}
-                              alt=""
-                              className="h-12 w-12 rounded-2xl object-cover bg-gray-100"
-                              referrerPolicy="no-referrer"
-                            />
+                            <img src={user.photoURL} alt="" className="h-12 w-12 rounded-2xl bg-gray-100 object-cover" referrerPolicy="no-referrer" />
                             <div>
                               <div className="font-black text-gray-900">{user.displayName || "未命名用户"}</div>
                               <div className="mt-1 font-mono text-xs text-gray-500">#{user.id}</div>
-                              <span
-                                className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-black ${
-                                  user.role === "admin"
-                                    ? "bg-amber-100 text-amber-900"
-                                    : "bg-gray-100 text-gray-700"
-                                }`}
-                              >
+                              <span className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-black ${user.role === "admin" ? "bg-amber-100 text-amber-900" : "bg-gray-100 text-gray-700"}`}>
                                 {user.role === "admin" ? "管理员" : "用户"}
                               </span>
                             </div>
                           </div>
                         </td>
-                        <td className="px-5 py-4 align-top">
-                          <div className="space-y-2 text-gray-700">
-                            <div>
-                              <span className="text-gray-400">MuseLink ID：</span>
-                              <span className="font-mono">{user.museId || "-"}</span>
-                            </div>
-                            <div>
-                              <span className="text-gray-400">登录方式：</span>
-                              {user.contact.hasPassword ? "密码" : "验证码"}
-                            </div>
-                            <div>
-                              <span className="text-gray-400">可见性：</span>
-                              {user.profileVisibility === "all" ? "所有人" : "关注者"}
-                            </div>
-                          </div>
+                        <td className="px-5 py-4 align-top text-gray-700">
+                          <div>MuseLink ID：<span className="font-mono">{user.museId || "-"}</span></div>
+                          <div className="mt-2">登录方式：{user.contact.hasPassword ? "密码" : "验证码"}</div>
+                          <div className="mt-2">可见性：{user.profileVisibility === "all" ? "所有人" : "关注者"}</div>
                         </td>
-                        <td className="px-5 py-4 align-top">
-                          <div className="min-w-64 space-y-2 text-gray-700">
-                            <div>
-                              <span className="text-gray-400">性别：</span>
-                              {genderLabels[user.gender]}
-                            </div>
-                            <div>
-                              <span className="text-gray-400">生日：</span>
-                              {user.birthday || "-"}
-                            </div>
-                            <div>
-                              <span className="text-gray-400">地区：</span>
-                              {user.location || "-"}
-                            </div>
-                            <div className="max-w-72 text-gray-500">
-                              {user.bio || "暂无简介"}
-                            </div>
-                          </div>
+                        <td className="px-5 py-4 align-top text-gray-700">
+                          <div>性别：{genderLabels[user.gender]}</div>
+                          <div className="mt-2">生日：{user.birthday || "-"}</div>
+                          <div className="mt-2">地区：{user.location || "-"}</div>
+                          <div className="mt-2 max-w-72 text-gray-500">{user.bio || "暂无简介"}</div>
                         </td>
-                        <td className="px-5 py-4 align-top">
-                          <div className="min-w-56 space-y-2 text-gray-700">
-                            <div>
-                              <span className="text-gray-400">邮箱：</span>
-                              {user.contact.email || "-"}
-                            </div>
-                            <div>
-                              <span className="text-gray-400">手机：</span>
-                              {user.contact.phone || "-"}
-                            </div>
-                          </div>
+                        <td className="px-5 py-4 align-top text-gray-700">
+                          <div>邮箱：{user.contact.email || "-"}</div>
+                          <div className="mt-2">手机：{user.contact.phone || "-"}</div>
                         </td>
                         <td className="px-5 py-4 align-top">
                           <div className="grid min-w-56 grid-cols-2 gap-2 text-xs">
-                            <div className="rounded-2xl bg-gray-50 p-3">
-                              <div className="font-black text-gray-900">{user.activity.favoriteArtifacts}</div>
-                              <div className="mt-1 text-gray-400">文物收藏</div>
-                            </div>
-                            <div className="rounded-2xl bg-gray-50 p-3">
-                              <div className="font-black text-gray-900">{user.activity.favoriteExhibitions}</div>
-                              <div className="mt-1 text-gray-400">展陈收藏</div>
-                            </div>
-                            <div className="rounded-2xl bg-gray-50 p-3">
-                              <div className="font-black text-gray-900">{user.activity.exhibitions}</div>
-                              <div className="mt-1 text-gray-400">总展陈</div>
-                            </div>
-                            <div className="rounded-2xl bg-gray-50 p-3">
-                              <div className="font-black text-gray-900">{user.activity.publicExhibitions}</div>
-                              <div className="mt-1 text-gray-400">公开展陈</div>
-                            </div>
+                            <div className="rounded-2xl bg-gray-50 p-3"><div className="font-black text-gray-900">{user.activity.favoriteArtifacts}</div><div className="mt-1 text-gray-400">文物收藏</div></div>
+                            <div className="rounded-2xl bg-gray-50 p-3"><div className="font-black text-gray-900">{user.activity.favoriteExhibitions}</div><div className="mt-1 text-gray-400">展陈收藏</div></div>
+                            <div className="rounded-2xl bg-gray-50 p-3"><div className="font-black text-gray-900">{user.activity.exhibitions}</div><div className="mt-1 text-gray-400">总展陈</div></div>
+                            <div className="rounded-2xl bg-gray-50 p-3"><div className="font-black text-gray-900">{user.activity.publicExhibitions}</div><div className="mt-1 text-gray-400">公开展陈</div></div>
                           </div>
                         </td>
                         <td className="px-5 py-4 align-top text-gray-500">{formatDate(user.createdAt)}</td>

@@ -5,4 +5,5 @@ export const authRoutes = Router();
 
 authRoutes.post("/register", register);
 authRoutes.post("/login", login);
-
+authRoutes.post("/api/auth/register", register);
+authRoutes.post("/api/auth/login", login);

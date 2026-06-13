@@ -5,6 +5,7 @@ import { ensureSeedArtifacts } from "./seedArtifacts";
 import { ensureSeedMuseums } from "./seedMuseums";
 import { migrateArtifactDetails } from "./migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./upgradeArtifactsMuseumFk";
+import { syncImportedArtifactsToDb } from "./syncImportedArtifacts";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
@@ -18,6 +19,10 @@ async function main() {
     console.log(`Seeded artifacts: ${result.count}`);
   } else {
     console.log("Artifacts already seeded. Skipping.");
+  }
+  const imported = await syncImportedArtifactsToDb(db);
+  if (!imported.skipped) {
+    console.log(`Synced imported artifacts: ${imported.importedCount} file rows, ${imported.inserted} inserted, ${imported.updated} updated`);
   }
   await db.end();
   console.log("DB seed OK");

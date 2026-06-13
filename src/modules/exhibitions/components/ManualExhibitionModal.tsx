@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Artifact, Exhibition } from '../../../types';
 import { SafeImage } from '../../../components/SafeImage';
 import { rankArtifactsByKeywordQuery } from '../../../lib/artifactSearch';
-import { artifactMuseumRaw, artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
+import { artifactImageUrlRaw, artifactMuseumRaw, artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
 import { cn } from '../../../lib/utils';
 import { findArtifactsByIds } from '../../../shared/lib/domainUtils';
 
@@ -144,7 +144,7 @@ export const ManualExhibitionModal = ({
                 <div className="flex gap-3 overflow-x-auto no-scrollbar pb-1">
                   {selectedArtifacts.map((artifact, index) => (
                     <div key={`manual-selected-${artifact.id}`} className="w-28 flex-shrink-0 rounded-2xl border border-gray-100 bg-white overflow-hidden">
-                      <SafeImage src={artifact.imageUrl} className="aspect-square w-full object-cover bg-gray-50" />
+                      <SafeImage src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")} width={112} height={112} className="aspect-square w-full object-cover bg-gray-50" />
                       <div className="p-2 space-y-2">
                         <p className="h-8 overflow-hidden text-[10px] font-bold leading-4 text-gray-800">{displayDbString(artifactNameRaw(artifact))}</p>
                         <div className="grid grid-cols-3 gap-1">
@@ -191,7 +191,7 @@ export const ManualExhibitionModal = ({
                         isSelected ? "border-primary shadow-sm" : "border-gray-100 bg-gray-50"
                       )}
                     >
-                      <SafeImage src={artifact.imageUrl} className="aspect-square w-full object-cover bg-gray-100" />
+                      <SafeImage src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")} width={180} height={180} className="aspect-square w-full object-cover bg-gray-100" />
                       <div className="p-3 space-y-1">
                         <p className="h-8 overflow-hidden text-[10px] font-bold leading-4 text-gray-900">{displayDbString(artifactNameRaw(artifact))}</p>
                         <p className="h-4 overflow-hidden text-[9px] text-gray-400">{displayDbString(artifactMuseumRaw(artifact))}</p>

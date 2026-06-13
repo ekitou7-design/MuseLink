@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Library, Music, Palette, Play, Plus, Trash2, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Artifact, Exhibition, SlideshowSettings } from '../../../types';
+import { Artifact, Exhibition, ExhibitionUnit, SlideshowSettings } from '../../../types';
 import { cn } from '../../../lib/utils';
+import { normalizeExhibitionUnits } from '../lib/exhibitionUnits';
 
 export const EditExhibitionModal = ({ 
   isOpen, 
@@ -27,6 +28,7 @@ export const EditExhibitionModal = ({
   const [intro, setIntro] = useState('');
   const [coverUrl, setCoverUrl] = useState('');
   const [bgmUrl, setBgmUrl] = useState('');
+  const [units, setUnits] = useState<ExhibitionUnit[]>([]);
   const [slideshowSettings, setSlideshowSettings] = useState<SlideshowSettings>({
     duration: 4,
     transition: 'fade',
@@ -40,6 +42,7 @@ export const EditExhibitionModal = ({
       setIntro(exhibition.intro);
       setCoverUrl(exhibition.coverUrl);
       setBgmUrl(exhibition.bgmUrl || '');
+      setUnits(normalizeExhibitionUnits(exhibition));
       if (exhibition.slideshowSettings) {
         setSlideshowSettings(exhibition.slideshowSettings);
       }
@@ -59,7 +62,7 @@ export const EditExhibitionModal = ({
             <button onClick={onClose} className="p-2 text-gray-400"><X size={20} /></button>
             <h2 className="text-lg font-serif font-bold">编辑展陈信息</h2>
             <button 
-              onClick={() => onUpdate({ title, intro, coverUrl, bgmUrl, slideshowSettings })}
+              onClick={() => onUpdate({ title, intro, coverUrl, bgmUrl, slideshowSettings, units })}
               className="px-4 py-1.5 bg-primary text-white rounded-full text-xs font-bold"
             >
               保存
@@ -230,6 +233,74 @@ export const EditExhibitionModal = ({
                 <Library size={32} className="mx-auto text-gray-300" />
                 <p className="text-xs text-gray-400">当前展陈包含 {exhibition.artifactIds?.length ?? 0} 件文物</p>
                 <p className="text-[10px] text-gray-300">点击上方按钮管理文物列表</p>
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-gray-50">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">展览单元</h3>
+                <button
+                  type="button"
+                  onClick={() => setUnits(prev => [
+                    ...prev,
+                    {
+                      id: `unit-${Date.now()}`,
+                      title: `第 ${prev.length + 1} 单元`,
+                      description: '填写这一单元希望观众看到的线索。',
+                      artifactIds: [],
+                      curatorNote: '',
+                    },
+                  ])}
+                  className="rounded-xl bg-neutral px-3 py-2 text-[10px] font-bold text-primary"
+                >
+                  新增单元
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {units.map((unit, index) => (
+                  <div key={unit.id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-amber-700">第 {index + 1} 单元</span>
+                      <button
+                        type="button"
+                        onClick={() => setUnits(prev => prev.filter(item => item.id !== unit.id))}
+                        className="text-[10px] font-bold text-rose-500"
+                      >
+                        删除
+                      </button>
+                    </div>
+                    <div className="space-y-3">
+                      <input
+                        value={unit.title}
+                        onChange={e => setUnits(prev => prev.map(item => item.id === unit.id ? { ...item, title: e.target.value } : item))}
+                        placeholder="单元标题"
+                        className="w-full rounded-xl border border-gray-100 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-primary"
+                      />
+                      <textarea
+                        value={unit.description}
+                        onChange={e => setUnits(prev => prev.map(item => item.id === unit.id ? { ...item, description: e.target.value } : item))}
+                        placeholder="单元说明"
+                        className="min-h-[64px] w-full resize-none rounded-xl border border-gray-100 bg-white px-3 py-2 text-xs text-gray-600 outline-none focus:border-primary"
+                      />
+                      <textarea
+                        value={unit.curatorNote || ''}
+                        onChange={e => setUnits(prev => prev.map(item => item.id === unit.id ? { ...item, curatorNote: e.target.value } : item))}
+                        placeholder="策展备注，可留空"
+                        className="min-h-[54px] w-full resize-none rounded-xl border border-gray-100 bg-white px-3 py-2 text-xs text-gray-500 outline-none focus:border-primary"
+                      />
+                      <input
+                        value={unit.artifactIds.join(', ')}
+                        onChange={e => setUnits(prev => prev.map(item => item.id === unit.id ? {
+                          ...item,
+                          artifactIds: e.target.value.split(/[,，、\s]+/).map(id => id.trim()).filter(Boolean),
+                        } : item))}
+                        placeholder="展品 ID，用逗号分隔，例如 189, 190"
+                        className="w-full rounded-xl border border-gray-100 bg-white px-3 py-2 font-mono text-[11px] text-gray-500 outline-none focus:border-primary"
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 

@@ -343,6 +343,13 @@ function resolveImportField(
     return mappedValue;
   }
 
+  if (field === "imageUrl" && mapping[field]) {
+    const selectors = Array.isArray(mapping[field]) ? mapping[field] : [mapping[field]];
+    if (selectors.some((selector) => getByPath(record, selector as string) === "")) {
+      return "";
+    }
+  }
+
   const aliasValue = resolveByAliases(record, AUTO_FIELD_ALIASES[field] || []);
   if (aliasValue !== undefined && aliasValue !== null && aliasValue !== "") {
     return aliasValue;
