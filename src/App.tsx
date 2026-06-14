@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
+  ArrowRight,
   Search, 
   Library, 
   Sparkles, 
@@ -27,6 +28,7 @@ import { cn } from './lib/utils';
 import { artifactSearchBlob, rankArtifactsByKeywordQuery } from './lib/artifactSearch';
 import {
   artifactEraRaw,
+  artifactImageUrlRaw,
   artifactNameRaw,
   displayDbString,
 } from './lib/dbDisplay';
@@ -77,6 +79,7 @@ import { ExhibitionDetail } from './modules/exhibitions/components/ExhibitionDet
 import { AIExhibitionModal } from './modules/curation/components/AIExhibitionModal';
 import { AICurationEntry } from './modules/curation/components/AICurationEntry';
 import { CuratorTIQuiz } from './modules/curation/components/CuratorTIQuiz';
+import { ArtifactSwipePage } from './pages/ArtifactSwipePage';
 import type { CuratorGuideAnswers } from './modules/curation/data/curatorPreferences';
 import { ExhibitionTopTabs, type ExhibitionView } from './modules/exhibitions/components/ExhibitionTopTabs';
 import { ExploreTabBar } from './modules/artifacts/components/ExploreTabBar';
@@ -84,6 +87,12 @@ import { normalizeArtifacts } from './modules/artifacts/normalizers/artifactNorm
 import { normalizeExhibition, normalizeExhibitions } from './modules/exhibitions/normalizers/exhibitionNormalizers';
 import { getSlideshowArtifacts, mergeArtifactsById } from './shared/lib/domainUtils';
 import type { SidebarFeatureId } from './modules/profile/data/sidebarContent';
+import {
+  PREFERENCE_PROFILE_UPDATED_EVENT,
+  readPreferenceProfile,
+  readSwipeHistory,
+  type UserPreferenceProfile,
+} from './modules/swipe/utils/preferenceProfile';
 
 // --- Components ---
 
@@ -120,11 +129,11 @@ type ToastState = {
 
 // --- Main App ---
 
-export default function App() {
+export default function App({ initialTab = 'explore' }: { initialTab?: string }) {
   const goLogin = () => {
     window.location.hash = '#/login';
   };
-  const [activeTab, setActiveTab] = useState('explore');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [user, setUser] = useState<{ id: number; displayName: string; photoURL: string } | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -156,6 +165,7 @@ export default function App() {
   });
   const [searchHistory, setSearchHistory] = useState<string[]>(() => readSearchHistory());
   const [recommendationPreferences, setRecommendationPreferences] = useState<string[]>(() => readRecommendationPreferences());
+  const [preferenceProfile, setPreferenceProfile] = useState<UserPreferenceProfile>(() => readPreferenceProfile());
 
   // AI & Square State
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -217,6 +227,28 @@ export default function App() {
     const timer = window.setTimeout(() => setToast(null), 3200);
     return () => window.clearTimeout(timer);
   }, [toast]);
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
+
+  useEffect(() => {
+    const refreshPreferenceProfile = (event?: Event) => {
+      const customEvent = event as CustomEvent<UserPreferenceProfile>;
+      setPreferenceProfile(customEvent?.detail || readPreferenceProfile());
+    };
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === 'muselink_user_preference_profile' || event.key === 'muselink_swipe_history') {
+        setPreferenceProfile(readPreferenceProfile());
+      }
+    };
+    window.addEventListener(PREFERENCE_PROFILE_UPDATED_EVENT, refreshPreferenceProfile as EventListener);
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener(PREFERENCE_PROFILE_UPDATED_EVENT, refreshPreferenceProfile as EventListener);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
 
   const closeAIModal = useCallback(() => {
     setIsAIModalOpen(false);
@@ -636,16 +668,19 @@ export default function App() {
         viewHistoryIds: history,
         searchKeywords: searchHistory,
         curationKeywords: recommendationPreferences,
+        preferenceProfile,
       },
       RECOMMENDED_ARTIFACT_LIMIT,
     ),
-    [artifactPool, favorites, history, recommendationPreferences, searchHistory]
+    [artifactPool, favorites, history, preferenceProfile, recommendationPreferences, searchHistory]
   );
 
   const recommendedArtifacts = useMemo(
     () => recommendedArtifactResults.map((item) => item.artifact),
     [recommendedArtifactResults]
   );
+
+  const hasSwipeHistory = useMemo(() => readSwipeHistory().length > 0, [preferenceProfile]);
 
   const editorRecommendedExhibitions = useMemo(
     () => [TEST_EDITOR_RECOMMENDED_EXHIBITION].slice(0, EDITOR_RECOMMENDED_EXHIBITION_LIMIT),
@@ -1102,7 +1137,7 @@ export default function App() {
   useEffect(() => {
     const fetchExhibitions = async () => {
       try {
-        const square = await fetchSquareExhibitions(10);
+        const square = await fetchSquareExhibitions(50);
         setSquareExhibitions(normalizeExhibitions(square.exhibitions));
 
         if (user) {
@@ -1159,6 +1194,28 @@ export default function App() {
 
   const activeSlideshowExhibition = slideshowExhibition || selectedExhibition;
 
+  const switchPrimaryTab = (tab: string) => {
+    setActiveTab(tab);
+    if (tab === 'swipe') {
+      window.location.hash = '#/swipe';
+      return;
+    }
+    const target = tab === 'explore' ? '#/home' : `#/home?tab=${encodeURIComponent(tab)}`;
+    if (window.location.hash !== target) {
+      window.location.hash = target;
+    }
+  };
+
+  const viewArtifactFavorites = () => {
+    setProfileTab('收藏文物');
+    switchPrimaryTab('profile');
+  };
+
+  const viewExhibitionFavorites = () => {
+    setProfileTab('收藏展陈');
+    switchPrimaryTab('profile');
+  };
+
   return (
     <div className="h-full overflow-y-auto overflow-x-hidden bg-[#F6F3EE] pb-[var(--app-bottom-nav-height)] font-sans selection:bg-amber-100 no-scrollbar">
       <Drawer 
@@ -1206,6 +1263,58 @@ export default function App() {
                       exit={{ opacity: 0, y: -10 }}
                       className="space-y-6"
                     >
+                      <button
+                        type="button"
+                        onClick={() => switchPrimaryTab('swipe')}
+                        className="group relative w-full overflow-hidden rounded-[8px] border border-amber-100 bg-gradient-to-br from-[#fbf7ee] via-white to-[#efe6d5] p-4 text-left shadow-xl shadow-stone-900/8 transition-all active:scale-[0.99]"
+                      >
+                        <div className="absolute -right-8 -top-10 h-32 w-32 rounded-full bg-amber-200/30 blur-2xl" />
+                        <div className="relative grid grid-cols-[1fr_112px] gap-3">
+                          <div className="min-w-0 space-y-3">
+                            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-primary shadow-sm">
+                              <Sparkles size={13} />
+                              Swipe
+                            </div>
+                            <div className="space-y-1.5">
+                              <h2 className="break-words text-xl font-black leading-tight text-gray-950">刷一刷，让推荐更懂你</h2>
+                              <p className="break-words text-xs leading-relaxed text-gray-600">
+                                通过左右滑文物，快速告诉 MuseLink 你的兴趣偏好
+                              </p>
+                              <p className="break-words text-[11px] font-bold leading-relaxed text-primary">
+                                {hasSwipeHistory ? '已根据你的选择优化推荐，继续刷一刷让推荐更精准' : '刷 10 件文物，让推荐更懂你'}
+                              </p>
+                            </div>
+                            <span className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-primary px-3.5 text-xs font-black text-white shadow-lg shadow-primary/20">
+                              开始刷文物
+                              <ArrowRight size={14} />
+                            </span>
+                          </div>
+
+                          <div className="relative h-32">
+                            {recommendedArtifacts.slice(0, 3).map((artifact, index) => (
+                              <div
+                                key={`swipe-entry-${artifact.id}`}
+                                className={cn(
+                                  "absolute top-2 h-24 w-20 overflow-hidden rounded-[6px] border border-white bg-white shadow-lg transition-transform group-active:scale-95",
+                                  index === 0 && "right-7 rotate-[-8deg]",
+                                  index === 1 && "right-3 top-5 rotate-[6deg]",
+                                  index === 2 && "right-12 top-8 rotate-[-2deg]",
+                                )}
+                              >
+                                <SafeImage
+                                  src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? '')}
+                                  alt={displayDbString(artifactNameRaw(artifact))}
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                            ))}
+                            <div className="absolute bottom-2 right-1 rounded-full bg-white/90 px-2 py-1 text-[10px] font-black text-primary shadow-sm">
+                              左右滑
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+
                       {/* 2. Banner */}
                       <Banner artifacts={recommendedArtifacts} />
 
@@ -1509,6 +1618,34 @@ export default function App() {
 
                 </AnimatePresence>
               </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'swipe' && (
+            <motion.div
+              key="swipe"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="min-h-screen bg-[var(--app-page-bg)]"
+            >
+              <ArtifactSwipePage
+                artifacts={artifactPool}
+                exhibitions={squareExhibitions}
+                favoriteArtifactIds={favorites}
+                favoriteExhibitionIds={favExhibitionIds}
+                preferenceProfile={preferenceProfile}
+                onToggleArtifactFavorite={toggleFavorite}
+                onToggleExhibitionFavorite={toggleExhibitionFavorite}
+                onOpenArtifact={(artifact) => {
+                  setSelectedArtifactLightboxUrl(null);
+                  setSelectedArtifact(artifact);
+                }}
+                onOpenExhibition={(exhibition) => setSelectedExhibition(exhibition)}
+                onViewArtifactFavorites={viewArtifactFavorites}
+                onViewExhibitionFavorites={viewExhibitionFavorites}
+                onBackToExplore={() => switchPrimaryTab('explore')}
+              />
             </motion.div>
           )}
 
@@ -1845,7 +1982,9 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      {activeTab !== 'swipe' && (
+        <BottomNav activeTab={activeTab} setActiveTab={switchPrimaryTab} />
+      )}
 
       <AnimatePresence>
         {toast && (

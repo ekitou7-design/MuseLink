@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export type RoutePath = "/login" | "/register" | "/home" | "/profile" | "/admin";
+export type RoutePath = "/login" | "/register" | "/home" | "/swipe" | "/profile" | "/admin";
 
 function splitHash(hash: string) {
   const raw = hash.replace(/^#/, "");
@@ -13,6 +13,7 @@ function normalize(hash: string): RoutePath {
   const { path } = splitHash(hash);
   if (path === "/register") return "/register";
   if (path === "/home") return "/home";
+  if (path === "/swipe") return "/swipe";
   if (path === "/profile") return "/profile";
   if (path === "/admin") return "/admin";
   return "/login";

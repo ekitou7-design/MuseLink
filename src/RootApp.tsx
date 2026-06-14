@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useRoute, navigate } from "./router/router";
+import { getRouteSearchParams, useRoute, navigate } from "./router/router";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { HomePage } from "./pages/HomePage";
@@ -11,6 +11,7 @@ import { AdminGuard } from "./router/AdminGuard";
 
 export default function RootApp() {
   const route = useRoute();
+  const homeInitialTab = getRouteSearchParams().get("tab") || "explore";
 
   // Auto-login / Auto-redirect on app start:
   // - If logged in -> go home
@@ -22,7 +23,7 @@ export default function RootApp() {
         navigate("/home");
       }
     } else {
-      if (route === "/home" || route === "/profile" || route === "/admin") {
+      if (route === "/home" || route === "/swipe" || route === "/profile" || route === "/admin") {
         navigate("/login");
       }
     }
@@ -30,7 +31,8 @@ export default function RootApp() {
   }, []);
 
   if (route === "/register") return <RegisterPage />;
-  if (route === "/home") return <AuthGuard><HomePage /></AuthGuard>;
+  if (route === "/home") return <AuthGuard><HomePage initialTab={homeInitialTab} /></AuthGuard>;
+  if (route === "/swipe") return <AuthGuard><HomePage initialTab="swipe" /></AuthGuard>;
   if (route === "/profile") return <AuthGuard><ProfilePage /></AuthGuard>;
   if (route === "/admin") return <AdminGuard><AdminPage /></AdminGuard>;
   return <LoginPage />;

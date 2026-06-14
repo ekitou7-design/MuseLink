@@ -9,6 +9,7 @@ import {
   artifactNameRaw,
   isStrictDbEmpty,
 } from "../../../lib/dbDisplay";
+import { readDislikedArtifactIds, type UserPreferenceProfile } from "../../swipe/utils/preferenceProfile";
 
 export const SEARCH_HISTORY_KEY = "muselink_search_history";
 export const RECOMMENDATION_PREFERENCES_KEY = "muselink_recommendation_preferences";
@@ -22,6 +23,7 @@ export type RecommendationContext = {
   viewHistoryIds: string[];
   searchKeywords: string[];
   curationKeywords: string[];
+  preferenceProfile?: UserPreferenceProfile;
 };
 
 type SignalMaps = {
@@ -168,11 +170,13 @@ function scoreArtifact(
   context: RecommendationContext,
   signals: SignalMaps,
   isColdStart: boolean,
+  dislikedArtifactIds: Set<string>,
 ): ArtifactRecommendation {
   const tags = artifactTags(artifact);
   const reasons: string[] = [];
   const matchedTags = new Set<string>();
   let score = artifactCompletenessScore(artifact);
+  const profile = context.preferenceProfile;
 
   // Lightweight explainable ranking: each behavior signal contributes an additive score.
   // Keep this pure and deterministic so it can later be swapped for an AI/service ranker.
@@ -224,6 +228,23 @@ function scoreArtifact(
     reasons.push(`来自你常看的${museum}`);
   }
 
+  if (profile) {
+    const dynastyPreference = era ? (profile.dynastyScores[era] || 0) : 0;
+    const categoryPreference = category ? (profile.categoryScores[category] || 0) : 0;
+    const museumPreference = museum ? (profile.museumScores[museum] || 0) : 0;
+    const tagPreference = tags.reduce((sum, tag) => sum + (profile.tagScores[tag] || 0), 0);
+    const preferenceScore = dynastyPreference * 8 + categoryPreference * 9 + museumPreference * 5 + tagPreference * 4;
+    score += preferenceScore;
+
+    if (categoryPreference > 0) reasons.push(`与你刷卡偏好的${category}类别相近`);
+    if (dynastyPreference > 0) reasons.push(`与你刷卡关注的${era}时期相关`);
+    const positiveTag = tags.find((tag) => (profile.tagScores[tag] || 0) > 0);
+    if (positiveTag) {
+      matchedTags.add(positiveTag);
+      reasons.push(`延续你喜欢的${positiveTag}线索`);
+    }
+  }
+
   const hotScore = Math.min(Math.log1p(artifact.favsCount || 0) * 4, 14);
   score += hotScore;
   if ((artifact.favsCount || 0) >= 20) {
@@ -243,6 +264,10 @@ function scoreArtifact(
 
   if (context.favoriteArtifactIds.includes(artifact.id)) {
     score -= 60;
+  }
+
+  if (dislikedArtifactIds.has(artifact.id)) {
+    score -= 1000;
   }
 
   if (isColdStart) {
@@ -287,6 +312,16 @@ function selectDiverseRecommendations(scored: ArtifactRecommendation[], limit: n
   return selected;
 }
 
+function hasPreferenceProfile(profile?: UserPreferenceProfile): boolean {
+  if (!profile) return false;
+  return [
+    profile.dynastyScores,
+    profile.categoryScores,
+    profile.tagScores,
+    profile.museumScores,
+  ].some((scores) => Object.values(scores || {}).some((score) => score !== 0));
+}
+
 export function buildArtifactRecommendations(
   artifacts: Artifact[],
   context: RecommendationContext,
@@ -298,12 +333,14 @@ export function buildArtifactRecommendations(
     context.favoriteArtifactIds.length === 0 &&
     context.viewHistoryIds.length === 0 &&
     context.searchKeywords.length === 0 &&
-    context.curationKeywords.length === 0
+    context.curationKeywords.length === 0 &&
+    !hasPreferenceProfile(context.preferenceProfile)
   );
 
   const signals = collectSignals(artifactsById, context);
+  const dislikedArtifactIds = readDislikedArtifactIds();
   const scored = uniqueArtifacts
-    .map((artifact) => scoreArtifact(artifact, context, signals, isColdStart))
+    .map((artifact) => scoreArtifact(artifact, context, signals, isColdStart, dislikedArtifactIds))
     .sort((a, b) => {
       if (b.recommendationScore !== a.recommendationScore) {
         return b.recommendationScore - a.recommendationScore;
