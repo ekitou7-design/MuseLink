@@ -29,6 +29,9 @@ import { artifactSearchBlob, rankArtifactsByKeywordQuery } from './lib/artifactS
 import {
   artifactEraRaw,
   artifactImageUrlRaw,
+  artifactCategoryRaw,
+  artifactMaterialRaw,
+  artifactMuseumRaw,
   artifactNameRaw,
   displayDbString,
 } from './lib/dbDisplay';
@@ -176,7 +179,8 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
   const [isSavingCuratorTI, setIsSavingCuratorTI] = useState(false);
   const [myExhibitions, setMyExhibitions] = useState<Exhibition[]>([]);
   const [squareExhibitions, setSquareExhibitions] = useState<Exhibition[]>([]);
-  const [exploreTab, setExploreTab] = useState('推荐');
+  const [exploreTab, setExploreTab] = useState('推荐发现');
+  const [resourceView, setResourceView] = useState<'overview' | 'artifacts' | 'museums' | 'eras' | 'collections' | 'types' | 'materials' | 'tags'>('overview');
   const [museumSubTab, setMuseumSubTab] = useState('中国国家博物馆');
   const [eraSubTab, setEraSubTab] = useState('全部');
   const [messageTab, setMessageTab] = useState<'reminders' | 'chats'>('reminders');
@@ -682,6 +686,44 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
 
   const hasSwipeHistory = useMemo(() => readSwipeHistory().length > 0, [preferenceProfile]);
 
+  const artifactTagText = (tag: Artifact["tags"][number]) => {
+    if (typeof tag === 'string') return tag.trim();
+    return [tag.type, tag.name].filter(Boolean).join(' ').trim();
+  };
+
+  const countArtifactValues = useCallback((values: string[]) => {
+    const counts = new Map<string, number>();
+    values
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+    return Array.from(counts.entries())
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, 'zh-CN'));
+  }, []);
+
+  const resourceIndexes = useMemo(() => {
+    const categories = countArtifactValues(artifactPool.map((artifact) => displayDbString(artifactCategoryRaw(artifact))).filter((value) => value !== '暂无信息'));
+    const materials = countArtifactValues(artifactPool.map((artifact) => displayDbString(artifactMaterialRaw(artifact))).filter((value) => value !== '暂无信息'));
+    const eras = countArtifactValues(artifactPool.map((artifact) => displayDbString(artifactEraRaw(artifact))).filter((value) => value !== '暂无信息'));
+    const museums = countArtifactValues(artifactPool.map((artifact) => displayDbString(artifactMuseumRaw(artifact))).filter((value) => value !== '暂无信息'));
+    const tags = countArtifactValues(artifactPool.flatMap((artifact) => (artifact.tags || []).map(artifactTagText)));
+    return { categories, materials, eras, museums, tags };
+  }, [artifactPool, countArtifactValues]);
+
+  const editorRecommendedArtifacts = useMemo(
+    () => artifactPool
+      .slice()
+      .sort((a, b) => {
+        const imageA = String(artifactImageUrlRaw(a, "thumbnail") ?? '').trim() ? 1 : 0;
+        const imageB = String(artifactImageUrlRaw(b, "thumbnail") ?? '').trim() ? 1 : 0;
+        if (imageA !== imageB) return imageB - imageA;
+        return (b.favsCount || 0) - (a.favsCount || 0);
+      })
+      .slice(0, 6),
+    [artifactPool],
+  );
+
   const editorRecommendedExhibitions = useMemo(
     () => [TEST_EDITOR_RECOMMENDED_EXHIBITION].slice(0, EDITOR_RECOMMENDED_EXHIBITION_LIMIT),
     []
@@ -743,6 +785,27 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
     () => filteredArtifacts.slice(0, allArtifactsVisibleCount),
     [allArtifactsVisibleCount, filteredArtifacts]
   );
+
+  const showResourceArtifacts = (options: {
+    view?: typeof resourceView;
+    museum?: string;
+    era?: string;
+    category?: string;
+    material?: string;
+    tag?: string;
+  } = {}) => {
+    setResourceView(options.view || 'artifacts');
+    setAllArtifactsQuery('');
+    setFilterMuseum(options.museum || '全部');
+    setFilterPeriod(options.era || '全部');
+    setFilterCulture('全部');
+    setSortBy('favs');
+    if (options.museum) setMuseumSubTab(options.museum);
+    if (options.era) setEraSubTab(options.era);
+    if (options.category || options.material || options.tag) {
+      setAllArtifactsQuery(options.category || options.material || options.tag || '');
+    }
+  };
 
   const refreshFavoriteExhibitions = async () => {
     if (!user) {
@@ -1251,11 +1314,17 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
               className="flex flex-col min-h-screen"
             >
               {/* 1. Top Tab Bar (Sticky) */}
-              <ExploreTabBar exploreTab={exploreTab} setExploreTab={setExploreTab} />
+              <ExploreTabBar
+                exploreTab={exploreTab}
+                setExploreTab={(tab) => {
+                  setExploreTab(tab);
+                  if (tab === '文博资料') setResourceView('overview');
+                }}
+              />
 
               <div className="p-4 space-y-6 flex-1">
                 <AnimatePresence mode="wait">
-                  {exploreTab === '推荐' && (
+                  {exploreTab === '推荐发现' && (
                     <motion.div
                       key="recommend"
                       initial={{ opacity: 0, y: 10 }}
@@ -1263,6 +1332,15 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
                       exit={{ opacity: 0, y: -10 }}
                       className="space-y-6"
                     >
+                      {/* 2. Personalized Artifact Recommendations */}
+                      <div className="space-y-3">
+                        <h2 className="text-lg font-bold text-secondary font-serif flex items-center gap-2 force-nowrap">
+                          <Sparkles size={18} className="text-primary flex-shrink-0" />
+                          为你推荐
+                        </h2>
+                        <Banner artifacts={recommendedArtifacts} />
+                      </div>
+
                       <button
                         type="button"
                         onClick={() => switchPrimaryTab('swipe')}
@@ -1315,22 +1393,24 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
                         </div>
                       </button>
 
-                      {/* 2. Banner */}
-                      <Banner artifacts={recommendedArtifacts} />
-
-                      {/* 3. Editor Recommendations */}
+                      {/* 3. Editor Artifact Recommendations */}
                       <div className="space-y-4">
                         <h2 className="text-lg font-bold text-secondary font-serif flex items-center gap-2 force-nowrap">
                           <BookmarkCheck size={18} className="text-primary flex-shrink-0" />
-                          编辑推荐
+                          编辑推荐文物
                         </h2>
 
                         <div className="columns-2 gap-1.5">
-                          {editorRecommendedExhibitions.map(exhibition => (
-                            <div key={exhibition.id} className="break-inside-avoid mb-1.5">
-                              <ExhibitionCard
-                                exhibition={exhibition}
-                                onClick={() => setSelectedExhibition(exhibition)}
+                          {editorRecommendedArtifacts.map(artifact => (
+                            <div key={`editor-artifact-${artifact.id}`} className="break-inside-avoid mb-1.5">
+                              <ArtifactCard
+                                artifact={artifact}
+                                isFavorite={favorites.includes(artifact.id)}
+                                onFavoriteClick={() => toggleFavorite(artifact.id)}
+                                onClick={() => {
+                                  setSelectedArtifact(artifact);
+                                  addToHistory(artifact.id);
+                                }}
                               />
                             </div>
                           ))}
@@ -1341,7 +1421,7 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
                       <div className="space-y-4">
                         <h2 className="text-lg font-bold text-secondary font-serif flex items-center gap-2 force-nowrap">
                           <Sparkles size={18} className="text-primary flex-shrink-0" />
-                          推荐文物
+                          个性化推荐文物
                         </h2>
                         
                         <div className="columns-2 gap-1.5">
@@ -1371,7 +1451,123 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
                     </motion.div>
                   )}
 
-                  {exploreTab === '馆藏全览' && (
+                  {exploreTab === '文博资料' && resourceView === 'overview' && (
+                    <motion.div
+                      key="resource-overview"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="space-y-5"
+                    >
+                      <section className="space-y-3">
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">常用入口</p>
+                          <h2 className="mt-1 text-lg font-bold text-gray-950">文博资料</h2>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { label: '文物库', count: artifactPool.length, action: () => showResourceArtifacts({ view: 'artifacts' }) },
+                            { label: '博物馆', count: resourceIndexes.museums.length, action: () => setResourceView('museums') },
+                            { label: '年代', count: resourceIndexes.eras.length, action: () => setResourceView('eras') },
+                            { label: '馆藏全览', count: filteredArtifacts.length, action: () => showResourceArtifacts({ view: 'artifacts' }) },
+                          ].map((item) => (
+                            <button
+                              key={item.label}
+                              type="button"
+                              onClick={item.action}
+                              className="min-h-24 rounded-[8px] border border-gray-100 bg-white p-4 text-left shadow-sm transition-all active:scale-[0.99]"
+                            >
+                              <p className="text-base font-black text-gray-950">{item.label}</p>
+                              <p className="mt-2 text-[11px] font-bold text-primary">{item.count} 项</p>
+                            </button>
+                          ))}
+                        </div>
+                      </section>
+
+                      <section className="space-y-3">
+                        <h3 className="text-sm font-black text-gray-950">分类浏览</h3>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { label: '类型', value: resourceIndexes.categories[0]?.label, action: () => setResourceView('types') },
+                            { label: '材质', value: resourceIndexes.materials[0]?.label, action: () => setResourceView('materials') },
+                            { label: '朝代', value: resourceIndexes.eras[0]?.label, action: () => setResourceView('eras') },
+                            { label: '标签', value: resourceIndexes.tags[0]?.label, action: () => setResourceView('tags') },
+                          ].map((item) => (
+                            <button
+                              key={item.label}
+                              type="button"
+                              onClick={item.action}
+                              className="rounded-[8px] border border-gray-100 bg-white p-3 text-left shadow-sm active:scale-[0.99]"
+                            >
+                              <p className="text-sm font-black text-gray-950">{item.label}</p>
+                              <p className="mt-1 line-clamp-1 text-[10px] font-bold text-gray-400">{item.value || '暂无数据'}</p>
+                            </button>
+                          ))}
+                        </div>
+                      </section>
+
+                      <section className="space-y-3">
+                        <h3 className="text-sm font-black text-gray-950">高频标签 / 热门馆藏地</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {[...resourceIndexes.tags.slice(0, 8), ...resourceIndexes.museums.slice(0, 5)].map((item) => (
+                            <button
+                              key={`${item.label}-${item.count}`}
+                              type="button"
+                              onClick={() => {
+                                if (resourceIndexes.museums.some((museum) => museum.label === item.label)) {
+                                  showResourceArtifacts({ view: 'artifacts', museum: item.label });
+                                } else {
+                                  showResourceArtifacts({ view: 'artifacts', tag: item.label });
+                                }
+                              }}
+                              className="rounded-full bg-white px-3 py-1.5 text-[11px] font-bold text-gray-700 shadow-sm active:scale-[0.98]"
+                            >
+                              {item.label}
+                              <span className="ml-1 text-gray-300">{item.count}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </section>
+                    </motion.div>
+                  )}
+
+                  {exploreTab === '文博资料' && ['types', 'materials', 'tags'].includes(resourceView) && (
+                    <motion.div
+                      key={`resource-${resourceView}`}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="space-y-4"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setResourceView('overview')}
+                        className="rounded-full bg-white px-3 py-1.5 text-[11px] font-bold text-gray-500 shadow-sm"
+                      >
+                        返回文博资料
+                      </button>
+                      <div className="grid grid-cols-2 gap-2">
+                        {(resourceView === 'types' ? resourceIndexes.categories : resourceView === 'materials' ? resourceIndexes.materials : resourceIndexes.tags).slice(0, 40).map((item) => (
+                          <button
+                            key={item.label}
+                            type="button"
+                            onClick={() => showResourceArtifacts({
+                              view: 'artifacts',
+                              category: resourceView === 'types' ? item.label : undefined,
+                              material: resourceView === 'materials' ? item.label : undefined,
+                              tag: resourceView === 'tags' ? item.label : undefined,
+                            })}
+                            className="rounded-[8px] border border-gray-100 bg-white p-3 text-left shadow-sm active:scale-[0.99]"
+                          >
+                            <p className="line-clamp-2 text-sm font-black text-gray-950">{item.label}</p>
+                            <p className="mt-1 text-[10px] font-bold text-primary">{item.count} 件相关文物</p>
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {exploreTab === '文博资料' && resourceView === 'artifacts' && (
                     <motion.div
                       key="all-artifacts"
                       initial={{ opacity: 0, y: 10 }}
@@ -1482,7 +1678,7 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
                     </motion.div>
                   )}
 
-                  {exploreTab === '博物馆' && (
+                  {exploreTab === '文博资料' && resourceView === 'museums' && (
                     <motion.div
                       key="museum"
                       initial={{ opacity: 0, y: 10 }}
@@ -1549,7 +1745,7 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
                     </motion.div>
                   )}
 
-                  {exploreTab === '年代' && (
+                  {exploreTab === '文博资料' && resourceView === 'eras' && (
                     <motion.div
                       key="era"
                       initial={{ opacity: 0, y: 10 }}
@@ -2107,6 +2303,7 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
             searchMuseumResults={searchMuseumResults}
             setExploreTab={setExploreTab}
             setMuseumSubTab={setMuseumSubTab}
+            setResourceView={setResourceView}
           />
         )}
 

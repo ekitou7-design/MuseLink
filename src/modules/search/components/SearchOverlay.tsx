@@ -24,6 +24,7 @@ export const SearchOverlay = ({
   searchMuseumResults,
   setExploreTab,
   setMuseumSubTab,
+  setResourceView,
 }: {
   setIsSearching: (value: boolean) => void,
   executeRelicSearch: () => void,
@@ -42,6 +43,7 @@ export const SearchOverlay = ({
   searchMuseumResults: Museum[],
   setExploreTab: (tab: string) => void,
   setMuseumSubTab: (museum: string) => void,
+  setResourceView: (view: 'overview' | 'artifacts' | 'museums' | 'eras' | 'collections' | 'types' | 'materials' | 'tags') => void,
 }) => (
   <motion.div
     key="searching-overlay"
@@ -151,7 +153,8 @@ export const SearchOverlay = ({
                 key={museum.id || museum.name}
                 type="button"
                 onClick={() => {
-                  setExploreTab('博物馆');
+                  setExploreTab('文博资料');
+                  setResourceView('museums');
                   setMuseumSubTab(museum.name);
                   setIsSearching(false);
                   setSearchQuery('');

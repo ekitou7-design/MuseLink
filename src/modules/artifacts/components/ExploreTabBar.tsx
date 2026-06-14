@@ -10,7 +10,7 @@ export const ExploreTabBar = ({
 }) => (
   <div className="ios-tab-bar sticky top-[60px] z-40 px-5">
     <div className="ios-text-tabs no-scrollbar">
-      {['推荐', '博物馆', '年代', '馆藏全览'].map((tab) => (
+      {['推荐发现', '文博资料'].map((tab) => (
         <button
           key={tab}
           onClick={() => setExploreTab(tab)}
