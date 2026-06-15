@@ -59,6 +59,8 @@ import {
   createArtifact,
   deleteArtifact,
   updateArtifact,
+  uploadArtifactImage,
+  uploadArtifactImageFile,
 } from "./backend/api/controllers/artifactsController";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -586,6 +588,7 @@ async function startServer() {
   });
 
   app.post("/api/artifacts", requireAdmin, createArtifact);
+  app.post("/api/admin/artifacts/:id/image", requireAdmin, uploadArtifactImageFile, uploadArtifactImage);
   app.put("/api/artifacts/:id", requireAdmin, updateArtifact);
   app.delete("/api/artifacts/:id", requireAdmin, deleteArtifact);
 
@@ -925,6 +928,8 @@ async function startServer() {
       res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
     }
   });
+
+  app.use("/artifact-images", express.static(path.join(process.cwd(), "public", "artifact-images")));
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {

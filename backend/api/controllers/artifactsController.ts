@@ -1,8 +1,38 @@
-import type { Request, Response } from "express";
+import fs from "fs/promises";
+import path from "path";
+import type { Request, RequestHandler, Response } from "express";
+import multer from "multer";
+import sharp from "sharp";
 import { db } from "../db/client";
 import { searchRelics } from "../db/relicSearch";
 import { getArtifactFromDb, listArtifactsFromDb } from "../db/syncImportedArtifacts";
 import type { ArtifactAttributeRow } from "../models/types";
+
+const ARTIFACT_IMAGES_DIR = path.join(process.cwd(), "public", "artifact-images");
+const ARTIFACT_THUMBS_DIR = path.join(ARTIFACT_IMAGES_DIR, "thumbs");
+const IMPORTED_ARTIFACTS_PATH = path.join(process.cwd(), "data", "imported-artifacts.json");
+const ALLOWED_IMAGE_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+const multerArtifactImageUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (!ALLOWED_IMAGE_MIME_TYPES.has(file.mimetype)) {
+      cb(new Error("仅支持 jpg/jpeg/png/webp 图片。"));
+      return;
+    }
+    cb(null, true);
+  },
+}).single("image");
+
+export const uploadArtifactImageFile: RequestHandler = (req, res, next) => {
+  multerArtifactImageUpload(req, res, (error) => {
+    if (error) {
+      return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+    return next();
+  });
+};
 
 const BASE_ARTIFACT_COLUMNS = new Set([
   "id",
@@ -20,6 +50,8 @@ const OPTIONAL_ARTIFACT_COLUMNS = [
   "short_intro",
   "source_url",
   "updated_at",
+  "local_image_url",
+  "local_thumbnail_url",
   "material",
   "size",
   "dimensions",
@@ -65,6 +97,114 @@ function text(value: unknown) {
 
 function cleanText(value: unknown) {
   return text(value).trim();
+}
+
+function artifactImageFileBase(id: string) {
+  return id.replace(/[\\/]/g, "-");
+}
+
+async function ensureArtifactImageColumns() {
+  await db.query(`alter table artifacts add column if not exists local_image_url text not null default ''`);
+  await db.query(`alter table artifacts add column if not exists local_thumbnail_url text not null default ''`);
+  await db.query(`alter table artifacts add column if not exists updated_at timestamptz not null default now()`);
+}
+
+async function readImportedArtifactsStore() {
+  const raw = await fs.readFile(IMPORTED_ARTIFACTS_PATH, "utf-8");
+  const parsed = JSON.parse(raw) as { artifacts?: unknown[] } | unknown[];
+  const artifacts = Array.isArray(parsed) ? parsed : Array.isArray(parsed.artifacts) ? parsed.artifacts : [];
+  return { parsed, artifacts };
+}
+
+function artifactName(record: Record<string, unknown>) {
+  return firstText(record, ["name", "名称", "title"]);
+}
+
+function artifactMuseum(record: Record<string, unknown>) {
+  return firstText(record, ["museumName", "museum", "所属博物馆", "博物馆", "馆藏单位", "收藏单位", "馆名"]);
+}
+
+async function findImportedArtifact(id: string) {
+  try {
+    const { artifacts } = await readImportedArtifactsStore();
+    for (const rawArtifact of artifacts) {
+      if (!rawArtifact || typeof rawArtifact !== "object" || Array.isArray(rawArtifact)) continue;
+      const artifact = rawArtifact as Record<string, unknown>;
+      if (String(artifact.id ?? "") === id) return artifact;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+async function findDbArtifact(id: string) {
+  try {
+    return await getArtifactFromDb(db, id);
+  } catch {
+    return null;
+  }
+}
+
+async function updateImportedArtifactsImageUrls(
+  id: string,
+  localImageUrl: string,
+  localThumbnailUrl: string,
+  existingArtifact?: Record<string, unknown>,
+) {
+  try {
+    const { parsed, artifacts } = await readImportedArtifactsStore();
+    const expectedName = existingArtifact ? artifactName(existingArtifact) : "";
+    const expectedMuseum = existingArtifact ? artifactMuseum(existingArtifact) : "";
+    let updated = false;
+
+    for (const rawArtifact of artifacts) {
+      if (!rawArtifact || typeof rawArtifact !== "object" || Array.isArray(rawArtifact)) continue;
+      const artifact = rawArtifact as Record<string, unknown>;
+      const idMatches = String(artifact.id ?? "") === id;
+      const nameMatches = expectedName && artifactName(artifact) === expectedName;
+      const museumMatches = expectedMuseum && artifactMuseum(artifact) === expectedMuseum;
+      if (!idMatches && !(nameMatches && museumMatches)) continue;
+      artifact.localImageUrl = localImageUrl;
+      artifact.localThumbnailUrl = localThumbnailUrl;
+      updated = true;
+      break;
+    }
+
+    if (!updated) return false;
+    await fs.writeFile(IMPORTED_ARTIFACTS_PATH, `${JSON.stringify(parsed, null, 2)}\n`, "utf-8");
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function updateDbArtifactImageUrls(id: string, localImageUrl: string, localThumbnailUrl: string, existingArtifact: Record<string, unknown>) {
+  try {
+    await ensureArtifactImageColumns();
+    const byId = await db.query(
+      `update artifacts
+       set local_image_url=$2, local_thumbnail_url=$3, updated_at=now()
+       where id::text=$1`,
+      [id, localImageUrl, localThumbnailUrl],
+    );
+    if ((byId.rowCount || 0) > 0) return true;
+
+    const name = artifactName(existingArtifact);
+    const museum = artifactMuseum(existingArtifact);
+    if (!name || !museum) return false;
+
+    const byIdentity = await db.query(
+      `update artifacts a
+       set local_image_url=$3, local_thumbnail_url=$4, updated_at=now()
+       from museums m
+       where a.museum_id = m.id and a.name = $1 and m.name = $2`,
+      [name, museum, localImageUrl, localThumbnailUrl],
+    );
+    return (byIdentity.rowCount || 0) > 0;
+  } catch {
+    return false;
+  }
 }
 
 function firstText(record: Record<string, unknown>, keys: string[]) {
@@ -231,6 +371,8 @@ function toArtifactDetail(row: Record<string, unknown>, attributes: ArtifactAttr
   const museumName = text(row.museum);
   const dynasty = text(row.dynasty);
   const imageUrl = text(row.image_url);
+  const localImageUrl = text(row.local_image_url);
+  const localThumbnailUrl = text(row.local_thumbnail_url);
   const sourceUrl = text(row.source_url);
 
   return {
@@ -242,6 +384,10 @@ function toArtifactDetail(row: Record<string, unknown>, attributes: ArtifactAttr
     dynasty,
     period: dynasty,
     category: text(row.category),
+    localImageUrl,
+    local_image_url: localImageUrl,
+    localThumbnailUrl,
+    local_thumbnail_url: localThumbnailUrl,
     imageUrl,
     image_url: imageUrl,
     shortIntro: text(row.short_intro),
@@ -394,6 +540,64 @@ export async function updateArtifact(req: Request, res: Response) {
     await writeAttributeRows(id, payload.attributes);
     const artifact = await getArtifactFromDb(db, id);
     return res.json({ source: "database", artifact });
+  } catch (error) {
+    return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+}
+
+export async function uploadArtifactImage(req: Request, res: Response) {
+  try {
+    const id = String(req.params.id || "");
+    const dbArtifact = await findDbArtifact(id);
+    const importedArtifact = await findImportedArtifact(id);
+    const existing = (dbArtifact || importedArtifact) as Record<string, unknown> | null;
+    if (!existing) {
+      return res.status(404).json({ error: "Not found" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: "请先选择要上传的图片。" });
+    }
+
+    const artifactId = String(existing.id || id);
+    const fileBase = artifactImageFileBase(artifactId);
+    const localImageUrl = `/artifact-images/${fileBase}.jpg`;
+    const localThumbnailUrl = `/artifact-images/thumbs/${fileBase}-thumb.jpg`;
+    const imagePath = path.join(ARTIFACT_IMAGES_DIR, `${fileBase}.jpg`);
+    const thumbPath = path.join(ARTIFACT_THUMBS_DIR, `${fileBase}-thumb.jpg`);
+
+    await fs.mkdir(ARTIFACT_IMAGES_DIR, { recursive: true });
+    await fs.mkdir(ARTIFACT_THUMBS_DIR, { recursive: true });
+
+    const image = sharp(req.file.buffer).rotate();
+    await image.clone().jpeg({ quality: 92 }).toFile(imagePath);
+    await image
+      .clone()
+      .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
+      .jpeg({ quality: 82 })
+      .toFile(thumbPath);
+
+    const dbUpdated = await updateDbArtifactImageUrls(id, localImageUrl, localThumbnailUrl, existing);
+    const jsonUpdated = await updateImportedArtifactsImageUrls(
+      id,
+      localImageUrl,
+      localThumbnailUrl,
+      existing,
+    );
+    const artifact = (await findDbArtifact(id)) || existing;
+
+    return res.json({
+      ok: true,
+      source: dbUpdated ? "database" : "imported-artifacts-json",
+      artifact,
+      artifactName: artifactName(existing),
+      localImageUrl,
+      localThumbnailUrl,
+      originalPath: localImageUrl,
+      thumbnailPath: localThumbnailUrl,
+      dbUpdated,
+      importedArtifactsUpdated: jsonUpdated,
+    });
   } catch (error) {
     return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }

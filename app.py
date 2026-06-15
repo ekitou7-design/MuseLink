@@ -100,6 +100,9 @@ def attribute_value(artifact, name):
 def artifact_to_row(artifact):
     museum = pick(artifact, "museumName", "museum", "所属博物馆", "博物馆")
     dynasty = pick(artifact, "dynasty", "period", "era", "朝代", "年代")
+    local_image_url = pick(artifact, "localImageUrl", "local_image_url")
+    local_thumbnail_url = pick(artifact, "localThumbnailUrl", "local_thumbnail_url")
+    image_url = pick(artifact, "imageUrl", "image_url", "图片链接")
     row = {
         "_artifact_id": clean_value(artifact.get("id")),
         "id": clean_value(artifact.get("id")),
@@ -112,7 +115,10 @@ def artifact_to_row(artifact):
         "尺寸": pick(artifact, "dimensions", "size", "尺寸") or attribute_value(artifact, "尺寸"),
         "一句话简介": pick(artifact, "shortIntro", "short_intro", "一句话简介"),
         "文物描述": pick(artifact, "description", "文物描述", "简介"),
-        "图片链接": pick(artifact, "imageUrl", "image_url", "图片链接"),
+        "图片链接": image_url,
+        "本地原图": local_image_url,
+        "本地缩略图": local_thumbnail_url,
+        "显示图片": local_thumbnail_url or local_image_url or image_url,
         "来源链接": pick(artifact, "sourceUrl", "source_url", "来源链接"),
         "标签": "，".join(normalize_tags(artifact.get("tags"))),
     }
@@ -204,6 +210,14 @@ def build_payload(form):
     }
 
 
+def absolute_api_url(path):
+    if not path:
+        return ""
+    if path.startswith(("http://", "https://")):
+        return path
+    return f"{API_BASE_URL}{path if path.startswith('/') else '/' + path}"
+
+
 def parse_attributes(item):
     raw_attributes = item.get("attributes") or item.get("扩展属性") or item.get("扩展信息")
     if isinstance(raw_attributes, list):
@@ -269,6 +283,7 @@ HTML_TEMPLATE = """
         .field input, .field textarea { width: 100%; }
         .field textarea { min-height: 90px; resize: vertical; }
         .muted { color: #8b4513; font-size: 14px; }
+        .thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid #d2b48c; background: #fffaf0; }
     </style>
     <script>
         function toggleAll(source) {
@@ -367,6 +382,7 @@ HTML_TEMPLATE = """
                                 <tr>
                                     <th>选择</th>
                                     <th>操作</th>
+                                    <th>图片</th>
                                     <th>ID</th>
                                     <th>文物名称</th>
                                     <th>所属博物馆</th>
@@ -382,6 +398,13 @@ HTML_TEMPLATE = """
                                     <tr>
                                         <td><input type="checkbox" name="selected" value="{{ row._artifact_id }}"></td>
                                         <td><a class="btn btn-secondary" href="/edit/{{ row._artifact_id }}">编辑</a></td>
+                                        <td>
+                                            {% if row["显示图片"] %}
+                                                <img class="thumb" src="{{ image_url(row['显示图片']) }}" alt="{{ row['文物名称'] }}">
+                                            {% else %}
+                                                <span class="muted">无图</span>
+                                            {% endif %}
+                                        </td>
                                         <td>{{ row.id }}</td>
                                         <td>{{ row["文物名称"] }}</td>
                                         <td>{{ row["所属博物馆"] }}</td>
@@ -421,8 +444,17 @@ EDIT_TEMPLATE = """
         .field input, .field textarea { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #d2b48c; border-radius: 5px; color: #4a3728; }
         .field textarea { min-height: 120px; resize: vertical; }
         .btn { background-color: #8b4513; color: white; padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 18px; text-decoration: none; display: inline-block; }
+        .btn:disabled { opacity: 0.55; cursor: not-allowed; }
         .btn-secondary { background-color: #f4f1ea; color: #4a3728; border: 1px solid #d2b48c; }
         .toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
+        .image-upload-panel { margin-top: 24px; border: 1px dashed #8b4513; background: #fffaf0; border-radius: 10px; padding: 18px; }
+        .image-preview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-top: 12px; }
+        .image-preview-card { border: 1px solid #ead7bd; border-radius: 8px; background: white; padding: 10px; }
+        .image-preview-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 6px; background: #f4f1ea; border: 1px solid #ead7bd; }
+        .path-box { margin-top: 8px; padding: 8px; border-radius: 6px; background: #f4f1ea; color: #4a3728; word-break: break-all; font-family: monospace; font-size: 12px; }
+        .status { margin-top: 10px; font-weight: bold; }
+        .status.ok { color: #047857; }
+        .status.error { color: #c0392b; }
     </style>
 </head>
 <body>
@@ -436,8 +468,128 @@ EDIT_TEMPLATE = """
                     <a href="/" class="btn btn-secondary">返回后台</a>
                 </div>
             </form>
+            <div class="image-upload-panel">
+                <h2 style="margin-top:0;">本地图片上传 / 替换</h2>
+                <p class="path-box">当前文物 ID：<strong id="artifactId">{{ artifact_id }}</strong></p>
+                <div class="image-preview-grid">
+                    <div class="image-preview-card">
+                        <strong>当前原图</strong>
+                        {% if local_image_url or image_url_value %}
+                            <img id="fullPreview" src="{{ image_url(local_image_url or image_url_value) }}" alt="当前原图">
+                        {% else %}
+                            <div id="fullPreviewEmpty" class="path-box">暂无原图</div>
+                            <img id="fullPreview" src="" alt="当前原图" style="display:none;">
+                        {% endif %}
+                        <div class="path-box" id="localImageUrl">{{ local_image_url or "暂无 localImageUrl" }}</div>
+                    </div>
+                    <div class="image-preview-card">
+                        <strong>当前缩略图</strong>
+                        {% if local_thumbnail_url or local_image_url or image_url_value %}
+                            <img id="thumbPreview" src="{{ image_url(local_thumbnail_url or local_image_url or image_url_value) }}" alt="当前缩略图">
+                        {% else %}
+                            <div id="thumbPreviewEmpty" class="path-box">暂无缩略图</div>
+                            <img id="thumbPreview" src="" alt="当前缩略图" style="display:none;">
+                        {% endif %}
+                        <div class="path-box" id="localThumbnailUrl">{{ local_thumbnail_url or "暂无 localThumbnailUrl" }}</div>
+                    </div>
+                </div>
+                <div class="toolbar">
+                    <label style="font-weight:bold;">
+                        管理员 token
+                        <input id="adminToken" type="text" value="{{ admin_token }}" style="display:block; min-width:360px; margin-top:6px;">
+                    </label>
+                    <label style="font-weight:bold;">
+                        选择图片
+                        <input id="artifactImageFile" type="file" accept="image/jpeg,image/png,image/webp" style="display:block; margin-top:6px;">
+                    </label>
+                    <button id="uploadImageButton" type="button" class="btn">上传/替换图片</button>
+                </div>
+                <div class="muted">上传会自动调用 POST {{ api_base_url }}/api/admin/artifacts/{{ artifact_id }}/image，字段名 image。成功后刷新当前预览；返回后台后列表缩略图也会更新。</div>
+                <div id="uploadStatus" class="status"></div>
+            </div>
         </div>
     </div>
+    <script>
+        var apiBaseUrl = {{ api_base_url_json|safe }};
+        var artifactId = {{ artifact_id_json|safe }};
+        var tokenInput = document.getElementById("adminToken");
+        var fileInput = document.getElementById("artifactImageFile");
+        var uploadButton = document.getElementById("uploadImageButton");
+        var statusEl = document.getElementById("uploadStatus");
+        var fullPreview = document.getElementById("fullPreview");
+        var thumbPreview = document.getElementById("thumbPreview");
+        var fullPreviewEmpty = document.getElementById("fullPreviewEmpty");
+        var thumbPreviewEmpty = document.getElementById("thumbPreviewEmpty");
+        var localImageUrlEl = document.getElementById("localImageUrl");
+        var localThumbnailUrlEl = document.getElementById("localThumbnailUrl");
+
+        var storedToken = localStorage.getItem("muselink_admin_token") || localStorage.getItem("muselink_token") || "";
+        if (storedToken && !tokenInput.value) tokenInput.value = storedToken;
+        if (tokenInput.value) localStorage.setItem("muselink_admin_token", tokenInput.value);
+        tokenInput.addEventListener("input", function () {
+            localStorage.setItem("muselink_admin_token", tokenInput.value.trim());
+        });
+
+        function resolveImageUrl(path) {
+            if (!path) return "";
+            if (/^https?:\/\//i.test(path)) return path;
+            return apiBaseUrl.replace(/\/+$/, "") + (path.charAt(0) === "/" ? path : "/" + path);
+        }
+
+        function setStatus(message, isError) {
+            statusEl.textContent = message;
+            statusEl.className = "status " + (isError ? "error" : "ok");
+        }
+
+        function showImage(img, empty, path) {
+            if (!path) return;
+            img.src = resolveImageUrl(path) + "?v=" + Date.now();
+            img.style.display = "block";
+            if (empty) empty.style.display = "none";
+        }
+
+        uploadButton.addEventListener("click", async function () {
+            var file = fileInput.files && fileInput.files[0];
+            var token = tokenInput.value.trim();
+            if (!file) {
+                setStatus("请先选择 jpg/jpeg/png/webp 图片。", true);
+                return;
+            }
+            if (!token) {
+                setStatus("请先填写管理员 token。", true);
+                return;
+            }
+
+            var formData = new FormData();
+            formData.set("image", file);
+            uploadButton.disabled = true;
+            setStatus("上传中...", false);
+
+            try {
+                var response = await fetch(apiBaseUrl.replace(/\/+$/, "") + "/api/admin/artifacts/" + encodeURIComponent(artifactId) + "/image", {
+                    method: "POST",
+                    headers: { Authorization: "Bearer " + token },
+                    body: formData
+                });
+                var data = await response.json();
+                if (!response.ok) throw new Error(data.error || "上传失败");
+
+                var localImageUrl = data.localImageUrl || data.originalPath || "";
+                var localThumbnailUrl = data.localThumbnailUrl || data.thumbnailPath || "";
+                localImageUrlEl.textContent = localImageUrl || "暂无 localImageUrl";
+                localThumbnailUrlEl.textContent = localThumbnailUrl || "暂无 localThumbnailUrl";
+                showImage(fullPreview, fullPreviewEmpty, localImageUrl);
+                showImage(thumbPreview, thumbPreviewEmpty, localThumbnailUrl || localImageUrl);
+                fileInput.value = "";
+                localStorage.setItem("muselink_admin_token", token);
+                setStatus("上传成功。当前编辑区预览已更新，返回后台列表后缩略图会显示新图片；前端刷新后也会优先显示新图。", false);
+            } catch (error) {
+                setStatus(error instanceof Error ? error.message : String(error), true);
+            } finally {
+                uploadButton.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
 """
@@ -502,6 +654,7 @@ def index():
         query=query,
         query_string=urlencode({"q": query}) if query else "",
         api_base_url=API_BASE_URL,
+        image_url=absolute_api_url,
         error=error,
     )
 
@@ -565,7 +718,23 @@ def edit_item(artifact_id):
 
     detail = api_request(f"/api/artifacts/{quote(artifact_id)}").get("artifact") or {}
     row = artifact_to_row(detail)
-    return render_with_fields(EDIT_TEMPLATE, artifact_id=artifact_id, fields=fields_from_row(row))
+    try:
+        admin_token = get_admin_token()
+    except RuntimeError:
+        admin_token = ""
+    return render_with_fields(
+        EDIT_TEMPLATE,
+        artifact_id=artifact_id,
+        artifact_id_json=json.dumps(artifact_id),
+        fields=fields_from_row(row),
+        api_base_url=API_BASE_URL,
+        api_base_url_json=json.dumps(API_BASE_URL),
+        admin_token=admin_token,
+        image_url=absolute_api_url,
+        image_url_value=row["图片链接"],
+        local_image_url=row["本地原图"],
+        local_thumbnail_url=row["本地缩略图"],
+    )
 
 
 @app.route("/upload", methods=["POST"])

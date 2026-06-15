@@ -33,6 +33,8 @@ type ArtifactRow = {
   short_intro?: string | null;
   description: string;
   image_url: string;
+  local_image_url?: string | null;
+  local_thumbnail_url?: string | null;
   source_url?: string | null;
   tags: string[] | null;
   created_at?: string;
@@ -170,6 +172,8 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
 
   const columns = await getArtifactColumns(db);
   const canWriteSourceUrl = columns.has("source_url");
+  const canWriteLocalImageUrl = columns.has("local_image_url");
+  const canWriteLocalThumbnailUrl = columns.has("local_thumbnail_url");
   let inserted = 0;
   let updated = 0;
 
@@ -181,6 +185,8 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
     const shortIntro = text(artifact.shortIntro || (artifact as any).short_intro);
     const description = text(artifactDescriptionRaw(artifact)) || shortIntro || name;
     const imageUrl = text(artifactImageUrlRaw(artifact));
+    const localImageUrl = text((artifact as any).localImageUrl || (artifact as any).local_image_url);
+    const localThumbnailUrl = text((artifact as any).localThumbnailUrl || (artifact as any).local_thumbnail_url);
     const sourceUrl = text(artifact.sourceUrl || (artifact as any).source_url);
     const tags = normalizeTags(artifact.tags);
 
@@ -190,40 +196,57 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
     if (museumId == null) continue;
 
     const existingId = await findExistingArtifactId(db, name, museumId);
+    const writableImageColumns = [
+      ...(canWriteLocalImageUrl ? [{ column: "local_image_url", value: localImageUrl }] : []),
+      ...(canWriteLocalThumbnailUrl ? [{ column: "local_thumbnail_url", value: localThumbnailUrl }] : []),
+    ];
     const baseParams = [name, dynasty, museumId, category, shortIntro, description, imageUrl, tags];
     let artifactId = existingId;
 
     if (existingId != null) {
+      const params = [existingId, dynasty, category, shortIntro, description, imageUrl, tags];
+      const assignments = [
+        "dynasty=$2",
+        "category=$3",
+        "short_intro=$4",
+        "description=$5",
+        "image_url=$6",
+        "tags=$7",
+      ];
       if (canWriteSourceUrl) {
-        await db.query(
-          `update artifacts
-           set dynasty=$2, category=$3, short_intro=$4, description=$5, image_url=$6, tags=$7, source_url=$8, updated_at=now()
-           where id=$1`,
-          [existingId, dynasty, category, shortIntro, description, imageUrl, tags, sourceUrl],
-        );
-      } else {
-        await db.query(
-          `update artifacts
-           set dynasty=$2, category=$3, short_intro=$4, description=$5, image_url=$6, tags=$7
-           where id=$1`,
-          [existingId, dynasty, category, shortIntro, description, imageUrl, tags],
-        );
+        params.push(sourceUrl);
+        assignments.push(`source_url=$${params.length}`);
       }
+      for (const item of writableImageColumns) {
+        params.push(item.value);
+        assignments.push(`${item.column}=$${params.length}`);
+      }
+      if (columns.has("updated_at")) assignments.push("updated_at=now()");
+      await db.query(
+        `update artifacts
+         set ${assignments.join(", ")}
+         where id=$1`,
+        params,
+      );
       updated += 1;
     } else {
-      const insertedRow = canWriteSourceUrl
-        ? await db.query<{ id: number | string }>(
-            `insert into artifacts (name, dynasty, museum_id, category, short_intro, description, image_url, tags, source_url)
-             values ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-             returning id`,
-            [...baseParams, sourceUrl],
-          )
-        : await db.query<{ id: number | string }>(
-            `insert into artifacts (name, dynasty, museum_id, category, short_intro, description, image_url, tags)
-             values ($1,$2,$3,$4,$5,$6,$7,$8)
-             returning id`,
-            baseParams,
-          );
+      const columnsSql = ["name", "dynasty", "museum_id", "category", "short_intro", "description", "image_url", "tags"];
+      const params = [...baseParams];
+      if (canWriteSourceUrl) {
+        columnsSql.push("source_url");
+        params.push(sourceUrl);
+      }
+      for (const item of writableImageColumns) {
+        columnsSql.push(item.column);
+        params.push(item.value);
+      }
+      const placeholders = params.map((_, index) => `$${index + 1}`).join(",");
+      const insertedRow = await db.query<{ id: number | string }>(
+        `insert into artifacts (${columnsSql.join(", ")})
+         values (${placeholders})
+         returning id`,
+        params,
+      );
       artifactId = insertedRow.rows[0]?.id;
       inserted += 1;
     }
@@ -243,6 +266,8 @@ function normalizeTagsForArtifact(tags: unknown): Array<{ type: string; name: st
 function toArtifact(row: ArtifactRow, attributes: AttributeRow[] = []): Artifact {
   const id = String(row.id);
   const imageUrl = text(row.image_url);
+  const localImageUrl = text(row.local_image_url);
+  const localThumbnailUrl = text(row.local_thumbnail_url);
   const sourceUrl = text(row.source_url);
   const groups = new Map<string, { order: number; items: { name: string; value: string; order: number }[] }>();
 
@@ -271,6 +296,10 @@ function toArtifact(row: ArtifactRow, attributes: AttributeRow[] = []): Artifact
     category: text(row.category),
     shortIntro: text(row.short_intro),
     description: text(row.description),
+    localImageUrl,
+    localThumbnailUrl,
+    local_image_url: localImageUrl,
+    local_thumbnail_url: localThumbnailUrl,
     imageUrl,
     image_url: imageUrl,
     sourceUrl,
@@ -292,9 +321,13 @@ function toArtifact(row: ArtifactRow, attributes: AttributeRow[] = []): Artifact
 
 export async function listArtifactsFromDb(db: DbQuery, limit = 5000) {
   const safeLimit = Math.min(Math.max(Number(limit) || 5000, 1), 10000);
+  const columns = await getArtifactColumns(db);
+  const localImageSelect = columns.has("local_image_url") ? "a.local_image_url" : "'' as local_image_url";
+  const localThumbnailSelect = columns.has("local_thumbnail_url") ? "a.local_thumbnail_url" : "'' as local_thumbnail_url";
+  const sourceUrlSelect = columns.has("source_url") ? "a.source_url" : "'' as source_url";
   const rows = await db.query<ArtifactRow>(
     `select a.id, a.name, a.dynasty, a.museum_id, m.name as museum, a.category, a.short_intro,
-            a.description, a.image_url, a.source_url, a.tags, a.created_at, a.updated_at
+            a.description, a.image_url, ${localImageSelect}, ${localThumbnailSelect}, ${sourceUrlSelect}, a.tags, a.created_at, a.updated_at
      from artifacts a
      join museums m on m.id = a.museum_id
      order by a.id asc
@@ -305,9 +338,13 @@ export async function listArtifactsFromDb(db: DbQuery, limit = 5000) {
 }
 
 export async function getArtifactFromDb(db: DbQuery, id: string) {
+  const columns = await getArtifactColumns(db);
+  const localImageSelect = columns.has("local_image_url") ? "a.local_image_url" : "'' as local_image_url";
+  const localThumbnailSelect = columns.has("local_thumbnail_url") ? "a.local_thumbnail_url" : "'' as local_thumbnail_url";
+  const sourceUrlSelect = columns.has("source_url") ? "a.source_url" : "'' as source_url";
   const rows = await db.query<ArtifactRow>(
     `select a.id, a.name, a.dynasty, a.museum_id, m.name as museum, a.category, a.short_intro,
-            a.description, a.image_url, a.source_url, a.tags, a.created_at, a.updated_at
+            a.description, a.image_url, ${localImageSelect}, ${localThumbnailSelect}, ${sourceUrlSelect}, a.tags, a.created_at, a.updated_at
      from artifacts a
      join museums m on m.id = a.museum_id
      where a.id::text = $1

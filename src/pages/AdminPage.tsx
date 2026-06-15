@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { Artifact } from "../types";
 import { AuthService } from "../auth/AuthService";
 import { UserSession } from "../auth/UserSession";
-import { apiFetch } from "../lib/api";
+import { apiFetch, apiUrl, getAuthToken } from "../lib/api";
 import { getAdminStats, getAdminUsers, type AdminStatsResponse, type AdminUserSummary } from "../lib/adminClient";
 import { me } from "../lib/authClient";
 import { ForbiddenPage } from "./ForbiddenPage";
@@ -131,6 +131,9 @@ export function AdminPage() {
   const [query, setQuery] = useState("");
   const [importText, setImportText] = useState("");
   const [importResult, setImportResult] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUploadMessage, setImageUploadMessage] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -238,9 +241,59 @@ export function AdminPage() {
     }
   };
 
+  const onUploadArtifactImage = async () => {
+    if (!form.id) {
+      setError("请先选择要编辑的文物。");
+      return;
+    }
+    if (!imageFile) {
+      setError("请先选择要上传的图片。");
+      return;
+    }
+
+    const token = getAuthToken();
+    if (!token) {
+      setError("请先登录管理员账号后再上传图片。");
+      return;
+    }
+
+    setUploadingImage(true);
+    setError(null);
+    setImageUploadMessage(null);
+
+    try {
+      const formData = new FormData();
+      formData.set("image", imageFile);
+      const response = await fetch(apiUrl(`/api/admin/artifacts/${encodeURIComponent(form.id)}/image`), {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const contentType = response.headers.get("content-type") || "";
+      const data = contentType.includes("application/json") ? await response.json() : await response.text();
+      if (!response.ok) {
+        const message = typeof data === "object" && data && "error" in data ? String(data.error) : String(data);
+        throw new Error(message || `上传失败：${response.status}`);
+      }
+
+      const localImageUrl = String(data.localImageUrl || data.originalPath || "");
+      const localThumbnailUrl = String(data.localThumbnailUrl || data.thumbnailPath || "");
+      setForm((current) => ({ ...current, imageUrl: localImageUrl || current.imageUrl }));
+      setImageFile(null);
+      setImageUploadMessage(`图片已上传：${localImageUrl || "-"}，缩略图：${localThumbnailUrl || "-"}`);
+      await loadArtifacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const onEditArtifact = (artifact: Artifact) => {
     setTab("artifacts");
     setForm(formFromArtifact(artifact));
+    setImageFile(null);
+    setImageUploadMessage(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -367,6 +420,27 @@ export function AdminPage() {
                 <input value={form.shortIntro} onChange={(e) => setForm({ ...form, shortIntro: e.target.value })} placeholder="一句话简介" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="文物描述" rows={5} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="图片 URL" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
+                {form.id && (
+                  <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4">
+                    <div className="text-sm font-black text-gray-900">上传本地图片</div>
+                    <div className="mt-1 text-xs text-gray-500">支持 jpg/jpeg/png/webp，上传后会同步为前端优先展示图片。</div>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                      className="mt-3 block w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-2 file:text-xs file:font-black file:text-white"
+                    />
+                    <button
+                      type="button"
+                      disabled={uploadingImage || !imageFile}
+                      onClick={onUploadArtifactImage}
+                      className="mt-3 rounded-xl bg-gray-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50"
+                    >
+                      {uploadingImage ? "上传中..." : "上传并同步图片"}
+                    </button>
+                    {imageUploadMessage && <div className="mt-2 break-all text-xs font-bold text-emerald-700">{imageUploadMessage}</div>}
+                  </div>
+                )}
                 <input value={form.sourceUrl} onChange={(e) => setForm({ ...form, sourceUrl: e.target.value })} placeholder="来源 URL" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 <input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="标签，用逗号分隔" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 <div className="grid gap-3 md:grid-cols-2">

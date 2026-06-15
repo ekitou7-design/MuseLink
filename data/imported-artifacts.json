@@ -4700,7 +4700,9 @@
       "sourceName": "国家文物局第三批禁止出境展览文物目录",
       "sourceFile": "第三批禁止出境展览文物目录",
       "copyrightNote": "",
-      "image_url": ""
+      "image_url": "",
+      "localImageUrl": "/artifact-images/116.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/116-thumb.jpg"
     },
     {
       "id": "ncha-third-025",

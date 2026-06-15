@@ -8,6 +8,8 @@ import {
   ragSearchArtifacts,
   searchArtifacts,
   updateArtifact,
+  uploadArtifactImage,
+  uploadArtifactImageFile,
 } from "../controllers/artifactsController";
 
 export const artifactRoutes = Router();
@@ -20,6 +22,8 @@ artifactRoutes.get("/artifacts/search", searchArtifacts);
 artifactRoutes.get("/api/artifacts/search", searchArtifacts);
 artifactRoutes.post("/api/artifacts", requireAdmin, createArtifact);
 artifactRoutes.post("/artifacts", requireAdmin, createArtifact);
+artifactRoutes.post("/api/admin/artifacts/:id/image", requireAdmin, uploadArtifactImageFile, uploadArtifactImage);
+artifactRoutes.post("/admin/artifacts/:id/image", requireAdmin, uploadArtifactImageFile, uploadArtifactImage);
 artifactRoutes.put("/api/artifacts/:id", requireAdmin, updateArtifact);
 artifactRoutes.put("/artifacts/:id", requireAdmin, updateArtifact);
 artifactRoutes.delete("/api/artifacts/:id", requireAdmin, deleteArtifact);

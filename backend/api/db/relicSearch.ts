@@ -15,6 +15,8 @@ type RelicRow = {
   museum: string;
   description: string;
   image_url: string;
+  local_image_url?: string | null;
+  local_thumbnail_url?: string | null;
   tags: string[] | null;
   created_at: string;
   category?: string | null;
@@ -35,6 +37,7 @@ const BASE_ARTIFACT_COLUMNS = new Set([
 ]);
 
 const OPTIONAL_TEXT_COLUMNS = ["category", "material", "remark", "remarks"] as const;
+const OPTIONAL_IMAGE_COLUMNS = ["local_image_url", "local_thumbnail_url"] as const;
 
 async function getArtifactColumns(db: DbQuery) {
   try {
@@ -85,6 +88,10 @@ function normalizeRelicRow(row: RelicRow) {
     description: row.description ?? "",
     imageUrl: row.image_url ?? "",
     image_url: row.image_url ?? "",
+    localImageUrl: row.local_image_url ?? "",
+    localThumbnailUrl: row.local_thumbnail_url ?? "",
+    local_image_url: row.local_image_url ?? "",
+    local_thumbnail_url: row.local_thumbnail_url ?? "",
     tags,
     favsCount: 0,
     category,
@@ -99,8 +106,10 @@ export async function searchRelics(db: DbQuery, options: SearchRelicsOptions) {
   const limit = Math.min(Math.max(Number(options.limit) || 100, 1), 500);
   const columns = await getArtifactColumns(db);
   const optionalColumns = OPTIONAL_TEXT_COLUMNS.filter((column) => columns.has(column));
+  const optionalImageColumns = OPTIONAL_IMAGE_COLUMNS.filter((column) => columns.has(column));
 
   const optionalSelect = optionalColumns.map((column) => `a.${column} as ${column}`);
+  const optionalImageSelect = optionalImageColumns.map((column) => `a.${column} as ${column}`);
   const optionalSearchExpressions = optionalColumns.map((column) => `coalesce(a.${column}::text, '')`);
   const searchExpressions = [
     "coalesce(a.name, '')",
@@ -135,7 +144,7 @@ export async function searchRelics(db: DbQuery, options: SearchRelicsOptions) {
        a.image_url,
        a.tags,
        a.created_at
-       ${optionalSelect.length ? `, ${optionalSelect.join(", ")}` : ""}
+       ${optionalSelect.length || optionalImageSelect.length ? `, ${[...optionalSelect, ...optionalImageSelect].join(", ")}` : ""}
      from artifacts a
      join museums m on m.id = a.museum_id
      ${whereSql}

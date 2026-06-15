@@ -31,6 +31,8 @@ create table if not exists artifacts (
   short_intro text not null default '',
   description text not null,
   image_url text not null,
+  local_image_url text not null default '',
+  local_thumbnail_url text not null default '',
   source_url text not null default '',
   tags text[] not null default '{}'::text[],
   created_at timestamptz not null default now(),
@@ -39,6 +41,8 @@ create table if not exists artifacts (
 
 alter table artifacts add column if not exists category text not null default '';
 alter table artifacts add column if not exists short_intro text not null default '';
+alter table artifacts add column if not exists local_image_url text not null default '';
+alter table artifacts add column if not exists local_thumbnail_url text not null default '';
 alter table artifacts add column if not exists source_url text not null default '';
 alter table artifacts add column if not exists updated_at timestamptz not null default now();
 
