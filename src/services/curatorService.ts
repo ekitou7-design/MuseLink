@@ -51,6 +51,8 @@ const CURATION_STOP_WORDS = new Set([
   "ai",
 ]);
 const REMOTE_CURATION_ENDPOINT = "/api/ai/curation";
+const LOCAL_FALLBACK_NOTICE = "AI 生成失败，当前展示的是本地规则草稿。";
+const CURATION_MIN_REMOTE_CANDIDATES = 12;
 
 export type GenerateExhibitionOptions = {
   guideAnswers?: CuratorGuideAnswers;
@@ -67,6 +69,12 @@ export interface CurationProvider {
     options?: GenerateExhibitionOptions,
   ): Promise<Partial<Exhibition>>;
 }
+
+type RemoteCurationErrorPayload = {
+  error?: string;
+  code?: string;
+  detail?: string;
+};
 
 function buildGuideSummary(guideAnswers: CuratorGuideAnswers = {}): string {
   return CONTENT_CURATION_QUESTIONS
@@ -89,8 +97,58 @@ function buildEffectivePrompt(userPrompt: string, guideAnswers: CuratorGuideAnsw
   ].join("\n");
 }
 
+function isDevRuntime() {
+  return Boolean((import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV);
+}
+
+function randomShuffle<T>(items: T[]): T[] {
+  return items
+    .map((item) => ({ item, random: Math.random() }))
+    .sort((left, right) => left.random - right.random)
+    .map(({ item }) => item);
+}
+
+function sampleArtifacts(items: Artifact[], count: number): Artifact[] {
+  if (count <= 0) return [];
+  return randomShuffle(items).slice(0, count);
+}
+
+function artifactDebugRow(artifact: Artifact) {
+  return { id: artifact.id, name: artifactName(artifact) };
+}
+
+function logCurationDebug(label: string, payload: Record<string, unknown>) {
+  if (!isDevRuntime()) return;
+  console.debug(`[curation] ${label}`, payload);
+}
+
+function readableRemoteCurationError(payload: RemoteCurationErrorPayload | null, status: number) {
+  if (!payload) return `AI 服务请求失败（HTTP ${status}）。`;
+  const base = payload.error || `AI 服务请求失败（HTTP ${status}）。`;
+  const code = payload.code ? `错误码：${payload.code}` : "";
+  const detail = payload.detail ? `详情：${payload.detail}` : "";
+  return [base, code, detail].filter(Boolean).join(" ");
+}
+
+function mergeWithRandomSupplement(primary: Artifact[], allArtifacts: Artifact[], targetCount: number): Artifact[] {
+  const seen = new Set<string>();
+  const merged: Artifact[] = [];
+  for (const artifact of primary) {
+    if (seen.has(artifact.id)) continue;
+    seen.add(artifact.id);
+    merged.push(artifact);
+  }
+
+  if (merged.length >= targetCount) return merged.slice(0, targetCount);
+
+  const remainder = allArtifacts.filter((artifact) => !seen.has(artifact.id));
+  merged.push(...sampleArtifacts(remainder, targetCount - merged.length));
+  return merged;
+}
+
 async function retrieveCandidatesForCuration(userPrompt: string, allArtifacts: Artifact[]): Promise<Artifact[]> {
   const query = userPrompt.trim() || "个人策展 展览 文物";
+  const artifactMap = new Map(allArtifacts.map((a) => [a.id, a]));
   try {
     const res = await fetch(apiUrl("/api/rag/search"), {
       method: "POST",
@@ -100,15 +158,29 @@ async function retrieveCandidatesForCuration(userPrompt: string, allArtifacts: A
     if (!res.ok) throw new Error(`rag ${res.status}`);
     const data = (await res.json()) as { artifactIds?: string[] };
     const ids = data.artifactIds ?? [];
-    const map = new Map(allArtifacts.map((a) => [a.id, a]));
-    const picked = ids.map((id) => map.get(id)).filter(Boolean) as Artifact[];
-    if (picked.length >= 6) return picked;
+    const picked = ids.map((id) => artifactMap.get(id)).filter(Boolean) as Artifact[];
+    const supplemented = mergeWithRandomSupplement(
+      picked,
+      allArtifacts,
+      picked.length >= CURATION_MIN_REMOTE_CANDIDATES ? CURATION_CANDIDATE_LIMIT : Math.min(CURATION_CANDIDATE_LIMIT, allArtifacts.length),
+    );
+    logCurationDebug("RAG 返回", {
+      query,
+      returned: picked.slice(0, 10).map(artifactDebugRow),
+      finalCandidates: supplemented.slice(0, 12).map(artifactDebugRow),
+    });
+    if (supplemented.length >= 6) return supplemented;
   } catch (e) {
     console.warn("检索候选不可用，改用关键词:", e);
   }
   const kw = rankArtifactsByKeywordQuery(allArtifacts, query);
-  if (kw.length > 0) return kw.slice(0, CURATION_CANDIDATE_LIMIT);
-  return allArtifacts.slice(0, Math.min(CURATION_CANDIDATE_LIMIT, allArtifacts.length));
+  const supplemented = mergeWithRandomSupplement(kw, allArtifacts, Math.min(CURATION_CANDIDATE_LIMIT, allArtifacts.length));
+  logCurationDebug("关键词兜底候选", {
+    query,
+    keywordMatches: kw.length,
+    finalCandidates: supplemented.slice(0, 12).map(artifactDebugRow),
+  });
+  return supplemented;
 }
 
 function normalizeText(value: unknown): string {
@@ -124,14 +196,20 @@ function extractCurationIntent(prompt: string) {
   const explicitTheme =
     clean.match(/(?:关于|围绕|主题是|策划一个|策划一场|生成一个)([^，。.!！?？]+)/)?.[1]?.trim() ||
     clean.trim();
-  const keywords = Array.from(
-    new Set(
-      clean
-        .split(/\s+|的|和|与|及|、/)
-        .map((word) => word.trim())
-        .filter((word) => word.length >= 2 && !CURATION_STOP_WORDS.has(word)),
-    ),
-  ).slice(0, 10);
+  const rawWords = clean
+    .split(/\s+|的|和|与|及|、/)
+    .map((word) => word.trim())
+    .filter((word) => word.length >= 2 && !CURATION_STOP_WORDS.has(word));
+  const expandedWords = rawWords.flatMap((word) => {
+    if (!/[\u4e00-\u9fff]/.test(word) || word.length <= 3) return [word];
+    const chunks: string[] = [word];
+    for (let index = 0; index < word.length - 1; index += 2) {
+      const chunk = word.slice(index, index + 2);
+      if (chunk.length >= 2 && !CURATION_STOP_WORDS.has(chunk)) chunks.push(chunk);
+    }
+    return chunks;
+  });
+  const keywords = Array.from(new Set(expandedWords)).slice(0, 14);
 
   return {
     theme: (explicitTheme || prompt || "主题展览").slice(0, 36),
@@ -155,9 +233,9 @@ function artifactText(artifact: Artifact): string {
     .join(" ");
 }
 
-function scoreForPrompt(artifact: Artifact, prompt: string, keywords: string[], index: number): number {
+function scoreForPrompt(artifact: Artifact, prompt: string, keywords: string[]): number {
   const text = artifactText(artifact);
-  let score = Math.max(0, CURATION_CANDIDATE_LIMIT - index) * 0.08;
+  let score = 0;
   const promptText = prompt.toLowerCase();
   if (promptText && text.includes(promptText)) score += 18;
   keywords.forEach((keyword) => {
@@ -171,6 +249,15 @@ function scoreForPrompt(artifact: Artifact, prompt: string, keywords: string[], 
   return score;
 }
 
+function compareScoreWithRandomTies(
+  left: { score: number; random: number },
+  right: { score: number; random: number },
+) {
+  const diff = right.score - left.score;
+  if (Math.abs(diff) > 0.75) return diff;
+  return left.random - right.random;
+}
+
 function diversifyArtifacts(candidates: Artifact[], prompt: string, keywords: string[], targetCount: number): Artifact[] {
   const selected: Artifact[] = [];
   const museumCounts = new Map<string, number>();
@@ -178,8 +265,8 @@ function diversifyArtifacts(candidates: Artifact[], prompt: string, keywords: st
   const materialCounts = new Map<string, number>();
 
   const ranked = candidates
-    .map((artifact, index) => ({ artifact, score: scoreForPrompt(artifact, prompt, keywords, index) }))
-    .sort((a, b) => b.score - a.score);
+    .map((artifact) => ({ artifact, score: scoreForPrompt(artifact, prompt, keywords), random: Math.random() }))
+    .sort(compareScoreWithRandomTies);
 
   for (const { artifact } of ranked) {
     if (selected.some((item) => item.id === artifact.id)) continue;
@@ -259,8 +346,9 @@ function buildSections(theme: string, pick: Artifact[]) {
     }));
 }
 
-function guideIntroForTheme(theme: string, pick: Artifact[]) {
-  const firstName = pick[0] ? artifactName(pick[0]) : "一件展品";
+function guideIntroForTheme(theme: string, pick: Artifact[], openingArtifact?: Artifact) {
+  const artifact = openingArtifact || pick[0];
+  const firstName = artifact ? artifactName(artifact) : "一件展品";
   return `这场展览从「${firstName}」出发，带你走近「${theme}」背后的器物、时代与审美。展品之间彼此呼应，像一条缓慢展开的参观路线。`;
 }
 
@@ -402,7 +490,32 @@ function completeStructuredExhibition(result: Partial<Exhibition>, allArtifacts:
   } satisfies Partial<Exhibition>;
 }
 
-function buildLocalAICuration(theme: string, pick: Artifact[], sourceNote: string, units: ExhibitionUnit[], selectionReasons: Record<string, string>) {
+function markAiGenerated(result: Partial<Exhibition>): Partial<Exhibition> {
+  return {
+    ...result,
+    source: "ai",
+    aiGenerated: true,
+  };
+}
+
+function markLocalFallback(result: Partial<Exhibition>, error: unknown): Partial<Exhibition> {
+  return {
+    ...result,
+    source: "local-fallback",
+    aiGenerated: false,
+    generationNotice: LOCAL_FALLBACK_NOTICE,
+    generationError: error instanceof Error ? error.message : String(error),
+  };
+}
+
+function buildLocalAICuration(
+  theme: string,
+  pick: Artifact[],
+  sourceNote: string,
+  units: ExhibitionUnit[],
+  selectionReasons: Record<string, string>,
+  openingArtifact?: Artifact,
+) {
   const artifactNotes = Object.fromEntries(
     pick.map((artifact, index) => [
       artifact.id,
@@ -412,7 +525,7 @@ function buildLocalAICuration(theme: string, pick: Artifact[], sourceNote: strin
 
   return {
     theme,
-    opening: guideIntroForTheme(theme, pick),
+    opening: guideIntroForTheme(theme, pick, openingArtifact),
     sections: units.map((unit) => ({
       title: unit.title,
       summary: unit.description,
@@ -503,44 +616,57 @@ const localRuleCurationProvider: CurationProvider = {
     const intent = extractCurationIntent(effectivePrompt);
     const candidates = await retrieveCandidatesForCuration(effectivePrompt, allArtifacts);
     const targetCount = Math.min(15, Math.max(6, Math.min(candidates.length || allArtifacts.length, 12)));
-    const pick = diversifyArtifacts(
-      candidates.length > 0
-        ? candidates
-        : [...allArtifacts].sort((a, b) => (b.favsCount ?? 0) - (a.favsCount ?? 0)),
+	    const pick = diversifyArtifacts(
+	      candidates.length > 0
+	        ? candidates
+	        : randomShuffle(allArtifacts),
       effectivePrompt,
       intent.keywords,
       targetCount,
     );
 
-    if (pick.length === 0) {
-      throw new Error("没有从后端文物库检索到可用于策展的展品。");
-    }
+	    if (pick.length === 0) {
+	      throw new Error("没有从后端文物库检索到可用于策展的展品。");
+	    }
+	
+	    const title = `一念成展：${intent.theme}`;
+	    const openingArtifact = sampleArtifacts(pick.slice(0, Math.min(5, pick.length)), 1)[0] || pick[0];
+	    const units = buildUnits(intent.theme, pick);
+	    const selectionReasons = buildSelectionReasons(pick);
+	    const artifactRoles = buildArtifactRoles(pick);
+	    const exhibitionIntro = guideIntroForTheme(intent.theme, pick, openingArtifact);
+	    const conclusion = conclusionForTheme(intent.theme);
+	    logCurationDebug("本地规则选品", {
+	      keywords: userPrompt,
+	      effectivePrompt,
+	      candidates: candidates.slice(0, 12).map(artifactDebugRow),
+	      selected: pick.map(artifactDebugRow),
+	      artifactIds: pick.map((artifact) => artifact.id),
+	      openingArtifact: openingArtifact ? artifactDebugRow(openingArtifact) : null,
+	      source: "local-fallback",
+	    });
 
-    const title = `一念成展：${intent.theme}`;
-    const units = buildUnits(intent.theme, pick);
-    const selectionReasons = buildSelectionReasons(pick);
-    const artifactRoles = buildArtifactRoles(pick);
-    const exhibitionIntro = guideIntroForTheme(intent.theme, pick);
-    const conclusion = conclusionForTheme(intent.theme);
-
-    return {
-      title,
-      intro: exhibitionIntro,
-      exhibitionIntro,
-      coverUrl: String(pick[0]?.imageUrl ?? ""),
+	    return {
+	      title,
+	      intro: exhibitionIntro,
+	      exhibitionIntro,
+	      coverUrl: String(openingArtifact?.imageUrl ?? pick[0]?.imageUrl ?? ""),
       artifactIds: pick.map((a) => a.id),
+      source: "local-fallback",
+      aiGenerated: false,
       units,
       conclusion,
       selectionReasons,
       artifactRoles,
       aiCuration: buildLocalAICuration(
-        intent.theme,
-        pick,
-        "展品来自后端馆藏库；当前方案由本地策展规则根据馆藏字段生成，未补写数据库之外的具体故事。",
-        units,
-        selectionReasons,
-      ),
-    };
+	        intent.theme,
+	        pick,
+	        "展品来自后端馆藏库；当前方案由本地策展规则根据馆藏字段生成，未补写数据库之外的具体故事。",
+	        units,
+	        selectionReasons,
+	        openingArtifact,
+	      ),
+	    };
   },
 };
 
@@ -548,12 +674,19 @@ async function tryRemoteExhibitionGeneration(
   userPrompt: string,
   allArtifacts: Artifact[],
   options: GenerateExhibitionOptions = {},
-): Promise<Partial<Exhibition> | null> {
+): Promise<{ result: Partial<Exhibition> | null; error: unknown | null }> {
   try {
-    const guideSummary = buildGuideSummary(options.guideAnswers);
-    const effectivePrompt = buildEffectivePrompt(userPrompt, options.guideAnswers);
-    const candidates = await retrieveCandidatesForCuration(effectivePrompt, allArtifacts);
-    const res = await fetch(apiUrl(REMOTE_CURATION_ENDPOINT), {
+	    const guideSummary = buildGuideSummary(options.guideAnswers);
+	    const effectivePrompt = buildEffectivePrompt(userPrompt, options.guideAnswers);
+	    const candidates = await retrieveCandidatesForCuration(effectivePrompt, allArtifacts);
+	    logCurationDebug("调用 AI 接口", {
+	      keywords: userPrompt,
+	      effectivePrompt,
+	      endpoint: REMOTE_CURATION_ENDPOINT,
+	      candidateCount: candidates.length,
+	      candidates: candidates.slice(0, 12).map(artifactDebugRow),
+	    });
+	    const res = await fetch(apiUrl(REMOTE_CURATION_ENDPOINT), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -565,19 +698,29 @@ async function tryRemoteExhibitionGeneration(
       }),
     });
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      throw new Error(data?.error || `remote curation ${res.status}`);
-    }
+	    if (!res.ok) {
+	      const data = await res.json().catch(() => null) as RemoteCurationErrorPayload | null;
+	      throw new Error(readableRemoteCurationError(data, res.status));
+	    }
 
-    const result = (await res.json()) as Partial<Exhibition>;
-    if (!Array.isArray(result.artifactIds) || result.artifactIds.length === 0) {
-      throw new Error("remote curation returned no artifactIds");
-    }
-    return completeStructuredExhibition(result, allArtifacts, userPrompt || "主题展览");
+	    const result = (await res.json()) as Partial<Exhibition>;
+	    if (!Array.isArray(result.artifactIds) || result.artifactIds.length === 0) {
+	      throw new Error("remote curation returned no artifactIds");
+	    }
+	    logCurationDebug("AI 生成选品", {
+	      keywords: userPrompt,
+	      effectivePrompt,
+	      candidates: candidates.slice(0, 12).map(artifactDebugRow),
+	      artifactIds: result.artifactIds,
+	      source: "ai",
+	    });
+	    return {
+	      result: markAiGenerated(completeStructuredExhibition(result, allArtifacts, userPrompt || "主题展览")),
+	      error: null,
+	    };
   } catch (error) {
-    console.warn("魔搭策展不可用，改用本地规则:", error);
-    return null;
+    console.warn("AI 策展不可用，生成本地规则草稿:", error);
+    return { result: null, error };
   }
 }
 
@@ -629,14 +772,14 @@ export const curatorService: CurationProvider = {
   },
   async generateExhibition(userPrompt, allArtifacts, options) {
     if (activeCurationProvider === localRuleCurationProvider) {
-      const remoteResult = await tryRemoteExhibitionGeneration(userPrompt, allArtifacts, options);
-      if (remoteResult) return remoteResult;
+      const remote = await tryRemoteExhibitionGeneration(userPrompt, allArtifacts, options);
+      if (remote.result) return remote.result;
       const fallbackResult = await activeCurationProvider.generateExhibition(userPrompt, allArtifacts, options);
-      return {
-        ...completeStructuredExhibition(fallbackResult, allArtifacts, userPrompt || "主题展览"),
-        generationNotice: "AI 服务暂不可用，已用本地策展规则生成草案。",
-      } as Partial<Exhibition>;
+      return markLocalFallback(
+        completeStructuredExhibition(fallbackResult, allArtifacts, userPrompt || "主题展览"),
+        remote.error || "AI generation failed.",
+      );
     }
-    return activeCurationProvider.generateExhibition(userPrompt, allArtifacts, options);
+    return markAiGenerated(await activeCurationProvider.generateExhibition(userPrompt, allArtifacts, options));
   },
 };

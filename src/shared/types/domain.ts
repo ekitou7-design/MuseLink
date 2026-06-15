@@ -110,6 +110,10 @@ export interface Exhibition {
   commentsCount: number;
   bgmUrl?: string;
   slideshowSettings?: SlideshowSettings;
+  source?: 'ai' | 'local-fallback' | string;
+  aiGenerated?: boolean;
+  generationNotice?: string;
+  generationError?: string;
   aiCuration?: AICurationPlan;
   exhibitionIntro?: string;
   units?: ExhibitionUnit[];

@@ -15,6 +15,10 @@ export type ExhibitionRecord = {
   commentsCount: number;
   bgmUrl?: string;
   slideshowSettings?: unknown;
+  source?: string;
+  aiGenerated?: boolean;
+  generationNotice?: string;
+  generationError?: string;
   aiCuration?: unknown;
   exhibitionIntro?: string;
   units?: unknown;
@@ -83,6 +87,10 @@ export async function createExhibition(input: {
   isPublic: boolean;
   bgmUrl?: string;
   slideshowSettings?: unknown;
+  source?: string;
+  aiGenerated?: boolean;
+  generationNotice?: string;
+  generationError?: string;
   aiCuration?: unknown;
   exhibitionIntro?: string;
   units?: unknown;
@@ -107,6 +115,10 @@ export async function createExhibition(input: {
     commentsCount: 0,
     bgmUrl: input.bgmUrl,
     slideshowSettings: input.slideshowSettings,
+    source: input.source,
+    aiGenerated: input.aiGenerated,
+    generationNotice: input.generationNotice,
+    generationError: input.generationError,
     aiCuration: input.aiCuration,
     exhibitionIntro: input.exhibitionIntro,
     units: input.units,

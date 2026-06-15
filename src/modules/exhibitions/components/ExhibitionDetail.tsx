@@ -43,6 +43,18 @@ function tagName(tag: Artifact['tags'][number]) {
   return typeof tag === 'string' ? tag : tag.name;
 }
 
+function curationSourceLabel(exhibition: Partial<Exhibition>): string {
+  if (exhibition.source === 'local-fallback' || exhibition.aiGenerated === false) return '本地规则草稿';
+  if (exhibition.source === 'ai' || exhibition.aiGenerated === true) return 'AI 生成';
+  return '';
+}
+
+function curationSourceTone(exhibition: Partial<Exhibition>) {
+  return exhibition.source === 'local-fallback' || exhibition.aiGenerated === false
+    ? 'bg-rose-50 text-rose-600'
+    : 'bg-emerald-50 text-emerald-600';
+}
+
 function textValue(value: unknown) {
   return displayDbString(value);
 }
@@ -72,6 +84,7 @@ function CuratorPlanDrawer({
   const guideIntro = exhibitionGuideIntro(exhibition);
   const conclusion = exhibitionConclusion(exhibition);
   const artifactIds = units.flatMap((unit) => unit.artifactIds);
+  const sourceLabel = curationSourceLabel(exhibition);
 
   return (
     <AnimatePresence>
@@ -96,7 +109,14 @@ function CuratorPlanDrawer({
             <div className="mx-auto mt-3 h-1.5 w-11 rounded-full bg-gray-300" />
             <div className="flex items-center justify-between border-b border-black/5 px-5 py-4">
               <div className="min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">AI 策展方案</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">AI 策展方案</p>
+                  {sourceLabel && (
+                    <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold", curationSourceTone(exhibition))}>
+                      {sourceLabel}
+                    </span>
+                  )}
+                </div>
                 <h3 className="mt-1 truncate text-lg font-serif font-bold text-gray-950">
                   {aiCuration?.theme || exhibition.title}
                 </h3>
@@ -291,6 +311,7 @@ export const ExhibitionDetail = ({
   const exhibitIntro = plainText((exhibition as Exhibition).exhibitionIntro) || plainText(exhibition.intro);
   const conclusion = exhibitionConclusion(exhibition as Exhibition);
   const planSummary = guideIntro ? exhibitionTextSummary(guideIntro, 96) : '查看展览的叙事结构、单元安排和展品选择理由。';
+  const sourceLabel = curationSourceLabel(exhibition as Exhibition);
 
   const filteredArtifactIds = useMemo(() => {
     if (!search.trim()) return artifactIds;
@@ -362,7 +383,14 @@ export const ExhibitionDetail = ({
             )}
           </div>
           <div className="flex-1 text-white space-y-3">
-            <h2 className="text-2xl font-bold leading-tight">{exhibition.title}</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="min-w-0 text-2xl font-bold leading-tight">{exhibition.title}</h2>
+              {sourceLabel && (
+                <span className={cn("shrink-0 rounded-full px-2 py-1 text-[10px] font-bold", curationSourceTone(exhibition as Exhibition))}>
+                  {sourceLabel}
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               {exhibition.userPhoto && (
                 <img src={exhibition.userPhoto} className="w-6 h-6 rounded-full border border-white/20" />

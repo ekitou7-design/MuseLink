@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Bookmark, Loader2, Mic, MicOff, Music, Share2, Sparkles, X, Zap } from 'lucide-react';
+import { AlertCircle, Bookmark, Loader2, Mic, MicOff, Music, RefreshCw, Share2, Sparkles, X, Zap } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Artifact, Exhibition } from '../../../types';
 import { SafeImage } from '../../../components/SafeImage';
@@ -27,6 +27,13 @@ function cleanGuideAnswers(guideAnswers: CuratorGuideAnswers): CuratorGuideAnswe
   );
 }
 
+function curationSourceLabel(result: Partial<Exhibition> | null): string {
+  if (!result) return '';
+  if (result.source === 'local-fallback' || result.aiGenerated === false) return '本地规则草稿';
+  if (result.source === 'ai' || result.aiGenerated === true) return 'AI 生成';
+  return '';
+}
+
 export const AIExhibitionModal = ({ 
   isOpen, 
   onClose, 
@@ -52,10 +59,13 @@ export const AIExhibitionModal = ({
   const [generateBGM, setGenerateBGM] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [localFallbackAcknowledged, setLocalFallbackAcknowledged] = useState(false);
   const [guideAnswers, setGuideAnswers] = useState<CuratorGuideAnswers>({});
   const recognitionRef = useRef<any>(null);
   const answeredCount = Object.values(guideAnswers).filter((value) => value.trim()).length;
   const canGenerate = keywords.trim().length > 0 || answeredCount > 0;
+  const isLocalFallback = Boolean(result && (result.source === 'local-fallback' || result.aiGenerated === false));
+  const sourceLabel = curationSourceLabel(result);
 
   const speechSupported = typeof window !== "undefined" && Boolean((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
 
@@ -95,8 +105,13 @@ export const AIExhibitionModal = ({
       setKeywords('');
       setIsListening(false);
       setIsShareOpen(false);
+      setLocalFallbackAcknowledged(false);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    setLocalFallbackAcknowledged(false);
+  }, [result?.source, result?.aiGenerated]);
 
   useEffect(() => {
     if (isOpen && initialKeywords.trim()) {
@@ -215,11 +230,52 @@ export const AIExhibitionModal = ({
                   </div>
                   <div className="min-h-0 flex-1 space-y-3 overflow-hidden p-4">
                     <div>
-                      <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-400">AI 策展结果</h3>
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="text-[10px] font-bold uppercase tracking-widest text-gray-400">AI 策展结果</h3>
+                        {sourceLabel && (
+                          <span className={cn(
+                            "shrink-0 rounded-full px-2 py-1 text-[10px] font-bold",
+                            isLocalFallback ? "bg-rose-50 text-rose-600" : "bg-emerald-50 text-emerald-600"
+                          )}>
+                            {sourceLabel}
+                          </span>
+                        )}
+                      </div>
                       <p className="mt-1 text-xs leading-relaxed text-gray-500">
                         这是为你生成的个人展览预览。确认后可以一键保存到“我的策展”。
                       </p>
                     </div>
+                    {isLocalFallback && !localFallbackAcknowledged && (
+                      <div className="rounded-[5px] border border-rose-100 bg-rose-50 p-3">
+                        <div className="flex items-start gap-2">
+                          <AlertCircle size={16} className="mt-0.5 shrink-0 text-rose-500" />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-bold text-rose-700">AI 生成失败，当前展示的是本地规则草稿。</p>
+                            {result.generationError && (
+                              <p className="mt-1 max-h-24 overflow-y-auto break-words text-[10px] leading-relaxed text-rose-500">{result.generationError}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-3 grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => onGenerate(keywords.trim(), generateBGM, cleanGuideAnswers(guideAnswers))}
+                            disabled={isGenerating || !canGenerate}
+                            className="flex items-center justify-center gap-1.5 rounded-[5px] bg-rose-600 px-3 py-2 text-[10px] font-bold text-white disabled:opacity-50"
+                          >
+                            <RefreshCw size={13} />
+                            重新调用 AI
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setLocalFallbackAcknowledged(true)}
+                            className="rounded-[5px] bg-white px-3 py-2 text-[10px] font-bold text-rose-700 shadow-sm"
+                          >
+                            使用本地规则草稿
+                          </button>
+                        </div>
+                      </div>
+                    )}
                     {result.aiCuration && (
                       <div className="max-h-[42%] space-y-2 overflow-hidden rounded-[5px] bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
                         {result.aiCuration.opening && (

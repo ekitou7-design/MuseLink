@@ -1091,8 +1091,10 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
       const coverUrl = result.coverUrl || coverArtifact?.imageUrl || '';
       const bgmUrl = generateBGM ? 'ambient://gallery' : undefined;
       setAiResult({ ...result, coverUrl, bgmUrl });
-      if ((result as any).generationNotice) {
-        showToast(String((result as any).generationNotice), 'info');
+      if (result.source === 'local-fallback' || result.aiGenerated === false) {
+        showToast(result.generationError || result.generationNotice || 'AI 生成失败，当前展示的是本地规则草稿。', 'error');
+      } else if (result.generationNotice) {
+        showToast(result.generationNotice, 'info');
       }
     } catch (e) {
       console.error("AI Generation failed:", e);
@@ -1118,6 +1120,10 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
         isPublic: false,
         bgmUrl: aiResult.bgmUrl,
         slideshowSettings: aiResult.slideshowSettings,
+        source: aiResult.source,
+        aiGenerated: aiResult.aiGenerated,
+        generationNotice: aiResult.generationNotice,
+        generationError: aiResult.generationError,
         aiCuration: aiResult.aiCuration,
         exhibitionIntro: aiResult.exhibitionIntro,
         units: aiResult.units,
