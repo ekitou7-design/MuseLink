@@ -1,5 +1,5 @@
 import type { Exhibition } from "../../../types";
-import { apiFetch } from "../../../shared/api/client";
+import { apiFetch, apiUrl, getAuthToken } from "../../../shared/api/client";
 
 export type FavoriteExhibitionToggleResponse = {
   favExhibitions: string[];
@@ -34,6 +34,24 @@ export async function createExhibition(payload: Partial<Exhibition>) {
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export async function uploadExhibitionCover(file: File) {
+  const token = getAuthToken();
+  const formData = new FormData();
+  formData.set("image", file);
+
+  const res = await fetch(apiUrl("/api/exhibition-covers/upload"), {
+    method: "POST",
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    body: formData,
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const message = typeof body?.error === "string" ? body.error : `Request failed: ${res.status}`;
+    throw new Error(message);
+  }
+  return body as { coverUrl: string };
 }
 
 export async function fetchSquareExhibitions(limit = 10) {

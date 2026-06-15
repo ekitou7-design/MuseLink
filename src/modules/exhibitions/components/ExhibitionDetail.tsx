@@ -35,6 +35,7 @@ import {
   artifactSelectionReason,
   exhibitionConclusion,
   exhibitionGuideIntro,
+  exhibitionTextSummary,
   normalizeExhibitionUnits,
 } from '../lib/exhibitionUnits';
 
@@ -44,6 +45,10 @@ function tagName(tag: Artifact['tags'][number]) {
 
 function textValue(value: unknown) {
   return displayDbString(value);
+}
+
+function plainText(value: unknown) {
+  return String(value ?? '').trim();
 }
 
 function findArtifactById(artifacts: Artifact[], id: string) {
@@ -283,8 +288,9 @@ export const ExhibitionDetail = ({
   const aiCuration = (exhibition as Exhibition).aiCuration;
   const units = useMemo(() => normalizeExhibitionUnits(exhibition as Exhibition), [exhibition]);
   const guideIntro = exhibitionGuideIntro(exhibition as Exhibition);
+  const exhibitIntro = plainText((exhibition as Exhibition).exhibitionIntro) || plainText(exhibition.intro);
   const conclusion = exhibitionConclusion(exhibition as Exhibition);
-  const planSummary = guideIntro || aiCuration?.opening || '查看展览的叙事结构、单元安排和展品选择理由。';
+  const planSummary = guideIntro ? exhibitionTextSummary(guideIntro, 96) : '查看展览的叙事结构、单元安排和展品选择理由。';
 
   const filteredArtifactIds = useMemo(() => {
     if (!search.trim()) return artifactIds;
@@ -364,7 +370,9 @@ export const ExhibitionDetail = ({
               <span className="text-xs font-bold opacity-90">{exhibition.userName}</span>
               <ChevronRight size={20} className="opacity-50" />
             </div>
-            <p className="line-clamp-2 break-words text-[10px] leading-relaxed opacity-70">{guideIntro || exhibition.intro}</p>
+            <p className="line-clamp-2 break-words text-[10px] leading-relaxed opacity-70">
+              {exhibitIntro ? exhibitionTextSummary(exhibitIntro, 120) : exhibitionTextSummary(guideIntro, 120)}
+            </p>
           </div>
         </div>
       </div>
@@ -403,8 +411,16 @@ export const ExhibitionDetail = ({
 
       {/* Content Area */}
       <div className="flex-1 p-6 space-y-6">
+        {exhibitIntro && exhibitIntro !== guideIntro && (
+          <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700">展览介绍</p>
+            <p className="mt-2 break-words text-sm leading-relaxed text-gray-600">{exhibitIntro}</p>
+          </section>
+        )}
+
         {guideIntro && (
           <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-amber-700">展览前言</p>
             <p className="break-words text-sm leading-relaxed text-gray-600">{guideIntro}</p>
           </section>
         )}

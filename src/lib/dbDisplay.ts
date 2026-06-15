@@ -85,7 +85,21 @@ export function artifactImageUrlRaw(artifact: unknown, variant: "full" | "thumbn
   const imageKeys = variant === "thumbnail"
     ? ["localThumbnailUrl", "local_thumbnail_url", "thumbnail", "localImageUrl", "local_image_url", "imageUrl", "image_url", "image", "图片", "图片链接"]
     : ARTIFACT_FIELD_CONFIG.imageUrl.keys;
-  return coalesceArtifactField(artifact, imageKeys);
+  if (artifact === null || artifact === undefined) return "";
+  const o = typeof artifact === "object" ? (artifact as Record<string, unknown>) : {};
+  for (const key of imageKeys) {
+    const value = o[key];
+    if (isStrictDbEmpty(value)) continue;
+    const url = typeof value === "string" ? value.trim() : String(value);
+    if (!url || url === DB_EMPTY_PLACEHOLDER || /^(null|undefined|nan)$/i.test(url)) continue;
+    if (/(placeholder|placehold|占位|no-image|no_image|noimage|fallback|default-image|default_image)/i.test(url)) continue;
+    return value;
+  }
+  const id = typeof o.id === "string" || typeof o.id === "number" ? String(o.id).trim() : "";
+  if (id && !/[\\/]/.test(id)) {
+    return variant === "thumbnail" ? `/artifact-images/thumbs/${id}-thumb.jpg` : `/artifact-images/${id}.jpg`;
+  }
+  return "";
 }
 
 export function artifactMuseumRaw(artifact: unknown): unknown {

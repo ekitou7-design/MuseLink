@@ -4,6 +4,7 @@ import path from "path";
 import { authRoutes } from "./routes/authRoutes";
 import { artifactRoutes } from "./routes/artifactRoutes";
 import { exhibitionRoutes } from "./routes/exhibitionRoutes";
+import { exhibitionCoverRoutes } from "./routes/exhibitionCoverRoutes";
 import { likeRoutes } from "./routes/likeRoutes";
 import { museumRoutes } from "./routes/museumRoutes";
 import { db } from "./db/client";
@@ -30,6 +31,7 @@ app.use((req, res, next) => {
 
 app.use(express.json({ limit: "2mb" }));
 app.use("/artifact-images", express.static(path.join(PUBLIC_DIR, "artifact-images")));
+app.use("/exhibition-covers", express.static(path.join(PUBLIC_DIR, "exhibition-covers")));
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
 app.get("/", (_req, res) =>
@@ -160,6 +162,7 @@ app.get("/upload", (_req, res) => {
 // API Routes (as requested, no /api prefix)
 app.use(authRoutes);
 app.use(artifactRoutes);
+app.use(exhibitionCoverRoutes);
 app.use(exhibitionRoutes);
 app.use(likeRoutes);
 app.use(museumRoutes);

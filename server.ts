@@ -63,6 +63,10 @@ import {
   uploadArtifactImageFile,
   uploadArtifactImageFromUrl,
 } from "./backend/api/controllers/artifactsController";
+import {
+  uploadExhibitionCover,
+  uploadExhibitionCoverFile,
+} from "./backend/api/controllers/exhibitionCoversController";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -709,6 +713,8 @@ async function startServer() {
     }
   });
 
+  app.post("/api/exhibition-covers/upload", authMiddleware, uploadExhibitionCoverFile, uploadExhibitionCover);
+
   app.get("/api/artifacts", async (req, res) => {
     try {
       const source = getSingleQueryParam(req.query.source as string | string[] | undefined) || "auto";
@@ -932,6 +938,7 @@ async function startServer() {
   });
 
   app.use("/artifact-images", express.static(path.join(process.cwd(), "public", "artifact-images")));
+  app.use("/exhibition-covers", express.static(path.join(process.cwd(), "public", "exhibition-covers")));
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {

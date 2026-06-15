@@ -10,6 +10,7 @@ import { SafeImage } from "./SafeImage";
 /** 文物详情顶栏标题（非业务字段）。 */
 const DETAIL_NAV_TITLE = "文物详情";
 const IMAGE_UNAVAILABLE_TEXT = "暂无图片";
+const HERO_IMAGE_RETRY_DELAY_MS = 6000;
 const INFO_EMPTY_PLACEHOLDER = "暂无信息";
 const INTRO_EMPTY_PLACEHOLDER = "暂无简介";
 const DESCRIPTION_EMPTY_PLACEHOLDER = "暂无介绍";
@@ -81,6 +82,12 @@ function displayValue(raw: unknown, fallback = INFO_EMPTY_PLACEHOLDER): string {
   if (isBlankValue(raw)) return fallback;
   if (typeof raw === "string") return raw;
   return String(raw);
+}
+
+function withImageRetryParam(src: string, retryAttempt: number) {
+  if (retryAttempt <= 0) return src;
+  const separator = src.includes("?") ? "&" : "?";
+  return `${src}${separator}ml_retry=${retryAttempt}`;
 }
 
 function normalizeAttributeGroups(artifact: Artifact): ArtifactAttributeGroup[] {
@@ -213,8 +220,9 @@ export function ArtifactDetail({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [detailArtifact, setDetailArtifact] = useState<Artifact | null>(null);
   const [internalLightboxUrl, setInternalLightboxUrl] = useState<string | null>(null);
-  const [heroImageFailed, setHeroImageFailed] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  const [heroImageRetryAttempt, setHeroImageRetryAttempt] = useState(0);
+  const [heroImageRetryScheduled, setHeroImageRetryScheduled] = useState(false);
   const [recommendations, setRecommendations] = useState<Artifact[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
 
@@ -248,10 +256,21 @@ export function ArtifactDetail({
   }, [artifact.id]);
 
   useEffect(() => {
-    setHeroImageFailed(false);
     setHeroImageLoaded(false);
+    setHeroImageRetryAttempt(0);
+    setHeroImageRetryScheduled(false);
     scrollRef.current?.scrollTo({ top: 0, behavior: "auto" });
   }, [currentArtifact.id, imageUrl]);
+
+  useEffect(() => {
+    if (!heroImageRetryScheduled) return;
+    const timer = window.setTimeout(() => {
+      setHeroImageLoaded(false);
+      setHeroImageRetryAttempt((attempt) => attempt + 1);
+      setHeroImageRetryScheduled(false);
+    }, HERO_IMAGE_RETRY_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [heroImageRetryScheduled]);
 
   useEffect(() => {
     let active = true;
@@ -280,6 +299,7 @@ export function ArtifactDetail({
   }, [currentArtifact, allArtifacts]);
 
   const hasImageUrl = imageUrl.trim() !== "";
+  const heroImageSrc = withImageRetryParam(imageUrl, heroImageRetryAttempt);
 
   const onFavoriteTap = useCallback(() => {
     void toggleFavorite(currentArtifact.id);
@@ -340,7 +360,7 @@ export function ArtifactDetail({
         style={{ minHeight: "max(45vh, 420px)" }}
         aria-label="文物图片"
       >
-        {hasImageUrl && !heroImageFailed ? (
+        {hasImageUrl ? (
           <>
             {!heroImageLoaded ? (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-sm text-gray-400">
@@ -348,7 +368,8 @@ export function ArtifactDetail({
               </div>
             ) : null}
             <img
-              src={imageUrl}
+              key={`${imageUrl}-${heroImageRetryAttempt}`}
+              src={heroImageSrc}
               alt={nameForAlt}
               loading="eager"
               decoding="async"
@@ -362,10 +383,13 @@ export function ArtifactDetail({
                 objectPosition: "center",
                 opacity: heroImageLoaded ? 1 : 0,
               }}
-              onLoad={() => setHeroImageLoaded(true)}
+              onLoad={() => {
+                setHeroImageLoaded(true);
+                setHeroImageRetryScheduled(false);
+              }}
               onError={() => {
-                setHeroImageFailed(true);
                 setHeroImageLoaded(false);
+                setHeroImageRetryScheduled(true);
               }}
               referrerPolicy="no-referrer"
               onClick={() => setLightboxUrl(imageUrl)}

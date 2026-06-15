@@ -2260,6 +2260,7 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
         isOpen={isEditExhibitionOpen} 
         onClose={closeEditExhibition} 
         exhibition={editingExhibition}
+        artifacts={artifactPool}
         onUpdate={handleUpdateExhibition}
         onDelete={handleDeleteExhibition}
         onManageArtifacts={() => setIsManageArtifactsOpen(true)}

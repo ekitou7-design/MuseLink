@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight, Library, Loader2, Plus, Search, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2, Plus, Search, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Artifact, Exhibition } from '../../../types';
 import { SafeImage } from '../../../components/SafeImage';
@@ -7,6 +7,8 @@ import { rankArtifactsByKeywordQuery } from '../../../lib/artifactSearch';
 import { artifactImageUrlRaw, artifactMuseumRaw, artifactNameRaw, displayDbString } from '../../../lib/dbDisplay';
 import { cn } from '../../../lib/utils';
 import { findArtifactsByIds } from '../../../shared/lib/domainUtils';
+import { DEFAULT_EXHIBITION_COVER } from '../constants/covers';
+import { ExhibitionCoverPicker } from './ExhibitionCoverPicker';
 
 export const ManualExhibitionModal = ({
   isOpen,
@@ -32,7 +34,7 @@ export const ManualExhibitionModal = ({
     if (!isOpen) return;
     setTitle('');
     setIntro('');
-    setCoverUrl('');
+    setCoverUrl(DEFAULT_EXHIBITION_COVER);
     setIsPublic(false);
     setSelectedIds([]);
     setSearch('');
@@ -43,7 +45,7 @@ export const ManualExhibitionModal = ({
     : artifacts.slice(0, 80);
 
   const selectedArtifacts = findArtifactsByIds(selectedIds, artifacts);
-  const effectiveCoverUrl = coverUrl || selectedArtifacts[0]?.imageUrl || '';
+  const effectiveCoverUrl = coverUrl || DEFAULT_EXHIBITION_COVER;
   const canCreate = title.trim().length > 0 && selectedIds.length > 0 && !isCreating;
 
   const toggleArtifact = (id: string) => {
@@ -90,17 +92,8 @@ export const ManualExhibitionModal = ({
           </div>
 
           <div className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
-            <div className="grid grid-cols-[112px_1fr] gap-4 items-start">
-              <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 border border-gray-100">
-                {effectiveCoverUrl ? (
-                  <SafeImage src={effectiveCoverUrl} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-300">
-                    <Library size={28} />
-                  </div>
-                )}
-              </div>
-              <div className="space-y-4 min-w-0">
+            <div className="space-y-4">
+              <div className="space-y-4">
                 <input
                   value={title}
                   onChange={e => setTitle(e.target.value)}
@@ -113,12 +106,7 @@ export const ManualExhibitionModal = ({
                   placeholder="写下展览导言、叙事线索或观众入口"
                   className="w-full min-h-[92px] resize-none rounded-2xl bg-gray-50 p-3 text-sm text-gray-600 outline-none focus:ring-2 focus:ring-primary/15"
                 />
-                <input
-                  value={coverUrl}
-                  onChange={e => setCoverUrl(e.target.value)}
-                  placeholder="封面图片 URL，可留空使用首件文物"
-                  className="w-full rounded-xl bg-gray-50 px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-primary/15"
-                />
+                <ExhibitionCoverPicker value={effectiveCoverUrl} onChange={setCoverUrl} />
               </div>
             </div>
 

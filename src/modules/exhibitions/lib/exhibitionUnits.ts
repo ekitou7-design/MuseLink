@@ -26,6 +26,10 @@ function sanitizeGuideText(value: string) {
     .trim();
 }
 
+export function exhibitionTextSummary(value: string, max = 96) {
+  return clampSentence(sanitizeGuideText(value), max);
+}
+
 export function normalizeExhibitionUnits(exhibition: Exhibition): ExhibitionUnit[] {
   const artifactIds = Array.isArray(exhibition.artifactIds) ? exhibition.artifactIds.map(String) : [];
   const sourceUnits = Array.isArray(exhibition.units) ? exhibition.units : [];
@@ -67,20 +71,18 @@ export function normalizeExhibitionUnits(exhibition: Exhibition): ExhibitionUnit
 }
 
 export function exhibitionGuideIntro(exhibition: Exhibition) {
-  const source = text(exhibition.exhibitionIntro) || text(exhibition.intro) || text(exhibition.aiCuration?.opening);
-  if (!source) return '';
-  return clampSentence(sanitizeGuideText(source), 120);
+  return text(exhibition.aiCuration?.opening) || text(exhibition.exhibitionIntro) || text(exhibition.intro);
 }
 
 export function exhibitionConclusion(exhibition: Exhibition) {
   const source = text(exhibition.conclusion) || text(exhibition.aiCuration?.ending);
-  return source ? clampSentence(sanitizeGuideText(source), 100) : '';
+  return source;
 }
 
 export function artifactSelectionReason(exhibition: Exhibition, artifact: Artifact) {
   const id = String(artifact.id);
   const reason = text(exhibition.selectionReasons?.[id]) || text(exhibition.aiCuration?.artifactNotes?.[id]);
-  if (reason) return clampSentence(sanitizeGuideText(reason), 86);
+  if (reason) return reason;
   const description = text(artifactDescriptionRaw(artifact));
   if (description && !isStrictDbEmpty(description)) return clampSentence(description, 78);
   return `它为这场展览补充了关于「${displayDbString(artifactNameRaw(artifact))}」的观看线索。`;
