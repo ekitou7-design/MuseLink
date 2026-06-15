@@ -1,5 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
+import dns from "dns/promises";
+import net from "net";
 import type { Request, RequestHandler, Response } from "express";
 import multer from "multer";
 import sharp from "sharp";
@@ -12,6 +14,8 @@ const ARTIFACT_IMAGES_DIR = path.join(process.cwd(), "public", "artifact-images"
 const ARTIFACT_THUMBS_DIR = path.join(ARTIFACT_IMAGES_DIR, "thumbs");
 const IMPORTED_ARTIFACTS_PATH = path.join(process.cwd(), "data", "imported-artifacts.json");
 const ALLOWED_IMAGE_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const MAX_IMAGE_DOWNLOAD_BYTES = 10 * 1024 * 1024;
+const IMAGE_DOWNLOAD_TIMEOUT_MS = 12000;
 
 const multerArtifactImageUpload = multer({
   storage: multer.memoryStorage(),
@@ -103,6 +107,145 @@ function artifactImageFileBase(id: string) {
   return id.replace(/[\\/]/g, "-");
 }
 
+function isPrivateIpv4(address: string) {
+  const parts = address.split(".").map((part) => Number(part));
+  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return true;
+  const [a, b] = parts;
+  return (
+    a === 0 ||
+    a === 10 ||
+    a === 127 ||
+    (a === 100 && b >= 64 && b <= 127) ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    a >= 224
+  );
+}
+
+function isPrivateIpv6(address: string) {
+  const normalized = address.toLowerCase();
+  return (
+    normalized === "::1" ||
+    normalized === "::" ||
+    normalized.startsWith("fc") ||
+    normalized.startsWith("fd") ||
+    normalized.startsWith("fe80:") ||
+    normalized.startsWith("::ffff:127.") ||
+    normalized.startsWith("::ffff:10.") ||
+    normalized.startsWith("::ffff:192.168.")
+  );
+}
+
+function isPrivateAddress(address: string) {
+  const family = net.isIP(address);
+  if (family === 4) return isPrivateIpv4(address);
+  if (family === 6) return isPrivateIpv6(address);
+  return true;
+}
+
+async function assertSafeImageUrl(rawUrl: string) {
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    throw new Error("图片链接格式无效。");
+  }
+
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    throw new Error("图片链接必须是 http 或 https。");
+  }
+
+  const hostname = parsed.hostname.toLowerCase();
+  if (!hostname || hostname === "localhost" || hostname.endsWith(".localhost")) {
+    throw new Error("不允许下载 localhost 图片链接。");
+  }
+
+  const literalFamily = net.isIP(hostname);
+  if (literalFamily && isPrivateAddress(hostname)) {
+    throw new Error("不允许下载内网或本机图片链接。");
+  }
+
+  const addresses = await dns.lookup(hostname, { all: true, verbatim: true });
+  if (addresses.length === 0 || addresses.some((entry) => isPrivateAddress(entry.address))) {
+    throw new Error("不允许下载解析到内网或本机地址的图片链接。");
+  }
+
+  return parsed.toString();
+}
+
+async function readImageResponseBody(response: globalThis.Response) {
+  const contentLength = Number(response.headers.get("content-length") || "0");
+  if (Number.isFinite(contentLength) && contentLength > MAX_IMAGE_DOWNLOAD_BYTES) {
+    throw new Error("图片不能超过 10MB。");
+  }
+
+  const reader = response.body?.getReader();
+  if (!reader) {
+    const arrayBuffer = await response.arrayBuffer();
+    if (arrayBuffer.byteLength > MAX_IMAGE_DOWNLOAD_BYTES) throw new Error("图片不能超过 10MB。");
+    return Buffer.from(arrayBuffer);
+  }
+
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (!value) continue;
+    total += value.byteLength;
+    if (total > MAX_IMAGE_DOWNLOAD_BYTES) {
+      throw new Error("图片不能超过 10MB。");
+    }
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks);
+}
+
+async function downloadImageBuffer(rawUrl: string) {
+  let currentUrl = await assertSafeImageUrl(rawUrl);
+
+  for (let redirectCount = 0; redirectCount <= 5; redirectCount += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), IMAGE_DOWNLOAD_TIMEOUT_MS);
+    try {
+      const response = await fetch(currentUrl, {
+        redirect: "manual",
+        signal: controller.signal,
+        headers: { Accept: "image/jpeg,image/png,image/webp,image/*;q=0.8" },
+      });
+
+      if (response.status >= 300 && response.status < 400) {
+        const location = response.headers.get("location");
+        if (!location) throw new Error("图片链接重定向无效。");
+        currentUrl = await assertSafeImageUrl(new URL(location, currentUrl).toString());
+        continue;
+      }
+
+      if (!response.ok) {
+        throw new Error(`下载图片失败：${response.status}`);
+      }
+
+      const contentType = response.headers.get("content-type") || "";
+      const mimeType = contentType.split(";")[0]?.trim().toLowerCase() || "";
+      if (!ALLOWED_IMAGE_MIME_TYPES.has(mimeType) && mimeType !== "image/jpg") {
+        throw new Error("图片链接仅支持 jpg/jpeg/png/webp 图片。");
+      }
+
+      return { buffer: await readImageResponseBody(response), sourceImageUrl: currentUrl };
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error("下载图片超时。");
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  throw new Error("图片链接重定向次数过多。");
+}
+
 async function ensureArtifactImageColumns() {
   await db.query(`alter table artifacts add column if not exists local_image_url text not null default ''`);
   await db.query(`alter table artifacts add column if not exists local_thumbnail_url text not null default ''`);
@@ -151,6 +294,7 @@ async function updateImportedArtifactsImageUrls(
   localImageUrl: string,
   localThumbnailUrl: string,
   existingArtifact?: Record<string, unknown>,
+  sourceImageUrl?: string,
 ) {
   try {
     const { parsed, artifacts } = await readImportedArtifactsStore();
@@ -167,6 +311,10 @@ async function updateImportedArtifactsImageUrls(
       if (!idMatches && !(nameMatches && museumMatches)) continue;
       artifact.localImageUrl = localImageUrl;
       artifact.localThumbnailUrl = localThumbnailUrl;
+      if (sourceImageUrl) {
+        artifact.imageUrl = sourceImageUrl;
+        artifact.image_url = sourceImageUrl;
+      }
       updated = true;
       break;
     }
@@ -179,14 +327,23 @@ async function updateImportedArtifactsImageUrls(
   }
 }
 
-async function updateDbArtifactImageUrls(id: string, localImageUrl: string, localThumbnailUrl: string, existingArtifact: Record<string, unknown>) {
+async function updateDbArtifactImageUrls(
+  id: string,
+  localImageUrl: string,
+  localThumbnailUrl: string,
+  existingArtifact: Record<string, unknown>,
+  sourceImageUrl?: string,
+) {
   try {
     await ensureArtifactImageColumns();
     const byId = await db.query(
       `update artifacts
-       set local_image_url=$2, local_thumbnail_url=$3, updated_at=now()
+       set local_image_url=$2,
+           local_thumbnail_url=$3,
+           image_url=coalesce($4, image_url),
+           updated_at=now()
        where id::text=$1`,
-      [id, localImageUrl, localThumbnailUrl],
+      [id, localImageUrl, localThumbnailUrl, sourceImageUrl || null],
     );
     if ((byId.rowCount || 0) > 0) return true;
 
@@ -196,10 +353,13 @@ async function updateDbArtifactImageUrls(id: string, localImageUrl: string, loca
 
     const byIdentity = await db.query(
       `update artifacts a
-       set local_image_url=$3, local_thumbnail_url=$4, updated_at=now()
+       set local_image_url=$3,
+           local_thumbnail_url=$4,
+           image_url=coalesce($5, image_url),
+           updated_at=now()
        from museums m
        where a.museum_id = m.id and a.name = $1 and m.name = $2`,
-      [name, museum, localImageUrl, localThumbnailUrl],
+      [name, museum, localImageUrl, localThumbnailUrl, sourceImageUrl || null],
     );
     return (byIdentity.rowCount || 0) > 0;
   } catch {
@@ -319,6 +479,56 @@ function normalizeTags(tags: unknown) {
       return { type: "文化标签", name: text(tag).trim() };
     })
     .filter((tag) => tag.name && tag.name !== "暂无信息");
+}
+
+async function persistArtifactImageBuffer(
+  id: string,
+  buffer: Buffer,
+  existing: Record<string, unknown>,
+  sourceImageUrl?: string,
+) {
+  const artifactId = String(existing.id || id);
+  const fileBase = artifactImageFileBase(artifactId);
+  const localImageUrl = `/artifact-images/${fileBase}.jpg`;
+  const localThumbnailUrl = `/artifact-images/thumbs/${fileBase}-thumb.jpg`;
+  const imagePath = path.join(ARTIFACT_IMAGES_DIR, `${fileBase}.jpg`);
+  const thumbPath = path.join(ARTIFACT_THUMBS_DIR, `${fileBase}-thumb.jpg`);
+
+  await fs.mkdir(ARTIFACT_IMAGES_DIR, { recursive: true });
+  await fs.mkdir(ARTIFACT_THUMBS_DIR, { recursive: true });
+
+  const image = sharp(buffer).rotate();
+  await image.clone().jpeg({ quality: 92 }).toFile(imagePath);
+  await image
+    .clone()
+    .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
+    .jpeg({ quality: 82 })
+    .toFile(thumbPath);
+
+  const dbUpdated = await updateDbArtifactImageUrls(id, localImageUrl, localThumbnailUrl, existing, sourceImageUrl);
+  const jsonUpdated = await updateImportedArtifactsImageUrls(
+    id,
+    localImageUrl,
+    localThumbnailUrl,
+    existing,
+    sourceImageUrl,
+  );
+  const artifact = (await findDbArtifact(id)) || existing;
+
+  return {
+    ok: true,
+    source: dbUpdated ? "database" : "imported-artifacts-json",
+    artifact,
+    artifactName: artifactName(existing),
+    imageUrl: sourceImageUrl || cleanText(existing.imageUrl ?? existing.image_url),
+    sourceImageUrl: sourceImageUrl || "",
+    localImageUrl,
+    localThumbnailUrl,
+    originalPath: localImageUrl,
+    thumbnailPath: localThumbnailUrl,
+    dbUpdated,
+    importedArtifactsUpdated: jsonUpdated,
+  };
 }
 
 function addAttribute(
@@ -559,45 +769,29 @@ export async function uploadArtifactImage(req: Request, res: Response) {
       return res.status(400).json({ error: "请先选择要上传的图片。" });
     }
 
-    const artifactId = String(existing.id || id);
-    const fileBase = artifactImageFileBase(artifactId);
-    const localImageUrl = `/artifact-images/${fileBase}.jpg`;
-    const localThumbnailUrl = `/artifact-images/thumbs/${fileBase}-thumb.jpg`;
-    const imagePath = path.join(ARTIFACT_IMAGES_DIR, `${fileBase}.jpg`);
-    const thumbPath = path.join(ARTIFACT_THUMBS_DIR, `${fileBase}-thumb.jpg`);
+    return res.json(await persistArtifactImageBuffer(id, req.file.buffer, existing));
+  } catch (error) {
+    return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+}
 
-    await fs.mkdir(ARTIFACT_IMAGES_DIR, { recursive: true });
-    await fs.mkdir(ARTIFACT_THUMBS_DIR, { recursive: true });
+export async function uploadArtifactImageFromUrl(req: Request, res: Response) {
+  try {
+    const id = String(req.params.id || "");
+    const imageUrl = cleanText(req.body?.imageUrl);
+    if (!imageUrl) {
+      return res.status(400).json({ error: "请先填写图片链接。" });
+    }
 
-    const image = sharp(req.file.buffer).rotate();
-    await image.clone().jpeg({ quality: 92 }).toFile(imagePath);
-    await image
-      .clone()
-      .resize({ width: 480, height: 480, fit: "inside", withoutEnlargement: true })
-      .jpeg({ quality: 82 })
-      .toFile(thumbPath);
+    const dbArtifact = await findDbArtifact(id);
+    const importedArtifact = await findImportedArtifact(id);
+    const existing = (dbArtifact || importedArtifact) as Record<string, unknown> | null;
+    if (!existing) {
+      return res.status(404).json({ error: "Not found" });
+    }
 
-    const dbUpdated = await updateDbArtifactImageUrls(id, localImageUrl, localThumbnailUrl, existing);
-    const jsonUpdated = await updateImportedArtifactsImageUrls(
-      id,
-      localImageUrl,
-      localThumbnailUrl,
-      existing,
-    );
-    const artifact = (await findDbArtifact(id)) || existing;
-
-    return res.json({
-      ok: true,
-      source: dbUpdated ? "database" : "imported-artifacts-json",
-      artifact,
-      artifactName: artifactName(existing),
-      localImageUrl,
-      localThumbnailUrl,
-      originalPath: localImageUrl,
-      thumbnailPath: localThumbnailUrl,
-      dbUpdated,
-      importedArtifactsUpdated: jsonUpdated,
-    });
+    const downloaded = await downloadImageBuffer(imageUrl);
+    return res.json(await persistArtifactImageBuffer(id, downloaded.buffer, existing, downloaded.sourceImageUrl));
   } catch (error) {
     return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }

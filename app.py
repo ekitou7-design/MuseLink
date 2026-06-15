@@ -1,11 +1,13 @@
-from flask import Flask, request, render_template_string, redirect
+from flask import Flask, request, render_template_string, redirect, jsonify
 import ast
+import ipaddress
 import json
 import os
+import uuid
 from collections import Counter
 from datetime import datetime
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urlencode
+from urllib.parse import quote, urlencode, urlparse
 from urllib.request import Request, urlopen
 
 import pandas as pd
@@ -29,6 +31,30 @@ def clean_value(value):
     if text.lower() in ("", "nan", "none", "null", "undefined"):
         return ""
     return text
+
+
+def is_placeholder_image_url(value):
+    text = clean_value(value).lower()
+    if not text:
+        return False
+    markers = (
+        "placeholder",
+        "placehold",
+        "占位",
+        "no-image",
+        "no_image",
+        "noimage",
+        "fallback",
+        "default-image",
+        "default_image",
+        "暂无信息",
+    )
+    return any(marker in text for marker in markers)
+
+
+def is_usable_image_url(value):
+    text = clean_value(value)
+    return bool(text) and not is_placeholder_image_url(text)
 
 
 def pick(item, *keys):
@@ -62,6 +88,13 @@ def api_request(path, method="GET", payload=None, auth=False):
         raise RuntimeError(f"无法连接后端 API：{url}。请先启动 npm run dev。") from error
 
 
+def bearer_token_from_request():
+    header = request.headers.get("Authorization", "")
+    if header.lower().startswith("bearer "):
+        return header.split(" ", 1)[1].strip()
+    return ""
+
+
 def get_admin_token():
     response = api_request(
         "/api/auth/login",
@@ -73,6 +106,104 @@ def get_admin_token():
     if not token:
         raise RuntimeError("管理员登录失败，无法获取 token。")
     return token
+
+
+def is_private_literal_hostname(hostname):
+    if not hostname:
+        return True
+    if hostname.lower() == "localhost" or hostname.lower().endswith(".localhost"):
+        return True
+
+    try:
+        literal = ipaddress.ip_address(hostname)
+        return literal.is_private or literal.is_loopback or literal.is_link_local or literal.is_multicast
+    except ValueError:
+        return False
+
+
+def validate_image_url(image_url):
+    parsed = urlparse(image_url)
+    if parsed.scheme not in ("http", "https"):
+        raise RuntimeError("图片链接必须是 http 或 https。")
+    if is_private_literal_hostname(parsed.hostname or ""):
+        raise RuntimeError("不允许下载 localhost、内网或本机图片链接。")
+
+
+def download_image_bytes(image_url):
+    validate_image_url(image_url)
+    req = Request(image_url, headers={"Accept": "image/jpeg,image/png,image/webp,image/*;q=0.8", "User-Agent": "MuseLink/1.0"})
+    try:
+        with urlopen(req, timeout=15) as response:
+            content_type = response.headers.get("Content-Type", "").split(";")[0].strip().lower()
+            if content_type == "image/jpg":
+                content_type = "image/jpeg"
+            if content_type not in ("image/jpeg", "image/png", "image/webp"):
+                raise RuntimeError("图片链接仅支持 jpg/jpeg/png/webp 图片。")
+
+            content_length = clean_value(response.headers.get("Content-Length"))
+            if content_length and int(content_length) > 10 * 1024 * 1024:
+                raise RuntimeError("图片不能超过 10MB。")
+
+            data = response.read(10 * 1024 * 1024 + 1)
+            if len(data) > 10 * 1024 * 1024:
+                raise RuntimeError("图片不能超过 10MB。")
+            return data, content_type
+    except HTTPError as error:
+        detail = error.read().decode("utf-8", errors="ignore")[:300]
+        raise RuntimeError(f"下载图片失败：HTTP {error.code} {detail}") from error
+    except URLError as error:
+        raise RuntimeError(f"下载图片失败：{error.reason}") from error
+
+
+def post_image_file_to_backend(artifact_id, image_bytes, content_type, token):
+    boundary = f"----MuseLink{uuid.uuid4().hex}"
+    filename = "downloaded-image.jpg"
+    body = (
+        f"--{boundary}\r\n"
+        f'Content-Disposition: form-data; name="image"; filename="{filename}"\r\n'
+        f"Content-Type: {content_type}\r\n\r\n"
+    ).encode("utf-8") + image_bytes + f"\r\n--{boundary}--\r\n".encode("utf-8")
+
+    req = Request(
+        f"{API_BASE_URL}/api/admin/artifacts/{quote(artifact_id)}/image",
+        data=body,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": f"multipart/form-data; boundary={boundary}",
+        },
+        method="POST",
+    )
+    try:
+        with urlopen(req, timeout=30) as response:
+            content = response.read().decode("utf-8", errors="ignore")
+            return json.loads(content) if content else {}
+    except HTTPError as error:
+        detail = error.read().decode("utf-8", errors="ignore")[:300]
+        raise RuntimeError(f"上传图片到后端失败：HTTP {error.code} {detail}") from error
+    except URLError as error:
+        raise RuntimeError(f"无法连接后端图片上传接口：{error.reason}") from error
+
+
+def save_artifact_source_image_url(artifact_id, image_url):
+    detail = api_request(f"/api/artifacts/{quote(artifact_id)}").get("artifact") or {}
+    row = artifact_to_row(detail)
+    payload = build_payload(
+        {
+            "name": row["文物名称"],
+            "museum": row["所属博物馆"],
+            "period": row["朝代"],
+            "category": row["类别"],
+            "level": row["等级"],
+            "material": row["材质"],
+            "dimensions": row["尺寸"],
+            "short_intro": row["一句话简介"],
+            "image_url": image_url,
+            "source_url": row["来源链接"],
+            "tags": row["标签"],
+            "description": row["文物描述"],
+        }
+    )
+    api_request(f"/api/artifacts/{quote(artifact_id)}", method="PUT", payload=payload, auth=True)
 
 
 def normalize_tags(tags):
@@ -103,6 +234,26 @@ def artifact_to_row(artifact):
     local_image_url = pick(artifact, "localImageUrl", "local_image_url")
     local_thumbnail_url = pick(artifact, "localThumbnailUrl", "local_thumbnail_url")
     image_url = pick(artifact, "imageUrl", "image_url", "图片链接")
+    thumbnail_url = pick(artifact, "thumbnailUrl", "thumbnail_url", "thumbnail")
+    has_local_image = is_usable_image_url(local_image_url) or is_usable_image_url(local_thumbnail_url)
+    has_remote_image = is_usable_image_url(image_url) or is_usable_image_url(thumbnail_url)
+    has_placeholder_image = any(
+        is_placeholder_image_url(value)
+        for value in (local_image_url, local_thumbnail_url, image_url, thumbnail_url)
+    )
+    if has_local_image:
+        image_status = "已有本地图"
+        image_status_key = "local"
+    elif has_placeholder_image:
+        image_status = "疑似占位图"
+        image_status_key = "placeholder"
+    elif has_remote_image:
+        image_status = "仅有外链图"
+        image_status_key = "remote"
+    else:
+        image_status = "无图片"
+        image_status_key = "none"
+
     row = {
         "_artifact_id": clean_value(artifact.get("id")),
         "id": clean_value(artifact.get("id")),
@@ -116,9 +267,14 @@ def artifact_to_row(artifact):
         "一句话简介": pick(artifact, "shortIntro", "short_intro", "一句话简介"),
         "文物描述": pick(artifact, "description", "文物描述", "简介"),
         "图片链接": image_url,
+        "缩略图链接": thumbnail_url,
         "本地原图": local_image_url,
         "本地缩略图": local_thumbnail_url,
         "显示图片": local_thumbnail_url or local_image_url or image_url,
+        "图片状态": image_status,
+        "图片状态Key": image_status_key,
+        "有本地图": has_local_image,
+        "有可用图片": has_local_image or has_remote_image,
         "来源链接": pick(artifact, "sourceUrl", "source_url", "来源链接"),
         "标签": "，".join(normalize_tags(artifact.get("tags"))),
     }
@@ -134,6 +290,14 @@ def load_data(query=""):
     response = api_request(f"/api/artifacts?{urlencode(params)}")
     artifacts = response.get("artifacts") or []
     return [artifact_to_row(artifact) for artifact in artifacts]
+
+
+def filter_rows_by_image_mode(rows, mode):
+    if mode == "missing":
+        return [row for row in rows if not row.get("有本地图") and not row.get("有可用图片")]
+    if mode == "no-local":
+        return [row for row in rows if not row.get("有本地图")]
+    return rows
 
 
 def detect_museum(item, default_museum=None):
@@ -284,6 +448,24 @@ HTML_TEMPLATE = """
         .field textarea { min-height: 90px; resize: vertical; }
         .muted { color: #8b4513; font-size: 14px; }
         .thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid #d2b48c; background: #fffaf0; }
+        .filter-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .filter-tab { padding: 10px 16px; border-radius: 999px; border: 1px solid #d2b48c; text-decoration: none; color: #4a3728; background: #fffaf0; font-weight: bold; }
+        .filter-tab.active { background: #8b4513; color: white; }
+        .status-pill { display: inline-block; padding: 6px 10px; border-radius: 999px; font-size: 13px; font-weight: bold; white-space: nowrap; }
+        .status-local { background: #ecfdf5; color: #047857; }
+        .status-remote { background: #eff6ff; color: #1d4ed8; }
+        .status-none { background: #f4f1ea; color: #4a3728; }
+        .status-placeholder { background: #fff7ed; color: #9a3412; }
+        .status-failed { background: #fff5f5; color: #c0392b; }
+        .row-upload { min-width: 230px; }
+        .row-upload .file-label { cursor: pointer; background: #f4f1ea; border: 1px solid #d2b48c; color: #4a3728; padding: 8px 10px; border-radius: 5px; display: inline-block; font-weight: bold; position: relative; overflow: hidden; }
+        .row-upload .file-label input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .row-preview { display: none; gap: 10px; margin-top: 10px; padding: 8px; border: 1px solid #ead7bd; border-radius: 8px; background: #fffaf0; }
+        .row-preview img { width: 58px; height: 58px; object-fit: cover; border-radius: 6px; border: 1px solid #ead7bd; background: white; }
+        .file-meta { min-width: 0; font-size: 12px; line-height: 1.5; color: #8b4513; word-break: break-all; }
+        .row-message { margin-top: 8px; font-size: 13px; font-weight: bold; }
+        .row-url-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .row-url-input { min-width: 220px; flex: 1; }
     </style>
     <script>
         function toggleAll(source) {
@@ -294,6 +476,177 @@ HTML_TEMPLATE = """
             if (checked === 0) { alert('请先勾选要操作的数据'); return false; }
             return confirm('确定要' + actionText + '选中的 ' + checked + ' 条数据吗？');
         }
+        function formatFileSize(size) {
+            if (size >= 1024 * 1024) return (size / 1024 / 1024).toFixed(2) + " MB";
+            if (size >= 1024) return (size / 1024).toFixed(1) + " KB";
+            return size + " B";
+        }
+        function validateImageFile(file) {
+            var allowed = ["image/jpeg", "image/png", "image/webp"];
+            if (allowed.indexOf(file.type) === -1) return "仅支持 jpg/png/webp 图片。";
+            if (file.size > 10 * 1024 * 1024) return "图片不能超过 10MB。";
+            return "";
+        }
+        function currentAdminToken() {
+            var input = document.getElementById("adminToken");
+            return ((input && input.value) || localStorage.getItem("muselink_admin_token") || localStorage.getItem("muselink_token") || "").trim();
+        }
+        function persistAdminToken() {
+            var input = document.getElementById("adminToken");
+            if (input && input.value.trim()) {
+                localStorage.setItem("muselink_admin_token", input.value.trim());
+                localStorage.setItem("muselink_token", input.value.trim());
+                alert("管理员 token 已保存。");
+            }
+        }
+        function setRowMessage(artifactId, message, isError) {
+            var el = document.getElementById("rowMessage-" + artifactId);
+            if (!el) return;
+            el.textContent = message || "";
+            el.style.color = isError ? "#c0392b" : "#047857";
+        }
+        async function parseJsonResponse(response) {
+            var text = await response.text();
+            if (!text) return { __rawText: "" };
+            try {
+                var data = JSON.parse(text);
+                if (data && typeof data === "object") data.__rawText = text;
+                return data;
+            } catch (error) {
+                throw new Error(text.slice(0, 300) || "接口没有返回 JSON。");
+            }
+        }
+        function responseError(response, data, fallback) {
+            var detail = (data && (data.error || data.message || data.detail || data.__rawText)) || "";
+            return "HTTP " + response.status + "：" + (detail || fallback);
+        }
+        function onRowImageSelected(input, artifactId) {
+            var file = input.files && input.files[0];
+            var preview = document.getElementById("rowPreview-" + artifactId);
+            var image = document.getElementById("rowPreviewImage-" + artifactId);
+            var meta = document.getElementById("rowFileMeta-" + artifactId);
+            setRowMessage(artifactId, "", false);
+            if (!file) {
+                if (preview) preview.style.display = "none";
+                return;
+            }
+            var validation = validateImageFile(file);
+            if (validation) {
+                input.value = "";
+                if (preview) preview.style.display = "none";
+                setRowMessage(artifactId, validation, true);
+                return;
+            }
+            if (image) image.src = URL.createObjectURL(file);
+            if (meta) {
+                meta.innerHTML = "<strong>" + file.name + "</strong><br>" + formatFileSize(file.size) + "<br>" + (file.type || "-");
+            }
+            if (preview) preview.style.display = "flex";
+        }
+        async function uploadRowImage(artifactId, artifactName) {
+            var input = document.getElementById("rowFile-" + artifactId);
+            var button = document.getElementById("rowUploadButton-" + artifactId);
+            var file = input && input.files && input.files[0];
+            var token = currentAdminToken();
+            if (!file) {
+                setRowMessage(artifactId, "请先选择要上传的图片。", true);
+                return;
+            }
+            var validation = validateImageFile(file);
+            if (validation) {
+                setRowMessage(artifactId, validation, true);
+                return;
+            }
+            if (!token) {
+                setRowMessage(artifactId, "请先在列表顶部填写管理员 token。", true);
+                return;
+            }
+            localStorage.setItem("muselink_admin_token", token);
+            localStorage.setItem("muselink_token", token);
+            var formData = new FormData();
+            formData.set("image", file);
+            if (button) button.disabled = true;
+            setRowMessage(artifactId, "上传中...", false);
+            try {
+                var apiBaseUrl = {{ api_base_url_json|safe }};
+                var response = await fetch(apiBaseUrl.replace(/\/+$/, "") + "/api/admin/artifacts/" + encodeURIComponent(artifactId) + "/image", {
+                    method: "POST",
+                    headers: { Authorization: "Bearer " + token },
+                    body: formData
+                });
+                var data = await parseJsonResponse(response);
+                if (!response.ok) throw new Error(responseError(response, data, "上传失败"));
+                setRowMessage(artifactId, "上传成功：" + (artifactName || artifactId), false);
+                setTimeout(function () { window.location.reload(); }, 500);
+            } catch (error) {
+                setRowMessage(artifactId, error instanceof Error ? error.message : String(error), true);
+                if (button) button.disabled = false;
+            }
+        }
+        async function downloadRowImageUrl(artifactId, artifactName) {
+            var input = document.getElementById("rowImageUrl-" + artifactId);
+            var button = document.getElementById("rowDownloadButton-" + artifactId);
+            var imageUrl = input ? input.value.trim() : "";
+            var token = currentAdminToken();
+            if (!imageUrl) {
+                setRowMessage(artifactId, "请先粘贴图片链接。", true);
+                return;
+            }
+            if (!/^https?:\/\//i.test(imageUrl)) {
+                setRowMessage(artifactId, "图片链接必须以 http 或 https 开头。", true);
+                return;
+            }
+            if (!token) {
+                setRowMessage(artifactId, "请先在列表顶部填写管理员 token。", true);
+                return;
+            }
+            localStorage.setItem("muselink_admin_token", token);
+            localStorage.setItem("muselink_token", token);
+            if (button) button.disabled = true;
+            setRowMessage(artifactId, "正在下载图片...", false);
+            try {
+                var response = await fetch("/download-image-url/" + encodeURIComponent(artifactId), {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ imageUrl: imageUrl })
+                });
+                var data = await parseJsonResponse(response);
+                if (!response.ok) throw new Error(responseError(response, data, "下载补图失败"));
+                setRowMessage(artifactId, "下载成功：" + (artifactName || artifactId), false);
+                setTimeout(function () { window.location.reload(); }, 500);
+            } catch (error) {
+                setRowMessage(artifactId, error instanceof Error ? error.message : String(error), true);
+                if (button) button.disabled = false;
+            }
+        }
+        window.addEventListener("DOMContentLoaded", function () {
+            var input = document.getElementById("adminToken");
+            if (input) {
+                var storedToken = localStorage.getItem("muselink_admin_token") || localStorage.getItem("muselink_token") || "";
+                if (storedToken && !input.value) input.value = storedToken;
+                input.addEventListener("input", function () {
+                    localStorage.setItem("muselink_admin_token", input.value.trim());
+                });
+            }
+            document.querySelectorAll(".row-file-input").forEach(function (fileInput) {
+                fileInput.addEventListener("change", function () {
+                    onRowImageSelected(fileInput, fileInput.dataset.artifactId || "");
+                });
+            });
+            document.querySelectorAll(".row-upload-button").forEach(function (button) {
+                button.addEventListener("click", function () {
+                    uploadRowImage(button.dataset.artifactId || "", button.dataset.artifactName || "");
+                });
+            });
+            document.querySelectorAll(".row-download-button").forEach(function (button) {
+                button.addEventListener("click", function () {
+                    downloadRowImageUrl(button.dataset.artifactId || "", button.dataset.artifactName || "");
+                });
+            });
+        });
     </script>
 </head>
 <body>
@@ -332,10 +685,23 @@ HTML_TEMPLATE = """
         <div class="card">
             <h2>🖼️ 当前数字馆藏清单</h2>
             <form action="/" method="get" class="toolbar">
-                <input type="text" name="q" value="{{ query }}" placeholder="搜索文物名称、博物馆、年代、标签" style="min-width: 320px;">
+                <input type="text" name="q" value="{{ query }}" placeholder="搜索文物名称、馆藏机构、朝代、类别" style="min-width: 320px;">
+                <input type="hidden" name="mode" value="{{ image_mode }}">
                 <button type="submit" class="btn">搜索</button>
                 <a href="/" class="btn btn-secondary">清空搜索</a>
             </form>
+            <div class="filter-tabs">
+                <a class="filter-tab {% if image_mode == 'all' %}active{% endif %}" href="/?{{ all_mode_query }}">全部文物</a>
+                <a class="filter-tab {% if image_mode == 'missing' %}active{% endif %}" href="/?{{ missing_mode_query }}">缺图文物</a>
+                <a class="filter-tab {% if image_mode == 'no-local' %}active{% endif %}" href="/?{{ no_local_mode_query }}">无本地图文物</a>
+            </div>
+            <div class="toolbar">
+                <label style="font-weight:bold;">
+                    管理员 token
+                    <input id="adminToken" type="text" value="{{ admin_token }}" placeholder="上传图片需要 Bearer token" style="min-width: 360px; margin-left: 8px;">
+                </label>
+                <button type="button" class="btn btn-secondary" onclick="persistAdminToken()">保存 token</button>
+            </div>
 
             {% if data %}
                 <div class="summary-grid">
@@ -383,6 +749,8 @@ HTML_TEMPLATE = """
                                     <th>选择</th>
                                     <th>操作</th>
                                     <th>图片</th>
+                                    <th>图片状态</th>
+                                    <th>补图</th>
                                     <th>ID</th>
                                     <th>文物名称</th>
                                     <th>所属博物馆</th>
@@ -400,9 +768,32 @@ HTML_TEMPLATE = """
                                         <td><a class="btn btn-secondary" href="/edit/{{ row._artifact_id }}">编辑</a></td>
                                         <td>
                                             {% if row["显示图片"] %}
-                                                <img class="thumb" src="{{ image_url(row['显示图片']) }}" alt="{{ row['文物名称'] }}">
+                                                <img class="thumb" src="{{ image_url(row['显示图片']) }}" alt="{{ row['文物名称'] }}" onerror="this.closest('tr').querySelector('.status-pill').textContent='图片加载失败'; this.closest('tr').querySelector('.status-pill').className='status-pill status-failed';">
                                             {% else %}
                                                 <span class="muted">无图</span>
+                                            {% endif %}
+                                        </td>
+                                        <td><span class="status-pill status-{{ row['图片状态Key'] }}">{{ row["图片状态"] }}</span></td>
+                                        <td>
+                                            {% if image_mode in ["missing", "no-local"] %}
+                                                <div class="row-upload">
+                                                    <label class="file-label">
+                                                        选择图片
+                                                        <input id="rowFile-{{ row._artifact_id }}" class="row-file-input" data-artifact-id="{{ row._artifact_id }}" type="file" accept="image/jpeg,image/png,image/webp">
+                                                    </label>
+                                                    <button id="rowUploadButton-{{ row._artifact_id }}" type="button" class="btn row-upload-button" data-artifact-id="{{ row._artifact_id }}" data-artifact-name="{{ row['文物名称'] }}" style="padding:8px 10px;font-size:14px;">上传图片</button>
+                                                    <div class="row-url-tools">
+                                                        <input id="rowImageUrl-{{ row._artifact_id }}" class="row-url-input" type="url" placeholder="粘贴图片链接：https://...">
+                                                        <button id="rowDownloadButton-{{ row._artifact_id }}" type="button" class="btn row-download-button" data-artifact-id="{{ row._artifact_id }}" data-artifact-name="{{ row['文物名称'] }}" style="padding:8px 10px;font-size:14px;">下载补图</button>
+                                                    </div>
+                                                    <div id="rowPreview-{{ row._artifact_id }}" class="row-preview">
+                                                        <img id="rowPreviewImage-{{ row._artifact_id }}" alt="">
+                                                        <div id="rowFileMeta-{{ row._artifact_id }}" class="file-meta"></div>
+                                                    </div>
+                                                    <div id="rowMessage-{{ row._artifact_id }}" class="row-message"></div>
+                                                </div>
+                                            {% else %}
+                                                <span class="muted">切换到缺图或无本地图后补图</span>
                                             {% endif %}
                                         </td>
                                         <td>{{ row.id }}</td>
@@ -504,7 +895,14 @@ EDIT_TEMPLATE = """
                     </label>
                     <button id="uploadImageButton" type="button" class="btn">上传/替换图片</button>
                 </div>
-                <div class="muted">上传会自动调用 POST {{ api_base_url }}/api/admin/artifacts/{{ artifact_id }}/image，字段名 image。成功后刷新当前预览；返回后台后列表缩略图也会更新。</div>
+                <div class="toolbar">
+                    <label style="font-weight:bold; flex:1; min-width:360px;">
+                        图片链接
+                        <input id="artifactImageUrl" type="url" placeholder="粘贴图片链接：https://..." style="display:block; width:100%; margin-top:6px;">
+                    </label>
+                    <button id="downloadImageUrlButton" type="button" class="btn">从链接下载</button>
+                </div>
+                <div class="muted">文件上传会调用 POST {{ api_base_url }}/api/admin/artifacts/{{ artifact_id }}/image；链接下载会调用 /api/admin/artifacts/{{ artifact_id }}/image-url。成功后刷新当前预览；返回后台后列表缩略图也会更新。</div>
                 <div id="uploadStatus" class="status"></div>
             </div>
         </div>
@@ -515,6 +913,8 @@ EDIT_TEMPLATE = """
         var tokenInput = document.getElementById("adminToken");
         var fileInput = document.getElementById("artifactImageFile");
         var uploadButton = document.getElementById("uploadImageButton");
+        var imageUrlInput = document.getElementById("artifactImageUrl");
+        var downloadUrlButton = document.getElementById("downloadImageUrlButton");
         var statusEl = document.getElementById("uploadStatus");
         var fullPreview = document.getElementById("fullPreview");
         var thumbPreview = document.getElementById("thumbPreview");
@@ -541,11 +941,36 @@ EDIT_TEMPLATE = """
             statusEl.className = "status " + (isError ? "error" : "ok");
         }
 
+        async function parseJsonResponse(response) {
+            var text = await response.text();
+            if (!text) return { __rawText: "" };
+            try {
+                var data = JSON.parse(text);
+                if (data && typeof data === "object") data.__rawText = text;
+                return data;
+            } catch (error) {
+                throw new Error(text.slice(0, 300) || "接口没有返回 JSON。");
+            }
+        }
+        function responseError(response, data, fallback) {
+            var detail = (data && (data.error || data.message || data.detail || data.__rawText)) || "";
+            return "HTTP " + response.status + "：" + (detail || fallback);
+        }
+
         function showImage(img, empty, path) {
             if (!path) return;
             img.src = resolveImageUrl(path) + "?v=" + Date.now();
             img.style.display = "block";
             if (empty) empty.style.display = "none";
+        }
+
+        function applyUploadedImage(data) {
+            var localImageUrl = data.localImageUrl || data.originalPath || "";
+            var localThumbnailUrl = data.localThumbnailUrl || data.thumbnailPath || "";
+            localImageUrlEl.textContent = localImageUrl || "暂无 localImageUrl";
+            localThumbnailUrlEl.textContent = localThumbnailUrl || "暂无 localThumbnailUrl";
+            showImage(fullPreview, fullPreviewEmpty, localImageUrl);
+            showImage(thumbPreview, thumbPreviewEmpty, localThumbnailUrl || localImageUrl);
         }
 
         uploadButton.addEventListener("click", async function () {
@@ -571,15 +996,10 @@ EDIT_TEMPLATE = """
                     headers: { Authorization: "Bearer " + token },
                     body: formData
                 });
-                var data = await response.json();
-                if (!response.ok) throw new Error(data.error || "上传失败");
+                var data = await parseJsonResponse(response);
+                if (!response.ok) throw new Error(responseError(response, data, "上传失败"));
 
-                var localImageUrl = data.localImageUrl || data.originalPath || "";
-                var localThumbnailUrl = data.localThumbnailUrl || data.thumbnailPath || "";
-                localImageUrlEl.textContent = localImageUrl || "暂无 localImageUrl";
-                localThumbnailUrlEl.textContent = localThumbnailUrl || "暂无 localThumbnailUrl";
-                showImage(fullPreview, fullPreviewEmpty, localImageUrl);
-                showImage(thumbPreview, thumbPreviewEmpty, localThumbnailUrl || localImageUrl);
+                applyUploadedImage(data);
                 fileInput.value = "";
                 localStorage.setItem("muselink_admin_token", token);
                 setStatus("上传成功。当前编辑区预览已更新，返回后台列表后缩略图会显示新图片；前端刷新后也会优先显示新图。", false);
@@ -587,6 +1007,47 @@ EDIT_TEMPLATE = """
                 setStatus(error instanceof Error ? error.message : String(error), true);
             } finally {
                 uploadButton.disabled = false;
+            }
+        });
+
+        downloadUrlButton.addEventListener("click", async function () {
+            var imageUrl = imageUrlInput.value.trim();
+            var token = tokenInput.value.trim();
+            if (!imageUrl) {
+                setStatus("请先粘贴图片链接。", true);
+                return;
+            }
+            if (!/^https?:\/\//i.test(imageUrl)) {
+                setStatus("图片链接必须以 http 或 https 开头。", true);
+                return;
+            }
+            if (!token) {
+                setStatus("请先填写管理员 token。", true);
+                return;
+            }
+
+            downloadUrlButton.disabled = true;
+            setStatus("正在下载图片...", false);
+
+            try {
+                var response = await fetch("/download-image-url/" + encodeURIComponent(artifactId), {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ imageUrl: imageUrl })
+                });
+                var data = await parseJsonResponse(response);
+                if (!response.ok) throw new Error(responseError(response, data, "下载补图失败"));
+
+                applyUploadedImage(data);
+                localStorage.setItem("muselink_admin_token", token);
+                setStatus("下载成功。当前编辑区预览已更新，图片链接也已保存到 imageUrl；前端仍优先显示本地图。", false);
+            } catch (error) {
+                setStatus(error instanceof Error ? error.message : String(error), true);
+            } finally {
+                downloadUrlButton.disabled = false;
             }
         });
     </script>
@@ -639,21 +1100,47 @@ def fields_from_row(row=None):
 @app.route("/")
 def index():
     query = clean_value(request.args.get("q"))
+    image_mode = clean_value(request.args.get("mode")) or "all"
+    if image_mode not in ("all", "missing", "no-local"):
+        image_mode = "all"
     error = clean_value(request.args.get("error"))
     try:
-        data = load_data(query)
+        all_data = load_data(query)
+        data = filter_rows_by_image_mode(all_data, image_mode)
     except RuntimeError as exc:
+        all_data = []
         data = []
         error = str(exc)
+    try:
+        admin_token = get_admin_token()
+    except RuntimeError:
+        admin_token = ""
+
+    def mode_query(mode):
+        params = {"mode": mode}
+        if query:
+            params["q"] = query
+        return urlencode(params)
+
+    query_params = {"mode": image_mode}
+    if query:
+        query_params["q"] = query
+
     return render_with_fields(
         HTML_TEMPLATE,
         data=data,
-        batches=get_batch_summaries(data),
-        museums=get_museum_summaries(data),
+        batches=get_batch_summaries(all_data),
+        museums=get_museum_summaries(all_data),
         fields=fields_from_row({}),
         query=query,
-        query_string=urlencode({"q": query}) if query else "",
+        image_mode=image_mode,
+        query_string=urlencode(query_params),
+        all_mode_query=mode_query("all"),
+        missing_mode_query=mode_query("missing"),
+        no_local_mode_query=mode_query("no-local"),
         api_base_url=API_BASE_URL,
+        api_base_url_json=json.dumps(API_BASE_URL),
+        admin_token=admin_token,
         image_url=absolute_api_url,
         error=error,
     )
@@ -673,6 +1160,9 @@ def bulk_action():
     selected_ids = parse_selected_ids(request.form)
     action = request.form.get("action", "")
     query = clean_value(request.args.get("q"))
+    image_mode = clean_value(request.args.get("mode")) or "all"
+    if image_mode not in ("all", "missing", "no-local"):
+        image_mode = "all"
 
     try:
         if action == "delete":
@@ -704,7 +1194,10 @@ def bulk_action():
     except RuntimeError as exc:
         return redirect(f"/?error={quote(str(exc))}")
 
-    return redirect(f"/?{urlencode({'q': query})}" if query else "/")
+    params = {"mode": image_mode}
+    if query:
+        params["q"] = query
+    return redirect(f"/?{urlencode(params)}")
 
 
 @app.route("/edit/<artifact_id>", methods=["GET", "POST"])
@@ -735,6 +1228,29 @@ def edit_item(artifact_id):
         local_image_url=row["本地原图"],
         local_thumbnail_url=row["本地缩略图"],
     )
+
+
+@app.route("/download-image-url/<artifact_id>", methods=["POST"])
+def download_image_url(artifact_id):
+    try:
+        payload = request.get_json(silent=True) or {}
+        image_url = clean_value(payload.get("imageUrl"))
+        if not image_url:
+            return jsonify({"error": "请先粘贴图片链接。"}), 400
+
+        token = bearer_token_from_request() or get_admin_token()
+        image_bytes, content_type = download_image_bytes(image_url)
+        result = post_image_file_to_backend(clean_value(artifact_id), image_bytes, content_type, token)
+        save_artifact_source_image_url(clean_value(artifact_id), image_url)
+
+        return jsonify({
+            **result,
+            "imageUrl": image_url,
+            "sourceImageUrl": image_url,
+            "flaskDownloaded": True,
+        })
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
 
 
 @app.route("/upload", methods=["POST"])

@@ -102,6 +102,16 @@ app.get("/upload", (_req, res) => {
 
     tokenInput.value = localStorage.getItem("muselink_token") || "";
 
+    async function parseJsonResponse(response) {
+      const text = await response.text();
+      if (!text) return {};
+      try {
+        return JSON.parse(text);
+      } catch {
+        throw new Error(text.slice(0, 300) || "接口没有返回 JSON。");
+      }
+    }
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const artifactId = document.getElementById("artifactId").value.trim();
@@ -122,7 +132,7 @@ app.get("/upload", (_req, res) => {
           headers: token ? { Authorization: "Bearer " + token } : {},
           body: formData,
         });
-        const data = await response.json();
+        const data = await parseJsonResponse(response);
         if (!response.ok) throw new Error(data.error || "上传失败");
         const cacheBust = "?v=" + Date.now();
         fullPreview.src = data.localImageUrl + cacheBust;

@@ -10,6 +10,7 @@ import {
   updateArtifact,
   uploadArtifactImage,
   uploadArtifactImageFile,
+  uploadArtifactImageFromUrl,
 } from "../controllers/artifactsController";
 
 export const artifactRoutes = Router();
@@ -24,6 +25,8 @@ artifactRoutes.post("/api/artifacts", requireAdmin, createArtifact);
 artifactRoutes.post("/artifacts", requireAdmin, createArtifact);
 artifactRoutes.post("/api/admin/artifacts/:id/image", requireAdmin, uploadArtifactImageFile, uploadArtifactImage);
 artifactRoutes.post("/admin/artifacts/:id/image", requireAdmin, uploadArtifactImageFile, uploadArtifactImage);
+artifactRoutes.post("/api/admin/artifacts/:id/image-url", requireAdmin, uploadArtifactImageFromUrl);
+artifactRoutes.post("/admin/artifacts/:id/image-url", requireAdmin, uploadArtifactImageFromUrl);
 artifactRoutes.put("/api/artifacts/:id", requireAdmin, updateArtifact);
 artifactRoutes.put("/artifacts/:id", requireAdmin, updateArtifact);
 artifactRoutes.delete("/api/artifacts/:id", requireAdmin, deleteArtifact);

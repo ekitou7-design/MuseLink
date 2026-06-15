@@ -61,6 +61,7 @@ import {
   updateArtifact,
   uploadArtifactImage,
   uploadArtifactImageFile,
+  uploadArtifactImageFromUrl,
 } from "./backend/api/controllers/artifactsController";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -589,6 +590,7 @@ async function startServer() {
 
   app.post("/api/artifacts", requireAdmin, createArtifact);
   app.post("/api/admin/artifacts/:id/image", requireAdmin, uploadArtifactImageFile, uploadArtifactImage);
+  app.post("/api/admin/artifacts/:id/image-url", requireAdmin, uploadArtifactImageFromUrl);
   app.put("/api/artifacts/:id", requireAdmin, updateArtifact);
   app.delete("/api/artifacts/:id", requireAdmin, deleteArtifact);
 

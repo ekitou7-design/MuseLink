@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import type { Artifact } from "../types";
 import { AuthService } from "../auth/AuthService";
 import { UserSession } from "../auth/UserSession";
-import { apiFetch, apiUrl, getAuthToken } from "../lib/api";
+import { apiFetch, apiUrl, getAuthToken, setAuthToken } from "../lib/api";
 import { getAdminStats, getAdminUsers, type AdminStatsResponse, type AdminUserSummary } from "../lib/adminClient";
 import { me } from "../lib/authClient";
 import { ForbiddenPage } from "./ForbiddenPage";
@@ -11,6 +11,13 @@ import { SafeImage } from "../components/SafeImage";
 import { artifactImageUrlRaw } from "../lib/dbDisplay";
 
 type AdminTab = "artifacts" | "import" | "users";
+type ArtifactImageFilter = "all" | "missing" | "no-local";
+type ArtifactImageStatus = "local" | "remote" | "none" | "placeholder" | "failed";
+
+type RowImageSelection = {
+  file: File;
+  previewUrl: string;
+};
 
 type ArtifactFormState = {
   id?: string;
@@ -55,6 +62,119 @@ const genderLabels: Record<AdminUserSummary["gender"], string> = {
 function text(value: unknown) {
   if (value === null || value === undefined) return "";
   return String(value);
+}
+
+function fieldText(record: unknown, keys: string[]) {
+  if (!record || typeof record !== "object") return "";
+  const source = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = text(source[key]).trim();
+    if (value) return value;
+  }
+  return "";
+}
+
+function isPlaceholderImageUrl(value: unknown) {
+  const url = text(value).trim().toLowerCase();
+  if (!url) return false;
+  return [
+    "placeholder",
+    "placehold",
+    "占位",
+    "no-image",
+    "no_image",
+    "noimage",
+    "fallback",
+    "default-image",
+    "default_image",
+    "暂无信息",
+  ].some((marker) => url.includes(marker));
+}
+
+function isUsableImageUrl(value: unknown) {
+  const url = text(value).trim();
+  if (!url) return false;
+  if (isPlaceholderImageUrl(url)) return false;
+  return true;
+}
+
+function getArtifactImageFields(artifact: Artifact) {
+  const record = artifact as Artifact & Record<string, unknown>;
+  const localImageUrl = fieldText(record, ["localImageUrl", "local_image_url"]);
+  const localThumbnailUrl = fieldText(record, ["localThumbnailUrl", "local_thumbnail_url"]);
+  const imageUrl = fieldText(record, ["imageUrl", "image_url", "externalImageUrl", "external_image_url", "image", "图片", "图片链接"]);
+  const thumbnailUrl = fieldText(record, ["thumbnailUrl", "thumbnail_url", "thumbnail"]);
+  const hasLocalImage = isUsableImageUrl(localImageUrl) || isUsableImageUrl(localThumbnailUrl);
+  const hasRemoteImage = isUsableImageUrl(imageUrl) || isUsableImageUrl(thumbnailUrl);
+  const hasPlaceholderImage = [localImageUrl, localThumbnailUrl, imageUrl, thumbnailUrl].some(isPlaceholderImageUrl);
+
+  return {
+    localImageUrl,
+    localThumbnailUrl,
+    imageUrl,
+    thumbnailUrl,
+    hasLocalImage,
+    hasRemoteImage,
+    hasPlaceholderImage,
+  };
+}
+
+function getArtifactImageStatus(artifact: Artifact, failed: boolean): ArtifactImageStatus {
+  if (failed) return "failed";
+  const image = getArtifactImageFields(artifact);
+  if (image.hasLocalImage) return "local";
+  if (image.hasPlaceholderImage) return "placeholder";
+  if (image.hasRemoteImage) return "remote";
+  return "none";
+}
+
+function artifactMatchesImageFilter(artifact: Artifact, filter: ArtifactImageFilter) {
+  if (filter === "all") return true;
+  const image = getArtifactImageFields(artifact);
+  if (filter === "no-local") return !image.hasLocalImage;
+  return !image.hasLocalImage && !image.hasRemoteImage;
+}
+
+function imageStatusLabel(status: ArtifactImageStatus) {
+  const labels: Record<ArtifactImageStatus, string> = {
+    local: "已有本地图",
+    remote: "仅有外链图",
+    none: "无图片",
+    placeholder: "疑似占位图",
+    failed: "图片加载失败",
+  };
+  return labels[status];
+}
+
+function imageStatusClassName(status: ArtifactImageStatus) {
+  const classes: Record<ArtifactImageStatus, string> = {
+    local: "bg-emerald-50 text-emerald-700",
+    remote: "bg-sky-50 text-sky-700",
+    none: "bg-gray-100 text-gray-700",
+    placeholder: "bg-amber-50 text-amber-800",
+    failed: "bg-rose-50 text-rose-700",
+  };
+  return classes[status];
+}
+
+function formatFileSize(size: number) {
+  if (size >= 1024 * 1024) return `${(size / 1024 / 1024).toFixed(2)} MB`;
+  if (size >= 1024) return `${(size / 1024).toFixed(1)} KB`;
+  return `${size} B`;
+}
+
+function validateArtifactImageFile(file: File) {
+  const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+  if (!allowedTypes.has(file.type)) return "仅支持 jpg/png/webp 图片。";
+  if (file.size > 10 * 1024 * 1024) return "图片不能超过 10MB。";
+  return null;
+}
+
+function validateImageDownloadUrl(value: string) {
+  const url = value.trim();
+  if (!url) return "请先粘贴图片链接。";
+  if (!/^https?:\/\//i.test(url)) return "图片链接必须以 http 或 https 开头。";
+  return null;
 }
 
 function tagNames(tags: Artifact["tags"] | undefined) {
@@ -129,11 +249,22 @@ export function AdminPage() {
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
   const [form, setForm] = useState<ArtifactFormState>(emptyForm);
   const [query, setQuery] = useState("");
+  const [imageFilter, setImageFilter] = useState<ArtifactImageFilter>("all");
   const [importText, setImportText] = useState("");
   const [importResult, setImportResult] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrlToDownload, setImageUrlToDownload] = useState("");
   const [imageUploadMessage, setImageUploadMessage] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [downloadingImageUrl, setDownloadingImageUrl] = useState(false);
+  const [rowImageSelections, setRowImageSelections] = useState<Record<string, RowImageSelection>>({});
+  const [rowImageUrls, setRowImageUrls] = useState<Record<string, string>>({});
+  const [rowUploadingIds, setRowUploadingIds] = useState<Record<string, boolean>>({});
+  const [rowDownloadingIds, setRowDownloadingIds] = useState<Record<string, boolean>>({});
+  const [rowImageErrors, setRowImageErrors] = useState<Record<string, string>>({});
+  const [failedImageIds, setFailedImageIds] = useState<Record<string, boolean>>({});
+  const [adminTokenInput, setAdminTokenInput] = useState(() => getAuthToken() || "");
+  const rowImageSelectionsRef = useRef(rowImageSelections);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -192,10 +323,21 @@ export function AdminPage() {
     };
   }, []);
 
+  useEffect(() => {
+    rowImageSelectionsRef.current = rowImageSelections;
+  }, [rowImageSelections]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(rowImageSelectionsRef.current).forEach((selection) => URL.revokeObjectURL(selection.previewUrl));
+    };
+  }, []);
+
   const filteredArtifacts = useMemo(() => {
     const keyword = query.trim().toLowerCase();
-    if (!keyword) return artifacts;
     return artifacts.filter((artifact) => {
+      if (!artifactMatchesImageFilter(artifact, imageFilter)) return false;
+      if (!keyword) return true;
       const haystack = [
         artifact.name,
         artifact.museumName,
@@ -203,13 +345,10 @@ export function AdminPage() {
         artifact.dynasty,
         artifact.period,
         artifact.category,
-        artifact.shortIntro,
-        artifact.description,
-        tagNames(artifact.tags),
       ].map(text).join(" ").toLowerCase();
       return haystack.includes(keyword);
     });
-  }, [artifacts, query]);
+  }, [artifacts, imageFilter, query]);
 
   const onLogout = async () => {
     await AuthService.logout();
@@ -289,10 +428,209 @@ export function AdminPage() {
     }
   };
 
+  const onDownloadArtifactImageUrl = async () => {
+    if (!form.id) {
+      setError("请先选择要编辑的文物。");
+      return;
+    }
+
+    const validationError = validateImageDownloadUrl(imageUrlToDownload);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    const token = (getAuthToken() || adminTokenInput).trim();
+    if (!token) {
+      setError("请先登录管理员账号或填写管理员 token。");
+      return;
+    }
+    setAuthToken(token);
+    setAdminTokenInput(token);
+
+    setDownloadingImageUrl(true);
+    setError(null);
+    setImageUploadMessage(null);
+
+    try {
+      const response = await fetch(apiUrl(`/api/admin/artifacts/${encodeURIComponent(form.id)}/image-url`), {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl: imageUrlToDownload.trim() }),
+      });
+      const contentType = response.headers.get("content-type") || "";
+      const data = contentType.includes("application/json") ? await response.json() : await response.text();
+      if (!response.ok) {
+        const message = typeof data === "object" && data && "error" in data ? String(data.error) : String(data);
+        throw new Error(message || `下载失败：${response.status}`);
+      }
+
+      const localImageUrl = String(data.localImageUrl || data.originalPath || "");
+      const localThumbnailUrl = String(data.localThumbnailUrl || data.thumbnailPath || "");
+      const savedImageUrl = String(data.imageUrl || data.sourceImageUrl || imageUrlToDownload.trim());
+      setForm((current) => ({ ...current, imageUrl: savedImageUrl || current.imageUrl }));
+      setImageUrlToDownload("");
+      setImageUploadMessage(`图片已下载：${localImageUrl || "-"}，缩略图：${localThumbnailUrl || "-"}`);
+      await loadArtifacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setDownloadingImageUrl(false);
+    }
+  };
+
+  const saveAdminTokenInput = () => {
+    const token = adminTokenInput.trim();
+    if (!token) {
+      setError("请填写管理员 token。");
+      return;
+    }
+    setAuthToken(token);
+    setError(null);
+    setImageUploadMessage("管理员 token 已保存。");
+  };
+
+  const onSelectRowImage = (artifactId: string, file: File | null) => {
+    setRowImageErrors((current) => ({ ...current, [artifactId]: "" }));
+    setRowImageSelections((current) => {
+      const existing = current[artifactId];
+      if (existing) URL.revokeObjectURL(existing.previewUrl);
+      const next = { ...current };
+      delete next[artifactId];
+      if (!file) return next;
+
+      const validationError = validateArtifactImageFile(file);
+      if (validationError) {
+        setRowImageErrors((errors) => ({ ...errors, [artifactId]: validationError }));
+        return next;
+      }
+
+      next[artifactId] = {
+        file,
+        previewUrl: URL.createObjectURL(file),
+      };
+      return next;
+    });
+  };
+
+  const onUploadRowImage = async (artifact: Artifact) => {
+    const artifactId = String(artifact.id);
+    const selection = rowImageSelections[artifactId];
+    if (!selection) {
+      setRowImageErrors((current) => ({ ...current, [artifactId]: "请先选择要上传的图片。" }));
+      return;
+    }
+
+    const token = (getAuthToken() || adminTokenInput).trim();
+    if (!token) {
+      setRowImageErrors((current) => ({ ...current, [artifactId]: "请先填写管理员 token。" }));
+      return;
+    }
+    setAuthToken(token);
+    setAdminTokenInput(token);
+
+    setRowUploadingIds((current) => ({ ...current, [artifactId]: true }));
+    setRowImageErrors((current) => ({ ...current, [artifactId]: "" }));
+    setError(null);
+    setImageUploadMessage(null);
+
+    try {
+      const formData = new FormData();
+      formData.set("image", selection.file);
+      const response = await fetch(apiUrl(`/api/admin/artifacts/${encodeURIComponent(artifactId)}/image`), {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const contentType = response.headers.get("content-type") || "";
+      const data = contentType.includes("application/json") ? await response.json() : await response.text();
+      if (!response.ok) {
+        const message = typeof data === "object" && data && "error" in data ? String(data.error) : String(data);
+        throw new Error(message || `上传失败：${response.status}`);
+      }
+
+      setRowImageSelections((current) => {
+        const existing = current[artifactId];
+        if (existing) URL.revokeObjectURL(existing.previewUrl);
+        const next = { ...current };
+        delete next[artifactId];
+        return next;
+      });
+      setFailedImageIds((current) => {
+        const next = { ...current };
+        delete next[artifactId];
+        return next;
+      });
+      setImageUploadMessage(`「${artifact.name || artifactId}」图片上传成功。`);
+      await loadArtifacts();
+    } catch (e) {
+      setRowImageErrors((current) => ({ ...current, [artifactId]: e instanceof Error ? e.message : String(e) }));
+    } finally {
+      setRowUploadingIds((current) => ({ ...current, [artifactId]: false }));
+    }
+  };
+
+  const onDownloadRowImageUrl = async (artifact: Artifact) => {
+    const artifactId = String(artifact.id);
+    const imageUrl = (rowImageUrls[artifactId] || "").trim();
+    const validationError = validateImageDownloadUrl(imageUrl);
+    if (validationError) {
+      setRowImageErrors((current) => ({ ...current, [artifactId]: validationError }));
+      return;
+    }
+
+    const token = (getAuthToken() || adminTokenInput).trim();
+    if (!token) {
+      setRowImageErrors((current) => ({ ...current, [artifactId]: "请先填写管理员 token。" }));
+      return;
+    }
+    setAuthToken(token);
+    setAdminTokenInput(token);
+
+    setRowDownloadingIds((current) => ({ ...current, [artifactId]: true }));
+    setRowImageErrors((current) => ({ ...current, [artifactId]: "" }));
+    setError(null);
+    setImageUploadMessage(null);
+
+    try {
+      const response = await fetch(apiUrl(`/api/admin/artifacts/${encodeURIComponent(artifactId)}/image-url`), {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl }),
+      });
+      const contentType = response.headers.get("content-type") || "";
+      const data = contentType.includes("application/json") ? await response.json() : await response.text();
+      if (!response.ok) {
+        const message = typeof data === "object" && data && "error" in data ? String(data.error) : String(data);
+        throw new Error(message || `下载失败：${response.status}`);
+      }
+
+      setRowImageUrls((current) => ({ ...current, [artifactId]: "" }));
+      setFailedImageIds((current) => {
+        const next = { ...current };
+        delete next[artifactId];
+        return next;
+      });
+      setImageUploadMessage(`「${artifact.name || artifactId}」图片下载成功。`);
+      await loadArtifacts();
+    } catch (e) {
+      setRowImageErrors((current) => ({ ...current, [artifactId]: e instanceof Error ? e.message : String(e) }));
+    } finally {
+      setRowDownloadingIds((current) => ({ ...current, [artifactId]: false }));
+    }
+  };
+
   const onEditArtifact = (artifact: Artifact) => {
     setTab("artifacts");
     setForm(formFromArtifact(artifact));
     setImageFile(null);
+    setImageUrlToDownload("");
     setImageUploadMessage(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -438,6 +776,22 @@ export function AdminPage() {
                     >
                       {uploadingImage ? "上传中..." : "上传并同步图片"}
                     </button>
+                    <div className="mt-4 grid gap-2">
+                      <input
+                        value={imageUrlToDownload}
+                        onChange={(e) => setImageUrlToDownload(e.target.value)}
+                        placeholder="粘贴图片链接后自动下载到本地"
+                        className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-amber-500"
+                      />
+                      <button
+                        type="button"
+                        disabled={downloadingImageUrl || !imageUrlToDownload.trim()}
+                        onClick={onDownloadArtifactImageUrl}
+                        className="rounded-xl bg-amber-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50"
+                      >
+                        {downloadingImageUrl ? "下载中..." : "从链接下载并同步图片"}
+                      </button>
+                    </div>
                     {imageUploadMessage && <div className="mt-2 break-all text-xs font-bold text-emerald-700">{imageUploadMessage}</div>}
                   </div>
                 )}
@@ -459,12 +813,52 @@ export function AdminPage() {
             </form>
 
             <section className="rounded-3xl border border-gray-100 bg-white shadow-sm">
-              <div className="flex flex-col gap-3 border-b border-gray-100 p-6 md:flex-row md:items-center md:justify-between">
+              <div className="space-y-4 border-b border-gray-100 p-6">
+                {!getAuthToken() && (
+                  <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
+                    <div className="text-sm font-black text-amber-900">管理员 token</div>
+                    <div className="mt-2 flex flex-col gap-2 md:flex-row">
+                      <input
+                        value={adminTokenInput}
+                        onChange={(e) => setAdminTokenInput(e.target.value)}
+                        placeholder="粘贴管理员 Bearer token"
+                        className="min-w-0 flex-1 rounded-xl border border-amber-200 bg-white px-3 py-2 text-sm outline-none focus:border-amber-500"
+                      />
+                      <button type="button" onClick={saveAdminTokenInput} className="rounded-xl bg-amber-900 px-4 py-2 text-xs font-black text-white">
+                        保存 token
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {imageUploadMessage && <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-bold text-emerald-700">{imageUploadMessage}</div>}
+
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h2 className="text-lg font-black text-gray-900">文物列表</h2>
                   <div className="mt-1 text-sm text-gray-500">统一 artifacts 表当前 {artifacts.length} 条，筛选显示 {filteredArtifacts.length} 条。</div>
                 </div>
-                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索名称、博物馆、时代、标签" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500 md:w-80" />
+                  <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索名称、馆藏机构、朝代、类别" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500 md:w-80" />
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    ["all", "全部文物"],
+                    ["missing", "缺图文物"],
+                    ["no-local", "无本地图文物"],
+                  ].map(([id, label]) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => setImageFilter(id as ArtifactImageFilter)}
+                      className={`rounded-2xl px-4 py-2 text-sm font-black ${
+                        imageFilter === id ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="max-h-[760px] overflow-auto">
@@ -473,12 +867,19 @@ export function AdminPage() {
                     <tr>
                       <th className="px-5 py-3 text-left font-bold">文物</th>
                       <th className="px-5 py-3 text-left font-bold">馆藏/时代</th>
-                      <th className="px-5 py-3 text-left font-bold">标签</th>
+                      <th className="px-5 py-3 text-left font-bold">图片状态</th>
+                      <th className="px-5 py-3 text-left font-bold">补图</th>
                       <th className="px-5 py-3 text-right font-bold">操作</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredArtifacts.map((artifact) => (
+                    {filteredArtifacts.map((artifact) => {
+                      const artifactId = String(artifact.id);
+                      const imageStatus = getArtifactImageStatus(artifact, Boolean(failedImageIds[artifactId]));
+                      const rowSelection = rowImageSelections[artifactId];
+                      const showInlineUploader = imageFilter === "missing" || imageFilter === "no-local";
+
+                      return (
                       <tr key={artifact.id} className="border-t border-gray-100">
                         <td className="px-5 py-4 align-top">
                           <div className="flex min-w-72 gap-3">
@@ -487,6 +888,8 @@ export function AdminPage() {
                               alt={artifact.name || "文物图片"}
                               width={56}
                               height={56}
+                              onLoad={() => setFailedImageIds((current) => ({ ...current, [artifactId]: false }))}
+                              onError={() => setFailedImageIds((current) => ({ ...current, [artifactId]: true }))}
                               className="h-14 w-14 rounded-2xl bg-gray-100 object-cover"
                             />
                             <div>
@@ -499,9 +902,66 @@ export function AdminPage() {
                         <td className="px-5 py-4 align-top text-gray-700">
                           <div>{artifact.museumName || artifact.museum || "-"}</div>
                           <div className="mt-1 text-xs text-gray-400">{artifact.dynasty || artifact.period || "-"}</div>
+                          <div className="mt-1 text-xs text-gray-400">{artifact.category || "-"}</div>
                         </td>
                         <td className="px-5 py-4 align-top text-gray-500">
-                          <div className="max-w-64">{tagNames(artifact.tags) || "-"}</div>
+                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${imageStatusClassName(imageStatus)}`}>
+                            {imageStatusLabel(imageStatus)}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4 align-top">
+                          {showInlineUploader ? (
+                            <div className="min-w-64 space-y-3">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <label className="cursor-pointer rounded-xl bg-gray-100 px-3 py-2 text-xs font-black text-gray-700">
+                                  选择图片
+                                  <input
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    className="hidden"
+                                    onChange={(e) => onSelectRowImage(artifactId, e.target.files?.[0] || null)}
+                                  />
+                                </label>
+                                <button
+                                  type="button"
+                                  disabled={Boolean(rowUploadingIds[artifactId]) || !rowSelection}
+                                  onClick={() => onUploadRowImage(artifact)}
+                                  className="rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50"
+                                >
+                                  {rowUploadingIds[artifactId] ? "上传中..." : "上传图片"}
+                                </button>
+                              </div>
+                              <div className="grid gap-2">
+                                <input
+                                  value={rowImageUrls[artifactId] || ""}
+                                  onChange={(e) => setRowImageUrls((current) => ({ ...current, [artifactId]: e.target.value }))}
+                                  placeholder="粘贴图片链接：https://..."
+                                  className="rounded-xl border border-gray-200 px-3 py-2 text-xs outline-none focus:border-amber-500"
+                                />
+                                <button
+                                  type="button"
+                                  disabled={Boolean(rowDownloadingIds[artifactId]) || !String(rowImageUrls[artifactId] || "").trim()}
+                                  onClick={() => onDownloadRowImageUrl(artifact)}
+                                  className="rounded-xl bg-amber-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50"
+                                >
+                                  {rowDownloadingIds[artifactId] ? "下载中..." : "下载补图"}
+                                </button>
+                              </div>
+                              {rowSelection && (
+                                <div className="flex gap-3 rounded-2xl bg-gray-50 p-3">
+                                  <img src={rowSelection.previewUrl} alt="" className="h-16 w-16 rounded-xl bg-white object-cover" />
+                                  <div className="min-w-0 text-xs text-gray-500">
+                                    <div className="truncate font-bold text-gray-800">{rowSelection.file.name}</div>
+                                    <div className="mt-1">{formatFileSize(rowSelection.file.size)}</div>
+                                    <div className="mt-1">{rowSelection.file.type || "-"}</div>
+                                  </div>
+                                </div>
+                              )}
+                              {rowImageErrors[artifactId] && <div className="text-xs font-bold text-rose-700">{rowImageErrors[artifactId]}</div>}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-gray-400">切换到缺图或无本地图后补图</span>
+                          )}
                         </td>
                         <td className="px-5 py-4 align-top">
                           <div className="flex justify-end gap-2">
@@ -514,7 +974,15 @@ export function AdminPage() {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                      );
+                    })}
+                    {filteredArtifacts.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="px-5 py-10 text-center text-sm text-gray-400">
+                          当前筛选下没有文物。
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

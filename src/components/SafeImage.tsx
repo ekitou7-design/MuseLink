@@ -14,7 +14,7 @@ function readImageFallbackEnabled() {
   }
 }
 
-export function SafeImage({ src, alt, className, ...props }: SafeImageProps) {
+export function SafeImage({ src, alt, className, onLoad, onError, ...props }: SafeImageProps) {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [imageFallbackEnabled, setImageFallbackEnabled] = useState(readImageFallbackEnabled);
@@ -64,10 +64,14 @@ export function SafeImage({ src, alt, className, ...props }: SafeImageProps) {
         width={props.width ?? 640}
         height={props.height ?? 480}
         className={cn(className, loading ? "opacity-0" : "opacity-100 transition-opacity duration-300")}
-        onLoad={() => setLoading(false)}
-        onError={() => {
+        onLoad={(event) => {
+          setLoading(false);
+          onLoad?.(event);
+        }}
+        onError={(event) => {
           setError(true);
           setLoading(false);
+          onError?.(event);
         }}
         referrerPolicy="no-referrer"
         {...props}
