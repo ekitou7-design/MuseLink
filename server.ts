@@ -1,5 +1,6 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { ARTIFACTS as SEED_ARTIFACTS } from "./src/data/artifacts";
@@ -71,6 +72,7 @@ import {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const ARTIFACT_IMAGE_PUBLIC_DIR = path.join(process.cwd(), "public", "artifact-images");
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
@@ -1910,6 +1912,17 @@ function getAllowedCorsOrigin(origin: string | undefined) {
   return configured[0] || "*";
 }
 
+function artifactImagePublicPathExists(value: unknown) {
+  const url = typeof value === "string" ? value.trim() : "";
+  if (!url || !url.startsWith("/artifact-images/")) return null;
+
+  const relativePath = decodeURIComponent(url.split("?")[0]!.replace(/^\/artifact-images\//, ""));
+  const physicalPath = path.resolve(ARTIFACT_IMAGE_PUBLIC_DIR, relativePath);
+  if (!physicalPath.startsWith(ARTIFACT_IMAGE_PUBLIC_DIR + path.sep)) return null;
+
+  return fs.existsSync(physicalPath);
+}
+
 async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT || 3000);
@@ -2011,6 +2024,29 @@ async function startServer() {
     try {
       const stats = await getAdminStats();
       res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  app.get("/api/admin/artifact-image-file-status", requireAdmin, async (_req, res) => {
+    try {
+      const { artifacts } = await resolveArtifactsSource("auto");
+      const statuses = artifacts.map((artifact) => {
+        const record = artifact as Record<string, unknown>;
+        const localImageUrl = stringValue(record.localImageUrl) || stringValue(record.local_image_url);
+        const localThumbnailUrl = stringValue(record.localThumbnailUrl) || stringValue(record.local_thumbnail_url);
+
+        return {
+          artifactId: stringValue(record.id),
+          localImageUrl,
+          localThumbnailUrl,
+          localImageExists: artifactImagePublicPathExists(localImageUrl),
+          localThumbnailExists: artifactImagePublicPathExists(localThumbnailUrl),
+        };
+      });
+
+      res.json({ statuses });
     } catch (error) {
       res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
     }

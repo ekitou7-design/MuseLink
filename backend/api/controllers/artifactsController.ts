@@ -13,9 +13,11 @@ import type { ArtifactAttributeRow } from "../models/types";
 const ARTIFACT_IMAGES_DIR = path.join(process.cwd(), "public", "artifact-images");
 const ARTIFACT_THUMBS_DIR = path.join(ARTIFACT_IMAGES_DIR, "thumbs");
 const IMPORTED_ARTIFACTS_PATH = path.join(process.cwd(), "data", "imported-artifacts.json");
-const ALLOWED_IMAGE_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+const ALLOWED_IMAGE_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 const MAX_IMAGE_DOWNLOAD_BYTES = 10 * 1024 * 1024;
 const IMAGE_DOWNLOAD_TIMEOUT_MS = 12000;
+const IMAGE_DOWNLOAD_USER_AGENT = "MuseLink/1.0 (educational cultural heritage project; contact: ekitou7@gmail.com)";
+const IMAGE_DOWNLOAD_ACCEPT = "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8";
 
 const multerArtifactImageUpload = multer({
   storage: multer.memoryStorage(),
@@ -101,6 +103,10 @@ function text(value: unknown) {
 
 function cleanText(value: unknown) {
   return text(value).trim();
+}
+
+function isDevRuntime() {
+  return process.env.NODE_ENV !== "production";
 }
 
 function artifactImageFileBase(id: string) {
@@ -203,47 +209,57 @@ async function readImageResponseBody(response: globalThis.Response) {
 }
 
 async function downloadImageBuffer(rawUrl: string) {
-  let currentUrl = await assertSafeImageUrl(rawUrl);
+  const normalizedUrl = await assertSafeImageUrl(rawUrl);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), IMAGE_DOWNLOAD_TIMEOUT_MS);
 
-  for (let redirectCount = 0; redirectCount <= 5; redirectCount += 1) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), IMAGE_DOWNLOAD_TIMEOUT_MS);
-    try {
-      const response = await fetch(currentUrl, {
-        redirect: "manual",
-        signal: controller.signal,
-        headers: { Accept: "image/jpeg,image/png,image/webp,image/*;q=0.8" },
+  try {
+    const response = await fetch(normalizedUrl, {
+      redirect: "follow",
+      signal: controller.signal,
+      headers: {
+        "User-Agent": IMAGE_DOWNLOAD_USER_AGENT,
+        Accept: IMAGE_DOWNLOAD_ACCEPT,
+      },
+    });
+    const contentType = response.headers.get("content-type") || "";
+    const contentLength = response.headers.get("content-length") || "";
+
+    if (isDevRuntime()) {
+      console.info("[artifact-image-url-download]", {
+        receivedUrl: rawUrl,
+        normalizedUrl,
+        "response.status": response.status,
+        "response.headers.content-type": contentType,
+        "response.headers.content-length": contentLength,
+        "response.url": response.url,
       });
-
-      if (response.status >= 300 && response.status < 400) {
-        const location = response.headers.get("location");
-        if (!location) throw new Error("图片链接重定向无效。");
-        currentUrl = await assertSafeImageUrl(new URL(location, currentUrl).toString());
-        continue;
-      }
-
-      if (!response.ok) {
-        throw new Error(`下载图片失败：${response.status}`);
-      }
-
-      const contentType = response.headers.get("content-type") || "";
-      const mimeType = contentType.split(";")[0]?.trim().toLowerCase() || "";
-      if (!ALLOWED_IMAGE_MIME_TYPES.has(mimeType) && mimeType !== "image/jpg") {
-        throw new Error("图片链接仅支持 jpg/jpeg/png/webp 图片。");
-      }
-
-      return { buffer: await readImageResponseBody(response), sourceImageUrl: currentUrl };
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
-        throw new Error("下载图片超时。");
-      }
-      throw error;
-    } finally {
-      clearTimeout(timeout);
     }
-  }
 
-  throw new Error("图片链接重定向次数过多。");
+    if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error("图片站点请求过于频繁，已被限流。请稍后重试，或手动下载后上传。");
+      }
+      throw new Error(`图片下载失败：HTTP ${response.status}`);
+    }
+
+    const mimeType = contentType.split(";")[0]?.trim().toLowerCase() || "";
+    if (mimeType === "text/html") {
+      throw new Error("该链接返回的是网页，不是图片文件。请复制图片直链，或手动上传图片。");
+    }
+    if (!ALLOWED_IMAGE_MIME_TYPES.has(mimeType) && mimeType !== "image/jpg") {
+      throw new Error("图片链接仅支持 jpg/jpeg/png/webp/gif 图片。");
+    }
+
+    return { buffer: await readImageResponseBody(response), sourceImageUrl: response.url || normalizedUrl };
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error("下载图片超时。");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 async function ensureArtifactImageColumns() {

@@ -4,7 +4,7 @@ import { cn } from "../lib/utils";
 import { displayDbString, isStrictDbEmpty } from "../lib/dbDisplay";
 
 export type SafeImageProps = React.ImgHTMLAttributes<HTMLImageElement>;
-const IMAGE_RETRY_DELAY_MS = 6000;
+const IMAGE_LOAD_TIMEOUT_MS = 5000;
 
 function readImageFallbackEnabled() {
   try {
@@ -25,7 +25,7 @@ export function SafeImage({ src, alt, className, onLoad, onError, ...props }: Sa
   const [loading, setLoading] = useState(true);
   const [fallbackIndex, setFallbackIndex] = useState(0);
   const [retryAttempt, setRetryAttempt] = useState(0);
-  const [retryScheduled, setRetryScheduled] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [imageFallbackEnabled, setImageFallbackEnabled] = useState(readImageFallbackEnabled);
 
   const rawSrc = typeof src === "string" ? src : src == null ? "" : String(src);
@@ -44,32 +44,22 @@ export function SafeImage({ src, alt, className, onLoad, onError, ...props }: Sa
     setLoading(true);
     setFallbackIndex(0);
     setRetryAttempt(0);
-    setRetryScheduled(false);
+    setFailed(false);
   }, [rawSrc]);
 
   useEffect(() => {
-    if (isStrictDbEmpty(rawSrc) || !loading || retryScheduled) return;
+    if (isStrictDbEmpty(rawSrc) || !loading || failed) return;
     const timer = window.setTimeout(() => {
       if (fallbackIndex + 1 < candidateSrcs.length) {
         setFallbackIndex((index) => index + 1);
         setLoading(true);
         return;
       }
-      setRetryScheduled(true);
-    }, 8000);
+      setLoading(false);
+      setFailed(true);
+    }, IMAGE_LOAD_TIMEOUT_MS);
     return () => window.clearTimeout(timer);
-  }, [candidateSrcs.length, fallbackIndex, loading, rawSrc, retryScheduled]);
-
-  useEffect(() => {
-    if (!retryScheduled) return;
-    const timer = window.setTimeout(() => {
-      setFallbackIndex(0);
-      setRetryAttempt((attempt) => attempt + 1);
-      setLoading(true);
-      setRetryScheduled(false);
-    }, IMAGE_RETRY_DELAY_MS);
-    return () => window.clearTimeout(timer);
-  }, [retryScheduled]);
+  }, [candidateSrcs.length, failed, fallbackIndex, loading, rawSrc]);
 
   useEffect(() => {
     const handleSettingsChange = () => setImageFallbackEnabled(readImageFallbackEnabled());
@@ -81,17 +71,34 @@ export function SafeImage({ src, alt, className, onLoad, onError, ...props }: Sa
     };
   }, []);
 
-  if (isStrictDbEmpty(rawSrc)) {
+  const fallbackContent = (
+    <div className={cn("flex flex-col items-center justify-center bg-[#F4F2EE] p-4 text-center", className)}>
+      <Library className="mb-1 text-gray-300" size={24} />
+      <span className="text-[10px] text-gray-500">{displayDbString(rawSrc)}</span>
+      {failed && (
+        <button
+          type="button"
+          className="mt-2 rounded-full bg-white/80 px-2 py-1 text-[10px] font-bold text-gray-500 shadow-sm"
+          onClick={(event) => {
+            event.stopPropagation();
+            setFailed(false);
+            setLoading(true);
+            setFallbackIndex(0);
+            setRetryAttempt((attempt) => attempt + 1);
+          }}
+        >
+          重试
+        </button>
+      )}
+    </div>
+  );
+
+  if (isStrictDbEmpty(rawSrc) || failed) {
     if (!imageFallbackEnabled) {
       return <div className={cn("bg-transparent", className)} aria-label={alt || "图片不可用"} />;
     }
 
-    return (
-      <div className={cn("flex flex-col items-center justify-center bg-[#F4F2EE] p-4 text-center", className)}>
-        <Library className="mb-1 text-gray-300" size={24} />
-        <span className="text-[10px] text-gray-500">{displayDbString(rawSrc)}</span>
-      </div>
-    );
+    return fallbackContent;
   }
 
   return (
@@ -112,7 +119,7 @@ export function SafeImage({ src, alt, className, onLoad, onError, ...props }: Sa
         className={cn(className, loading ? "opacity-0" : "opacity-100 transition-opacity duration-300")}
         onLoad={(event) => {
           setLoading(false);
-          setRetryScheduled(false);
+          setFailed(false);
           onLoad?.(event);
         }}
         onError={(event) => {
@@ -122,8 +129,8 @@ export function SafeImage({ src, alt, className, onLoad, onError, ...props }: Sa
             setLoading(true);
             return;
           }
-          setLoading(true);
-          setRetryScheduled(true);
+          setLoading(false);
+          setFailed(true);
         }}
         referrerPolicy="no-referrer"
         {...props}

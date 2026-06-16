@@ -83,8 +83,34 @@ export function artifactEraRaw(artifact: unknown): unknown {
 
 export function artifactImageUrlRaw(artifact: unknown, variant: "full" | "thumbnail" = "full"): unknown {
   const imageKeys = variant === "thumbnail"
-    ? ["localThumbnailUrl", "local_thumbnail_url", "thumbnail", "localImageUrl", "local_image_url", "imageUrl", "image_url", "image", "图片", "图片链接"]
-    : ARTIFACT_FIELD_CONFIG.imageUrl.keys;
+    ? [
+        "localThumbnailUrl",
+        "local_thumbnail_url",
+        "localImageUrl",
+        "local_image_url",
+        "thumbnailUrl",
+        "thumbnail_url",
+        "thumbnail",
+        "imageUrl",
+        "image_url",
+        "image",
+        "图片",
+        "图片链接",
+      ]
+    : [
+        "localImageUrl",
+        "local_image_url",
+        "localThumbnailUrl",
+        "local_thumbnail_url",
+        "imageUrl",
+        "image_url",
+        "image",
+        "图片",
+        "图片链接",
+        "thumbnailUrl",
+        "thumbnail_url",
+        "thumbnail",
+      ];
   if (artifact === null || artifact === undefined) return "";
   const o = typeof artifact === "object" ? (artifact as Record<string, unknown>) : {};
   for (const key of imageKeys) {
@@ -94,10 +120,6 @@ export function artifactImageUrlRaw(artifact: unknown, variant: "full" | "thumbn
     if (!url || url === DB_EMPTY_PLACEHOLDER || /^(null|undefined|nan)$/i.test(url)) continue;
     if (/(placeholder|placehold|占位|no-image|no_image|noimage|fallback|default-image|default_image)/i.test(url)) continue;
     return value;
-  }
-  const id = typeof o.id === "string" || typeof o.id === "number" ? String(o.id).trim() : "";
-  if (id && !/[\\/]/.test(id)) {
-    return variant === "thumbnail" ? `/artifact-images/thumbs/${id}-thumb.jpg` : `/artifact-images/${id}.jpg`;
   }
   return "";
 }

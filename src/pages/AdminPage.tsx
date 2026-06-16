@@ -11,8 +11,22 @@ import { SafeImage } from "../components/SafeImage";
 import { artifactImageUrlRaw } from "../lib/dbDisplay";
 
 type AdminTab = "artifacts" | "import" | "users";
-type ArtifactImageFilter = "all" | "missing" | "no-local";
-type ArtifactImageStatus = "local" | "remote" | "none" | "placeholder" | "failed";
+type ArtifactImageFilter = "all" | "no-image" | "remote-only" | "local-broken" | "local-complete" | "no-local";
+type ArtifactImageStatus = "local-complete" | "remote-only" | "no-image" | "local-broken";
+
+type ArtifactLocalImageFileStatus = {
+  artifactId: string;
+  localImageUrl: string;
+  localThumbnailUrl: string;
+  localImageExists: boolean | null;
+  localThumbnailExists: boolean | null;
+};
+
+type ArtifactImageStatusInfo = {
+  status: ArtifactImageStatus;
+  fields: ReturnType<typeof getArtifactImageFields>;
+  hasMissingLocalFile: boolean;
+};
 
 type RowImageSelection = {
   file: File;
@@ -119,42 +133,57 @@ function getArtifactImageFields(artifact: Artifact) {
   };
 }
 
-function getArtifactImageStatus(artifact: Artifact, failed: boolean): ArtifactImageStatus {
-  if (failed) return "failed";
+function getArtifactImageStatusInfo(
+  artifact: Artifact,
+  failed: boolean,
+  fileStatus?: ArtifactLocalImageFileStatus,
+): ArtifactImageStatusInfo {
   const image = getArtifactImageFields(artifact);
-  if (image.hasLocalImage) return "local";
-  if (image.hasPlaceholderImage) return "placeholder";
-  if (image.hasRemoteImage) return "remote";
-  return "none";
+  const hasMissingLocalFile = (
+    (isUsableImageUrl(image.localImageUrl) && fileStatus?.localImageExists === false) ||
+    (isUsableImageUrl(image.localThumbnailUrl) && fileStatus?.localThumbnailExists === false)
+  );
+
+  if (image.hasLocalImage && (hasMissingLocalFile || failed)) {
+    return { status: "local-broken", fields: image, hasMissingLocalFile };
+  }
+  if (image.hasLocalImage) {
+    return { status: "local-complete", fields: image, hasMissingLocalFile: false };
+  }
+  if (image.hasRemoteImage) {
+    return { status: "remote-only", fields: image, hasMissingLocalFile: false };
+  }
+  return { status: "no-image", fields: image, hasMissingLocalFile: false };
 }
 
-function artifactMatchesImageFilter(artifact: Artifact, filter: ArtifactImageFilter) {
+function artifactMatchesImageFilter(status: ArtifactImageStatusInfo, filter: ArtifactImageFilter) {
   if (filter === "all") return true;
-  const image = getArtifactImageFields(artifact);
-  if (filter === "no-local") return !image.hasLocalImage;
-  return !image.hasLocalImage && !image.hasRemoteImage;
+  if (filter === "no-local") return !status.fields.hasLocalImage;
+  return status.status === filter;
 }
 
 function imageStatusLabel(status: ArtifactImageStatus) {
   const labels: Record<ArtifactImageStatus, string> = {
-    local: "已有本地图",
-    remote: "仅有外链图",
-    none: "无图片",
-    placeholder: "疑似占位图",
-    failed: "图片加载失败",
+    "local-complete": "本地图",
+    "remote-only": "仅有外链图",
+    "no-image": "完全无图",
+    "local-broken": "本地图异常",
   };
   return labels[status];
 }
 
 function imageStatusClassName(status: ArtifactImageStatus) {
   const classes: Record<ArtifactImageStatus, string> = {
-    local: "bg-emerald-50 text-emerald-700",
-    remote: "bg-sky-50 text-sky-700",
-    none: "bg-gray-100 text-gray-700",
-    placeholder: "bg-amber-50 text-amber-800",
-    failed: "bg-rose-50 text-rose-700",
+    "local-complete": "bg-emerald-50 text-emerald-700",
+    "remote-only": "bg-sky-50 text-sky-700",
+    "no-image": "bg-gray-100 text-gray-700",
+    "local-broken": "bg-rose-50 text-rose-700",
   };
   return classes[status];
+}
+
+function suggestedRemoteImageUrl(fields: ArtifactImageStatusInfo["fields"]) {
+  return fields.thumbnailUrl || fields.imageUrl;
 }
 
 function formatFileSize(size: number) {
@@ -263,6 +292,7 @@ export function AdminPage() {
   const [rowDownloadingIds, setRowDownloadingIds] = useState<Record<string, boolean>>({});
   const [rowImageErrors, setRowImageErrors] = useState<Record<string, string>>({});
   const [failedImageIds, setFailedImageIds] = useState<Record<string, boolean>>({});
+  const [localImageFileStatuses, setLocalImageFileStatuses] = useState<Record<string, ArtifactLocalImageFileStatus>>({});
   const [adminTokenInput, setAdminTokenInput] = useState(() => getAuthToken() || "");
   const rowImageSelectionsRef = useRef(rowImageSelections);
   const [loading, setLoading] = useState(true);
@@ -271,8 +301,14 @@ export function AdminPage() {
   const [forbidden, setForbidden] = useState(false);
 
   const loadArtifacts = async () => {
-    const data = await apiFetch<{ artifacts?: Artifact[] }>("/api/artifacts?limit=5000");
+    const [data, imageStatusData] = await Promise.all([
+      apiFetch<{ artifacts?: Artifact[] }>("/api/artifacts?limit=5000"),
+      apiFetch<{ statuses?: ArtifactLocalImageFileStatus[] }>("/api/admin/artifact-image-file-status"),
+    ]);
     setArtifacts(Array.isArray(data.artifacts) ? data.artifacts : []);
+    setLocalImageFileStatuses(
+      Object.fromEntries((imageStatusData.statuses || []).map((item) => [String(item.artifactId), item])),
+    );
   };
 
   useEffect(() => {
@@ -290,16 +326,20 @@ export function AdminPage() {
           return;
         }
 
-        const [usersResponse, statsResponse, artifactsResponse] = await Promise.all([
+        const [usersResponse, statsResponse, artifactsResponse, imageStatusResponse] = await Promise.all([
           getAdminUsers(),
           getAdminStats(),
           apiFetch<{ artifacts?: Artifact[] }>("/api/artifacts?limit=5000"),
+          apiFetch<{ statuses?: ArtifactLocalImageFileStatus[] }>("/api/admin/artifact-image-file-status"),
         ]);
         if (cancelled) return;
 
         setUsers(usersResponse.users);
         setStats(statsResponse);
         setArtifacts(Array.isArray(artifactsResponse.artifacts) ? artifactsResponse.artifacts : []);
+        setLocalImageFileStatuses(
+          Object.fromEntries((imageStatusResponse.statuses || []).map((item) => [String(item.artifactId), item])),
+        );
       } catch (e) {
         if (cancelled) return;
         const message = e instanceof Error ? e.message : String(e);
@@ -336,7 +376,13 @@ export function AdminPage() {
   const filteredArtifacts = useMemo(() => {
     const keyword = query.trim().toLowerCase();
     return artifacts.filter((artifact) => {
-      if (!artifactMatchesImageFilter(artifact, imageFilter)) return false;
+      const artifactId = String(artifact.id);
+      const status = getArtifactImageStatusInfo(
+        artifact,
+        Boolean(failedImageIds[artifactId]),
+        localImageFileStatuses[artifactId],
+      );
+      if (!artifactMatchesImageFilter(status, imageFilter)) return false;
       if (!keyword) return true;
       const haystack = [
         artifact.name,
@@ -348,7 +394,31 @@ export function AdminPage() {
       ].map(text).join(" ").toLowerCase();
       return haystack.includes(keyword);
     });
-  }, [artifacts, imageFilter, query]);
+  }, [artifacts, failedImageIds, imageFilter, localImageFileStatuses, query]);
+
+  const imageFilterCounts = useMemo(() => {
+    const counts: Record<ArtifactImageFilter, number> = {
+      all: artifacts.length,
+      "no-image": 0,
+      "remote-only": 0,
+      "local-broken": 0,
+      "local-complete": 0,
+      "no-local": 0,
+    };
+
+    artifacts.forEach((artifact) => {
+      const artifactId = String(artifact.id);
+      const status = getArtifactImageStatusInfo(
+        artifact,
+        Boolean(failedImageIds[artifactId]),
+        localImageFileStatuses[artifactId],
+      );
+      counts[status.status] += 1;
+      if (!status.fields.hasLocalImage) counts["no-local"] += 1;
+    });
+
+    return counts;
+  }, [artifacts, failedImageIds, localImageFileStatuses]);
 
   const onLogout = async () => {
     await AuthService.logout();
@@ -575,7 +645,9 @@ export function AdminPage() {
 
   const onDownloadRowImageUrl = async (artifact: Artifact) => {
     const artifactId = String(artifact.id);
-    const imageUrl = (rowImageUrls[artifactId] || "").trim();
+    const imageFields = getArtifactImageFields(artifact);
+    const rowHasCustomUrl = Object.prototype.hasOwnProperty.call(rowImageUrls, artifactId);
+    const imageUrl = (rowHasCustomUrl ? rowImageUrls[artifactId] : suggestedRemoteImageUrl(imageFields)).trim();
     const validationError = validateImageDownloadUrl(imageUrl);
     if (validationError) {
       setRowImageErrors((current) => ({ ...current, [artifactId]: validationError }));
@@ -842,11 +914,14 @@ export function AdminPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  {[
+                  {([
                     ["all", "全部文物"],
-                    ["missing", "缺图文物"],
-                    ["no-local", "无本地图文物"],
-                  ].map(([id, label]) => (
+                    ["no-image", "完全无图"],
+                    ["remote-only", "仅有外链图"],
+                    ["local-broken", "本地图异常"],
+                    ["local-complete", "本地图已完成"],
+                    ["no-local", "无本地图"],
+                  ] as Array<[ArtifactImageFilter, string]>).map(([id, label]) => (
                     <button
                       key={id}
                       type="button"
@@ -855,7 +930,7 @@ export function AdminPage() {
                         imageFilter === id ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"
                       }`}
                     >
-                      {label}
+                      {label} {imageFilterCounts[id]}
                     </button>
                   ))}
                 </div>
@@ -875,9 +950,25 @@ export function AdminPage() {
                   <tbody>
                     {filteredArtifacts.map((artifact) => {
                       const artifactId = String(artifact.id);
-                      const imageStatus = getArtifactImageStatus(artifact, Boolean(failedImageIds[artifactId]));
+                      const imageStatus = getArtifactImageStatusInfo(
+                        artifact,
+                        Boolean(failedImageIds[artifactId]),
+                        localImageFileStatuses[artifactId],
+                      );
                       const rowSelection = rowImageSelections[artifactId];
-                      const showInlineUploader = imageFilter === "missing" || imageFilter === "no-local";
+                      const suggestedDownloadUrl = suggestedRemoteImageUrl(imageStatus.fields);
+                      const rowHasCustomUrl = Object.prototype.hasOwnProperty.call(rowImageUrls, artifactId);
+                      const rowDownloadUrl = rowHasCustomUrl ? rowImageUrls[artifactId] : suggestedDownloadUrl;
+                      const showInlineUploader = imageStatus.status !== "local-complete";
+                      const uploadButtonLabel = imageStatus.status === "local-broken" ? "重新上传" : "上传图片";
+                      const downloadButtonLabel = imageStatus.status === "local-broken" ? "从外链下载补图" : "下载补图";
+                      const rowHint = imageStatus.status === "remote-only"
+                        ? "当前只有外链图，可直接下载成本地图。"
+                        : imageStatus.status === "no-image"
+                          ? "当前完全无图，请上传图片或粘贴图片链接。"
+                          : imageStatus.hasMissingLocalFile
+                            ? "本地图片文件不存在，请重新上传或从外链补图。"
+                            : "图片加载失败，请重新上传或从外链补图。";
 
                       return (
                       <tr key={artifact.id} className="border-t border-gray-100">
@@ -905,13 +996,20 @@ export function AdminPage() {
                           <div className="mt-1 text-xs text-gray-400">{artifact.category || "-"}</div>
                         </td>
                         <td className="px-5 py-4 align-top text-gray-500">
-                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${imageStatusClassName(imageStatus)}`}>
-                            {imageStatusLabel(imageStatus)}
+                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${imageStatusClassName(imageStatus.status)}`}>
+                            {imageStatusLabel(imageStatus.status)}
                           </span>
+                          <div className="mt-2 text-xs text-gray-400">
+                            {imageStatus.status === "local-complete" && "本地文件存在，可正常显示。"}
+                            {imageStatus.status === "remote-only" && "无本地图，使用外链预览。"}
+                            {imageStatus.status === "no-image" && "四个图片字段均为空。"}
+                            {imageStatus.status === "local-broken" && rowHint}
+                          </div>
                         </td>
                         <td className="px-5 py-4 align-top">
                           {showInlineUploader ? (
                             <div className="min-w-64 space-y-3">
+                              <div className="text-xs font-bold text-gray-500">{rowHint}</div>
                               <div className="flex flex-wrap items-center gap-2">
                                 <label className="cursor-pointer rounded-xl bg-gray-100 px-3 py-2 text-xs font-black text-gray-700">
                                   选择图片
@@ -928,23 +1026,23 @@ export function AdminPage() {
                                   onClick={() => onUploadRowImage(artifact)}
                                   className="rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50"
                                 >
-                                  {rowUploadingIds[artifactId] ? "上传中..." : "上传图片"}
+                                  {rowUploadingIds[artifactId] ? "上传中..." : uploadButtonLabel}
                                 </button>
                               </div>
                               <div className="grid gap-2">
                                 <input
-                                  value={rowImageUrls[artifactId] || ""}
+                                  value={rowDownloadUrl || ""}
                                   onChange={(e) => setRowImageUrls((current) => ({ ...current, [artifactId]: e.target.value }))}
                                   placeholder="粘贴图片链接：https://..."
                                   className="rounded-xl border border-gray-200 px-3 py-2 text-xs outline-none focus:border-amber-500"
                                 />
                                 <button
                                   type="button"
-                                  disabled={Boolean(rowDownloadingIds[artifactId]) || !String(rowImageUrls[artifactId] || "").trim()}
+                                  disabled={Boolean(rowDownloadingIds[artifactId]) || !String(rowDownloadUrl || "").trim()}
                                   onClick={() => onDownloadRowImageUrl(artifact)}
                                   className="rounded-xl bg-amber-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50"
                                 >
-                                  {rowDownloadingIds[artifactId] ? "下载中..." : "下载补图"}
+                                  {rowDownloadingIds[artifactId] ? "下载中..." : downloadButtonLabel}
                                 </button>
                               </div>
                               {rowSelection && (
@@ -960,7 +1058,7 @@ export function AdminPage() {
                               {rowImageErrors[artifactId] && <div className="text-xs font-bold text-rose-700">{rowImageErrors[artifactId]}</div>}
                             </div>
                           ) : (
-                            <span className="text-xs text-gray-400">切换到缺图或无本地图后补图</span>
+                            <span className="text-xs text-gray-400">本地图已完成，无需补图。</span>
                           )}
                         </td>
                         <td className="px-5 py-4 align-top">

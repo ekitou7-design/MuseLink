@@ -3,6 +3,7 @@ import ast
 import ipaddress
 import json
 import os
+import time
 import uuid
 from collections import Counter
 from datetime import datetime
@@ -20,8 +21,20 @@ app = Flask(__name__)
 API_BASE_URL = os.environ.get("MUSELINK_API_BASE_URL", "http://localhost:3000").rstrip("/")
 ADMIN_MUSE_ID = os.environ.get("MUSELINK_ADMIN_MUSE_ID", "jiangzhong")
 ADMIN_PASSWORD = os.environ.get("MUSELINK_ADMIN_PASSWORD", "jiangzhong")
+IMAGE_DOWNLOAD_USER_AGENT = "MuseLink/1.0 (educational cultural heritage project; contact: ekitou7@gmail.com)"
+IMAGE_DOWNLOAD_ACCEPT = "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
 
 MUSEUM_KEYS = ("所属博物馆", "博物馆", "馆藏单位", "收藏单位", "馆名", "museum", "museumName", "馆藏")
+ARTIFACT_IMAGE_PUBLIC_DIR = os.path.join(os.getcwd(), "public", "artifact-images")
+BULK_IMAGE_DOWNLOAD_REPORT_PATH = os.path.join(os.getcwd(), "data", "bulk-image-download-report.json")
+IMAGE_MODE_LABELS = {
+    "all": "全部文物",
+    "no-image": "完全无图",
+    "remote-only": "仅有外链图",
+    "local-broken": "本地图异常",
+    "local-complete": "本地图已完成",
+    "no-local": "无本地图",
+}
 
 
 def clean_value(value):
@@ -55,6 +68,18 @@ def is_placeholder_image_url(value):
 def is_usable_image_url(value):
     text = clean_value(value)
     return bool(text) and not is_placeholder_image_url(text)
+
+
+def local_artifact_image_exists(value):
+    url = clean_value(value).split("?", 1)[0]
+    if not url.startswith("/artifact-images/"):
+        return None
+    relative_path = url.replace("/artifact-images/", "", 1)
+    physical_path = os.path.abspath(os.path.join(ARTIFACT_IMAGE_PUBLIC_DIR, relative_path))
+    public_root = os.path.abspath(ARTIFACT_IMAGE_PUBLIC_DIR)
+    if not physical_path.startswith(public_root + os.sep):
+        return None
+    return os.path.exists(physical_path)
 
 
 def pick(item, *keys):
@@ -129,18 +154,48 @@ def validate_image_url(image_url):
         raise RuntimeError("不允许下载 localhost、内网或本机图片链接。")
 
 
+def is_dev_runtime():
+    return os.environ.get("FLASK_ENV") != "production" and os.environ.get("NODE_ENV") != "production"
+
+
+def log_image_download_debug(**payload):
+    if is_dev_runtime():
+        print("[artifact-image-url-download]", json.dumps(payload, ensure_ascii=False), flush=True)
+
+
 def download_image_bytes(image_url):
     validate_image_url(image_url)
-    req = Request(image_url, headers={"Accept": "image/jpeg,image/png,image/webp,image/*;q=0.8", "User-Agent": "MuseLink/1.0"})
+    normalized_url = clean_value(image_url)
+    req = Request(
+        normalized_url,
+        headers={
+            "User-Agent": IMAGE_DOWNLOAD_USER_AGENT,
+            "Accept": IMAGE_DOWNLOAD_ACCEPT,
+        },
+    )
     try:
         with urlopen(req, timeout=15) as response:
             content_type = response.headers.get("Content-Type", "").split(";")[0].strip().lower()
+            content_length = clean_value(response.headers.get("Content-Length"))
+            status = getattr(response, "status", 200)
+            response_url = response.geturl()
+            log_image_download_debug(
+                receivedUrl=image_url,
+                normalizedUrl=normalized_url,
+                **{
+                    "response.status": status,
+                    "response.headers.content-type": content_type,
+                    "response.headers.content-length": content_length,
+                    "response.url": response_url,
+                },
+            )
             if content_type == "image/jpg":
                 content_type = "image/jpeg"
-            if content_type not in ("image/jpeg", "image/png", "image/webp"):
-                raise RuntimeError("图片链接仅支持 jpg/jpeg/png/webp 图片。")
+            if content_type == "text/html":
+                raise RuntimeError("该链接返回的是网页，不是图片文件。请复制图片直链，或手动上传图片。")
+            if content_type not in ("image/jpeg", "image/png", "image/webp", "image/gif"):
+                raise RuntimeError("图片链接仅支持 jpg/jpeg/png/webp/gif 图片。")
 
-            content_length = clean_value(response.headers.get("Content-Length"))
             if content_length and int(content_length) > 10 * 1024 * 1024:
                 raise RuntimeError("图片不能超过 10MB。")
 
@@ -149,8 +204,23 @@ def download_image_bytes(image_url):
                 raise RuntimeError("图片不能超过 10MB。")
             return data, content_type
     except HTTPError as error:
-        detail = error.read().decode("utf-8", errors="ignore")[:300]
-        raise RuntimeError(f"下载图片失败：HTTP {error.code} {detail}") from error
+        content_type = error.headers.get("Content-Type", "").split(";")[0].strip().lower()
+        content_length = clean_value(error.headers.get("Content-Length"))
+        log_image_download_debug(
+            receivedUrl=image_url,
+            normalizedUrl=normalized_url,
+            **{
+                "response.status": error.code,
+                "response.headers.content-type": content_type,
+                "response.headers.content-length": content_length,
+                "response.url": error.url,
+            },
+        )
+        if error.code == 429:
+            raise RuntimeError("图片站点请求过于频繁，已被限流。请稍后重试，或手动下载后上传。") from error
+        if content_type == "text/html":
+            raise RuntimeError("该链接返回的是网页，不是图片文件。请复制图片直链，或手动上传图片。") from error
+        raise RuntimeError(f"图片下载失败：HTTP {error.code}") from error
     except URLError as error:
         raise RuntimeError(f"下载图片失败：{error.reason}") from error
 
@@ -206,6 +276,43 @@ def save_artifact_source_image_url(artifact_id, image_url):
     api_request(f"/api/artifacts/{quote(artifact_id)}", method="PUT", payload=payload, auth=True)
 
 
+def downloadArtifactImageFromUrl(artifact, image_url, token):
+    artifact_id = clean_value(artifact.get("_artifact_id") or artifact.get("id"))
+    if not artifact_id:
+        raise RuntimeError("缺少文物 ID。")
+
+    image_bytes, content_type = download_image_bytes(image_url)
+    result = post_image_file_to_backend(artifact_id, image_bytes, content_type, token)
+    save_artifact_source_image_url(artifact_id, image_url)
+    return {
+        **result,
+        "imageUrl": image_url,
+        "sourceImageUrl": image_url,
+        "flaskDownloaded": True,
+    }
+
+
+def write_bulk_image_download_report(records, summary=None):
+    os.makedirs(os.path.dirname(BULK_IMAGE_DOWNLOAD_REPORT_PATH), exist_ok=True)
+    payload = {
+        "generatedAt": datetime.now().isoformat(timespec="seconds"),
+        "summary": summary or {},
+        "records": records,
+    }
+    with open(BULK_IMAGE_DOWNLOAD_REPORT_PATH, "w", encoding="utf-8") as file:
+        json.dump(payload, file, ensure_ascii=False, indent=2)
+    return BULK_IMAGE_DOWNLOAD_REPORT_PATH
+
+
+def read_bulk_image_download_report():
+    try:
+        with open(BULK_IMAGE_DOWNLOAD_REPORT_PATH, "r", encoding="utf-8") as file:
+            payload = json.load(file)
+            return payload if isinstance(payload, dict) else {}
+    except FileNotFoundError:
+        return {}
+
+
 def normalize_tags(tags):
     if not isinstance(tags, list):
         return []
@@ -237,22 +344,23 @@ def artifact_to_row(artifact):
     thumbnail_url = pick(artifact, "thumbnailUrl", "thumbnail_url", "thumbnail")
     has_local_image = is_usable_image_url(local_image_url) or is_usable_image_url(local_thumbnail_url)
     has_remote_image = is_usable_image_url(image_url) or is_usable_image_url(thumbnail_url)
-    has_placeholder_image = any(
-        is_placeholder_image_url(value)
-        for value in (local_image_url, local_thumbnail_url, image_url, thumbnail_url)
+    has_missing_local_file = (
+        (is_usable_image_url(local_image_url) and local_artifact_image_exists(local_image_url) is False)
+        or (is_usable_image_url(local_thumbnail_url) and local_artifact_image_exists(local_thumbnail_url) is False)
     )
-    if has_local_image:
-        image_status = "已有本地图"
-        image_status_key = "local"
-    elif has_placeholder_image:
-        image_status = "疑似占位图"
-        image_status_key = "placeholder"
+
+    if has_local_image and has_missing_local_file:
+        image_status = "本地图异常"
+        image_status_key = "local-broken"
+    elif has_local_image:
+        image_status = "本地图"
+        image_status_key = "local-complete"
     elif has_remote_image:
         image_status = "仅有外链图"
-        image_status_key = "remote"
+        image_status_key = "remote-only"
     else:
-        image_status = "无图片"
-        image_status_key = "none"
+        image_status = "完全无图"
+        image_status_key = "no-image"
 
     row = {
         "_artifact_id": clean_value(artifact.get("id")),
@@ -270,11 +378,13 @@ def artifact_to_row(artifact):
         "缩略图链接": thumbnail_url,
         "本地原图": local_image_url,
         "本地缩略图": local_thumbnail_url,
-        "显示图片": local_thumbnail_url or local_image_url or image_url,
+        "显示图片": local_thumbnail_url or local_image_url or thumbnail_url or image_url,
         "图片状态": image_status,
         "图片状态Key": image_status_key,
         "有本地图": has_local_image,
         "有可用图片": has_local_image or has_remote_image,
+        "本地文件缺失": has_missing_local_file,
+        "建议下载链接": thumbnail_url or image_url,
         "来源链接": pick(artifact, "sourceUrl", "source_url", "来源链接"),
         "标签": "，".join(normalize_tags(artifact.get("tags"))),
     }
@@ -293,11 +403,23 @@ def load_data(query=""):
 
 
 def filter_rows_by_image_mode(rows, mode):
-    if mode == "missing":
-        return [row for row in rows if not row.get("有本地图") and not row.get("有可用图片")]
     if mode == "no-local":
         return [row for row in rows if not row.get("有本地图")]
+    if mode in ("no-image", "remote-only", "local-broken", "local-complete"):
+        return [row for row in rows if row.get("图片状态Key") == mode]
     return rows
+
+
+def image_mode_counts(rows):
+    counts = {mode: 0 for mode in IMAGE_MODE_LABELS}
+    counts["all"] = len(rows)
+    for row in rows:
+        status_key = clean_value(row.get("图片状态Key"))
+        if status_key in counts:
+            counts[status_key] += 1
+        if not row.get("有本地图"):
+            counts["no-local"] += 1
+    return counts
 
 
 def detect_museum(item, default_museum=None):
@@ -452,11 +574,10 @@ HTML_TEMPLATE = """
         .filter-tab { padding: 10px 16px; border-radius: 999px; border: 1px solid #d2b48c; text-decoration: none; color: #4a3728; background: #fffaf0; font-weight: bold; }
         .filter-tab.active { background: #8b4513; color: white; }
         .status-pill { display: inline-block; padding: 6px 10px; border-radius: 999px; font-size: 13px; font-weight: bold; white-space: nowrap; }
-        .status-local { background: #ecfdf5; color: #047857; }
-        .status-remote { background: #eff6ff; color: #1d4ed8; }
-        .status-none { background: #f4f1ea; color: #4a3728; }
-        .status-placeholder { background: #fff7ed; color: #9a3412; }
-        .status-failed { background: #fff5f5; color: #c0392b; }
+        .status-local-complete { background: #ecfdf5; color: #047857; }
+        .status-remote-only { background: #eff6ff; color: #1d4ed8; }
+        .status-no-image { background: #f4f1ea; color: #4a3728; }
+        .status-local-broken { background: #fff5f5; color: #c0392b; }
         .row-upload { min-width: 230px; }
         .row-upload .file-label { cursor: pointer; background: #f4f1ea; border: 1px solid #d2b48c; color: #4a3728; padding: 8px 10px; border-radius: 5px; display: inline-block; font-weight: bold; position: relative; overflow: hidden; }
         .row-upload .file-label input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
@@ -466,8 +587,15 @@ HTML_TEMPLATE = """
         .row-message { margin-top: 8px; font-size: 13px; font-weight: bold; }
         .row-url-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .row-url-input { min-width: 220px; flex: 1; }
+        .bulk-download-panel { display: none; margin-top: 12px; padding: 14px; border: 1px solid #d2b48c; border-radius: 8px; background: #fffaf0; }
+        .bulk-download-panel.active { display: block; }
+        .bulk-progress { font-weight: bold; color: #8b4513; }
+        .bulk-failures { margin-top: 8px; color: #c0392b; font-size: 13px; max-height: 180px; overflow: auto; }
     </style>
     <script>
+        var bulkDownloadCandidates = {{ bulk_download_candidates_json|safe }};
+        var bulkDownloadLimit = {{ bulk_download_limit_json|safe }};
+
         function toggleAll(source) {
             document.querySelectorAll('input[name="selected"]').forEach(function(box) { box.checked = source.checked; });
         }
@@ -504,6 +632,18 @@ HTML_TEMPLATE = """
             if (!el) return;
             el.textContent = message || "";
             el.style.color = isError ? "#c0392b" : "#047857";
+        }
+        function setBulkStatus(message, failures) {
+            var panel = document.getElementById("bulkDownloadPanel");
+            var progress = document.getElementById("bulkDownloadProgress");
+            var failureBox = document.getElementById("bulkDownloadFailures");
+            if (panel) panel.classList.add("active");
+            if (progress) progress.textContent = message || "";
+            if (failureBox) {
+                failureBox.innerHTML = (failures || []).map(function (item) {
+                    return "<div>" + item.name + "：" + item.error + "</div>";
+                }).join("");
+            }
         }
         async function parseJsonResponse(response) {
             var text = await response.text();
@@ -622,6 +762,71 @@ HTML_TEMPLATE = """
                 if (button) button.disabled = false;
             }
         }
+        async function bulkDownloadExternalImages() {
+            var token = currentAdminToken();
+            if (!token) {
+                setBulkStatus("请先填写管理员 token。", []);
+                return;
+            }
+            var candidates = Array.isArray(bulkDownloadCandidates) ? bulkDownloadCandidates.slice() : [];
+            if (bulkDownloadLimit && bulkDownloadLimit > 0) candidates = candidates.slice(0, bulkDownloadLimit);
+            if (candidates.length === 0) {
+                setBulkStatus("当前筛选中没有仅有外链图的文物。", []);
+                return;
+            }
+            if (!confirm("将为当前筛选中的仅有外链图文物批量下载本地图片，可能需要几分钟。是否继续？")) return;
+
+            localStorage.setItem("muselink_admin_token", token);
+            localStorage.setItem("muselink_token", token);
+            var button = document.getElementById("bulkDownloadButton");
+            if (button) button.disabled = true;
+
+            var total = candidates.length;
+            var success = 0;
+            var failed = 0;
+            var skipped = 0;
+            var failures = [];
+
+            for (var i = 0; i < candidates.length; i += 1) {
+                var item = candidates[i];
+                setBulkStatus("正在下载 " + (i + 1) + " / " + total + "：" + item.name + "。成功 " + success + "，失败 " + failed + "，跳过 " + skipped + "。", failures);
+                try {
+                    var response = await fetch("/bulk-download-image-urls", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Bearer " + token,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            mode: "only-external",
+                            artifactIds: [item.artifactId],
+                            limit: 1,
+                            delayMs: 700,
+                            appendReport: true,
+                            resetReport: i === 0
+                        })
+                    });
+                    var data = await parseJsonResponse(response);
+                    if (!response.ok) throw new Error(responseError(response, data, "批量下载失败"));
+                    var record = data.records && data.records[0];
+                    if (record && record.status === "success") {
+                        success += 1;
+                    } else if (record && record.status === "skipped") {
+                        skipped += 1;
+                    } else {
+                        failed += 1;
+                        failures.push({ name: item.name, error: (record && record.error) || "下载失败。" });
+                    }
+                } catch (error) {
+                    failed += 1;
+                    failures.push({ name: item.name, error: error instanceof Error ? error.message : String(error) });
+                }
+                if (i < candidates.length - 1) await new Promise(function (resolve) { setTimeout(resolve, 700); });
+            }
+
+            setBulkStatus("批量下载完成：总数 " + total + "，成功 " + success + "，失败 " + failed + "，跳过 " + skipped + "。报告：/bulk-image-download-report", failures);
+            if (button) button.disabled = false;
+        }
         window.addEventListener("DOMContentLoaded", function () {
             var input = document.getElementById("adminToken");
             if (input) {
@@ -646,6 +851,10 @@ HTML_TEMPLATE = """
                     downloadRowImageUrl(button.dataset.artifactId || "", button.dataset.artifactName || "");
                 });
             });
+            var bulkButton = document.getElementById("bulkDownloadButton");
+            if (bulkButton) {
+                bulkButton.addEventListener("click", bulkDownloadExternalImages);
+            }
         });
     </script>
 </head>
@@ -691,9 +900,18 @@ HTML_TEMPLATE = """
                 <a href="/" class="btn btn-secondary">清空搜索</a>
             </form>
             <div class="filter-tabs">
-                <a class="filter-tab {% if image_mode == 'all' %}active{% endif %}" href="/?{{ all_mode_query }}">全部文物</a>
-                <a class="filter-tab {% if image_mode == 'missing' %}active{% endif %}" href="/?{{ missing_mode_query }}">缺图文物</a>
-                <a class="filter-tab {% if image_mode == 'no-local' %}active{% endif %}" href="/?{{ no_local_mode_query }}">无本地图文物</a>
+                {% for option in image_filter_options %}
+                    <a class="filter-tab {% if image_mode == option.id %}active{% endif %}" href="/?{{ option.query }}">{{ option.label }} {{ option.count }}</a>
+                {% endfor %}
+            </div>
+            <div class="toolbar">
+                <button id="bulkDownloadButton" type="button" class="btn">一键下载当前筛选外链图{% if bulk_download_limit %}（测试 {{ bulk_download_limit }}）{% endif %}</button>
+                <a class="btn btn-secondary" href="/bulk-image-download-report" target="_blank">查看下载报告</a>
+                <span class="muted">当前可批量下载 {{ bulk_download_candidates|length }} 件；URL 加 <code>bulk_limit=3</code> 可测试前三件。</span>
+            </div>
+            <div id="bulkDownloadPanel" class="bulk-download-panel">
+                <div id="bulkDownloadProgress" class="bulk-progress"></div>
+                <div id="bulkDownloadFailures" class="bulk-failures"></div>
             </div>
             <div class="toolbar">
                 <label style="font-weight:bold;">
@@ -768,23 +986,30 @@ HTML_TEMPLATE = """
                                         <td><a class="btn btn-secondary" href="/edit/{{ row._artifact_id }}">编辑</a></td>
                                         <td>
                                             {% if row["显示图片"] %}
-                                                <img class="thumb" src="{{ image_url(row['显示图片']) }}" alt="{{ row['文物名称'] }}" onerror="this.closest('tr').querySelector('.status-pill').textContent='图片加载失败'; this.closest('tr').querySelector('.status-pill').className='status-pill status-failed';">
+                                                <img class="thumb" src="{{ image_url(row['显示图片']) }}" alt="{{ row['文物名称'] }}" onerror="this.closest('tr').querySelector('.status-pill').textContent='图片加载失败'; this.closest('tr').querySelector('.status-pill').className='status-pill status-local-broken';">
                                             {% else %}
                                                 <span class="muted">无图</span>
                                             {% endif %}
                                         </td>
                                         <td><span class="status-pill status-{{ row['图片状态Key'] }}">{{ row["图片状态"] }}</span></td>
                                         <td>
-                                            {% if image_mode in ["missing", "no-local"] %}
+                                            {% if row["图片状态Key"] != "local-complete" %}
                                                 <div class="row-upload">
+                                                    {% if row["图片状态Key"] == "remote-only" %}
+                                                        <div class="muted">当前只有外链图，可直接下载成本地图。</div>
+                                                    {% elif row["图片状态Key"] == "no-image" %}
+                                                        <div class="muted">当前完全无图，请上传图片或粘贴图片链接。</div>
+                                                    {% else %}
+                                                        <div class="muted">本地图异常，请重新上传或从外链下载补图。</div>
+                                                    {% endif %}
                                                     <label class="file-label">
                                                         选择图片
                                                         <input id="rowFile-{{ row._artifact_id }}" class="row-file-input" data-artifact-id="{{ row._artifact_id }}" type="file" accept="image/jpeg,image/png,image/webp">
                                                     </label>
-                                                    <button id="rowUploadButton-{{ row._artifact_id }}" type="button" class="btn row-upload-button" data-artifact-id="{{ row._artifact_id }}" data-artifact-name="{{ row['文物名称'] }}" style="padding:8px 10px;font-size:14px;">上传图片</button>
+                                                    <button id="rowUploadButton-{{ row._artifact_id }}" type="button" class="btn row-upload-button" data-artifact-id="{{ row._artifact_id }}" data-artifact-name="{{ row['文物名称'] }}" style="padding:8px 10px;font-size:14px;">{% if row["图片状态Key"] == "local-broken" %}重新上传{% else %}上传图片{% endif %}</button>
                                                     <div class="row-url-tools">
-                                                        <input id="rowImageUrl-{{ row._artifact_id }}" class="row-url-input" type="url" placeholder="粘贴图片链接：https://...">
-                                                        <button id="rowDownloadButton-{{ row._artifact_id }}" type="button" class="btn row-download-button" data-artifact-id="{{ row._artifact_id }}" data-artifact-name="{{ row['文物名称'] }}" style="padding:8px 10px;font-size:14px;">下载补图</button>
+                                                        <input id="rowImageUrl-{{ row._artifact_id }}" class="row-url-input" type="url" value="{{ row['建议下载链接'] }}" placeholder="粘贴图片链接：https://...">
+                                                        <button id="rowDownloadButton-{{ row._artifact_id }}" type="button" class="btn row-download-button" data-artifact-id="{{ row._artifact_id }}" data-artifact-name="{{ row['文物名称'] }}" style="padding:8px 10px;font-size:14px;">{% if row["图片状态Key"] == "local-broken" %}从外链下载补图{% else %}下载补图{% endif %}</button>
                                                     </div>
                                                     <div id="rowPreview-{{ row._artifact_id }}" class="row-preview">
                                                         <img id="rowPreviewImage-{{ row._artifact_id }}" alt="">
@@ -793,7 +1018,7 @@ HTML_TEMPLATE = """
                                                     <div id="rowMessage-{{ row._artifact_id }}" class="row-message"></div>
                                                 </div>
                                             {% else %}
-                                                <span class="muted">切换到缺图或无本地图后补图</span>
+                                                <span class="muted">本地图已完成，无需补图。</span>
                                             {% endif %}
                                         </td>
                                         <td>{{ row.id }}</td>
@@ -1101,7 +1326,12 @@ def fields_from_row(row=None):
 def index():
     query = clean_value(request.args.get("q"))
     image_mode = clean_value(request.args.get("mode")) or "all"
-    if image_mode not in ("all", "missing", "no-local"):
+    bulk_limit_raw = clean_value(request.args.get("bulk_limit"))
+    try:
+        bulk_limit = max(0, int(bulk_limit_raw)) if bulk_limit_raw else 0
+    except ValueError:
+        bulk_limit = 0
+    if image_mode not in IMAGE_MODE_LABELS:
         image_mode = "all"
     error = clean_value(request.args.get("error"))
     try:
@@ -1122,9 +1352,29 @@ def index():
             params["q"] = query
         return urlencode(params)
 
+    filter_counts = image_mode_counts(all_data)
+    image_filter_options = [
+        {
+            "id": mode,
+            "label": label,
+            "count": filter_counts.get(mode, 0),
+            "query": mode_query(mode),
+        }
+        for mode, label in IMAGE_MODE_LABELS.items()
+    ]
+
     query_params = {"mode": image_mode}
     if query:
         query_params["q"] = query
+
+    bulk_download_candidates = [
+        {
+            "artifactId": clean_value(row.get("_artifact_id")),
+            "name": clean_value(row.get("文物名称")) or clean_value(row.get("_artifact_id")),
+        }
+        for row in data
+        if row.get("图片状态Key") == "remote-only"
+    ]
 
     return render_with_fields(
         HTML_TEMPLATE,
@@ -1134,10 +1384,12 @@ def index():
         fields=fields_from_row({}),
         query=query,
         image_mode=image_mode,
+        image_filter_options=image_filter_options,
+        bulk_download_candidates=bulk_download_candidates,
+        bulk_download_candidates_json=json.dumps(bulk_download_candidates, ensure_ascii=False),
+        bulk_download_limit=bulk_limit,
+        bulk_download_limit_json=json.dumps(bulk_limit),
         query_string=urlencode(query_params),
-        all_mode_query=mode_query("all"),
-        missing_mode_query=mode_query("missing"),
-        no_local_mode_query=mode_query("no-local"),
         api_base_url=API_BASE_URL,
         api_base_url_json=json.dumps(API_BASE_URL),
         admin_token=admin_token,
@@ -1161,7 +1413,7 @@ def bulk_action():
     action = request.form.get("action", "")
     query = clean_value(request.args.get("q"))
     image_mode = clean_value(request.args.get("mode")) or "all"
-    if image_mode not in ("all", "missing", "no-local"):
+    if image_mode not in IMAGE_MODE_LABELS:
         image_mode = "all"
 
     try:
@@ -1239,18 +1491,143 @@ def download_image_url(artifact_id):
             return jsonify({"error": "请先粘贴图片链接。"}), 400
 
         token = bearer_token_from_request() or get_admin_token()
-        image_bytes, content_type = download_image_bytes(image_url)
-        result = post_image_file_to_backend(clean_value(artifact_id), image_bytes, content_type, token)
-        save_artifact_source_image_url(clean_value(artifact_id), image_url)
+        artifact = {"_artifact_id": clean_value(artifact_id)}
+        result = downloadArtifactImageFromUrl(artifact, image_url, token)
 
+        return jsonify(result)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
+@app.route("/bulk-download-image-urls", methods=["POST"])
+def bulk_download_image_urls():
+    started_at = datetime.now()
+    payload = request.get_json(silent=True) or {}
+    artifact_ids = {
+        clean_value(value)
+        for value in (payload.get("artifactIds") or [])
+        if clean_value(value)
+    }
+    mode = clean_value(payload.get("mode")) or "only-external"
+    dry_run = bool(payload.get("dryRun"))
+    append_report = bool(payload.get("appendReport"))
+    reset_report = bool(payload.get("resetReport"))
+    limit_raw = payload.get("limit")
+    try:
+        limit = max(0, int(limit_raw)) if limit_raw not in (None, "") else 0
+    except (TypeError, ValueError):
+        limit = 0
+    try:
+        delay_ms = int(payload.get("delayMs") or 700)
+    except (TypeError, ValueError):
+        delay_ms = 700
+    delay_ms = min(max(delay_ms, 500), 1000)
+
+    if mode != "only-external":
+        return jsonify({"error": "当前仅支持 mode=only-external。"}), 400
+
+    try:
+        token = bearer_token_from_request() or get_admin_token()
+        rows = load_data("")
+        if artifact_ids:
+            rows = [row for row in rows if clean_value(row.get("_artifact_id")) in artifact_ids]
+
+        candidates = [row for row in rows if row.get("图片状态Key") == "remote-only"]
+        if limit:
+            candidates = candidates[:limit]
+
+        records = []
+        summary = {"total": len(candidates), "success": 0, "failed": 0, "skipped": 0, "dryRun": dry_run}
+
+        for index, row in enumerate(candidates):
+            artifact_id = clean_value(row.get("_artifact_id"))
+            name = clean_value(row.get("文物名称"))
+            source_urls = []
+            for value in (row.get("缩略图链接"), row.get("图片链接")):
+                url = clean_value(value)
+                if url and url not in source_urls:
+                    source_urls.append(url)
+
+            record = {
+                "artifactId": artifact_id,
+                "name": name,
+                "sourceUrl": source_urls[0] if source_urls else "",
+                "status": "skipped",
+                "error": "",
+                "localImageUrl": "",
+                "localThumbnailUrl": "",
+            }
+
+            if not source_urls:
+                record["error"] = "没有可下载的外链图片。"
+                summary["skipped"] += 1
+                records.append(record)
+                continue
+
+            if dry_run:
+                record["error"] = "dry-run：未实际下载。"
+                summary["skipped"] += 1
+                records.append(record)
+                continue
+
+            last_error = ""
+            for source_url in source_urls:
+                record["sourceUrl"] = source_url
+                try:
+                    result = downloadArtifactImageFromUrl(row, source_url, token)
+                    record.update({
+                        "status": "success",
+                        "error": "",
+                        "localImageUrl": clean_value(result.get("localImageUrl") or result.get("originalPath")),
+                        "localThumbnailUrl": clean_value(result.get("localThumbnailUrl") or result.get("thumbnailPath")),
+                    })
+                    summary["success"] += 1
+                    break
+                except Exception as exc:
+                    last_error = str(exc)
+
+            if record["status"] != "success":
+                record["status"] = "failed"
+                record["error"] = last_error or "下载失败。"
+                summary["failed"] += 1
+
+            records.append(record)
+            if index < len(candidates) - 1:
+                time.sleep(delay_ms / 1000)
+
+        summary["durationSeconds"] = round((datetime.now() - started_at).total_seconds(), 2)
+        report_records = records
+        report_summary = summary
+        if append_report and not reset_report:
+            existing_report = read_bulk_image_download_report()
+            existing_records = existing_report.get("records") if isinstance(existing_report.get("records"), list) else []
+            report_records = [*existing_records, *records]
+            report_summary = {
+                "total": len(report_records),
+                "success": sum(1 for item in report_records if item.get("status") == "success"),
+                "failed": sum(1 for item in report_records if item.get("status") == "failed"),
+                "skipped": sum(1 for item in report_records if item.get("status") == "skipped"),
+                "dryRun": dry_run,
+            }
+        report_path = write_bulk_image_download_report(report_records, report_summary)
         return jsonify({
-            **result,
-            "imageUrl": image_url,
-            "sourceImageUrl": image_url,
-            "flaskDownloaded": True,
+            "ok": True,
+            "summary": summary,
+            "records": records,
+            "reportPath": report_path,
+            "reportUrl": "/bulk-image-download-report",
         })
     except Exception as exc:
         return jsonify({"error": str(exc)}), 400
+
+
+@app.route("/bulk-image-download-report")
+def bulk_image_download_report():
+    try:
+        with open(BULK_IMAGE_DOWNLOAD_REPORT_PATH, "r", encoding="utf-8") as file:
+            return jsonify(json.load(file))
+    except FileNotFoundError:
+        return jsonify({"error": "暂无批量下载报告。"}), 404
 
 
 @app.route("/upload", methods=["POST"])

@@ -1,0 +1,102 @@
+{
+  "generatedAt": "2026-06-16T11:20:25",
+  "summary": {
+    "total": 10,
+    "success": 9,
+    "failed": 1,
+    "skipped": 0,
+    "dryRun": false
+  },
+  "records": [
+    {
+      "artifactId": "134",
+      "name": "北宋官窑弦纹瓶",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Celadon_Vase_with_Bowstring_Patterns%2C_Guan_Ware%2C_2016-09.jpg",
+      "status": "failed",
+      "error": "图片不能超过 10MB。",
+      "localImageUrl": "",
+      "localThumbnailUrl": ""
+    },
+    {
+      "artifactId": "135",
+      "name": "北宋钧窑月白釉出戟尊",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Moon-white_Glazed_Zun_Vessel_with_Vertical_Ridges%2C_Jun_Ware%2C_2016-09.jpg/960px-Moon-white_Glazed_Zun_Vessel_with_Vertical_Ridges%2C_Jun_Ware%2C_2016-09.jpg",
+      "status": "success",
+      "error": "",
+      "localImageUrl": "/artifact-images/135.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/135-thumb.jpg"
+    },
+    {
+      "artifactId": "139",
+      "name": "元青花萧何月下追韩信图梅瓶",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Xiao_He_meiping.jpg",
+      "status": "success",
+      "error": "",
+      "localImageUrl": "/artifact-images/139.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/139-thumb.jpg"
+    },
+    {
+      "artifactId": "141",
+      "name": "新石器时代红山文化玉龙",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/96/Neolithic_jade_dragon%2C_Hongshan_Culture%2C_Inner_Mongolia%2C_1971.jpg",
+      "status": "success",
+      "error": "",
+      "localImageUrl": "/artifact-images/141.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/141-thumb.jpg"
+    },
+    {
+      "artifactId": "142",
+      "name": "新石器时代良渚文化神人兽面纹玉钺",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/%E8%89%AF%E6%B8%9A%E7%A5%9E%E4%BA%BA%E5%85%BD%E9%9D%A2%E7%BA%B9%E7%8E%89%E9%92%BA%2C_2023-09-26_01.jpg/960px-%E8%89%AF%E6%B8%9A%E7%A5%9E%E4%BA%BA%E5%85%BD%E9%9D%A2%E7%BA%B9%E7%8E%89%E9%92%BA%2C_2023-09-26_01.jpg",
+      "status": "success",
+      "error": "",
+      "localImageUrl": "/artifact-images/142.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/142-thumb.jpg"
+    },
+    {
+      "artifactId": "143",
+      "name": "夏七孔玉刀",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/20250529_Seven-hole_jade_knife_in_the_Erlitou_Site_Museum_of_the_Xia_Capital.jpg",
+      "status": "success",
+      "error": "",
+      "localImageUrl": "/artifact-images/143.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/143-thumb.jpg"
+    },
+    {
+      "artifactId": "144",
+      "name": "西周晋侯夫人组玉佩",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/20250602_Jade_pendants_in_the_Shanxi_Museum.jpg",
+      "status": "success",
+      "error": "",
+      "localImageUrl": "/artifact-images/144.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/144-thumb.jpg"
+    },
+    {
+      "artifactId": "145",
+      "name": "战国多节活环套练玉佩",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E5%8D%81%E5%85%AD%E8%8A%82%E9%BE%99%E5%87%A4%E7%8E%89%E6%8C%82%E9%A5%B0%EF%BC%8C2015-04-06_06.jpg",
+      "status": "success",
+      "error": "",
+      "localImageUrl": "/artifact-images/145.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/145-thumb.jpg"
+    },
+    {
+      "artifactId": "146",
+      "name": "西汉“皇后之玺”玉玺",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/59/%E2%80%9C%E7%9A%87%E5%90%8E%E4%B9%8B%E7%8E%BA%E2%80%9D%E7%8E%89%E5%8D%B0%E4%B8%8A%E9%83%A8%2C_2015-09-22.jpg",
+      "status": "success",
+      "error": "",
+      "localImageUrl": "/artifact-images/146.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/146-thumb.jpg"
+    },
+    {
+      "artifactId": "148",
+      "name": "西晋神兽纹玉樽",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E7%A5%9E%E5%85%BD%E7%BA%B9%E7%8E%89%E6%A8%BD%2C_2018-09-28.jpg",
+      "status": "success",
+      "error": "",
+      "localImageUrl": "/artifact-images/148.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/148-thumb.jpg"
+    }
+  ]
+}

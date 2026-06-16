@@ -3861,7 +3861,9 @@
       ],
       "favsCount": 0,
       "category": "青铜器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/101.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/101-thumb.jpg"
     },
     {
       "id": "ncha-third-010",
@@ -3920,7 +3922,9 @@
       ],
       "favsCount": 0,
       "category": "青铜器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/102.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/102-thumb.jpg"
     },
     {
       "id": "ncha-third-011",
@@ -3979,7 +3983,9 @@
       ],
       "favsCount": 0,
       "category": "青铜器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/103.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/103-thumb.jpg"
     },
     {
       "id": "ncha-third-012",
@@ -4038,7 +4044,9 @@
       ],
       "favsCount": 0,
       "category": "青铜器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/104.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/104-thumb.jpg"
     },
     {
       "id": "ncha-third-013",
@@ -4154,7 +4162,9 @@
       ],
       "favsCount": 0,
       "category": "青铜器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/106.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/106-thumb.jpg"
     },
     {
       "id": "ncha-third-015",
@@ -4270,7 +4280,9 @@
       ],
       "favsCount": 0,
       "category": "青铜器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/108.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/108-thumb.jpg"
     },
     {
       "id": "ncha-third-017",
@@ -4328,7 +4340,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/109.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/109-thumb.jpg"
     },
     {
       "id": "ncha-third-018",
@@ -4386,7 +4400,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/110.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/110-thumb.jpg"
     },
     {
       "id": "ncha-third-019",
@@ -4444,7 +4460,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/111.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/111-thumb.jpg"
     },
     {
       "id": "ncha-third-020",
@@ -4502,7 +4520,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/112.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/112-thumb.jpg"
     },
     {
       "id": "ncha-third-021",
@@ -4560,7 +4580,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/113.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/113-thumb.jpg"
     },
     {
       "id": "ncha-third-022",
@@ -4618,7 +4640,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/114.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/114-thumb.jpg"
     },
     {
       "id": "ncha-third-023",
@@ -4676,7 +4700,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/115.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/115-thumb.jpg"
     },
     {
       "id": "ncha-third-024",
@@ -4874,7 +4900,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/119.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/119-thumb.jpg"
     },
     {
       "id": "ncha-third-028",
@@ -4932,7 +4960,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/120.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/120-thumb.jpg"
     },
     {
       "id": "ncha-third-029",
@@ -4990,7 +5020,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/121.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/121-thumb.jpg"
     },
     {
       "id": "ncha-third-030",
@@ -5048,7 +5080,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/122.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/122-thumb.jpg"
     },
     {
       "id": "ncha-third-031",
@@ -5162,7 +5196,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/124.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/124-thumb.jpg"
     },
     {
       "id": "ncha-third-033",
@@ -5220,7 +5256,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/125.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/125-thumb.jpg"
     },
     {
       "id": "ncha-third-034",
@@ -5334,7 +5372,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/127.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/127-thumb.jpg"
     },
     {
       "id": "ncha-third-036",
@@ -5392,7 +5432,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/128.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/128-thumb.jpg"
     },
     {
       "id": "ncha-third-037",
@@ -5450,7 +5492,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/129.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/129-thumb.jpg"
     },
     {
       "id": "ncha-third-038",
@@ -5508,7 +5552,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/130.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/130-thumb.jpg"
     },
     {
       "id": "ncha-third-039",
@@ -5566,7 +5612,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/131.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/131-thumb.jpg"
     },
     {
       "id": "ncha-third-040",
@@ -5624,7 +5672,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/132.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/132-thumb.jpg"
     },
     {
       "id": "ncha-third-041",
@@ -5682,7 +5732,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/133.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/133-thumb.jpg"
     },
     {
       "id": "ncha-third-042",
@@ -5798,7 +5850,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/135.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/135-thumb.jpg"
     },
     {
       "id": "ncha-third-044",
@@ -6024,7 +6078,9 @@
       ],
       "favsCount": 0,
       "category": "陶瓷",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/139.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/139-thumb.jpg"
     },
     {
       "id": "ncha-third-048",
@@ -6139,7 +6195,9 @@
       ],
       "favsCount": 0,
       "category": "玉器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/141.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/141-thumb.jpg"
     },
     {
       "id": "ncha-third-050",
@@ -6198,7 +6256,9 @@
       ],
       "favsCount": 0,
       "category": "玉器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/142.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/142-thumb.jpg"
     },
     {
       "id": "ncha-third-051",
@@ -6257,7 +6317,9 @@
       ],
       "favsCount": 0,
       "category": "玉器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/143.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/143-thumb.jpg"
     },
     {
       "id": "ncha-third-052",
@@ -6316,7 +6378,9 @@
       ],
       "favsCount": 0,
       "category": "玉器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/144.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/144-thumb.jpg"
     },
     {
       "id": "ncha-third-053",
@@ -6375,7 +6439,9 @@
       ],
       "favsCount": 0,
       "category": "玉器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/145.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/145-thumb.jpg"
     },
     {
       "id": "ncha-third-054",
@@ -6434,7 +6500,9 @@
       ],
       "favsCount": 0,
       "category": "玉器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/146.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/146-thumb.jpg"
     },
     {
       "id": "ncha-third-055",
@@ -6550,7 +6618,9 @@
       ],
       "favsCount": 0,
       "category": "玉器",
-      "level": "一级文物"
+      "level": "一级文物",
+      "localImageUrl": "/artifact-images/148.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/148-thumb.jpg"
     },
     {
       "id": "ncha-third-057",
