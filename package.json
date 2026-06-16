@@ -17,6 +17,8 @@
     "cache:artifact-images": "node scripts/cache-artifact-images.mjs",
     "migrate:artifact-image-names": "node --import tsx scripts/migrate-artifact-image-names.mjs",
     "audit:artifact-image-names": "node scripts/audit-artifact-image-names.mjs",
+    "cleanup:artifact-image-orphans": "node scripts/cleanup-artifact-image-orphans.mjs",
+    "cleanup:artifact-image-orphans:apply": "node scripts/cleanup-artifact-image-orphans.mjs --apply",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },
