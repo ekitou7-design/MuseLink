@@ -6,6 +6,7 @@ import type { Request, RequestHandler, Response } from "express";
 import multer from "multer";
 import sharp from "sharp";
 import { db } from "../db/client";
+import { deleteAiRagForArtifact, syncAiRagForArtifact } from "../../ai-rag-data";
 import { searchRelics } from "../db/relicSearch";
 import { getArtifactFromDb, listArtifactsFromDb } from "../db/syncImportedArtifacts";
 import type { ArtifactAttributeRow } from "../models/types";
@@ -479,6 +480,29 @@ async function writeAttributeRows(artifactId: string | number, rows: ReturnType<
   }
 }
 
+async function syncAiRagAfterArtifactChange(artifact: Awaited<ReturnType<typeof getArtifactFromDb>>) {
+  if (!artifact) return undefined;
+  const allArtifacts = await listArtifactsFromDb(db);
+  return syncAiRagForArtifact(artifact, allArtifacts);
+}
+
+async function safeSyncAiRagAfterArtifactChange(artifact: Awaited<ReturnType<typeof getArtifactFromDb>>) {
+  try {
+    return await syncAiRagAfterArtifactChange(artifact);
+  } catch (error) {
+    return {
+      ok: false,
+      artifactCount: 0,
+      aiReadyCount: 0,
+      ragDocumentCount: 0,
+      relationCount: 0,
+      coverage: "0 / 0",
+      message: "文物已入库；AI/RAG 派生数据生成失败。",
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 function normalizeTags(tags: unknown) {
   const rawTags = Array.isArray(tags)
     ? tags
@@ -530,6 +554,7 @@ async function persistArtifactImageBuffer(
     sourceImageUrl,
   );
   const artifact = (await findDbArtifact(id)) || existing;
+  const aiRagSync = await safeSyncAiRagAfterArtifactChange(artifact as Awaited<ReturnType<typeof getArtifactFromDb>>);
 
   return {
     ok: true,
@@ -544,6 +569,7 @@ async function persistArtifactImageBuffer(
     thumbnailPath: localThumbnailUrl,
     dbUpdated,
     importedArtifactsUpdated: jsonUpdated,
+    aiRagSync,
   };
 }
 
@@ -720,7 +746,8 @@ export async function createArtifact(req: Request, res: Response) {
 
     await writeAttributeRows(id, payload.attributes);
     const artifact = await getArtifactFromDb(db, String(id));
-    return res.status(201).json({ source: "database", artifact });
+    const aiRagSync = await safeSyncAiRagAfterArtifactChange(artifact);
+    return res.status(201).json({ source: "database", artifact, aiRagSync });
   } catch (error) {
     return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }
@@ -765,7 +792,8 @@ export async function updateArtifact(req: Request, res: Response) {
 
     await writeAttributeRows(id, payload.attributes);
     const artifact = await getArtifactFromDb(db, id);
-    return res.json({ source: "database", artifact });
+    const aiRagSync = await safeSyncAiRagAfterArtifactChange(artifact);
+    return res.json({ source: "database", artifact, aiRagSync });
   } catch (error) {
     return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }
@@ -824,7 +852,9 @@ export async function deleteArtifact(req: Request, res: Response) {
     await db.query(`delete from exhibition_items where artifact_id::text = $1`, [id]);
     await db.query(`delete from likes where target_type = 'artifact' and target_id::text = $1`, [id]);
     await db.query(`delete from artifacts where id::text = $1`, [id]);
-    return res.json({ ok: true, id });
+    const remainingArtifacts = await listArtifactsFromDb(db);
+    const aiRagSync = await deleteAiRagForArtifact(id, remainingArtifacts);
+    return res.json({ ok: true, id, aiRagSync });
   } catch (error) {
     return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }

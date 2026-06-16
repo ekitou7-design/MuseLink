@@ -28,6 +28,17 @@ type ArtifactImageStatusInfo = {
   hasMissingLocalFile: boolean;
 };
 
+type AiRagSyncSummary = {
+  ok: boolean;
+  artifactCount: number;
+  aiReadyCount: number;
+  ragDocumentCount: number;
+  relationCount: number;
+  coverage: string;
+  message: string;
+  error?: string;
+};
+
 type RowImageSelection = {
   file: File;
   previewUrl: string;
@@ -271,6 +282,12 @@ function formatDate(value: string) {
   return date.toLocaleString("zh-CN", { hour12: false });
 }
 
+function aiRagMessage(sync?: AiRagSyncSummary) {
+  if (!sync) return "";
+  if (!sync.ok) return `AI/RAG 生成失败：${sync.error || sync.message}`;
+  return `文物已入库；AI/RAG 文档已生成；关系候选已更新；当前 AI/RAG 覆盖率：${sync.coverage}`;
+}
+
 export function AdminPage() {
   const [tab, setTab] = useState<AdminTab>("artifacts");
   const [users, setUsers] = useState<AdminUserSummary[]>([]);
@@ -437,10 +454,12 @@ export function AdminPage() {
       }
 
       const path = form.id ? `/api/artifacts/${encodeURIComponent(form.id)}` : "/api/artifacts";
-      await apiFetch(path, {
+      const result = await apiFetch<{ aiRagSync?: AiRagSyncSummary }>(path, {
         method: form.id ? "PUT" : "POST",
         body: JSON.stringify(payload),
       });
+      const message = aiRagMessage(result.aiRagSync);
+      if (message) setImageUploadMessage(message);
       setForm(emptyForm);
       await loadArtifacts();
     } catch (e) {
@@ -489,7 +508,8 @@ export function AdminPage() {
       const localThumbnailUrl = String(data.localThumbnailUrl || data.thumbnailPath || "");
       setForm((current) => ({ ...current, imageUrl: localImageUrl || current.imageUrl }));
       setImageFile(null);
-      setImageUploadMessage(`图片已上传：${localImageUrl || "-"}，缩略图：${localThumbnailUrl || "-"}`);
+      const syncMessage = aiRagMessage(data.aiRagSync);
+      setImageUploadMessage(`图片已上传：${localImageUrl || "-"}，缩略图：${localThumbnailUrl || "-"}。${syncMessage}`);
       await loadArtifacts();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -543,7 +563,8 @@ export function AdminPage() {
       const savedImageUrl = String(data.imageUrl || data.sourceImageUrl || imageUrlToDownload.trim());
       setForm((current) => ({ ...current, imageUrl: savedImageUrl || current.imageUrl }));
       setImageUrlToDownload("");
-      setImageUploadMessage(`图片已下载：${localImageUrl || "-"}，缩略图：${localThumbnailUrl || "-"}`);
+      const syncMessage = aiRagMessage(data.aiRagSync);
+      setImageUploadMessage(`图片已下载：${localImageUrl || "-"}，缩略图：${localThumbnailUrl || "-"}。${syncMessage}`);
       await loadArtifacts();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -634,7 +655,8 @@ export function AdminPage() {
         delete next[artifactId];
         return next;
       });
-      setImageUploadMessage(`「${artifact.name || artifactId}」图片上传成功。`);
+      const syncMessage = aiRagMessage(data.aiRagSync);
+      setImageUploadMessage(`「${artifact.name || artifactId}」图片上传成功。${syncMessage}`);
       await loadArtifacts();
     } catch (e) {
       setRowImageErrors((current) => ({ ...current, [artifactId]: e instanceof Error ? e.message : String(e) }));
@@ -689,7 +711,8 @@ export function AdminPage() {
         delete next[artifactId];
         return next;
       });
-      setImageUploadMessage(`「${artifact.name || artifactId}」图片下载成功。`);
+      const syncMessage = aiRagMessage(data.aiRagSync);
+      setImageUploadMessage(`「${artifact.name || artifactId}」图片下载成功。${syncMessage}`);
       await loadArtifacts();
     } catch (e) {
       setRowImageErrors((current) => ({ ...current, [artifactId]: e instanceof Error ? e.message : String(e) }));
@@ -714,7 +737,9 @@ export function AdminPage() {
     setError(null);
 
     try {
-      await apiFetch(`/api/artifacts/${encodeURIComponent(String(artifact.id))}`, { method: "DELETE" });
+      const result = await apiFetch<{ aiRagSync?: AiRagSyncSummary }>(`/api/artifacts/${encodeURIComponent(String(artifact.id))}`, { method: "DELETE" });
+      const message = aiRagMessage(result.aiRagSync);
+      if (message) setImageUploadMessage(message);
       if (form.id === String(artifact.id)) setForm(emptyForm);
       await loadArtifacts();
     } catch (e) {
@@ -741,12 +766,14 @@ export function AdminPage() {
 
     try {
       const job = JSON.parse(importText);
-      const result = await apiFetch<{ validRecords?: number; fileStoreCount?: number; dbSync?: { inserted: number; updated: number } }>(
+      const result = await apiFetch<{ validRecords?: number; fileStoreCount?: number; dbSync?: { inserted: number; updated: number; aiRagSync?: AiRagSyncSummary }; aiRagSync?: AiRagSyncSummary }>(
         "/api/import/run",
         { method: "POST", body: JSON.stringify(job) },
       );
+      const sync = result.dbSync?.aiRagSync || result.aiRagSync;
+      const syncMessage = aiRagMessage(sync);
       setImportResult(
-        `导入成功：${result.validRecords ?? 0} 条有效记录，文件库 ${result.fileStoreCount ?? 0} 条，DB 新增 ${result.dbSync?.inserted ?? 0}、更新 ${result.dbSync?.updated ?? 0}。`,
+        `导入成功：${result.validRecords ?? 0} 条有效记录，文件库 ${result.fileStoreCount ?? 0} 条，DB 新增 ${result.dbSync?.inserted ?? 0}、更新 ${result.dbSync?.updated ?? 0}。${syncMessage}`,
       );
       await loadArtifacts();
     } catch (e) {

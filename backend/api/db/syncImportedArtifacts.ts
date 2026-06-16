@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import type { Artifact, ArtifactAttributeGroup, ArtifactTag } from "../../../src/types";
+import { syncAiRagForArtifacts, type AiRagSyncSummary } from "../../ai-rag-data";
 import {
   artifactCategoryRaw,
   artifactDescriptionRaw,
@@ -256,7 +257,23 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
     }
   }
 
-  return { importedCount: artifacts.length, inserted, updated, skipped: false };
+  let aiRagSync: AiRagSyncSummary | undefined;
+  try {
+    aiRagSync = await syncAiRagForArtifacts(await listArtifactsFromDb(db));
+  } catch (error) {
+    aiRagSync = {
+      ok: false,
+      artifactCount: 0,
+      aiReadyCount: 0,
+      ragDocumentCount: 0,
+      relationCount: 0,
+      coverage: "0 / 0",
+      message: "导入文物已同步到 artifacts 表；AI/RAG 派生数据生成失败。",
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+
+  return { importedCount: artifacts.length, inserted, updated, skipped: false, aiRagSync };
 }
 
 function normalizeTagsForArtifact(tags: unknown): Array<{ type: string; name: string }> {

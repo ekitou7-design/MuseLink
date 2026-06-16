@@ -1,8 +1,18 @@
 # MuseLink AI 数据准备脚本
 
-`prepare-artifacts-for-ai.ts` 用于把当前 `data/imported-artifacts.json` 中已有的导入文物整理为后续 RAG 知识库、知识图谱和 AI Workflow 策展生成可用的标准样板数据。
+`prepare-artifacts-for-ai.ts` 是早期一次性数据准备脚本，用于把 `data/imported-artifacts.json` 中已有的导入文物整理为后续 RAG 知识库、知识图谱和 AI Workflow 策展生成可用的标准样板数据。
 
-当前进度：已基于 92 件导入文物生成 AI-ready v2 数据、92 条 RAG JSONL 文档和 229 条知识图谱关系候选。v2 比 v1 更适合做技术验证，但仍需要人工审核后才能作为正式内容上线。
+当前项目已经改为自动派生数据流：主文物库 `artifacts` / `data/imported-artifacts.json` 是唯一事实来源，新增或更新文物后会自动同步 AI-ready、RAG 文档和关系候选。当前主库 292 件，对应 AI-ready 和 RAG 文档也是 292 条。
+
+日常请优先使用：
+
+```bash
+npm run generate:ai-data
+npm run rebuild:rag-data
+npm run check:rag-data
+```
+
+旧脚本仍可作为规则参考，但不再是推荐入口。
 
 ## 如何运行
 
@@ -17,6 +27,12 @@ node --import tsx scripts/data-prep/prepare-artifacts-for-ai.ts
 - `data/imported-artifacts.ai-ready.v2.json`：AI-ready v2 文物派生数据。
 - `data/artifact-relation-seeds.v2.json`：知识图谱关系候选。
 - `data/rag/artifacts-rag-documents.v2.jsonl`：可导入 Dify、FastGPT、RAGFlow 等知识库的 JSONL 文档。
+
+新自动派生入口还会输出：
+
+- `data/ai-ready-artifacts.json`
+- `data/artifact-relations.json`
+- `data/rag-documents.json`
 
 仓库里仍保留 v1 文件，便于对照规则变化：
 

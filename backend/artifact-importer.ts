@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import type { Artifact } from "../src/types";
+import { syncAiRagForArtifacts, type AiRagSyncSummary } from "./ai-rag-data";
 import { syncMuseumStoreFromArtifacts } from "./museums";
 
 export type ArtifactImportFormat = "json" | "ndjson" | "csv";
@@ -40,6 +41,7 @@ export type ArtifactImportPreview = {
 export type ArtifactImportExecutionResult = ArtifactImportPreview & {
   persistedTo: ArtifactPersistTarget[];
   fileStoreCount: number;
+  aiRagSync?: AiRagSyncSummary;
 };
 
 type ArtifactStoreDocument = {
@@ -738,12 +740,12 @@ function mergeArtifacts(
 async function persistArtifactsToFile(
   artifacts: Artifact[],
   mode: ArtifactImportMode,
-): Promise<number> {
+): Promise<{ count: number; artifacts: Artifact[] }> {
   const store = await readArtifactStore();
   const mergedArtifacts = mergeArtifacts(store.artifacts, artifacts, mode);
   await writeArtifactStore(mergedArtifacts);
   await syncMuseumStoreFromArtifacts(mergedArtifacts);
-  return mergedArtifacts.length;
+  return { count: mergedArtifacts.length, artifacts: mergedArtifacts };
 }
 
 export async function getImportedArtifacts(): Promise<Artifact[]> {
@@ -772,9 +774,12 @@ export async function executeArtifactImport(options: { job: ArtifactImportJob })
   const persistedTo: ArtifactPersistTarget[] = [];
 
   let fileStoreCount = 0;
+  let aiRagSync: AiRagSyncSummary | undefined;
 
   if (requestedTargets.includes("file")) {
-    fileStoreCount = await persistArtifactsToFile(preview.artifacts, mode);
+    const persisted = await persistArtifactsToFile(preview.artifacts, mode);
+    fileStoreCount = persisted.count;
+    aiRagSync = await syncAiRagForArtifacts(persisted.artifacts);
     persistedTo.push("file");
   }
 
@@ -782,5 +787,6 @@ export async function executeArtifactImport(options: { job: ArtifactImportJob })
     ...preview,
     persistedTo,
     fileStoreCount,
+    aiRagSync,
   };
 }

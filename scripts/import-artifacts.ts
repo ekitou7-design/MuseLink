@@ -32,6 +32,13 @@ async function main() {
   console.log(`跳过记录: ${result.skippedRecords}`);
   console.log(`已写入本地库: ${result.fileStoreCount}`);
   console.log(`涉及博物馆: ${result.museums.join("、")}`);
+  if (result.aiRagSync) {
+    console.log(`AI/RAG 覆盖率: ${result.aiRagSync.coverage}`);
+    console.log(`关系候选: ${result.aiRagSync.relationCount}`);
+    if (!result.aiRagSync.ok) {
+      console.log(`AI/RAG 同步警告: ${result.aiRagSync.error || result.aiRagSync.message}`);
+    }
+  }
 
   if (result.skipped.length > 0) {
     console.log("");

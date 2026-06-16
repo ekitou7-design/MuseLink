@@ -5,7 +5,8 @@ import { ensureSeedArtifacts } from "./seedArtifacts";
 import { ensureSeedMuseums } from "./seedMuseums";
 import { migrateArtifactDetails } from "./migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./upgradeArtifactsMuseumFk";
-import { syncImportedArtifactsToDb } from "./syncImportedArtifacts";
+import { listArtifactsFromDb, syncImportedArtifactsToDb } from "./syncImportedArtifacts";
+import { syncAiRagForArtifacts } from "../../ai-rag-data";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
@@ -24,6 +25,10 @@ async function main() {
   if (!imported.skipped) {
     console.log(`Synced imported artifacts: ${imported.importedCount} file rows, ${imported.inserted} inserted, ${imported.updated} updated`);
   }
+  const aiRag = imported.skipped || !imported.aiRagSync
+    ? await syncAiRagForArtifacts(await listArtifactsFromDb(db))
+    : imported.aiRagSync;
+  console.log(`Synced AI/RAG data: ${aiRag.coverage}, relations ${aiRag.relationCount}`);
   await db.end();
   console.log("DB seed OK");
 }
