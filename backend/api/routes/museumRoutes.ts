@@ -12,6 +12,7 @@ import {
   updateMuseum,
   uploadMuseumCover,
   uploadMuseumCoverFile,
+  uploadMuseumCoverFromUrl,
 } from "../controllers/museumsController";
 
 export const museumRoutes = Router();
@@ -27,6 +28,7 @@ museumRoutes.get("/api/admin/museums/duplicates", requireAdmin, getMuseumDuplica
 museumRoutes.get("/api/admin/museums/:id", requireAdmin, getMuseum);
 museumRoutes.put("/api/admin/museums/:id", requireAdmin, updateMuseum);
 museumRoutes.post("/api/admin/museums/:id/cover", requireAdmin, uploadMuseumCoverFile, uploadMuseumCover);
+museumRoutes.post("/api/admin/museums/:id/cover-url", requireAdmin, uploadMuseumCoverFromUrl);
 museumRoutes.delete("/api/admin/museums/:id/cover", requireAdmin, deleteMuseumCover);
 museumRoutes.post("/api/admin/museums/:id/aliases", requireAdmin, addMuseumAlias);
 museumRoutes.delete("/api/admin/museums/:id/aliases/:aliasId", requireAdmin, deleteMuseumAlias);

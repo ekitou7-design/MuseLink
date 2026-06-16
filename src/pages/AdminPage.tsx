@@ -500,6 +500,8 @@ export function AdminPage() {
   const [museumArtifactQuery, setMuseumArtifactQuery] = useState("");
   const [newMuseumAlias, setNewMuseumAlias] = useState("");
   const [museumCoverFile, setMuseumCoverFile] = useState<File | null>(null);
+  const [museumCoverUrlToDownload, setMuseumCoverUrlToDownload] = useState("");
+  const [downloadingMuseumCoverUrl, setDownloadingMuseumCoverUrl] = useState(false);
   const [museumMessage, setMuseumMessage] = useState<string | null>(null);
   const [imageFilter, setImageFilter] = useState<ArtifactImageFilter>("all");
   const [importText, setImportText] = useState("");
@@ -562,6 +564,7 @@ export function AdminPage() {
     const data = await apiFetch<MuseumDetailResponse>(`/api/admin/museums/${encodeURIComponent(id)}`);
     setSelectedMuseum(data);
     setMuseumForm(museumFormFromMuseum(data.museum));
+    setMuseumCoverUrlToDownload("");
     setMuseumMessage(null);
   };
 
@@ -1201,6 +1204,62 @@ export function AdminPage() {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setSaving(false);
+    }
+  };
+
+  const onDownloadMuseumCoverUrl = async () => {
+    if (!museumForm.id) {
+      setError("请先选择要编辑的博物馆。");
+      return;
+    }
+
+    const validationError = validateImageDownloadUrl(museumCoverUrlToDownload);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    const token = (getAuthToken() || adminTokenInput).trim();
+    if (!token) {
+      setError("请先登录管理员账号或填写管理员 token。");
+      return;
+    }
+    setAuthToken(token);
+    setAdminTokenInput(token);
+
+    setDownloadingMuseumCoverUrl(true);
+    setError(null);
+    setMuseumMessage(null);
+    try {
+      const response = await fetch(apiUrl(`/api/admin/museums/${encodeURIComponent(museumForm.id)}/cover-url`), {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl: museumCoverUrlToDownload.trim() }),
+      });
+      const contentType = response.headers.get("content-type") || "";
+      const data = contentType.includes("application/json") ? await response.json() : await response.text();
+      if (!response.ok) {
+        const message = typeof data === "object" && data && "error" in data ? String(data.error) : String(data);
+        throw new Error(message || `下载失败：${response.status}`);
+      }
+
+      setMuseumCoverUrlToDownload("");
+      const localCoverImageUrl = String(data.localCoverImageUrl || "");
+      const localCoverThumbnailUrl = String(data.localCoverThumbnailUrl || "");
+      setMuseumMessage(
+        `博物馆封面已下载：${localCoverImageUrl || "-"}，缩略图：${localCoverThumbnailUrl || "-"}。${aiRagMessage(data.aiRagSync)}`,
+      );
+      await loadMuseumCatalog();
+      await loadMuseums();
+      await loadMuseumDetail(museumForm.id);
+      await loadArtifacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setDownloadingMuseumCoverUrl(false);
     }
   };
 
@@ -1942,6 +2001,26 @@ export function AdminPage() {
                       <button type="button" disabled={saving || !museumCoverUrl(selectedMuseum.museum)} onClick={onDeleteMuseumCover} className="rounded-xl bg-rose-50 px-4 py-2 text-xs font-black text-rose-700 disabled:opacity-50">
                         删除封面
                       </button>
+                    </div>
+                    <div className="mt-5 border-t border-dashed border-gray-200 pt-4">
+                      <div className="text-xs font-black text-gray-500">图片链接</div>
+                      <div className="mt-2 flex flex-col gap-2 md:flex-row">
+                      <input
+                        value={museumCoverUrlToDownload}
+                        onChange={(e) => setMuseumCoverUrlToDownload(e.target.value)}
+                        placeholder="粘贴图片链接：https://..."
+                        className="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-amber-500"
+                      />
+                      <button
+                        type="button"
+                        disabled={downloadingMuseumCoverUrl || !museumCoverUrlToDownload.trim()}
+                        onClick={onDownloadMuseumCoverUrl}
+                        className="rounded-xl bg-amber-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50 md:w-48"
+                      >
+                        {downloadingMuseumCoverUrl ? "下载中..." : "从链接下载并同步封面"}
+                      </button>
+                      </div>
+                      <div className="mt-2 text-xs text-gray-500">链接下载会调用 /api/admin/museums/{selectedMuseum.museum.id}/cover-url，成功后刷新当前封面预览。</div>
                     </div>
                   </div>
 

@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-16T05:25:20.028Z",
+  "updatedAt": "2026-06-16T14:28:10.139Z",
   "museums": [
     {
       "id": "辽宁省博物馆",
       "name": "辽宁省博物馆",
-      "description": "辽宁省博物馆馆藏文物数据库，当前收录 98 件文物。",
+      "description": "辽宁省博物馆是位于沈阳的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "辽宁省",
       "imageUrl": "/artifact-images/WW-辽-金灰陶罐形扑满-0.jpg",
       "artifactIds": [
@@ -128,12 +128,19 @@
         "金(1115~1234)"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "辽宁",
+      "city": "沈阳",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "书画与古代艺术；MuseLink 当前关联文物 98 件",
+      "is_featured": true
     },
     {
       "id": "故宫博物院",
       "name": "故宫博物院",
-      "description": "故宫博物院馆藏文物数据库，当前收录 40 件文物。",
+      "description": "故宫博物院是位于北京的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "中央部门",
       "imageUrl": "/artifact-images/ncha-third-024.jpg",
       "artifactIds": [
@@ -194,12 +201,19 @@
         "隋朝"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "北京",
+      "city": "北京",
+      "type": "古代宫殿与综合博物馆",
+      "history": "其历史背景与明清宫廷建筑、宫廷收藏和中国古代艺术体系密切相关，是理解中国古代宫廷文化的重要节点。",
+      "highlights": "书画与古代艺术；MuseLink 当前关联文物 40 件",
+      "is_featured": true
     },
     {
       "id": "中国国家博物馆",
       "name": "中国国家博物馆",
-      "description": "中国国家博物馆馆藏文物数据库，当前收录 24 件文物。",
+      "description": "中国国家博物馆是位于北京的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/ncha-third-001.jpg",
       "artifactIds": [
@@ -241,12 +255,19 @@
         "隋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "北京",
+      "city": "北京",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化；MuseLink 当前关联文物 24 件",
+      "is_featured": true
     },
     {
       "id": "湖南省博物馆",
       "name": "湖南省博物馆",
-      "description": "湖南省博物馆馆藏文物数据库，当前收录 11 件文物。",
+      "description": "湖南省博物馆是位于长沙的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "湖南省",
       "imageUrl": "/artifact-images/ncha-third-004.jpg",
       "artifactIds": [
@@ -272,12 +293,19 @@
         "西漢"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "湖南",
+      "city": "长沙",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化；MuseLink 当前关联文物 11 件",
+      "is_featured": true
     },
     {
       "id": "陕西历史博物馆",
       "name": "陕西历史博物馆",
-      "description": "陕西历史博物馆馆藏文物数据库，当前收录 10 件文物。",
+      "description": "陕西历史博物馆是位于西安的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "陕西省",
       "imageUrl": "/artifact-images/129.jpg",
       "artifactIds": [
@@ -300,12 +328,19 @@
         "西汉"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "陕西",
+      "city": "西安",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化；MuseLink 当前关联文物 10 件",
+      "is_featured": true
     },
     {
       "id": "湖北省博物馆",
       "name": "湖北省博物馆",
-      "description": "湖北省博物馆馆藏文物数据库，当前收录 9 件文物。",
+      "description": "湖北省博物馆是位于武汉的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "湖北省",
       "imageUrl": "/artifact-images/103.jpg",
       "artifactIds": [
@@ -327,12 +362,19 @@
         "秦"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "湖北",
+      "city": "武汉",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "青铜器与礼制文明；MuseLink 当前关联文物 9 件",
+      "is_featured": true
     },
     {
       "id": "上海博物馆",
       "name": "上海博物馆",
-      "description": "上海博物馆馆藏文物数据库，当前收录 8 件文物。",
+      "description": "上海博物馆是位于上海的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "上海市",
       "imageUrl": "/artifact-images/104.jpg",
       "artifactIds": [
@@ -354,12 +396,19 @@
         "西周"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.137Z",
+      "matchedBy": "standard_name",
+      "province": "上海",
+      "city": "上海",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "青铜器与礼制文明；书画与古代艺术；MuseLink 当前关联文物 8 件",
+      "is_featured": true
     },
     {
       "id": "宝鸡青铜器博物院",
       "name": "宝鸡青铜器博物院",
-      "description": "宝鸡青铜器博物院馆藏文物数据库，当前收录 4 件文物。",
+      "description": "宝鸡青铜器博物院是一座具有鲜明专题特色的博物馆，适合围绕特定门类、历史主题或代表性馆藏开展专题展示。",
       "location": "",
       "imageUrl": "/artifact-images/101.jpg",
       "artifactIds": [
@@ -374,12 +423,18 @@
         "西周早期"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "陕西",
+      "city": "宝鸡",
+      "type": "专题博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "青铜器与礼制文明"
     },
     {
       "id": "广汉三星堆博物馆",
       "name": "广汉三星堆博物馆",
-      "description": "广汉三星堆博物馆馆藏文物数据库，当前收录 4 件文物。",
+      "description": "广汉三星堆博物馆是一座以重要遗址、考古发现或历史场景为核心的博物馆，适合展示遗址背景、出土文物和区域文明发展脉络。",
       "location": "四川省",
       "imageUrl": "/artifact-images/ncha-third-005.jpg",
       "artifactIds": [
@@ -394,12 +449,19 @@
         "未知"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "四川",
+      "city": "广汉",
+      "type": "遗址博物馆",
+      "history": "其展示背景与三星堆遗址考古发现相关，能够呈现古蜀文明的独特面貌和青铜、玉石等重要考古成果。",
+      "highlights": "古蜀文明；遗址展示与考古现场叙事",
+      "is_featured": true
     },
     {
       "id": "浙江省博物馆",
       "name": "浙江省博物馆",
-      "description": "浙江省博物馆馆藏文物数据库，当前收录 4 件文物。",
+      "description": "浙江省博物馆是位于杭州的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "浙江省",
       "imageUrl": "/artifact-images/142.jpg",
       "artifactIds": [
@@ -413,12 +475,19 @@
         "新石器时代"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "浙江",
+      "city": "杭州",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化",
+      "is_featured": true
     },
     {
       "id": "法门寺博物馆",
       "name": "法门寺博物馆",
-      "description": "法门寺博物馆馆藏文物数据库，当前收录 3 件文物。",
+      "description": "法门寺博物馆是一座以重要遗址、考古发现或历史场景为核心的博物馆，适合展示遗址背景、出土文物和区域文明发展脉络。",
       "location": "",
       "imageUrl": "/artifact-images/221.jpg",
       "artifactIds": [
@@ -431,12 +500,18 @@
         "唐"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "陕西",
+      "city": "宝鸡",
+      "type": "遗址博物馆",
+      "history": "该馆的历史叙事通常围绕遗址发现、考古发掘和遗址保护展开，适合呈现从考古现场到博物馆展示的转化过程。",
+      "highlights": "遗址展示与考古现场叙事"
     },
     {
       "id": "河北博物院",
       "name": "河北博物院",
-      "description": "河北博物院馆藏文物数据库，当前收录 3 件文物。",
+      "description": "河北博物院是位于石家庄的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/ncha-first-core-037.jpg",
       "artifactIds": [
@@ -450,12 +525,18 @@
         "西汉"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "河北",
+      "city": "石家庄",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "河南博物院",
       "name": "河南博物院",
-      "description": "河南博物院馆藏文物数据库，当前收录 3 件文物。",
+      "description": "河南博物院是位于郑州的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "河南省",
       "imageUrl": "/artifact-images/121.jpg",
       "artifactIds": [
@@ -470,12 +551,19 @@
         "春秋中期"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "河南",
+      "city": "郑州",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "青铜器与礼制文明",
+      "is_featured": true
     },
     {
       "id": "南京博物院",
       "name": "南京博物院",
-      "description": "南京博物院馆藏文物数据库，当前收录 3 件文物。",
+      "description": "南京博物院是位于南京的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "江苏省",
       "imageUrl": "/artifact-images/ncha-third-013.jpg",
       "artifactIds": [
@@ -490,12 +578,19 @@
         "西晋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "江苏",
+      "city": "南京",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "书画与古代艺术",
+      "is_featured": true
     },
     {
       "id": "山西博物院",
       "name": "山西博物院",
-      "description": "山西博物院馆藏文物数据库，当前收录 3 件文物。",
+      "description": "山西博物院是位于太原的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "山西省",
       "imageUrl": "/artifact-images/ncha-third-003.jpg",
       "artifactIds": [
@@ -509,12 +604,19 @@
         "西周"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "山西",
+      "city": "太原",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "青铜器与礼制文明",
+      "is_featured": true
     },
     {
       "id": "西安碑林博物馆",
       "name": "西安碑林博物馆",
-      "description": "西安碑林博物馆馆藏文物数据库，当前收录 3 件文物。",
+      "description": "西安碑林博物馆是一座具有鲜明专题特色的博物馆，适合围绕特定门类、历史主题或代表性馆藏开展专题展示。",
       "location": "陕西省",
       "imageUrl": "/artifact-images/171.jpg",
       "artifactIds": [
@@ -528,12 +630,18 @@
         "唐景云年间"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "陕西",
+      "city": "西安",
+      "type": "专题博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "书写文化与文献传统"
     },
     {
       "id": "安徽省文物考古研究所",
       "name": "安徽省文物考古研究所",
-      "description": "安徽省文物考古研究所馆藏文物数据库，当前收录 2 件文物。",
+      "description": "安徽省文物考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/ncha-third-067.jpg",
       "artifactIds": [
@@ -545,12 +653,18 @@
         "三国吴"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "安徽",
+      "city": "合肥",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "考古发现与出土文物研究"
     },
     {
       "id": "定州市博物馆",
       "name": "定州市博物馆",
-      "description": "定州市博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "定州市博物馆是位于定州的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/ncha-third-044.jpg",
       "artifactIds": [
@@ -563,12 +677,18 @@
         "北宋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "河北",
+      "city": "定州",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "甘肃省博物馆",
       "name": "甘肃省博物馆",
-      "description": "甘肃省博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "甘肃省博物馆是位于兰州的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/114.jpg",
       "artifactIds": [
@@ -581,12 +701,18 @@
         "新石器时代"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "甘肃",
+      "city": "兰州",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "杭州博物馆",
       "name": "杭州博物馆",
-      "description": "杭州博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "杭州博物馆是位于杭州的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/199.jpg",
       "artifactIds": [
@@ -599,12 +725,18 @@
         "戰國"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "浙江",
+      "city": "杭州",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "河北省文物研究所",
       "name": "河北省文物研究所",
-      "description": "河北省文物研究所馆藏文物数据库，当前收录 2 件文物。",
+      "description": "河北省文物研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/ncha-third-062.jpg",
       "artifactIds": [
@@ -617,12 +749,18 @@
         "西汉"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "河北",
+      "city": "石家庄",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "考古发现与出土文物研究"
     },
     {
       "id": "南京市博物馆",
       "name": "南京市博物馆",
-      "description": "南京市博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "南京市博物馆是位于南京的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/ncha-third-026.jpg",
       "artifactIds": [
@@ -635,12 +773,18 @@
         "元"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "江苏",
+      "city": "南京",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "南越王博物院",
       "name": "南越王博物院",
-      "description": "南越王博物院馆藏文物数据库，当前收录 2 件文物。",
+      "description": "南越王博物院是一座以重要遗址、考古发现或历史场景为核心的博物馆，适合展示遗址背景、出土文物和区域文明发展脉络。",
       "location": "",
       "imageUrl": "/artifact-images/244.jpg",
       "artifactIds": [
@@ -652,12 +796,18 @@
         "西汉"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "广东",
+      "city": "广州",
+      "type": "遗址博物馆",
+      "history": "该馆的历史叙事通常围绕遗址发现、考古发掘和遗址保护展开，适合呈现从考古现场到博物馆展示的转化过程。",
+      "highlights": "遗址展示与考古现场叙事"
     },
     {
       "id": "秦始皇兵马俑博物馆",
       "name": "秦始皇兵马俑博物馆",
-      "description": "秦始皇兵马俑博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "秦始皇兵马俑博物馆是一座以重要遗址、考古发现或历史场景为核心的博物馆，适合展示遗址背景、出土文物和区域文明发展脉络。",
       "location": "陕西省",
       "imageUrl": "/artifact-images/215.jpg",
       "artifactIds": [
@@ -669,7 +819,14 @@
         "秦"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "陕西",
+      "city": "西安",
+      "type": "遗址博物馆",
+      "history": "其展示背景与秦始皇陵及兵马俑坑考古发现相关，是理解秦代国家权力、军阵制度和陵墓制度的重要材料。",
+      "highlights": "秦汉考古与陵墓制度；遗址展示与考古现场叙事",
+      "is_featured": true
     },
     {
       "id": "山西省艺术博物馆-纯阳宫",
@@ -691,7 +848,7 @@
     {
       "id": "苏州博物馆",
       "name": "苏州博物馆",
-      "description": "苏州博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "苏州博物馆是位于苏州的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "江苏省",
       "imageUrl": "/artifact-images/131.jpg",
       "artifactIds": [
@@ -704,12 +861,19 @@
         "北宋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "江苏",
+      "city": "苏州",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化",
+      "is_featured": true
     },
     {
       "id": "天津博物馆",
       "name": "天津博物馆",
-      "description": "天津博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "天津博物馆是位于天津的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "天津市",
       "imageUrl": "/artifact-images/122.jpg",
       "artifactIds": [
@@ -722,12 +886,18 @@
         "隋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "天津",
+      "city": "天津",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "新疆维吾尔自治区文物考古研究所",
       "name": "新疆维吾尔自治区文物考古研究所",
-      "description": "新疆维吾尔自治区文物考古研究所馆藏文物数据库，当前收录 2 件文物。",
+      "description": "新疆维吾尔自治区文物考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/ncha-third-074.jpg",
       "artifactIds": [
@@ -740,12 +910,18 @@
         "汉晋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "新疆",
+      "city": "乌鲁木齐",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "西域考古与多元文化交流；考古发现与出土文物研究"
     },
     {
       "id": "扬州博物馆",
       "name": "扬州博物馆",
-      "description": "扬州博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "扬州博物馆是位于扬州的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "江苏省",
       "imageUrl": "/artifact-images/ncha-third-034.jpg",
       "artifactIds": [
@@ -758,12 +934,18 @@
         "唐"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "江苏",
+      "city": "扬州",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "中国国家图书馆",
       "name": "中国国家图书馆",
-      "description": "中国国家图书馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "中国国家图书馆是重要的文献收藏与公共文化机构，在 MuseLink 中可作为古籍、文献、书写文化和知识传播相关内容的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/175.jpg",
       "artifactIds": [
@@ -775,12 +957,18 @@
         "北宋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "北京",
+      "city": "北京",
+      "type": "图书馆/文献收藏机构",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "书写文化与文献传统"
     },
     {
       "id": "中国社会科学院考古研究所",
       "name": "中国社会科学院考古研究所",
-      "description": "中国社会科学院考古研究所馆藏文物数据库，当前收录 2 件文物。",
+      "description": "中国社会科学院考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/113.jpg",
       "artifactIds": [
@@ -793,12 +981,18 @@
         "新石器时代"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "北京",
+      "city": "北京",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "考古发现与出土文物研究"
     },
     {
       "id": "朱然家族墓地博物馆",
       "name": "朱然家族墓地博物馆",
-      "description": "朱然家族墓地博物馆馆藏文物数据库，当前收录 2 件文物。",
+      "description": "朱然家族墓地博物馆是一座以重要遗址、考古发现或历史场景为核心的博物馆，适合展示遗址背景、出土文物和区域文明发展脉络。",
       "location": "",
       "imageUrl": "/artifact-images/203.jpg",
       "artifactIds": [
@@ -810,12 +1004,18 @@
         "三国（吴）"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "安徽",
+      "city": "马鞍山",
+      "type": "遗址博物馆",
+      "history": "该馆的历史叙事通常围绕遗址发现、考古发掘和遗址保护展开，适合呈现从考古现场到博物馆展示的转化过程。",
+      "highlights": "遗址展示与考古现场叙事"
     },
     {
       "id": "安徽博物院",
       "name": "安徽博物院",
-      "description": "安徽博物院馆藏文物数据库，当前收录 1 件文物。",
+      "description": "安徽博物院是位于合肥的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/202.jpg",
       "artifactIds": [
@@ -826,12 +1026,18 @@
         "戰國"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "安徽",
+      "city": "合肥",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "成都金沙遗址博物馆",
       "name": "成都金沙遗址博物馆",
-      "description": "成都金沙遗址博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "成都金沙遗址博物馆是一座以重要遗址、考古发现或历史场景为核心的博物馆，适合展示遗址背景、出土文物和区域文明发展脉络。",
       "location": "",
       "imageUrl": "/artifact-images/150.jpg",
       "artifactIds": [
@@ -842,12 +1048,18 @@
         "商"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "四川",
+      "city": "成都",
+      "type": "遗址博物馆",
+      "history": "其展示背景与成都金沙遗址相关，能够呈现古蜀文明晚期的城市、祭祀和工艺传统。",
+      "highlights": "古蜀文明；遗址展示与考古现场叙事"
     },
     {
       "id": "大同市博物馆",
       "name": "大同市博物馆",
-      "description": "大同市博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "大同市博物馆是位于大同的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/205.jpg",
       "artifactIds": [
@@ -858,12 +1070,18 @@
         "北魏"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "山西",
+      "city": "大同",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "敦煌研究院",
       "name": "敦煌研究院",
-      "description": "敦煌研究院馆藏文物数据库，当前收录 1 件文物。",
+      "description": "敦煌研究院是兼具文物保护、学术研究和文化传播功能的专业机构，适合用于遗产保护、石窟艺术和数字化展示等主题。",
       "location": "",
       "imageUrl": "/artifact-images/167.jpg",
       "artifactIds": [
@@ -874,12 +1092,19 @@
         "北魏"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "甘肃",
+      "city": "敦煌",
+      "type": "文物保护与研究机构",
+      "history": "其历史背景与敦煌石窟、丝绸之路文化交流和文物保护事业相关，具有重要的艺术史与文化遗产价值。",
+      "highlights": "石窟艺术与丝绸之路",
+      "is_featured": true
     },
     {
       "id": "二里头夏都遗址博物馆",
       "name": "二里头夏都遗址博物馆",
-      "description": "二里头夏都遗址博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "二里头夏都遗址博物馆是一座以重要遗址、考古发现或历史场景为核心的博物馆，适合展示遗址背景、出土文物和区域文明发展脉络。",
       "location": "",
       "imageUrl": "/artifact-images/143.jpg",
       "artifactIds": [
@@ -890,12 +1115,18 @@
         "夏"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "河南",
+      "city": "洛阳",
+      "type": "遗址博物馆",
+      "history": "该馆的历史叙事通常围绕遗址发现、考古发掘和遗址保护展开，适合呈现从考古现场到博物馆展示的转化过程。",
+      "highlights": "遗址展示与考古现场叙事"
     },
     {
       "id": "贵州省博物馆",
       "name": "贵州省博物馆",
-      "description": "贵州省博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "贵州省博物馆是位于贵阳的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/266.jpg",
       "artifactIds": [
@@ -906,12 +1137,18 @@
         "北宋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "贵州",
+      "city": "贵阳",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "湖南大学",
       "name": "湖南大学",
-      "description": "湖南大学馆藏文物数据库，当前收录 1 件文物。",
+      "description": "湖南大学在 MuseLink 数据中作为高校文博收藏或研究相关机构出现，可用于承载高校收藏、学术研究和教育展示相关内容。",
       "location": "",
       "imageUrl": "/artifact-images/185.jpg",
       "artifactIds": [
@@ -922,12 +1159,18 @@
         "秦"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "湖南",
+      "city": "长沙",
+      "type": "高校博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "吉林省博物院",
       "name": "吉林省博物院",
-      "description": "吉林省博物院馆藏文物数据库，当前收录 1 件文物。",
+      "description": "吉林省博物院是位于吉林的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/ncha-third-045.jpg",
       "artifactIds": [
@@ -938,12 +1181,18 @@
         "北宋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "吉林",
+      "city": "吉林",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "江西省博物馆",
       "name": "江西省博物馆",
-      "description": "江西省博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "江西省博物馆是位于南昌的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "江西省",
       "imageUrl": "/artifact-images/252.jpg",
       "artifactIds": [
@@ -954,12 +1203,18 @@
         "元"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "江西",
+      "city": "南昌",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "荆门市博物馆",
       "name": "荆门市博物馆",
-      "description": "荆门市博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "荆门市博物馆是位于荆门的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/182.jpg",
       "artifactIds": [
@@ -970,12 +1225,18 @@
         "战国"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "湖北",
+      "city": "荆门",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "辽宁省考古研究所",
       "name": "辽宁省考古研究所",
-      "description": "辽宁省考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "description": "辽宁省考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/211.jpg",
       "artifactIds": [
@@ -986,12 +1247,18 @@
         "新石器时代晚期"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "辽宁",
+      "city": "沈阳",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "考古发现与出土文物研究"
     },
     {
       "id": "临安博物馆",
       "name": "临安博物馆",
-      "description": "临安博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "临安博物馆是位于杭州的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/127.jpg",
       "artifactIds": [
@@ -1002,12 +1269,18 @@
         "唐"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "浙江",
+      "city": "杭州",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "茂陵博物馆",
       "name": "茂陵博物馆",
-      "description": "茂陵博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "茂陵博物馆是一座以重要遗址、考古发现或历史场景为核心的博物馆，适合展示遗址背景、出土文物和区域文明发展脉络。",
       "location": "",
       "imageUrl": "/artifact-images/238.jpg",
       "artifactIds": [
@@ -1018,12 +1291,18 @@
         "西汉"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "陕西",
+      "city": "咸阳",
+      "type": "遗址博物馆",
+      "history": "该馆的历史叙事通常围绕遗址发现、考古发掘和遗址保护展开，适合呈现从考古现场到博物馆展示的转化过程。",
+      "highlights": "遗址展示与考古现场叙事"
     },
     {
       "id": "绵阳市博物馆",
       "name": "绵阳市博物馆",
-      "description": "绵阳市博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "绵阳市博物馆是位于绵阳的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/235.jpg",
       "artifactIds": [
@@ -1034,7 +1313,13 @@
         "东汉"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "四川",
+      "city": "绵阳",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "南京大学",
@@ -1055,7 +1340,7 @@
     {
       "id": "宁夏文物考古研究所",
       "name": "宁夏文物考古研究所",
-      "description": "宁夏文物考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "description": "宁夏文物考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/251.jpg",
       "artifactIds": [
@@ -1066,12 +1351,18 @@
         "西夏"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "宁夏",
+      "city": "银川",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "考古发现与出土文物研究"
     },
     {
       "id": "青海省文物考古研究所",
       "name": "青海省文物考古研究所",
-      "description": "青海省文物考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "description": "青海省文物考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/250.jpg",
       "artifactIds": [
@@ -1082,12 +1373,18 @@
         "北朝"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "青海",
+      "city": "西宁",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "考古发现与出土文物研究"
     },
     {
       "id": "清华大学",
       "name": "清华大学",
-      "description": "清华大学馆藏文物数据库，当前收录 1 件文物。",
+      "description": "清华大学在 MuseLink 数据中作为高校文博收藏或研究相关机构出现，可用于承载高校收藏、学术研究和教育展示相关内容。",
       "location": "",
       "imageUrl": "/artifact-images/181.jpg",
       "artifactIds": [
@@ -1098,12 +1395,18 @@
         "战国"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "北京",
+      "city": "北京",
+      "type": "高校博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "山东省文物考古研究所",
       "name": "山东省文物考古研究所",
-      "description": "山东省文物考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "description": "山东省文物考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/115.jpg",
       "artifactIds": [
@@ -1114,12 +1417,18 @@
         "新石器时代"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "山东",
+      "city": "济南",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "考古发现与出土文物研究"
     },
     {
       "id": "山西省考古研究所",
       "name": "山西省考古研究所",
-      "description": "山西省考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "description": "山西省考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/206.jpg",
       "artifactIds": [
@@ -1130,12 +1439,18 @@
         "北齐"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "山西",
+      "city": "太原",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "考古发现与出土文物研究"
     },
     {
       "id": "首都博物馆",
       "name": "首都博物馆",
-      "description": "首都博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "首都博物馆是位于北京的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "北京市",
       "imageUrl": "/artifact-images/ncha-third-007.jpg",
       "artifactIds": [
@@ -1146,12 +1461,18 @@
         "西周"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "北京",
+      "city": "北京",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "西安博物院",
       "name": "西安博物院",
-      "description": "西安博物院馆藏文物数据库，当前收录 1 件文物。",
+      "description": "西安博物院是位于西安的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/ncha-third-015.jpg",
       "artifactIds": [
@@ -1162,12 +1483,18 @@
         "西汉"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "陕西",
+      "city": "西安",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "西藏博物馆",
       "name": "西藏博物馆",
-      "description": "西藏博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "西藏博物馆是位于拉萨的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "西藏自治区",
       "imageUrl": "/artifact-images/ncha-third-057.jpg",
       "artifactIds": [
@@ -1178,12 +1505,18 @@
         "元"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "西藏",
+      "city": "拉萨",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "新疆考古研究所",
       "name": "新疆考古研究所",
-      "description": "新疆考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "description": "新疆考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/242.jpg",
       "artifactIds": [
@@ -1194,12 +1527,18 @@
         "东汉至魏、晋"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "新疆",
+      "city": "乌鲁木齐",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "西域考古与多元文化交流；考古发现与出土文物研究"
     },
     {
       "id": "新疆维吾尔自治区博物馆",
       "name": "新疆维吾尔自治区博物馆",
-      "description": "新疆维吾尔自治区博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "新疆维吾尔自治区博物馆是位于乌鲁木齐的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "新疆维吾尔自治区",
       "imageUrl": "/artifact-images/ncha-third-076.jpg",
       "artifactIds": [
@@ -1210,12 +1549,19 @@
         "北朝"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "新疆",
+      "city": "乌鲁木齐",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "西域考古与多元文化交流",
+      "is_featured": true
     },
     {
       "id": "云南省博物馆",
       "name": "云南省博物馆",
-      "description": "云南省博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "云南省博物馆是位于昆明的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "云南省",
       "imageUrl": "/artifact-images/108.jpg",
       "artifactIds": [
@@ -1226,12 +1572,18 @@
         "西汉"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "云南",
+      "city": "昆明",
+      "type": "综合博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "浙江省文物考古研究所",
       "name": "浙江省文物考古研究所",
-      "description": "浙江省文物考古研究所馆藏文物数据库，当前收录 1 件文物。",
+      "description": "浙江省文物考古研究所是以区域考古调查、发掘、文物研究与文化遗产保护为主要工作的专业机构。它适合作为考古发现、遗址研究和出土文物知识的资料来源。",
       "location": "",
       "imageUrl": "/artifact-images/198.jpg",
       "artifactIds": [
@@ -1242,12 +1594,18 @@
         "新石器时代"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "浙江",
+      "city": "杭州",
+      "type": "考古/文物机构",
+      "history": "该机构的历史与地方考古、文物保护和学术研究工作相关，适合补充文物出土背景和研究脉络。",
+      "highlights": "考古发现与出土文物研究"
     },
     {
       "id": "镇江博物馆",
       "name": "镇江博物馆",
-      "description": "镇江博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "镇江博物馆是位于镇江的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/155.jpg",
       "artifactIds": [
@@ -1258,12 +1616,18 @@
         "唐"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "江苏",
+      "city": "镇江",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "中国国家博物馆故宫博物院",
       "name": "中国国家博物馆故宫博物院",
-      "description": "中国国家博物馆故宫博物院馆藏文物数据库，当前收录 1 件文物。",
+      "description": "该条记录看起来像由两个馆名合并产生的异常馆名，不建议作为独立博物馆重点展示。建议后续在数据清洗时拆分或合并到正确馆名。",
       "location": "",
       "imageUrl": "/artifact-images/227.jpg",
       "artifactIds": [
@@ -1274,12 +1638,18 @@
         "明"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.138Z",
+      "matchedBy": "standard_name",
+      "province": "北京",
+      "city": "北京",
+      "type": "异常合并记录",
+      "history": "待数据清洗确认。",
+      "highlights": "疑似异常馆名；建议人工核对。"
     },
     {
       "id": "淄博市博物馆",
       "name": "淄博市博物馆",
-      "description": "淄博市博物馆馆藏文物数据库，当前收录 1 件文物。",
+      "description": "淄博市博物馆是位于淄博的文博机构，收藏与展示区域历史、艺术和考古相关文物，适合用于地方文明、馆藏精品和文化传承主题。",
       "location": "",
       "imageUrl": "/artifact-images/230.jpg",
       "artifactIds": [
@@ -1290,7 +1660,13 @@
         "西汉"
       ],
       "materials": [],
-      "updatedAt": "2026-06-16T05:25:19.798Z"
+      "updatedAt": "2026-06-16T14:28:10.139Z",
+      "matchedBy": "standard_name",
+      "province": "山东",
+      "city": "淄博",
+      "type": "地方历史博物馆",
+      "history": "该馆的历史可围绕馆藏形成、区域文化展示和公共文化服务展开；具体建馆时间、馆舍沿革等信息建议后续依据官网或权威资料核实。",
+      "highlights": "区域历史文化"
     },
     {
       "id": "爱辉历史陈列馆",

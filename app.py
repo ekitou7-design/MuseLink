@@ -302,6 +302,28 @@ def post_image_file_to_backend(artifact_id, image_bytes, content_type, token):
         raise RuntimeError(f"无法连接后端图片上传接口：{error.reason}") from error
 
 
+def post_json_to_backend(path, payload, token):
+    body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    req = Request(
+        f"{API_BASE_URL}{path}",
+        data=body,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urlopen(req, timeout=30) as response:
+            content = response.read().decode("utf-8", errors="ignore")
+            return json.loads(content) if content else {}
+    except HTTPError as error:
+        detail = error.read().decode("utf-8", errors="ignore")[:300]
+        raise RuntimeError(f"后端接口请求失败：HTTP {error.code} {detail}") from error
+    except URLError as error:
+        raise RuntimeError(f"无法连接后端接口：{error.reason}") from error
+
+
 def save_artifact_source_image_url(artifact_id, image_url):
     detail = api_request(f"/api/artifacts/{quote(artifact_id)}").get("artifact") or {}
     row = artifact_to_row(detail)
@@ -915,6 +937,50 @@ HTML_TEMPLATE = """
                 if (button) button.disabled = false;
             }
         }
+        async function downloadMuseumCoverUrl(museumId) {
+            var input = document.getElementById("museumCoverUrl-" + museumId);
+            var button = document.getElementById("museumCoverUrlButton-" + museumId);
+            var imageUrl = input ? input.value.trim() : "";
+            var token = currentAdminToken();
+            if (!imageUrl) {
+                setMuseumCoverMessage(museumId, "请先粘贴图片链接。", true);
+                return;
+            }
+            if (!/^https?:\/\//i.test(imageUrl)) {
+                setMuseumCoverMessage(museumId, "图片链接必须以 http 或 https 开头。", true);
+                return;
+            }
+            if (!token) {
+                setMuseumCoverMessage(museumId, "请先在“导入与工具”页签填写并保存管理员 token。", true);
+                return;
+            }
+            localStorage.setItem("muselink_admin_token", token);
+            localStorage.setItem("muselink_token", token);
+            if (button) button.disabled = true;
+            setMuseumCoverMessage(museumId, "下载中...", false);
+            try {
+                var response = await fetch("/download-museum-cover-url/" + encodeURIComponent(museumId), {
+                    method: "POST",
+                    headers: {
+                        Authorization: "Bearer " + token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ imageUrl: imageUrl })
+                });
+                var data = await parseJsonResponse(response);
+                if (!response.ok) throw new Error(responseError(response, data, "下载失败"));
+                var syncMessage = data.aiRagSync && data.aiRagSync.coverage ? " AI/RAG 覆盖率：" + data.aiRagSync.coverage : "";
+                setMuseumCoverMessage(
+                    museumId,
+                    "封面已下载。原图：" + (data.localCoverImageUrl || "-") + " 缩略图：" + (data.localCoverThumbnailUrl || "-") + syncMessage,
+                    false
+                );
+                setTimeout(function () { window.location.reload(); }, 500);
+            } catch (error) {
+                setMuseumCoverMessage(museumId, error instanceof Error ? error.message : String(error), true);
+                if (button) button.disabled = false;
+            }
+        }
         async function deleteMuseumCover(museumId) {
             var button = document.getElementById("museumCoverDeleteButton-" + museumId);
             var token = currentAdminToken();
@@ -1479,6 +1545,14 @@ HTML_TEMPLATE = """
                                                     <button id="museumCoverUploadButton-{{ mid }}" type="button" class="btn" onclick="uploadMuseumCover('{{ mid }}')">上传 / 替换封面</button>
                                                     <button id="museumCoverDeleteButton-{{ mid }}" type="button" class="btn btn-secondary" onclick="deleteMuseumCover('{{ mid }}')" {% if not cover_thumb %}disabled{% endif %}>删除封面</button>
                                                 </div>
+                                                <div class="toolbar" style="align-items:end;">
+                                                    <label style="font-weight:bold; flex:1; min-width:260px;">
+                                                        图片链接
+                                                        <input id="museumCoverUrl-{{ mid }}" type="url" placeholder="粘贴图片链接：https://..." style="display:block;width:100%;margin-top:6px;">
+                                                    </label>
+                                                    <button id="museumCoverUrlButton-{{ mid }}" type="button" class="btn" onclick="downloadMuseumCoverUrl('{{ mid }}')">从链接下载封面</button>
+                                                </div>
+                                                <div class="mini-note">链接下载会调用 9999 的 /download-museum-cover-url/{{ mid }}，再同步到后端 /api/admin/museums/{{ mid }}/cover-url。</div>
                                                 <div id="museumCoverMessage-{{ mid }}" class="museum-cover-status"></div>
                                             </div>
                                             <div class="toolbar">
@@ -2212,6 +2286,25 @@ def download_image_url(artifact_id):
         artifact = {"_artifact_id": clean_value(artifact_id)}
         result = downloadArtifactImageFromUrl(artifact, image_url, token)
 
+        return jsonify(result)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
+@app.route("/download-museum-cover-url/<museum_id>", methods=["POST"])
+def download_museum_cover_url(museum_id):
+    try:
+        payload = request.get_json(silent=True) or {}
+        image_url = clean_value(payload.get("imageUrl"))
+        if not image_url:
+            return jsonify({"error": "请先粘贴图片链接。"}), 400
+
+        token = bearer_token_from_request() or get_admin_token()
+        result = post_json_to_backend(
+            f"/api/admin/museums/{quote(clean_value(museum_id))}/cover-url",
+            {"imageUrl": image_url},
+            token,
+        )
         return jsonify(result)
     except Exception as exc:
         return jsonify({"error": str(exc)}), 400

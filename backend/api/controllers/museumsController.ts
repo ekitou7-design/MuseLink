@@ -4,6 +4,7 @@ import type { Request, RequestHandler, Response } from "express";
 import multer from "multer";
 import sharp from "sharp";
 import { db } from "../db/client";
+import { downloadImageBuffer } from "../lib/imageDownloader";
 import type { ArtifactRow, MuseumRow } from "../models/types";
 import { syncAiRagForArtifacts } from "../../ai-rag-data";
 import { listArtifactsFromDb } from "../db/syncImportedArtifacts";
@@ -350,12 +351,21 @@ export async function uploadMuseumCover(req: Request, res: Response) {
   if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
   if (!req.file) return res.status(400).json({ error: "请先选择要上传的图片。" });
 
+  try {
+    res.json(await persistMuseumCoverBuffer(id, req.file.buffer, "local_upload"));
+  } catch (error) {
+    const status = error instanceof Error && error.message === "Not found" ? 404 : 400;
+    res.status(status).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+}
+
+async function persistMuseumCoverBuffer(id: number, buffer: Buffer, imageSource: "local_upload" | "url_download") {
   const museum = await db.query(`select id from museums where id=$1 limit 1`, [id]);
-  if (!museum.rows[0]) return res.status(404).json({ error: "Not found" });
+  if (!museum.rows[0]) throw new Error("Not found");
 
   const { thumbsDir, imagePath, thumbPath, legacyThumbPath, localCoverImageUrl, localCoverThumbnailUrl } = museumImagePaths(id);
   await fs.mkdir(thumbsDir, { recursive: true });
-  const image = sharp(req.file.buffer).rotate();
+  const image = sharp(buffer).rotate();
   await image.clone().jpeg({ quality: 92 }).toFile(imagePath);
   await image.clone().resize({ width: 640, height: 420, fit: "cover" }).jpeg({ quality: 84 }).toFile(thumbPath);
   await fs.rm(legacyThumbPath, { force: true }).catch(() => undefined);
@@ -363,18 +373,34 @@ export async function uploadMuseumCover(req: Request, res: Response) {
   const result = await db.query<MuseumRow>(
     `update museums
      set local_cover_image_url=$2, local_cover_thumbnail_url=$3, cover_image_url=$2,
-         cover_thumbnail_url=$3, image_url=$3, image_source='local_upload', updated_at=now()
+         cover_thumbnail_url=$3, image_url=$3, image_source=$4, updated_at=now()
      where id=$1
      returning *`,
-    [id, localCoverImageUrl, localCoverThumbnailUrl],
+    [id, localCoverImageUrl, localCoverThumbnailUrl, imageSource],
   );
   const aiRagSync = await syncAiRagAfterMuseumChange();
-  res.json({
+  return {
     museum: toCamelMuseum(result.rows[0] as unknown as Record<string, unknown>),
     localCoverImageUrl,
     localCoverThumbnailUrl,
     aiRagSync,
-  });
+  };
+}
+
+export async function uploadMuseumCoverFromUrl(req: Request, res: Response) {
+  await ensureMuseumSchema(db);
+  const id = Number(req.params.id);
+  if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
+  const imageUrl = text(req.body?.imageUrl);
+  if (!imageUrl) return res.status(400).json({ error: "请先填写图片链接。" });
+
+  try {
+    const downloaded = await downloadImageBuffer(imageUrl, "museum-cover-url-download");
+    res.json(await persistMuseumCoverBuffer(id, downloaded.buffer, "url_download"));
+  } catch (error) {
+    const status = error instanceof Error && error.message === "Not found" ? 404 : 400;
+    res.status(status).json({ error: error instanceof Error ? error.message : String(error) });
+  }
 }
 
 export async function deleteMuseumCover(req: Request, res: Response) {
