@@ -487,7 +487,7 @@ async function persistArtifactImageBuffer(
   existing: Record<string, unknown>,
   sourceImageUrl?: string,
 ) {
-  const artifactId = String(existing.id || id);
+  const artifactId = id;
   const fileBase = artifactImageFileBase(artifactId);
   const localImageUrl = `/artifact-images/${fileBase}.jpg`;
   const localThumbnailUrl = `/artifact-images/thumbs/${fileBase}-thumb.jpg`;

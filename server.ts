@@ -751,6 +751,9 @@ type CurationSearchProfile = {
   mood: string[];
   style: string[];
   artifactCount: number;
+  unitCount?: number;
+  artifactsPerUnitMin?: number;
+  artifactsPerUnitMax?: number;
   negativeKeywords: string[];
 };
 
@@ -853,6 +856,14 @@ const CURATION_CORE_PHRASES = [
   "国家权力",
   "王权",
   "礼制",
+  "情绪生活",
+  "情感史",
+  "情感",
+  "情绪",
+  "孤独",
+  "思念",
+  "哀悼",
+  "欢宴",
   "丝绸之路",
   "东西交流",
   "边疆交流",
@@ -870,6 +881,43 @@ const CURATION_CORE_PHRASES = [
 
 const CURATION_THEME_EXPANSIONS: ThemeExpansionRule[] = [
   {
+    triggers: ["情绪", "情感", "孤独", "思念", "哀悼", "欢宴", "信仰", "自我安慰", "悲欢", "离别", "怀念"],
+    coreConcepts: ["情绪生活", "情感史", "生活史"],
+    strongKeywords: [
+      "孤独",
+      "思念",
+      "离别",
+      "怀古",
+      "哀悼",
+      "祭祀",
+      "信仰",
+      "安慰",
+      "欢宴",
+      "宴饮",
+      "书信",
+      "诗",
+      "诗卷",
+      "书法",
+      "绘画",
+      "图卷",
+      "生活图",
+      "墓葬",
+      "随葬",
+      "神兽",
+      "净瓶",
+      "佛教",
+      "祭器",
+      "服饰",
+      "器具",
+    ],
+    weakKeywords: ["情绪", "情感", "悲欢", "怀念", "普通人", "文人", "生活"],
+    categories: ["书画", "书法", "绘画", "生活用品", "生活用品类", "漆器", "陶瓷", "陶瓷类", "服饰", "纺织品", "丝织品", "佛教造像", "墓葬相关", "文献", "书画/文献"],
+    materials: ["纸", "纸本/绢本书画", "纸绢/织物", "锦", "陶瓷", "陶", "瓷", "漆木", "石质"],
+    perspective: "情感史 / 生活史",
+    mood: ["诗意", "生活化", "温柔"],
+    style: ["情感史", "生活史", "审美叙事"],
+  },
+  {
     triggers: ["夜生活", "夜间", "灯火", "灯", "烛", "夜宴", "夜游", "月夜"],
     coreConcepts: ["夜生活", "灯火", "夜间生活"],
     strongKeywords: ["灯", "宫灯", "铜灯", "烛", "灯火", "夜宴", "宴饮", "饮酒", "酒器", "勘书", "读书", "夜游", "月夜", "赤壁", "乐舞", "生活图", "贵族生活", "画像", "漆盘", "铜壶"],
@@ -881,7 +929,7 @@ const CURATION_THEME_EXPANSIONS: ThemeExpansionRule[] = [
     style: ["沉浸叙事", "生活史"],
   },
   {
-    triggers: ["女性", "妇女", "身体", "服饰", "身份", "妆饰", "婚姻", "女性主义", "性别"],
+    triggers: ["女性", "妇女", "身体", "身份", "妆饰", "婚姻", "女性主义", "性别"],
     coreConcepts: ["女性", "身体", "服饰", "身份"],
     strongKeywords: ["女性", "妇女", "仕女", "身体", "服饰", "衣", "袍", "妆饰", "铜镜", "镜", "玉佩", "发簪", "纺织", "丝织", "身份", "女俑"],
     weakKeywords: ["生活", "婚姻", "日常"],
@@ -892,7 +940,7 @@ const CURATION_THEME_EXPANSIONS: ThemeExpansionRule[] = [
     style: ["女性主义", "生活史"],
   },
   {
-    triggers: ["礼制", "国家", "王权", "青铜", "宗法", "礼器", "祭祀", "权力"],
+    triggers: ["礼制", "国家", "王权", "青铜", "宗法", "礼器", "权力"],
     coreConcepts: ["青铜", "礼制", "国家权力"],
     strongKeywords: ["青铜", "礼器", "鼎", "簋", "尊", "盘", "铭文", "祭祀", "王权", "国家", "宗法", "礼制", "商", "周"],
     weakKeywords: ["制度", "政治"],
@@ -1065,6 +1113,12 @@ const CURATION_MUSEUM_ALIASES = [
 ];
 
 const CURATION_PERSPECTIVE_SUPPLEMENTS: Record<string, { keywords: string[]; categories: string[]; materials: string[]; dynasties: string[] }> = {
+  "情感史 / 生活史": {
+    keywords: ["孤独", "思念", "离别", "怀古", "哀悼", "祭祀", "信仰", "安慰", "欢宴", "宴饮", "书信", "诗", "诗卷", "书法", "绘画", "图卷", "生活图", "墓葬", "随葬", "神兽", "净瓶", "佛教", "祭器", "服饰", "器具"],
+    categories: ["书画", "书法", "绘画", "书画/文献", "生活用品", "生活用品类", "漆器", "陶瓷", "陶瓷类", "丝织品", "佛教造像", "杂项"],
+    materials: ["纸", "纸本/绢本书画", "纸绢/织物", "锦", "陶瓷", "陶", "瓷", "漆木", "石质"],
+    dynasties: [],
+  },
   性别视角: {
     keywords: ["女性", "仕女", "女", "镜", "妆", "衣", "纺织", "玉佩"],
     categories: ["生活用品类", "玉器", "铜器", "丝织品", "绘画", "陶俑"],
@@ -1115,6 +1169,19 @@ const CURATION_PERSPECTIVE_SUPPLEMENTS: Record<string, { keywords: string[]; cat
   },
 };
 
+const CURATION_NEGATION_CUES = ["不要只讲", "不以", "不要", "不想", "不是", "避免", "少讲", "不只讲", "别只讲"];
+
+const CURATION_NEGATIVE_KEYWORD_EXPANSIONS: Record<string, string[]> = {
+  宏大: ["宏大", "国家权力"],
+  王朝: ["王朝", "国家权力"],
+  礼制: ["礼制", "国家权力"],
+  国家: ["国家", "国家权力"],
+  国家权力: ["国家权力", "国家"],
+  王权: ["王权", "国家权力"],
+  青铜: ["青铜", "鼎", "簋", "尊", "盘"],
+  礼器: ["礼器", "鼎", "簋", "尊", "盘"],
+};
+
 function uniqueStrings(values: string[]) {
   return Array.from(new Set(values.map((value) => value.trim()).filter(Boolean)));
 }
@@ -1147,6 +1214,57 @@ function curationSearchTokens(query: string): string[] {
     .map((token) => token.trim())
     .filter((token) => token.length >= 2 && !isKeywordNoise(token))
     .slice(0, 32);
+}
+
+function isTermNegated(prompt: string, term: string) {
+  if (!term) return false;
+  let index = prompt.indexOf(term);
+  while (index >= 0) {
+    const before = prompt.slice(Math.max(0, index - 12), index);
+    const after = prompt.slice(index + term.length, Math.min(prompt.length, index + term.length + 6));
+    if (CURATION_NEGATION_CUES.some((cue) => before.includes(cue))) return true;
+    if (/为主/.test(after) && /不以/.test(before)) return true;
+    index = prompt.indexOf(term, index + term.length);
+  }
+  return false;
+}
+
+function hasNonNegatedTerm(prompt: string, terms: string[]) {
+  return terms.some((term) => prompt.includes(term) && !isTermNegated(prompt, term));
+}
+
+function extractNegatedSegments(prompt: string) {
+  const segments: string[] = [];
+  for (const cue of CURATION_NEGATION_CUES) {
+    let index = prompt.indexOf(cue);
+    while (index >= 0) {
+      const start = index + cue.length;
+      const endCandidates = ["。", "，", "\n", "；", ";", "！", "？"]
+        .map((mark) => prompt.indexOf(mark, start))
+        .filter((position) => position >= 0);
+      const end = endCandidates.length ? Math.min(...endCandidates) : Math.min(prompt.length, start + 28);
+      segments.push(prompt.slice(index, end));
+      index = prompt.indexOf(cue, index + cue.length);
+    }
+  }
+  return uniqueStrings(segments);
+}
+
+function extractNegativeKeywords(prompt: string) {
+  const segments = extractNegatedSegments(prompt);
+  const directKeywords = Object.keys(CURATION_NEGATIVE_KEYWORD_EXPANSIONS).filter((keyword) =>
+    segments.some((segment) => segment.includes(keyword)) || isTermNegated(prompt, keyword),
+  );
+  const tokenKeywords = segments.flatMap((segment) =>
+    curationSearchTokens(segment)
+      .filter((token) => !CURATION_NEGATION_CUES.some((cue) => token.includes(cue)))
+      .filter((token) => !isKeywordNoise(token) && !isWeakGenericKeyword(token)),
+  );
+  return uniqueStrings([
+    ...directKeywords,
+    ...directKeywords.flatMap((keyword) => CURATION_NEGATIVE_KEYWORD_EXPANSIONS[keyword] || []),
+    ...tokenKeywords,
+  ]).slice(0, 40);
 }
 
 function detectCurationIntent(prompt: string): CurationIntent {
@@ -1183,20 +1301,51 @@ function parseChineseNumber(value: string) {
   return digits[value] || NaN;
 }
 
-function parseArtifactCount(prompt: string) {
-  const matches = Array.from(prompt.matchAll(/(\d{1,2}|[一二两三四五六七八九十]{1,3})\s*(件文物|个文物|件展品|个展品|文物|展品|件|个)/g));
-  const match = matches.find((item) => {
-    const parsed = parseChineseNumber(item[1]);
-    return !(parsed <= 2 && item[2] === "个" && item[0].length <= 2);
-  });
-  const parsed = match ? parseChineseNumber(match[1]) : 6;
-  if (!Number.isFinite(parsed)) return 6;
-  return Math.min(10, Math.max(3, parsed));
+function clampArtifactCount(value: number) {
+  if (!Number.isFinite(value)) return 6;
+  return Math.min(10, Math.max(3, value));
+}
+
+function parseCurationCountProfile(prompt: string) {
+  const numberPattern = "(\\d{1,2}|[一二两三四五六七八九十]{1,3})";
+  const parseRange = (leftRaw: string, rightRaw: string) => {
+    const left = parseChineseNumber(leftRaw);
+    const right = parseChineseNumber(rightRaw);
+    if (!Number.isFinite(left) || !Number.isFinite(right)) return undefined;
+    return { min: Math.min(left, right), max: Math.max(left, right) };
+  };
+
+  const unitMatch = prompt.match(new RegExp(`${numberPattern}\\s*个?\\s*单元`));
+  const perUnitRangeMatch = prompt.match(new RegExp(`每个单元\\s*${numberPattern}\\s*(?:到|至|-|~)\\s*${numberPattern}\\s*(?:件文物|件展品|文物|展品|件)`));
+  const totalRangeMatch = prompt.match(new RegExp(`(?:总共|总计|一共|共)\\s*${numberPattern}\\s*(?:到|至|-|~)\\s*${numberPattern}\\s*(?:件文物|件展品|文物|展品|件)`));
+  const totalSingleMatch = prompt.match(new RegExp(`(?:总共|总计|一共|共)\\s*${numberPattern}\\s*(?:件文物|件展品|文物|展品|件)`));
+  const explicitArtifactMatch = Array.from(
+    prompt.matchAll(new RegExp(`${numberPattern}\\s*(件文物|个文物|件展品|个展品|文物|展品|件)`, "g")),
+  ).find((match) => !/(单元|每个单元|总共|总计|一共|共)\s*$/.test(prompt.slice(Math.max(0, match.index! - 8), match.index)));
+
+  let artifactCount = 6;
+  if (totalRangeMatch) {
+    const range = parseRange(totalRangeMatch[1], totalRangeMatch[2]);
+    if (range) artifactCount = range.max;
+  } else if (totalSingleMatch) {
+    artifactCount = parseChineseNumber(totalSingleMatch[1]);
+  } else if (explicitArtifactMatch) {
+    artifactCount = parseChineseNumber(explicitArtifactMatch[1]);
+  }
+
+  const perUnitRange = perUnitRangeMatch ? parseRange(perUnitRangeMatch[1], perUnitRangeMatch[2]) : undefined;
+
+  return {
+    artifactCount: clampArtifactCount(artifactCount),
+    unitCount: unitMatch ? parseChineseNumber(unitMatch[1]) : undefined,
+    artifactsPerUnitMin: perUnitRange?.min,
+    artifactsPerUnitMax: perUnitRange?.max,
+  };
 }
 
 function collectAliasValues(prompt: string, aliases: Array<{ triggers: string[]; values: string[] }>) {
   return uniqueStrings(
-    aliases.flatMap((alias) => (alias.triggers.some((trigger) => prompt.includes(trigger)) ? alias.values : [])),
+    aliases.flatMap((alias) => (alias.triggers.some((trigger) => prompt.includes(trigger) && !isTermNegated(prompt, trigger)) ? alias.values : [])),
   );
 }
 
@@ -1215,12 +1364,13 @@ function collectMuseums(prompt: string) {
 function detectPerspective(prompt: string, matchedRules: ThemeExpansionRule[]) {
   if (/儿童|亲子|小朋友|孩子|青少年/.test(prompt)) return "教育友好";
   if (/女性主义|性别|女性|妇女/.test(prompt)) return "性别视角";
-  if (/日常|生活|饮食|起居|宴饮|夜生活|灯火/.test(prompt)) return "生活史";
-  if (/技术|工艺|制造|材料|铸造|烧造|织造/.test(prompt)) return "技术史";
-  if (/礼制|国家|王权|祭祀|宗法|权力/.test(prompt)) return "礼制与政治";
-  if (/丝路|丝绸之路|交流|边疆|多民族|西域|胡人|粟特/.test(prompt)) return "交流史";
-  if (/宗教|信仰|神话|佛教|道教|神兽|图像/.test(prompt)) return "宗教与图像";
-  if (/文人|书画|山水|雅集|江南|士人/.test(prompt)) return "文人文化";
+  if (hasNonNegatedTerm(prompt, ["情绪", "情感", "孤独", "思念", "哀悼", "欢宴", "信仰", "自我安慰", "悲欢", "离别", "怀念"])) return "情感史 / 生活史";
+  if (hasNonNegatedTerm(prompt, ["日常", "生活", "饮食", "起居", "宴饮", "夜生活", "灯火"])) return "生活史";
+  if (hasNonNegatedTerm(prompt, ["技术", "工艺", "制造", "材料", "铸造", "烧造", "织造"])) return "技术史";
+  if (hasNonNegatedTerm(prompt, ["礼制", "国家", "王权", "宗法", "权力", "青铜", "礼器"])) return "礼制与政治";
+  if (hasNonNegatedTerm(prompt, ["丝路", "丝绸之路", "交流", "边疆", "多民族", "西域", "胡人", "粟特"])) return "交流史";
+  if (hasNonNegatedTerm(prompt, ["宗教", "信仰", "神话", "佛教", "道教", "神兽", "图像", "祭祀"])) return "宗教与图像";
+  if (hasNonNegatedTerm(prompt, ["文人", "书画", "山水", "雅集", "江南", "士人"])) return "文人文化";
   if (/沉浸|体验|故事|叙事/.test(prompt)) return "沉浸叙事";
   if (/学术|严肃|专业|研究/.test(prompt)) return "学术型";
   return matchedRules.find((rule) => rule.perspective)?.perspective || "综合策展";
@@ -1236,8 +1386,8 @@ function detectMoodAndStyle(prompt: string, matchedRules: ThemeExpansionRule[], 
   };
 
   add(/诗意|雅致|温柔|静谧|江南|文人/.test(prompt), ["诗意", "雅致", "静谧"], ["审美叙事"]);
-  add(/庄重|宏大|权力感|国家|王权|礼制/.test(prompt), ["庄重", "宏大", "权力感"], ["礼制叙事"]);
-  add(/神秘|宗教|仪式感|信仰|神话/.test(prompt), ["神秘", "仪式感"], ["宗教图像"]);
+  add(hasNonNegatedTerm(prompt, ["庄重", "宏大", "权力感", "国家", "王权", "礼制"]), ["庄重", "宏大", "权力感"], ["礼制叙事"]);
+  add(hasNonNegatedTerm(prompt, ["神秘", "宗教", "仪式感", "信仰", "神话"]), ["神秘", "仪式感"], ["宗教图像"]);
   add(/轻松|亲子|互动|小朋友|儿童|孩子/.test(prompt), ["轻松", "亲子", "互动"], ["教育友好"]);
   add(/学术|严谨|专业|研究/.test(prompt), ["学术", "严谨", "专业"], ["学术型"]);
   add(/生活化|烟火气|日常|饮食|起居/.test(prompt), ["生活化", "烟火气"], ["生活史"]);
@@ -1264,42 +1414,59 @@ function buildCurationSearchProfile(userPrompt: string): CurationSearchProfile {
   const normalizedTheme = cleanCurationPrompt(rawPrompt) || "个人策展";
   const promptText = `${rawPrompt} ${normalizedTheme}`;
   const baseTokens = curationSearchTokens(rawPrompt);
-  const matchedRules = CURATION_THEME_EXPANSIONS.filter((rule) => rule.triggers.some((trigger) => promptText.includes(trigger)));
+  const negativeKeywords = extractNegativeKeywords(rawPrompt);
+  const isNegativeKeyword = (keyword: string) =>
+    negativeKeywords.some((negative) => keyword.includes(negative) || negative.includes(keyword));
+  const matchedRules = CURATION_THEME_EXPANSIONS.filter((rule) =>
+    rule.triggers.some((trigger) => promptText.includes(trigger) && !isTermNegated(rawPrompt, trigger)),
+  );
   const preferredDynasties = uniqueStrings([
     ...collectAliasValues(promptText, CURATION_DYNASTY_ALIASES),
     ...matchedRules.flatMap((rule) => rule.dynasties || []),
-  ]).slice(0, 20);
+  ]).filter((keyword) => !isNegativeKeyword(keyword)).slice(0, 20);
   const preferredMaterials = uniqueStrings([
     ...collectAliasValues(promptText, CURATION_MATERIAL_ALIASES),
     ...matchedRules.flatMap((rule) => rule.materials || []),
-  ]).slice(0, 24);
+  ]).filter((keyword) => !isNegativeKeyword(keyword)).slice(0, 24);
   const preferredCategories = uniqueStrings([
     ...collectAliasValues(promptText, CURATION_CATEGORY_ALIASES),
     ...matchedRules.flatMap((rule) => rule.categories || []),
-  ]).slice(0, 28);
+  ]).filter((keyword) => !isNegativeKeyword(keyword)).slice(0, 28);
   const preferredMuseums = collectMuseums(promptText).slice(0, 12);
   const perspective = detectPerspective(promptText, matchedRules);
   const { mood, style } = detectMoodAndStyle(promptText, matchedRules, perspective);
+  const isEmotionLifePerspective = perspective === "情感史 / 生活史";
+  const explicitlyWantsBronzeRitual = hasNonNegatedTerm(rawPrompt, ["青铜", "礼制", "礼器"]);
+  const shouldDownrankBronzeRitual = isEmotionLifePerspective && !explicitlyWantsBronzeRitual;
+  const bronzeRitualCategories = new Set(["青铜器", "铜器", "其它金属器"]);
+  const bronzeRitualMaterials = new Set(["青铜", "铜", "铜,金"]);
+  const filteredPreferredCategories = shouldDownrankBronzeRitual
+    ? preferredCategories.filter((category) => !bronzeRitualCategories.has(category))
+    : preferredCategories;
+  const filteredPreferredMaterials = shouldDownrankBronzeRitual
+    ? preferredMaterials.filter((material) => !bronzeRitualMaterials.has(material))
+    : preferredMaterials;
   const coreConcepts = uniqueStrings([
-    ...CURATION_CORE_PHRASES.filter((phrase) => promptText.includes(phrase)),
+    ...CURATION_CORE_PHRASES.filter((phrase) => promptText.includes(phrase) && !isTermNegated(rawPrompt, phrase)),
     ...matchedRules.flatMap((rule) => rule.coreConcepts),
-    ...baseTokens.filter((token) => isUsefulCoreConceptToken(token)),
-  ]).slice(0, 12);
+    ...baseTokens.filter((token) => isUsefulCoreConceptToken(token) && !isTermNegated(rawPrompt, token)),
+  ]).filter((keyword) => !isNegativeKeyword(keyword)).slice(0, 12);
   const candidateStrongKeywords = uniqueStrings([
     ...coreConcepts,
     ...matchedRules.flatMap((rule) => rule.strongKeywords),
   ]);
   const strongKeywords = candidateStrongKeywords
-    .filter((keyword) => !isKeywordNoise(keyword) && !isWeakGenericKeyword(keyword))
+    .filter((keyword) => !isKeywordNoise(keyword) && !isWeakGenericKeyword(keyword) && !isNegativeKeyword(keyword))
     .slice(0, 80);
   const downgradedStrongKeywords = candidateStrongKeywords.filter((keyword) => isWeakGenericKeyword(keyword));
   const weakKeywords = uniqueStrings([
     ...matchedRules.flatMap((rule) => rule.weakKeywords || []),
     ...downgradedStrongKeywords,
-    ...baseTokens.filter((token) => !strongKeywords.includes(token)),
+    ...baseTokens.filter((token) => !strongKeywords.includes(token) && !isTermNegated(rawPrompt, token)),
   ])
-    .filter((keyword) => !isKeywordNoise(keyword))
+    .filter((keyword) => !isKeywordNoise(keyword) && !isNegativeKeyword(keyword))
     .slice(0, 48);
+  const countProfile = parseCurationCountProfile(rawPrompt);
 
   return {
     rawPrompt,
@@ -1309,22 +1476,25 @@ function buildCurationSearchProfile(userPrompt: string): CurationSearchProfile {
     searchKeywords: uniqueStrings([
       ...strongKeywords,
       ...weakKeywords,
-      ...preferredCategories,
-      ...preferredMaterials,
+      ...filteredPreferredCategories,
+      ...filteredPreferredMaterials,
       ...preferredDynasties,
       ...preferredMuseums,
     ]).slice(0, 120),
     strongKeywords,
     weakKeywords,
-    preferredCategories,
+    preferredCategories: filteredPreferredCategories,
     preferredDynasties,
-    preferredMaterials,
+    preferredMaterials: filteredPreferredMaterials,
     preferredMuseums,
     perspective,
     mood,
     style,
-    artifactCount: parseArtifactCount(rawPrompt),
-    negativeKeywords: uniqueStrings(matchedRules.flatMap((rule) => rule.negative || [])),
+    artifactCount: countProfile.artifactCount,
+    unitCount: countProfile.unitCount,
+    artifactsPerUnitMin: countProfile.artifactsPerUnitMin,
+    artifactsPerUnitMax: countProfile.artifactsPerUnitMax,
+    negativeKeywords: uniqueStrings([...negativeKeywords, ...matchedRules.flatMap((rule) => rule.negative || [])]),
   };
 }
 
@@ -1385,6 +1555,23 @@ function scoreCurationArtifact(artifact: Artifact, profile: CurationSearchProfil
     score -= 20 * negativeMatches.length;
     negativeMatches.forEach((keyword) => matchedTerms.add(`-${keyword}`));
     matchedFields.add("negative");
+  }
+
+  if (profile.perspective === "情感史 / 生活史" && !hasNonNegatedTerm(profile.rawPrompt, ["青铜", "礼制", "礼器"])) {
+    const bronzeRitualMatches = includesAny(`${name} ${category} ${material} ${tags}`, [
+      "青铜器",
+      "青铜",
+      "铜器",
+      "鼎",
+      "簋",
+      "尊",
+      "礼器",
+    ]);
+    if (bronzeRitualMatches.length > 0) {
+      score -= 18 + bronzeRitualMatches.length * 8;
+      bronzeRitualMatches.slice(0, 4).forEach((keyword) => matchedTerms.add(`-${keyword}`));
+      matchedFields.add("emotionBronzeDownrank");
+    }
   }
 
   addScore("name", name, strongKeywords, 12, true);
@@ -1547,6 +1734,10 @@ function curationProfileLogPayload(profile: CurationSearchProfile) {
     mood: profile.mood,
     style: profile.style,
     artifactCount: profile.artifactCount,
+    unitCount: profile.unitCount,
+    artifactsPerUnitMin: profile.artifactsPerUnitMin,
+    artifactsPerUnitMax: profile.artifactsPerUnitMax,
+    negativeKeywords: profile.negativeKeywords,
   };
 }
 

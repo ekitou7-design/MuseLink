@@ -1,0 +1,2941 @@
+{
+  "startedAt": "2026-06-16T02:23:38.471Z",
+  "completedAt": "2026-06-16T02:23:38.472Z",
+  "summary": {
+    "artifactCount": 292,
+    "imageCopied": 128,
+    "thumbCopied": 128,
+    "jsonUpdated": 128,
+    "dbUpdated": 292,
+    "failed": 0,
+    "dbReadError": "",
+    "dbSync": {
+      "importedCount": 292,
+      "inserted": 292,
+      "updated": 0,
+      "skipped": false
+    }
+  },
+  "entries": [
+    {
+      "artifactId": "WW-辽-金灰陶罐形扑满-0",
+      "artifactName": "辽-金灰陶罐形扑满",
+      "oldImagePath": "public/artifact-images/WW-辽-金灰陶罐形扑满-0-a30314c3.jpg",
+      "newImagePath": "public/artifact-images/WW-辽-金灰陶罐形扑满-0.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽-金灰陶罐形扑满-0-a30314c3-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽-金灰陶罐形扑满-0-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-民国巴林石印-1",
+      "artifactName": "民国巴林石印",
+      "oldImagePath": "public/artifact-images/WW-民国巴林石印-1-71550f50.jpg",
+      "newImagePath": "public/artifact-images/WW-民国巴林石印-1.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-民国巴林石印-1-71550f50-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-民国巴林石印-1-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清浮雕瓜瓞天台石印-2",
+      "artifactName": "清浮雕瓜瓞天台石印",
+      "oldImagePath": "public/artifact-images/WW-清浮雕瓜瓞天台石印-2-df683917.jpg",
+      "newImagePath": "public/artifact-images/WW-清浮雕瓜瓞天台石印-2.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清浮雕瓜瓞天台石印-2-df683917-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清浮雕瓜瓞天台石印-2-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清雕钮天然木根印-3",
+      "artifactName": "清雕钮天然木根印",
+      "oldImagePath": "public/artifact-images/WW-清雕钮天然木根印-3-92dcb6fc.jpg",
+      "newImagePath": "public/artifact-images/WW-清雕钮天然木根印-3.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清雕钮天然木根印-3-92dcb6fc-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清雕钮天然木根印-3-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清浮雕梅花天台石印-4",
+      "artifactName": "清浮雕梅花天台石印",
+      "oldImagePath": "public/artifact-images/WW-清浮雕梅花天台石印-4-89fd4f79.jpg",
+      "newImagePath": "public/artifact-images/WW-清浮雕梅花天台石印-4.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清浮雕梅花天台石印-4-89fd4f79-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清浮雕梅花天台石印-4-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清豆瓣青田石印-5",
+      "artifactName": "清豆瓣青田石印",
+      "oldImagePath": "public/artifact-images/WW-清豆瓣青田石印-5-d2d1850b.jpg",
+      "newImagePath": "public/artifact-images/WW-清豆瓣青田石印-5.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清豆瓣青田石印-5-d2d1850b-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清豆瓣青田石印-5-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清浮雕树石昌化长方石印-6",
+      "artifactName": "清浮雕树石昌化长方石印",
+      "oldImagePath": "public/artifact-images/WW-清浮雕树石昌化长方石印-6-b70ed5a5.jpg",
+      "newImagePath": "public/artifact-images/WW-清浮雕树石昌化长方石印-6.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清浮雕树石昌化长方石印-6-b70ed5a5-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清浮雕树石昌化长方石印-6-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清螭钮寿山石印-7",
+      "artifactName": "清螭钮寿山石印",
+      "oldImagePath": "public/artifact-images/WW-清螭钮寿山石印-7-da014191.jpg",
+      "newImagePath": "public/artifact-images/WW-清螭钮寿山石印-7.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清螭钮寿山石印-7-da014191-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清螭钮寿山石印-7-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清螭钮大田石椭圆印-8",
+      "artifactName": "清螭钮大田石椭圆印",
+      "oldImagePath": "public/artifact-images/WW-清螭钮大田石椭圆印-8-493acf54.jpg",
+      "newImagePath": "public/artifact-images/WW-清螭钮大田石椭圆印-8.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清螭钮大田石椭圆印-8-493acf54-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清螭钮大田石椭圆印-8-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清狮钮青玉印-9",
+      "artifactName": "清狮钮青玉印",
+      "oldImagePath": "public/artifact-images/WW-清狮钮青玉印-9-0158f5c1.jpg",
+      "newImagePath": "public/artifact-images/WW-清狮钮青玉印-9.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清狮钮青玉印-9-0158f5c1-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清狮钮青玉印-9-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-民国浮雕造像巴林石印-10",
+      "artifactName": "民国浮雕造像巴林石印",
+      "oldImagePath": "public/artifact-images/WW-民国浮雕造像巴林石印-10-b9bb1543.jpg",
+      "newImagePath": "public/artifact-images/WW-民国浮雕造像巴林石印-10.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-民国浮雕造像巴林石印-10-b9bb1543-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-民国浮雕造像巴林石印-10-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清寿山石印-11",
+      "artifactName": "清寿山石印",
+      "oldImagePath": "public/artifact-images/WW-清寿山石印-11-9d836196.jpg",
+      "newImagePath": "public/artifact-images/WW-清寿山石印-11.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清寿山石印-11-9d836196-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清寿山石印-11-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清内画山水花鸟鼻烟壶-12",
+      "artifactName": "清内画山水花鸟鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清内画山水花鸟鼻烟壶-12-3353f223.jpg",
+      "newImagePath": "public/artifact-images/WW-清内画山水花鸟鼻烟壶-12.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清内画山水花鸟鼻烟壶-12-3353f223-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清内画山水花鸟鼻烟壶-12-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清白地贴花鼻烟壶-13",
+      "artifactName": "清白地贴花鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清白地贴花鼻烟壶-13-d25eb98a.jpg",
+      "newImagePath": "public/artifact-images/WW-清白地贴花鼻烟壶-13.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清白地贴花鼻烟壶-13-d25eb98a-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清白地贴花鼻烟壶-13-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清浮雕人物玛瑙鼻烟壶-14",
+      "artifactName": "清浮雕人物玛瑙鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清浮雕人物玛瑙鼻烟壶-14-12a5f3b1.jpg",
+      "newImagePath": "public/artifact-images/WW-清浮雕人物玛瑙鼻烟壶-14.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清浮雕人物玛瑙鼻烟壶-14-12a5f3b1-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清浮雕人物玛瑙鼻烟壶-14-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清内画山水玻璃鼻烟壶-15",
+      "artifactName": "清内画山水玻璃鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清内画山水玻璃鼻烟壶-15-3de124f4.jpg",
+      "newImagePath": "public/artifact-images/WW-清内画山水玻璃鼻烟壶-15.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清内画山水玻璃鼻烟壶-15-3de124f4-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清内画山水玻璃鼻烟壶-15-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清玉鼻烟壶-16",
+      "artifactName": "清玉鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清玉鼻烟壶-16-ef6e6cb1.jpg",
+      "newImagePath": "public/artifact-images/WW-清玉鼻烟壶-16.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清玉鼻烟壶-16-ef6e6cb1-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清玉鼻烟壶-16-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清内画山水清供玻璃鼻烟壶-17",
+      "artifactName": "清内画山水清供玻璃鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清内画山水清供玻璃鼻烟壶-17-b8d207c6.jpg",
+      "newImagePath": "public/artifact-images/WW-清内画山水清供玻璃鼻烟壶-17.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清内画山水清供玻璃鼻烟壶-17-b8d207c6-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清内画山水清供玻璃鼻烟壶-17-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清浮雕盖耳青玉鼻烟壶-18",
+      "artifactName": "清浮雕盖耳青玉鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清浮雕盖耳青玉鼻烟壶-18-2b17f574.jpg",
+      "newImagePath": "public/artifact-images/WW-清浮雕盖耳青玉鼻烟壶-18.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清浮雕盖耳青玉鼻烟壶-18-2b17f574-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清浮雕盖耳青玉鼻烟壶-18-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清白玉鼻烟壶-19",
+      "artifactName": "清白玉鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清白玉鼻烟壶-19-6464eb6e.jpg",
+      "newImagePath": "public/artifact-images/WW-清白玉鼻烟壶-19.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清白玉鼻烟壶-19-6464eb6e-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清白玉鼻烟壶-19-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清浮雕猿猴黄玉鼻烟壶-20",
+      "artifactName": "清浮雕猿猴黄玉鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清浮雕猿猴黄玉鼻烟壶-20-75b7381b.jpg",
+      "newImagePath": "public/artifact-images/WW-清浮雕猿猴黄玉鼻烟壶-20.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清浮雕猿猴黄玉鼻烟壶-20-75b7381b-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清浮雕猿猴黄玉鼻烟壶-20-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-现代牙雕鹌鹑黍穗盒-21",
+      "artifactName": "现代牙雕鹌鹑黍穗盒",
+      "oldImagePath": "public/artifact-images/WW-现代牙雕鹌鹑黍穗盒-21-21217d7b.jpg",
+      "newImagePath": "public/artifact-images/WW-现代牙雕鹌鹑黍穗盒-21.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-现代牙雕鹌鹑黍穗盒-21-21217d7b-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-现代牙雕鹌鹑黍穗盒-21-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-现代玉雕巧作子母鸡-22",
+      "artifactName": "现代玉雕巧作子母鸡",
+      "oldImagePath": "public/artifact-images/WW-现代玉雕巧作子母鸡-22-2ff7f6b0.jpg",
+      "newImagePath": "public/artifact-images/WW-现代玉雕巧作子母鸡-22.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-现代玉雕巧作子母鸡-22-2ff7f6b0-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-现代玉雕巧作子母鸡-22-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清督催查验牙印-23",
+      "artifactName": "清督催查验牙印",
+      "oldImagePath": "public/artifact-images/WW-清督催查验牙印-23-37349081.jpg",
+      "newImagePath": "public/artifact-images/WW-清督催查验牙印-23.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清督催查验牙印-23-37349081-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清督催查验牙印-23-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-现代贝雕虾蟹掛幅-24",
+      "artifactName": "现代贝雕虾蟹掛幅",
+      "oldImagePath": "public/artifact-images/WW-现代贝雕虾蟹掛幅-24-4281cb75.jpg",
+      "newImagePath": "public/artifact-images/WW-现代贝雕虾蟹掛幅-24.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-现代贝雕虾蟹掛幅-24-4281cb75-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-现代贝雕虾蟹掛幅-24-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-现代贝彫柳蝉掛幅-25",
+      "artifactName": "现代贝彫柳蝉掛幅",
+      "oldImagePath": "public/artifact-images/WW-现代贝彫柳蝉掛幅-25-f1fc20d6.jpg",
+      "newImagePath": "public/artifact-images/WW-现代贝彫柳蝉掛幅-25.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-现代贝彫柳蝉掛幅-25-f1fc20d6-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-现代贝彫柳蝉掛幅-25-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清朱墨-26",
+      "artifactName": "清朱墨",
+      "oldImagePath": "public/artifact-images/WW-清朱墨-26-a76599f4.jpg",
+      "newImagePath": "public/artifact-images/WW-清朱墨-26.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清朱墨-26-a76599f4-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清朱墨-26-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-元-清地契-27",
+      "artifactName": "元-清地契",
+      "oldImagePath": "public/artifact-images/WW-元-清地契-27-8fbe3b18.jpg",
+      "newImagePath": "public/artifact-images/WW-元-清地契-27.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-元-清地契-27-8fbe3b18-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-元-清地契-27-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清按院颁契尾-28",
+      "artifactName": "清按院颁契尾",
+      "oldImagePath": "public/artifact-images/WW-清按院颁契尾-28-4e7a8da3.jpg",
+      "newImagePath": "public/artifact-images/WW-清按院颁契尾-28.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清按院颁契尾-28-4e7a8da3-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清按院颁契尾-28-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-西汉铁器残块-29",
+      "artifactName": "西汉铁器残块",
+      "oldImagePath": "public/artifact-images/WW-西汉铁器残块-29-6b901c5c.jpg",
+      "newImagePath": "public/artifact-images/WW-西汉铁器残块-29.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-西汉铁器残块-29-6b901c5c-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-西汉铁器残块-29-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清浮雕葡萄纹纽寿山石印-30",
+      "artifactName": "清浮雕葡萄纹纽寿山石印",
+      "oldImagePath": "public/artifact-images/WW-清浮雕葡萄纹纽寿山石印-30-8190b0a3.jpg",
+      "newImagePath": "public/artifact-images/WW-清浮雕葡萄纹纽寿山石印-30.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清浮雕葡萄纹纽寿山石印-30-8190b0a3-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清浮雕葡萄纹纽寿山石印-30-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清雍正制“玉音”端砚-31",
+      "artifactName": "清雍正制“玉音”端砚",
+      "oldImagePath": "public/artifact-images/WW-清雍正制-玉音-端砚-31-93e63a8b.jpg",
+      "newImagePath": "public/artifact-images/WW-清雍正制“玉音”端砚-31.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清雍正制-玉音-端砚-31-93e63a8b-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清雍正制“玉音”端砚-31-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清高丽发笺-32",
+      "artifactName": "清高丽发笺",
+      "oldImagePath": "public/artifact-images/WW-清高丽发笺-32-652f0362.jpg",
+      "newImagePath": "public/artifact-images/WW-清高丽发笺-32.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清高丽发笺-32-652f0362-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清高丽发笺-32-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清洒金笺-33",
+      "artifactName": "清洒金笺",
+      "oldImagePath": "public/artifact-images/WW-清洒金笺-33-b28cc908.jpg",
+      "newImagePath": "public/artifact-images/WW-清洒金笺-33.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清洒金笺-33-b28cc908-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清洒金笺-33-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-民国红十字银质章-34",
+      "artifactName": "民国红十字银质章",
+      "oldImagePath": "public/artifact-images/WW-民国红十字银质章-34-9e563cb2.jpg",
+      "newImagePath": "public/artifact-images/WW-民国红十字银质章-34.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-民国红十字银质章-34-9e563cb2-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-民国红十字银质章-34-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-民国日本短刀-35",
+      "artifactName": "民国日本短刀",
+      "oldImagePath": "public/artifact-images/WW-民国日本短刀-35-fe544ea9.jpg",
+      "newImagePath": "public/artifact-images/WW-民国日本短刀-35.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-民国日本短刀-35-fe544ea9-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-民国日本短刀-35-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-民国伪满各种证章-36",
+      "artifactName": "民国伪满各种证章",
+      "oldImagePath": "public/artifact-images/WW-民国伪满各种证章-36-75bc2694.jpg",
+      "newImagePath": "public/artifact-images/WW-民国伪满各种证章-36.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-民国伪满各种证章-36-75bc2694-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-民国伪满各种证章-36-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-现代竹编三叠式长方提盒-37",
+      "artifactName": "现代竹编三叠式长方提盒",
+      "oldImagePath": "public/artifact-images/WW-现代竹编三叠式长方提盒-37-044fa35e.jpg",
+      "newImagePath": "public/artifact-images/WW-现代竹编三叠式长方提盒-37.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-现代竹编三叠式长方提盒-37-044fa35e-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-现代竹编三叠式长方提盒-37-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-唐人首陶□-38",
+      "artifactName": "唐人首陶□",
+      "oldImagePath": "public/artifact-images/WW-唐人首陶--38-5ac31b24.jpg",
+      "newImagePath": "public/artifact-images/WW-唐人首陶□-38.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-唐人首陶--38-5ac31b24-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-唐人首陶□-38-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-明-清鱼鳞图册-39",
+      "artifactName": "明-清鱼鳞图册",
+      "oldImagePath": "public/artifact-images/WW-明-清鱼鳞图册-39-2e7d6c70.jpg",
+      "newImagePath": "public/artifact-images/WW-明-清鱼鳞图册-39.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-明-清鱼鳞图册-39-2e7d6c70-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-明-清鱼鳞图册-39-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-现代象牙雕蟹笼-40",
+      "artifactName": "现代象牙雕蟹笼",
+      "oldImagePath": "public/artifact-images/WW-现代象牙雕蟹笼-40-412679b2.jpg",
+      "newImagePath": "public/artifact-images/WW-现代象牙雕蟹笼-40.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-现代象牙雕蟹笼-40-412679b2-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-现代象牙雕蟹笼-40-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-现代象牙雕岳飞战金岳插屏-41",
+      "artifactName": "现代象牙雕岳飞战金岳插屏",
+      "oldImagePath": "public/artifact-images/WW-现代象牙雕岳飞战金岳插屏-41-d4b79618.jpg",
+      "newImagePath": "public/artifact-images/WW-现代象牙雕岳飞战金岳插屏-41.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-现代象牙雕岳飞战金岳插屏-41-d4b79618-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-现代象牙雕岳飞战金岳插屏-41-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清白料贴花博古鼻烟壶（无盖）-42",
+      "artifactName": "清白料贴花博古鼻烟壶（无盖）",
+      "oldImagePath": "public/artifact-images/WW-清白料贴花博古鼻烟壶-无盖--42-86b4f12c.jpg",
+      "newImagePath": "public/artifact-images/WW-清白料贴花博古鼻烟壶（无盖）-42.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清白料贴花博古鼻烟壶-无盖--42-86b4f12c-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清白料贴花博古鼻烟壶（无盖）-42-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清烧蓝蟠螭玻璃地鼻烟壶-43",
+      "artifactName": "清烧蓝蟠螭玻璃地鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清烧蓝蟠螭玻璃地鼻烟壶-43-c6463aae.jpg",
+      "newImagePath": "public/artifact-images/WW-清烧蓝蟠螭玻璃地鼻烟壶-43.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清烧蓝蟠螭玻璃地鼻烟壶-43-c6463aae-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清烧蓝蟠螭玻璃地鼻烟壶-43-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清白地堆花鼻烟壶（无盖）-44",
+      "artifactName": "清白地堆花鼻烟壶（无盖）",
+      "oldImagePath": "public/artifact-images/WW-清白地堆花鼻烟壶-无盖--44-992508c0.jpg",
+      "newImagePath": "public/artifact-images/WW-清白地堆花鼻烟壶（无盖）-44.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清白地堆花鼻烟壶-无盖--44-992508c0-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清白地堆花鼻烟壶（无盖）-44-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清红鼻烟壶-45",
+      "artifactName": "清红鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清红鼻烟壶-45-e072d4e7.jpg",
+      "newImagePath": "public/artifact-images/WW-清红鼻烟壶-45.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清红鼻烟壶-45-e072d4e7-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清红鼻烟壶-45-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清内画花鸟玻璃鼻烟壶-46",
+      "artifactName": "清内画花鸟玻璃鼻烟壶",
+      "oldImagePath": "public/artifact-images/WW-清内画花鸟玻璃鼻烟壶-46-086b6bfc.jpg",
+      "newImagePath": "public/artifact-images/WW-清内画花鸟玻璃鼻烟壶-46.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清内画花鸟玻璃鼻烟壶-46-086b6bfc-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清内画花鸟玻璃鼻烟壶-46-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-白果青田石印-47",
+      "artifactName": "白果青田石印",
+      "oldImagePath": "public/artifact-images/WW-白果青田石印-47-8c2a8638.jpg",
+      "newImagePath": "public/artifact-images/WW-白果青田石印-47.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-白果青田石印-47-8c2a8638-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-白果青田石印-47-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清代花翎-48",
+      "artifactName": "清代花翎",
+      "oldImagePath": "public/artifact-images/WW-清代花翎-48-59bfac5c.jpg",
+      "newImagePath": "public/artifact-images/WW-清代花翎-48.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清代花翎-48-59bfac5c-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清代花翎-48-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清描金冰梅玉版粉笺-49",
+      "artifactName": "清描金冰梅玉版粉笺",
+      "oldImagePath": "public/artifact-images/WW-清描金冰梅玉版粉笺-49-185a07ba.jpg",
+      "newImagePath": "public/artifact-images/WW-清描金冰梅玉版粉笺-49.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清描金冰梅玉版粉笺-49-185a07ba-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清描金冰梅玉版粉笺-49-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-民国国民党匪军证章、肩章、帽徽等-50",
+      "artifactName": "民国国民党匪军证章、肩章、帽徽等",
+      "oldImagePath": "public/artifact-images/WW-民国国民党匪军证章-肩章-帽徽等-50-f997afa1.jpg",
+      "newImagePath": "public/artifact-images/WW-民国国民党匪军证章、肩章、帽徽等-50.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-民国国民党匪军证章-肩章-帽徽等-50-f997afa1-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-民国国民党匪军证章、肩章、帽徽等-50-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清环钮青玉印-51",
+      "artifactName": "清环钮青玉印",
+      "oldImagePath": "public/artifact-images/WW-清环钮青玉印-51-75ec3f2a.jpg",
+      "newImagePath": "public/artifact-images/WW-清环钮青玉印-51.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清环钮青玉印-51-75ec3f2a-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清环钮青玉印-51-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-青玉环-52",
+      "artifactName": "青玉环",
+      "oldImagePath": "public/artifact-images/WW-青玉环-52-272f59b5.jpg",
+      "newImagePath": "public/artifact-images/WW-青玉环-52.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-青玉环-52-272f59b5-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-青玉环-52-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-青玉玦-53",
+      "artifactName": "青玉玦",
+      "oldImagePath": "public/artifact-images/WW-青玉玦-53-e5243b4a.jpg",
+      "newImagePath": "public/artifact-images/WW-青玉玦-53.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-青玉玦-53-e5243b4a-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-青玉玦-53-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-玉饰件-54",
+      "artifactName": "玉饰件",
+      "oldImagePath": "public/artifact-images/WW-玉饰件-54-18453110.jpg",
+      "newImagePath": "public/artifact-images/WW-玉饰件-54.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-玉饰件-54-18453110-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-玉饰件-54-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-民国秋江为康有为刻“开天天室”印-55",
+      "artifactName": "民国秋江为康有为刻“开天天室”印",
+      "oldImagePath": "public/artifact-images/WW-民国秋江为康有为刻-开天天室-印-55-13622bdf.jpg",
+      "newImagePath": "public/artifact-images/WW-民国秋江为康有为刻“开天天室”印-55.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-民国秋江为康有为刻-开天天室-印-55-13622bdf-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-民国秋江为康有为刻“开天天室”印-55-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽银面具-56",
+      "artifactName": "辽银面具",
+      "oldImagePath": "public/artifact-images/WW-辽银面具-56-0ba770ad.jpg",
+      "newImagePath": "public/artifact-images/WW-辽银面具-56.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽银面具-56-0ba770ad-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽银面具-56-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金节约-57",
+      "artifactName": "辽铜鎏金节约",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金节约-57-93261d01.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金节约-57.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金节约-57-93261d01-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金节约-57-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金花瓣形饰形-58",
+      "artifactName": "辽铜鎏金花瓣形饰形",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金花瓣形饰形-58-80fefde1.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金花瓣形饰形-58.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金花瓣形饰形-58-80fefde1-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金花瓣形饰形-58-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金铜铃-59",
+      "artifactName": "辽铜鎏金铜铃",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金铜铃-59-ed88c323.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金铜铃-59.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金铜铃-59-ed88c323-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金铜铃-59-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金双龙纹铊尾-60",
+      "artifactName": "辽铜鎏金双龙纹铊尾",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金双龙纹铊尾-60-61c02d7d.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金双龙纹铊尾-60.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金双龙纹铊尾-60-61c02d7d-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金双龙纹铊尾-60-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-春秋嵌红铜螭虎纹盖鼎-61",
+      "artifactName": "春秋嵌红铜螭虎纹盖鼎",
+      "oldImagePath": "public/artifact-images/WW-春秋嵌红铜螭虎纹盖鼎-61-a6e6b726.jpg",
+      "newImagePath": "public/artifact-images/WW-春秋嵌红铜螭虎纹盖鼎-61.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-春秋嵌红铜螭虎纹盖鼎-61-a6e6b726-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-春秋嵌红铜螭虎纹盖鼎-61-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金雁形饰件-62",
+      "artifactName": "辽铜鎏金雁形饰件",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金雁形饰件-62-7d4dfe19.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金雁形饰件-62.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金雁形饰件-62-7d4dfe19-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金雁形饰件-62-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金龙纹\"圭\"字形铊尾-63",
+      "artifactName": "辽铜鎏金龙纹\"圭\"字形铊尾",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金龙纹-圭-字形铊尾-63-872b3f08.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金龙纹\"圭\"字形铊尾-63.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金龙纹-圭-字形铊尾-63-872b3f08-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金龙纹\"圭\"字形铊尾-63-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金卷草纹带箍-64",
+      "artifactName": "辽铜鎏金卷草纹带箍",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金卷草纹带箍-64-abdcfc72.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金卷草纹带箍-64.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金卷草纹带箍-64-abdcfc72-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金卷草纹带箍-64-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清三兽足铜火盆-65",
+      "artifactName": "清三兽足铜火盆",
+      "oldImagePath": "public/artifact-images/WW-清三兽足铜火盆-65-91aa97e7.jpg",
+      "newImagePath": "public/artifact-images/WW-清三兽足铜火盆-65.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清三兽足铜火盆-65-91aa97e7-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清三兽足铜火盆-65-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金双龙戏珠纹带饰-66",
+      "artifactName": "辽铜鎏金双龙戏珠纹带饰",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金双龙戏珠纹带饰-66-3724f03b.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金双龙戏珠纹带饰-66.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金双龙戏珠纹带饰-66-3724f03b-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金双龙戏珠纹带饰-66-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金卷纹带饰-67",
+      "artifactName": "辽铜鎏金卷纹带饰",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金卷纹带饰-67-142618d9.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金卷纹带饰-67.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金卷纹带饰-67-142618d9-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金卷纹带饰-67-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-明钮铸铭文铜镜-68",
+      "artifactName": "明钮铸铭文铜镜",
+      "oldImagePath": "public/artifact-images/WW-明钮铸铭文铜镜-68-f2385f93.jpg",
+      "newImagePath": "public/artifact-images/WW-明钮铸铭文铜镜-68.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-明钮铸铭文铜镜-68-f2385f93-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-明钮铸铭文铜镜-68-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金扣钉-69",
+      "artifactName": "辽铜鎏金扣钉",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金扣钉-69-5b7f4197.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金扣钉-69.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金扣钉-69-5b7f4197-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金扣钉-69-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金活带扣-70",
+      "artifactName": "辽铜鎏金活带扣",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金活带扣-70-6dee45be.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金活带扣-70.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金活带扣-70-6dee45be-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金活带扣-70-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金带扣-71",
+      "artifactName": "辽铜鎏金带扣",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金带扣-71-4a3ec4d0.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金带扣-71.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金带扣-71-4a3ec4d0-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金带扣-71-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-金六耳铜锅-72",
+      "artifactName": "金六耳铜锅",
+      "oldImagePath": "public/artifact-images/WW-金六耳铜锅-72-faef5bec.jpg",
+      "newImagePath": "public/artifact-images/WW-金六耳铜锅-72.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-金六耳铜锅-72-faef5bec-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-金六耳铜锅-72-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金双鱼形饰件-73",
+      "artifactName": "辽铜鎏金双鱼形饰件",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金双鱼形饰件-73-0898a9e0.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金双鱼形饰件-73.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金双鱼形饰件-73-0898a9e0-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金双鱼形饰件-73-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-汉双环耳铜钫-74",
+      "artifactName": "汉双环耳铜钫",
+      "oldImagePath": "public/artifact-images/WW-汉双环耳铜钫-74-ac0679d0.jpg",
+      "newImagePath": "public/artifact-images/WW-汉双环耳铜钫-74.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-汉双环耳铜钫-74-ac0679d0-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-汉双环耳铜钫-74-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金龙纹铊尾-75",
+      "artifactName": "辽铜鎏金龙纹铊尾",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金龙纹铊尾-75-aff95566.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金龙纹铊尾-75.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金龙纹铊尾-75-aff95566-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金龙纹铊尾-75-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-春秋战国曲刃青铜短剑-76",
+      "artifactName": "春秋战国曲刃青铜短剑",
+      "oldImagePath": "public/artifact-images/WW-春秋战国曲刃青铜短剑-76-2f78689c.jpg",
+      "newImagePath": "public/artifact-images/WW-春秋战国曲刃青铜短剑-76.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-春秋战国曲刃青铜短剑-76-2f78689c-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-春秋战国曲刃青铜短剑-76-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-明\"一百九十四号\"铜铳-77",
+      "artifactName": "明\"一百九十四号\"铜铳",
+      "oldImagePath": "public/artifact-images/WW-明-一百九十四号-铜铳-77-b0436595.jpg",
+      "newImagePath": "public/artifact-images/WW-明\"一百九十四号\"铜铳-77.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-明-一百九十四号-铜铳-77-b0436595-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-明\"一百九十四号\"铜铳-77-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-明\"胜字五百九号\"铜铳-78",
+      "artifactName": "明\"胜字五百九号\"铜铳",
+      "oldImagePath": "public/artifact-images/WW-明-胜字五百九号-铜铳-78-5be8733d.jpg",
+      "newImagePath": "public/artifact-images/WW-明\"胜字五百九号\"铜铳-78.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-明-胜字五百九号-铜铳-78-5be8733d-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-明\"胜字五百九号\"铜铳-78-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-明\"胜字九百囗囗号\"铜铳-79",
+      "artifactName": "明\"胜字九百囗囗号\"铜铳",
+      "oldImagePath": "public/artifact-images/WW-明-胜字九百囗囗号-铜铳-79-199f1a85.jpg",
+      "newImagePath": "public/artifact-images/WW-明\"胜字九百囗囗号\"铜铳-79.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-明-胜字九百囗囗号-铜铳-79-199f1a85-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-明\"胜字九百囗囗号\"铜铳-79-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-\"王恭厂二百七十号\"铜铳-80",
+      "artifactName": "\"王恭厂二百七十号\"铜铳",
+      "oldImagePath": "public/artifact-images/WW--王恭厂二百七十号-铜铳-80-0a113b42.jpg",
+      "newImagePath": "public/artifact-images/WW-\"王恭厂二百七十号\"铜铳-80.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW--王恭厂二百七十号-铜铳-80-0a113b42-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-\"王恭厂二百七十号\"铜铳-80-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-辽铜鎏金双龙椭圆形带饰-81",
+      "artifactName": "辽铜鎏金双龙椭圆形带饰",
+      "oldImagePath": "public/artifact-images/WW-辽铜鎏金双龙椭圆形带饰-81-2a67273e.jpg",
+      "newImagePath": "public/artifact-images/WW-辽铜鎏金双龙椭圆形带饰-81.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金双龙椭圆形带饰-81-2a67273e-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-辽铜鎏金双龙椭圆形带饰-81-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清象牙镇纸-82",
+      "artifactName": "清象牙镇纸",
+      "oldImagePath": "public/artifact-images/WW-清象牙镇纸-82-3c7ad454.jpg",
+      "newImagePath": "public/artifact-images/WW-清象牙镇纸-82.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清象牙镇纸-82-3c7ad454-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清象牙镇纸-82-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清翁同龢行书手札册-83",
+      "artifactName": "清翁同龢行书手札册",
+      "oldImagePath": "public/artifact-images/WW-清翁同龢行书手札册-83-b6860da6.jpg",
+      "newImagePath": "public/artifact-images/WW-清翁同龢行书手札册-83.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清翁同龢行书手札册-83-b6860da6-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清翁同龢行书手札册-83-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-现代金振之摹周昉簪花仕女卷-84",
+      "artifactName": "现代金振之摹周昉簪花仕女卷",
+      "oldImagePath": "public/artifact-images/WW-现代金振之摹周昉簪花仕女卷-84-7c6c2c42.jpg",
+      "newImagePath": "public/artifact-images/WW-现代金振之摹周昉簪花仕女卷-84.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-现代金振之摹周昉簪花仕女卷-84-7c6c2c42-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-现代金振之摹周昉簪花仕女卷-84-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清傅雯指画寿同山岳图轴-85",
+      "artifactName": "清傅雯指画寿同山岳图轴",
+      "oldImagePath": "public/artifact-images/WW-清傅雯指画寿同山岳图轴-85-3e0cfb70.jpg",
+      "newImagePath": "public/artifact-images/WW-清傅雯指画寿同山岳图轴-85.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清傅雯指画寿同山岳图轴-85-3e0cfb70-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清傅雯指画寿同山岳图轴-85-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清薜澱仿黄公望秋溪萧寺图轴-86",
+      "artifactName": "清薜澱仿黄公望秋溪萧寺图轴",
+      "oldImagePath": "public/artifact-images/WW-清薜澱仿黄公望秋溪萧寺图轴-86-26571276.jpg",
+      "newImagePath": "public/artifact-images/WW-清薜澱仿黄公望秋溪萧寺图轴-86.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清薜澱仿黄公望秋溪萧寺图轴-86-26571276-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清薜澱仿黄公望秋溪萧寺图轴-86-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清刘渡雪栈图轴-87",
+      "artifactName": "清刘渡雪栈图轴",
+      "oldImagePath": "public/artifact-images/WW-清刘渡雪栈图轴-87-50cc6c6e.jpg",
+      "newImagePath": "public/artifact-images/WW-清刘渡雪栈图轴-87.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清刘渡雪栈图轴-87-50cc6c6e-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清刘渡雪栈图轴-87-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-现代齐白石荔枝鹌鹑立轴-88",
+      "artifactName": "现代齐白石荔枝鹌鹑立轴",
+      "oldImagePath": "public/artifact-images/WW-现代齐白石荔枝鹌鹑立轴-88-c9f49739.jpg",
+      "newImagePath": "public/artifact-images/WW-现代齐白石荔枝鹌鹑立轴-88.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-现代齐白石荔枝鹌鹑立轴-88-c9f49739-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-现代齐白石荔枝鹌鹑立轴-88-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-明周日庠草书七绝诗卷-89",
+      "artifactName": "明周日庠草书七绝诗卷",
+      "oldImagePath": "public/artifact-images/WW-明周日庠草书七绝诗卷-89-e965e154.jpg",
+      "newImagePath": "public/artifact-images/WW-明周日庠草书七绝诗卷-89.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-明周日庠草书七绝诗卷-89-e965e154-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-明周日庠草书七绝诗卷-89-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-明吴湘人物屏-90",
+      "artifactName": "明吴湘人物屏",
+      "oldImagePath": "public/artifact-images/WW-明吴湘人物屏-90-dc19b7d0.jpg",
+      "newImagePath": "public/artifact-images/WW-明吴湘人物屏-90.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-明吴湘人物屏-90-dc19b7d0-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-明吴湘人物屏-90-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "WW-清叶道芬竹院逢僧轴-91",
+      "artifactName": "清叶道芬竹院逢僧轴",
+      "oldImagePath": "public/artifact-images/WW-清叶道芬竹院逢僧轴-91-724b4a1a.jpg",
+      "newImagePath": "public/artifact-images/WW-清叶道芬竹院逢僧轴-91.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/WW-清叶道芬竹院逢僧轴-91-724b4a1a-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/WW-清叶道芬竹院逢僧轴-91-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-001",
+      "artifactName": "商子龙鼎",
+      "oldImagePath": "public/artifact-images/ncha-third-001-166d402e.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-001.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/ncha-third-001-166d402e-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-001-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-002",
+      "artifactName": "商四羊方尊",
+      "oldImagePath": "public/artifact-images/ncha-third-002-c43df4cf.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-002.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/ncha-third-002-c43df4cf-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-002-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-003",
+      "artifactName": "商龙纹兕觥",
+      "oldImagePath": "public/artifact-images/95.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-003.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/95-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-003-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-004",
+      "artifactName": "商大禾方鼎",
+      "oldImagePath": "public/artifact-images/96.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-004.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/96-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-004-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-005",
+      "artifactName": "商铜立人像",
+      "oldImagePath": "public/artifact-images/97.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-005.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/97-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-005-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-006",
+      "artifactName": "西周天亡簋",
+      "oldImagePath": "public/artifact-images/98.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-006.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/98-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-006-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-007",
+      "artifactName": "西周伯矩鬲",
+      "oldImagePath": "public/artifact-images/99.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-007.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/99-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-007-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-008",
+      "artifactName": "西周晋侯鸟尊",
+      "oldImagePath": "public/artifact-images/100.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-008.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/100-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-008-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-009",
+      "artifactName": "西周㝬簋",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-010",
+      "artifactName": "西周逨盘",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-011",
+      "artifactName": "春秋越王勾践剑",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-012",
+      "artifactName": "战国商鞅方升",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-013",
+      "artifactName": "战国错金银镶嵌丝网套铜壶",
+      "oldImagePath": "public/artifact-images/105.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-013.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/105-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-013-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-014",
+      "artifactName": "西汉诅盟场面贮贝器",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-015",
+      "artifactName": "西汉彩绘人物车马镜",
+      "oldImagePath": "public/artifact-images/107.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-015.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/107-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-015-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-016",
+      "artifactName": "西汉杀人祭柱场面贮贝器",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-017",
+      "artifactName": "新石器时代仰韶文化彩陶人面鱼纹盆",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-018",
+      "artifactName": "新石器时代马家窑文化彩陶舞蹈纹盆",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-019",
+      "artifactName": "新石器时代马家窑文化彩陶贴塑人纹双系壶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-020",
+      "artifactName": "新石器时代仰韶文化彩陶网纹船形壶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-021",
+      "artifactName": "新石器时代龙山文化彩绘蟠龙纹陶盘",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-022",
+      "artifactName": "新石器时代仰韶文化彩陶人形双系瓶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-023",
+      "artifactName": "新石器时代大汶口文化彩陶八角星纹豆",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-024",
+      "artifactName": "吴\"永安三年\"款青釉堆塑谷仓罐",
+      "oldImagePath": "public/artifact-images/116.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-024.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/116-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-024-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-025",
+      "artifactName": "吴\"赤乌十四年\"款青釉虎子",
+      "oldImagePath": "public/artifact-images/117.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-025.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/117-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-025-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-026",
+      "artifactName": "吴青釉褐彩羽人纹双系壶",
+      "oldImagePath": "public/artifact-images/118.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-026.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/118-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-026-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-027",
+      "artifactName": "西晋青釉神兽尊",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-028",
+      "artifactName": "北齐青釉仰覆莲花尊",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-029",
+      "artifactName": "北齐白釉绿彩长颈瓶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-030",
+      "artifactName": "隋白釉龙柄双联传瓶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-031",
+      "artifactName": "唐青釉凤首龙柄壶",
+      "oldImagePath": "public/artifact-images/123.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-031.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/123-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-031-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-032",
+      "artifactName": "唐鲁山窑黑釉蓝斑腰鼓",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-033",
+      "artifactName": "唐代陶骆驼载乐舞三彩俑",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-034",
+      "artifactName": "唐长沙窑青釉褐蓝彩双系罐",
+      "oldImagePath": "public/artifact-images/126.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-034.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/126-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-034-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-035",
+      "artifactName": "唐越窑青釉褐彩云纹五足炉",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-036",
+      "artifactName": "唐长沙窑青釉褐彩贴花人物纹壶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-037",
+      "artifactName": "唐三彩骆驼载乐俑",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-038",
+      "artifactName": "五代耀州窑摩羯形水盂",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-039",
+      "artifactName": "五代越窑莲花式托盏",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-040",
+      "artifactName": "五代耀州窑青釉刻花提梁倒流壶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-041",
+      "artifactName": "北宋汝窑天青釉弦纹樽",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-042",
+      "artifactName": "北宋官窑弦纹瓶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-043",
+      "artifactName": "北宋钧窑月白釉出戟尊",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-044",
+      "artifactName": "北宋定窑白釉刻莲花瓣纹龙首净瓶",
+      "oldImagePath": "public/artifact-images/136.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-044.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/136-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-044-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-045",
+      "artifactName": "北宋官窑贯耳尊",
+      "oldImagePath": "public/artifact-images/137.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-045.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/137-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-045-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-046",
+      "artifactName": "宋登封窑珍珠地划花虎豹纹瓶",
+      "oldImagePath": "public/artifact-images/138.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-046.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/138-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-046-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-047",
+      "artifactName": "元青花萧何月下追韩信图梅瓶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-048",
+      "artifactName": "元蓝釉白龙纹梅瓶",
+      "oldImagePath": "public/artifact-images/140.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-048.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/140-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-048-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-049",
+      "artifactName": "新石器时代红山文化玉龙",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-050",
+      "artifactName": "新石器时代良渚文化神人兽面纹玉钺",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-051",
+      "artifactName": "夏七孔玉刀",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-052",
+      "artifactName": "西周晋侯夫人组玉佩",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-053",
+      "artifactName": "战国多节活环套练玉佩",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-054",
+      "artifactName": "西汉“皇后之玺”玉玺",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-055",
+      "artifactName": "东汉镂雕东王公西王母纹玉座屏",
+      "oldImagePath": "public/artifact-images/147.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-055.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/147-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-055-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-056",
+      "artifactName": "西晋神兽纹玉樽",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-057",
+      "artifactName": "元“统领释教大元国师之印”龙钮玉印",
+      "oldImagePath": "public/artifact-images/149.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-057.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/149-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-057-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-058",
+      "artifactName": "商太阳神鸟金箔片",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-059",
+      "artifactName": "商金杖",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-060",
+      "artifactName": "战国包金镶玉嵌琉璃银带钩",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-061",
+      "artifactName": "西汉“滇王之印”金印",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-062",
+      "artifactName": "西汉错金银镶松石狩猎纹铜伞铤",
+      "oldImagePath": "public/artifact-images/154.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-062.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/154-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-062-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-063",
+      "artifactName": "唐龟负论语玉烛酒筹鎏金银筒",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-064",
+      "artifactName": "战国彩绘乐舞图鸳鸯形漆盒",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-065",
+      "artifactName": "西汉识文彩绘盝顶长方形漆奁",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-066",
+      "artifactName": "西汉黑漆朱绘六博具",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-067",
+      "artifactName": "吴彩绘季札挂剑图漆盘",
+      "oldImagePath": "public/artifact-images/159.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-067.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/159-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-067-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-068",
+      "artifactName": "吴皮胎犀皮漆鎏金铜釦耳杯（2件）",
+      "oldImagePath": "public/artifact-images/160.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-068.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/160-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-068-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-069",
+      "artifactName": "北宋木雕真珠舍利宝幢（含木函）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-070",
+      "artifactName": "新石器时代大汶口文化象牙梳",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-071",
+      "artifactName": "新石器时代河姆渡文化双鸟朝阳纹象牙雕刻器",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-072",
+      "artifactName": "隋绿玻璃盖罐",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-073",
+      "artifactName": "隋绿玻璃小瓶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-074",
+      "artifactName": "汉红地对人兽树纹罽袍",
+      "oldImagePath": "public/artifact-images/166.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-074.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/166-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-074-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-075",
+      "artifactName": "北魏刺绣佛像供养人",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-076",
+      "artifactName": "北朝方格兽纹锦",
+      "oldImagePath": "public/artifact-images/168.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-076.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/168-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-076-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-077",
+      "artifactName": "北宋灵鹫纹锦袍",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-078",
+      "artifactName": "战国石鼓（1组10只）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-079",
+      "artifactName": "唐昭陵六骏石刻（什伐赤、白蹄乌、特勒骠、青骓4幅）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-080",
+      "artifactName": "宋拓西岳华山庙碑册（华阴本）",
+      "oldImagePath": "public/artifact-images/172.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-080.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/172-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-080-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-081",
+      "artifactName": "明曹全碑初拓本（“因”字不损本）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-082",
+      "artifactName": "唐写本王仁煦《刊谬补缺切韵》",
+      "oldImagePath": "public/artifact-images/174.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-082.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/174-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-082-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-083",
+      "artifactName": "北宋刻开宝藏本《阿惟越致经》（1卷）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-084",
+      "artifactName": "北宋刻本《范仲淹文集》（30卷）",
+      "oldImagePath": "public/artifact-images/176.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-084.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/176-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-084-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-085",
+      "artifactName": "唐章怀太子墓壁画马球图（1组）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-086",
+      "artifactName": "唐章怀太子墓壁画狩猎出行图（1组）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-087",
+      "artifactName": "唐懿德太子墓壁画阙楼图（1组）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-088",
+      "artifactName": "唐永泰公主墓壁画宫女图（1组）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-089",
+      "artifactName": "战国简《金縢》",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-090",
+      "artifactName": "战国郭店楚简《老子（甲、乙、丙）》",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-091",
+      "artifactName": "战国楚简《孔子诗论》",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-092",
+      "artifactName": "秦云梦睡虎地秦简《语书》",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-093",
+      "artifactName": "秦简《数》",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-third-094",
+      "artifactName": "西汉马王堆汉墓帛书《周易》",
+      "oldImagePath": "public/artifact-images/ncha-third-094-2f56fb45.jpg",
+      "newImagePath": "public/artifact-images/ncha-third-094.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/ncha-third-094-2f56fb45-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-third-094-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-001",
+      "artifactName": "彩绘鹳鱼石斧图陶缸",
+      "oldImagePath": "public/artifact-images/ncha-first-core-001-3529994f.jpg",
+      "newImagePath": "public/artifact-images/ncha-first-core-001.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/ncha-first-core-001-3529994f-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-first-core-001-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-002",
+      "artifactName": "陶鹰鼎",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-003",
+      "artifactName": "后母戊鼎",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-004",
+      "artifactName": "利簋",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-005",
+      "artifactName": "大盂鼎",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-006",
+      "artifactName": "虢季子白盘",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-007",
+      "artifactName": "嵌绿松石象牙杯",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-008",
+      "artifactName": "大克鼎",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-009",
+      "artifactName": "太保鼎",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-010",
+      "artifactName": "河姆渡出土朱漆碗",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-011",
+      "artifactName": "河姆渡出土陶灶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-012",
+      "artifactName": "良渚出土玉琮王",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-013",
+      "artifactName": "战国水晶杯",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-014",
+      "artifactName": "淅川出土铜禁",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-015",
+      "artifactName": "新郑出土莲鹤铜方壶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-016",
+      "artifactName": "铸客大铜鼎",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-017",
+      "artifactName": "朱然墓出土漆木屐",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-018",
+      "artifactName": "朱然墓出土贵族生活图漆盘",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-019",
+      "artifactName": "司马金龙墓出土漆屏",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-020",
+      "artifactName": "娄睿墓鞍马出行图壁画",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-021",
+      "artifactName": "大玉戈",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-022",
+      "artifactName": "曾侯乙编钟",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-023",
+      "artifactName": "曾侯乙青铜尊盘",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-024",
+      "artifactName": "彩漆木雕小座屏",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-025",
+      "artifactName": "红山文化女神像",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-026",
+      "artifactName": "鸭形玻璃注",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-027",
+      "artifactName": "青铜神树",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-028",
+      "artifactName": "铜奔马",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-029",
+      "artifactName": "秦始皇陵铜车马",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-030",
+      "artifactName": "墙盘",
+      "oldImagePath": "public/artifact-images/ncha-first-core-030-697f5356.jpg",
+      "newImagePath": "public/artifact-images/ncha-first-core-030.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/ncha-first-core-030-697f5356-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-first-core-030-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-031",
+      "artifactName": "何尊",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-032",
+      "artifactName": "大秦景教流行中国碑",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-033",
+      "artifactName": "舞马衔杯仿皮囊式银壶",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-034",
+      "artifactName": "兽首玛瑙杯",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-035",
+      "artifactName": "八重宝函",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-036",
+      "artifactName": "五星出东方利中国锦护膊",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-037",
+      "artifactName": "铜错金银四龙四凤方案",
+      "oldImagePath": "public/artifact-images/ncha-first-core-037-112281c1.jpg",
+      "newImagePath": "public/artifact-images/ncha-first-core-037.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/ncha-first-core-037-112281c1-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/ncha-first-core-037-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-038",
+      "artifactName": "刘胜金缕玉衣",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-039",
+      "artifactName": "长信宫灯",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "ncha-first-core-040",
+      "artifactName": "人物御龙帛画",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-007",
+      "artifactName": "凤冠",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-009",
+      "artifactName": "晋侯稣钟（一套14件）",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-015",
+      "artifactName": "水晶杯",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-018",
+      "artifactName": "齐王墓青铜方镜",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-024",
+      "artifactName": "涅槃變相碑",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-025",
+      "artifactName": "常阳太尊石像",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-028",
+      "artifactName": "曾侯乙墓外棺",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-034",
+      "artifactName": "三星堆出土玉边璋",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-035",
+      "artifactName": "摇钱树",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-037",
+      "artifactName": "铜车马",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-039",
+      "artifactName": "淳化大鼎",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-041",
+      "artifactName": "茂陵石雕",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-045",
+      "artifactName": "景云铜钟",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-046",
+      "artifactName": "银花双轮十二环锡杖",
+      "oldImagePath": "public/artifact-images/240.jpg",
+      "newImagePath": "public/artifact-images/prohibited-export-1-046.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/240-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/prohibited-export-1-046-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-048",
+      "artifactName": "铜浮屠",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-049",
+      "artifactName": "“五星出东方”护膊",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-051",
+      "artifactName": "中山王𰯼铁足铜鼎",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-054",
+      "artifactName": "铜屏风构件5件",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-055",
+      "artifactName": "角形玉杯",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-057",
+      "artifactName": "龙凤帛画",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-058",
+      "artifactName": "直裾素紗襌衣",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-059",
+      "artifactName": "马王堆一号墓木棺椁",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-060",
+      "artifactName": "马王堆一号墓T型帛画",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-061",
+      "artifactName": "红地云珠日天锦",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-062",
+      "artifactName": "西夏文佛经《吉祥遍至口和本续》纸本",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-063",
+      "artifactName": "青花釉里红瓷仓",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-1-064",
+      "artifactName": "竹林七贤砖印模画",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-065",
+      "artifactName": "陆机《平复帖》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-066",
+      "artifactName": "王珣《伯远帖》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-067",
+      "artifactName": "冯承素摹王羲之《兰亭序》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-068",
+      "artifactName": "欧阳询《梦奠帖》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-069",
+      "artifactName": "国诠《善见律》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-070",
+      "artifactName": "怀素《苦筍帖》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-071",
+      "artifactName": "杜牧《张好好诗》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-072",
+      "artifactName": "唐人《摹王羲之一门书翰》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-073",
+      "artifactName": "杨凝式《神仙起居法帖》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-074",
+      "artifactName": "林逋《自书诗》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-075",
+      "artifactName": "蔡襄《自书诗》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-076",
+      "artifactName": "文彦博《三帖卷》",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-077",
+      "artifactName": "韩琦《行楷信札卷》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-078",
+      "artifactName": "王安石《楞严经旨要》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-079",
+      "artifactName": "黄庭坚《诸上座》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-080",
+      "artifactName": "米芾《苕溪诗》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-081",
+      "artifactName": "赵佶《草书千字文》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-082",
+      "artifactName": "展子虔《游春图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-083",
+      "artifactName": "韩滉《五牛图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-084",
+      "artifactName": "周昉《挥扇仕女图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-085",
+      "artifactName": "孙位《高逸图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-086",
+      "artifactName": "王齐翰《勘书图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-087",
+      "artifactName": "周文矩《重屏会棋图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-088",
+      "artifactName": "胡瓌《卓歇图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-089",
+      "artifactName": "顾闳中《韩熙载夜宴图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-090",
+      "artifactName": "卫贤《高士图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-091",
+      "artifactName": "董源《山口待渡图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-092",
+      "artifactName": "黄筌《写生珍禽图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-093",
+      "artifactName": "王诜《渔村小雪图》卷",
+      "oldImagePath": "public/artifact-images/prohibited-export-2-093-f65a6133.jpg",
+      "newImagePath": "public/artifact-images/prohibited-export-2-093.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/prohibited-export-2-093-f65a6133-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/prohibited-export-2-093-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-094",
+      "artifactName": "梁师闵《芦汀密雪图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-095",
+      "artifactName": "李公麟《摹韦偃牧放图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-096",
+      "artifactName": "祁序《江山牧放图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-097",
+      "artifactName": "张择端《清明上河图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-098",
+      "artifactName": "王希孟《千里江山图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-099",
+      "artifactName": "马和之《后赤壁赋图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-100",
+      "artifactName": "赵伯骕《万松金阙图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-2-101",
+      "artifactName": "宋人摹阎立本《步辇图》卷",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-3-125",
+      "artifactName": "吴“永安三年”款青釉堆塑谷仓罐",
+      "oldImagePath": "public/artifact-images/291.jpg",
+      "newImagePath": "public/artifact-images/prohibited-export-3-125.jpg",
+      "oldThumbPath": "public/artifact-images/thumbs/291-thumb.jpg",
+      "newThumbPath": "public/artifact-images/thumbs/prohibited-export-3-125-thumb.jpg",
+      "status": "migrated",
+      "error": ""
+    },
+    {
+      "artifactId": "prohibited-export-3-126",
+      "artifactName": "吴“赤乌十四年”款青釉虎子",
+      "oldImagePath": "",
+      "newImagePath": "",
+      "oldThumbPath": "",
+      "newThumbPath": "",
+      "status": "skipped",
+      "error": ""
+    }
+  ]
+}
