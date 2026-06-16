@@ -11,6 +11,7 @@ import { db } from "./db/client";
 import { migrateArtifactDetails } from "./db/migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./db/upgradeArtifactsMuseumFk";
 import { syncImportedArtifactsToDb } from "./db/syncImportedArtifacts";
+import { ensureMuseumSchema, seedBuiltInMuseumAliases } from "../museum-normalizer";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: "2mb" }));
 app.use("/artifact-images", express.static(path.join(PUBLIC_DIR, "artifact-images")));
 app.use("/exhibition-covers", express.static(path.join(PUBLIC_DIR, "exhibition-covers")));
+app.use("/museum-images", express.static(path.join(PUBLIC_DIR, "museum-images")));
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
 app.get("/", (_req, res) =>
@@ -179,6 +181,8 @@ app.listen(port, "0.0.0.0", () => {
     if (up.migrated) {
       console.log("Upgraded DB: artifacts.museum → museum_id + museums");
     }
+    await ensureMuseumSchema(db);
+    await seedBuiltInMuseumAliases(db);
     await migrateArtifactDetails(db);
     const sync = await syncImportedArtifactsToDb(db);
     if (!sync.skipped) {

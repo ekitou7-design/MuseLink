@@ -16,6 +16,15 @@ export type AiReadyArtifact = {
   id: string;
   title: string;
   name: string;
+  museumId: string;
+  rawMuseumName: string;
+  canonicalMuseumName: string;
+  museumType: string;
+  museumGrade: string;
+  museumProvince: string;
+  museumCity: string;
+  museumCoverImageUrl: string;
+  museumCoverThumbnailUrl: string;
   dynasty: string;
   period: string;
   museum: string;
@@ -43,6 +52,15 @@ export type RagDocument = {
     category: string;
     material: string;
     museum: string;
+    museumId: string;
+    rawMuseumName: string;
+    canonicalMuseumName: string;
+    museumType: string;
+    museumGrade: string;
+    museumProvince: string;
+    museumCity: string;
+    museumCoverImageUrl: string;
+    museumCoverThumbnailUrl: string;
     tags: string[];
     imageUrl: string;
     localImageUrl: string;
@@ -145,9 +163,19 @@ function getArtifactId(artifact: Artifact) {
 }
 
 function compactArtifact(artifact: Artifact) {
+  const record = artifact as unknown as Record<string, unknown>;
   const name = valueOrUnknown(artifactNameRaw(artifact));
   const period = valueOrUnknown(artifactEraRaw(artifact));
-  const museum = valueOrUnknown(artifactMuseumRaw(artifact));
+  const museumId = cleanText(record.museumId ?? record.museum_id);
+  const rawMuseumName = cleanText(record.rawMuseumName ?? record.raw_museum_name) || cleanText(artifactMuseumRaw(artifact));
+  const canonicalMuseumName = cleanText(record.canonicalMuseumName ?? record.canonical_museum_name) || cleanText(artifactMuseumRaw(artifact));
+  const museum = valueOrUnknown(canonicalMuseumName);
+  const museumType = cleanText(record.museumType ?? record.museum_type);
+  const museumGrade = cleanText(record.museumGrade ?? record.museum_grade);
+  const museumProvince = cleanText(record.museumProvince ?? record.museum_province);
+  const museumCity = cleanText(record.museumCity ?? record.museum_city);
+  const museumCoverImageUrl = cleanText(record.museumCoverImageUrl ?? record.museum_cover_image_url);
+  const museumCoverThumbnailUrl = cleanText(record.museumCoverThumbnailUrl ?? record.museum_cover_thumbnail_url);
   const category = valueOrUnknown(artifactCategoryRaw(artifact));
   const material = valueOrUnknown(artifactMaterialRaw(artifact));
   const dimensions = valueOrUnknown(artifactDimensionsRaw(artifact));
@@ -162,6 +190,15 @@ function compactArtifact(artifact: Artifact) {
     period,
     dynasty: period,
     museum,
+    museumId,
+    rawMuseumName,
+    canonicalMuseumName: museum,
+    museumType,
+    museumGrade,
+    museumProvince,
+    museumCity,
+    museumCoverImageUrl,
+    museumCoverThumbnailUrl,
     category,
     material,
     dimensions,
@@ -194,6 +231,7 @@ function buildCulturalSignificance(compact: ReturnType<typeof compactArtifact>) 
 export function generateAiReadyArtifact(artifact: Artifact): AiReadyArtifact {
   const now = new Date().toISOString();
   const compact = compactArtifact(artifact);
+  const museumLocationText = [compact.museumProvince, compact.museumCity].filter(Boolean).join("");
   const historicalContext = firstRecordText(artifact, ["historicalContext", "historical_context"]) || buildHistoricalContext(compact);
   const culturalSignificance =
     firstRecordText(artifact, ["culturalSignificance", "cultural_significance", "curatorNote", "workflowSummary"]) ||
@@ -206,6 +244,12 @@ export function generateAiReadyArtifact(artifact: Artifact): AiReadyArtifact {
     compact.material,
     compact.dimensions,
     compact.museum,
+    museumLocationText ? `馆藏机构：${compact.museum}，所在地：${museumLocationText}` : "",
+    compact.rawMuseumName,
+    compact.museumType,
+    compact.museumGrade,
+    compact.museumProvince,
+    compact.museumCity,
     compact.description,
     historicalContext,
     culturalSignificance,
@@ -216,6 +260,15 @@ export function generateAiReadyArtifact(artifact: Artifact): AiReadyArtifact {
     id: compact.id,
     title: compact.name,
     name: compact.name,
+    museumId: compact.museumId,
+    rawMuseumName: compact.rawMuseumName,
+    canonicalMuseumName: compact.canonicalMuseumName,
+    museumType: compact.museumType,
+    museumGrade: compact.museumGrade,
+    museumProvince: compact.museumProvince,
+    museumCity: compact.museumCity,
+    museumCoverImageUrl: compact.museumCoverImageUrl,
+    museumCoverThumbnailUrl: compact.museumCoverThumbnailUrl,
     dynasty: compact.dynasty,
     period: compact.period,
     museum: compact.museum,
@@ -239,6 +292,10 @@ export function generateRagDocument(artifact: Artifact): RagDocument {
     `文物名称：${ai.name}`,
     `时代/朝代：${ai.period}`,
     `馆藏机构：${ai.museum}`,
+    ai.rawMuseumName && ai.rawMuseumName !== ai.canonicalMuseumName ? `原始馆藏写法：${ai.rawMuseumName}` : "",
+    ai.museumType ? `博物馆类型：${ai.museumType}` : "",
+    ai.museumGrade ? `博物馆等级：${ai.museumGrade}` : "",
+    [ai.museumProvince, ai.museumCity].filter(Boolean).length ? `博物馆省市：${[ai.museumProvince, ai.museumCity].filter(Boolean).join(" / ")}` : "",
     `类别：${ai.category}`,
     `材质：${ai.material}`,
     `尺寸：${ai.dimensions}`,
@@ -259,6 +316,15 @@ export function generateRagDocument(artifact: Artifact): RagDocument {
       category: ai.category,
       material: ai.material,
       museum: ai.museum,
+      museumId: ai.museumId,
+      rawMuseumName: ai.rawMuseumName,
+      canonicalMuseumName: ai.canonicalMuseumName,
+      museumType: ai.museumType,
+      museumGrade: ai.museumGrade,
+      museumProvince: ai.museumProvince,
+      museumCity: ai.museumCity,
+      museumCoverImageUrl: ai.museumCoverImageUrl,
+      museumCoverThumbnailUrl: ai.museumCoverThumbnailUrl,
       tags: ai.tags,
       imageUrl: ai.imageUrl,
       localImageUrl: ai.localImageUrl,

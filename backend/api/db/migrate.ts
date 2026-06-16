@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { db } from "./client";
 import { migrateArtifactDetails } from "./migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./upgradeArtifactsMuseumFk";
+import { ensureMuseumSchema, seedBuiltInMuseumAliases } from "../../museum-normalizer";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
@@ -20,6 +21,8 @@ async function main() {
   if (up.migrated) {
     console.log("DB migrate: upgraded artifacts.museum → museum_id + museums");
   }
+  await ensureMuseumSchema(db);
+  await seedBuiltInMuseumAliases(db);
   await migrateArtifactDetails(db);
   await db.end();
   console.log("DB migrate OK");

@@ -57,6 +57,8 @@ import { migrateArtifactDetails } from "./backend/api/db/migrateArtifactDetails"
 import { upgradeArtifactsMuseumFk } from "./backend/api/db/upgradeArtifactsMuseumFk";
 import { getArtifactFromDb, listArtifactsFromDb, syncImportedArtifactsToDb } from "./backend/api/db/syncImportedArtifacts";
 import { searchRelics as searchRelicsInDb } from "./backend/api/db/relicSearch";
+import { museumRoutes } from "./backend/api/routes/museumRoutes";
+import { ensureMuseumSchema, seedBuiltInMuseumAliases } from "./backend/museum-normalizer";
 import {
   createArtifact,
   deleteArtifact,
@@ -164,6 +166,8 @@ function getSingleQueryParam(value: string | string[] | undefined) {
 const unifiedDbReady = (async () => {
   try {
     await upgradeArtifactsMuseumFk(appDb);
+    await ensureMuseumSchema(appDb);
+    await seedBuiltInMuseumAliases(appDb);
     await migrateArtifactDetails(appDb);
     const sync = await syncImportedArtifactsToDb(appDb);
     if (!sync.skipped) {
@@ -704,8 +708,13 @@ function filterArtifacts(
   params: {
     q?: string;
     museum?: string;
+    museumId?: string;
+    canonicalMuseumName?: string;
+    museumProvince?: string;
+    museumCity?: string;
     period?: string;
     culture?: string;
+    category?: string;
     limit?: number;
   },
 ) {
@@ -713,9 +722,21 @@ function filterArtifacts(
   const limit = params.limit ?? artifacts.length;
 
   let subset = artifacts
-    .filter((artifact) => !params.museum || String(artifactMuseumRaw(artifact) ?? "") === params.museum)
+    .filter((artifact) => {
+      const record = artifact as unknown as Record<string, unknown>;
+      if (params.museumId && String(record.museumId ?? record.museum_id ?? "") !== params.museumId) return false;
+      if (params.canonicalMuseumName) {
+        const canonical = String(record.canonicalMuseumName ?? record.canonical_museum_name ?? artifactMuseumRaw(artifact) ?? "");
+        if (canonical !== params.canonicalMuseumName) return false;
+      }
+      if (params.museumProvince && String(record.museumProvince ?? record.museum_province ?? "") !== params.museumProvince) return false;
+      if (params.museumCity && String(record.museumCity ?? record.museum_city ?? "") !== params.museumCity) return false;
+      if (params.museum && String(artifactMuseumRaw(artifact) ?? "") !== params.museum) return false;
+      return true;
+    })
     .filter((artifact) => !params.period || String(artifactEraRaw(artifact) ?? "").includes(params.period))
-    .filter((artifact) => !params.culture || String(artifactCultureRaw(artifact) ?? "").includes(params.culture));
+    .filter((artifact) => !params.culture || String(artifactCultureRaw(artifact) ?? "").includes(params.culture))
+    .filter((artifact) => !params.category || String(artifactCategoryRaw(artifact) ?? "").includes(params.category));
 
   if (!keyword) {
     return subset.slice(0, limit);
@@ -2057,6 +2078,7 @@ async function startServer() {
   app.post("/api/admin/artifacts/:id/image-url", requireAdmin, uploadArtifactImageFromUrl);
   app.put("/api/artifacts/:id", requireAdmin, updateArtifact);
   app.delete("/api/artifacts/:id", requireAdmin, deleteArtifact);
+  app.use(museumRoutes);
 
   // --- User profile & favorites ---
   app.get("/api/users/me/profile", authMiddleware, async (req: AuthedRequest, res) => {
@@ -2187,8 +2209,13 @@ async function startServer() {
       const filteredArtifacts = filterArtifacts(artifacts, {
         q: getSingleQueryParam(req.query.q as string | string[] | undefined),
         museum: getSingleQueryParam(req.query.museum as string | string[] | undefined),
+        museumId: getSingleQueryParam(req.query.museumId as string | string[] | undefined),
+        canonicalMuseumName: getSingleQueryParam(req.query.canonicalMuseumName as string | string[] | undefined),
+        museumProvince: getSingleQueryParam(req.query.museumProvince as string | string[] | undefined),
+        museumCity: getSingleQueryParam(req.query.museumCity as string | string[] | undefined),
         period: getSingleQueryParam(req.query.period as string | string[] | undefined),
         culture: getSingleQueryParam(req.query.culture as string | string[] | undefined),
+        category: getSingleQueryParam(req.query.category as string | string[] | undefined),
         limit: Number.isFinite(limitValue) ? limitValue : 5000,
       });
 
@@ -2426,6 +2453,7 @@ async function startServer() {
 
   app.use("/artifact-images", express.static(path.join(process.cwd(), "public", "artifact-images")));
   app.use("/exhibition-covers", express.static(path.join(process.cwd(), "public", "exhibition-covers")));
+  app.use("/museum-images", express.static(path.join(process.cwd(), "public", "museum-images")));
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {

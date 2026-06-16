@@ -2,6 +2,9 @@ import { Pool } from "pg";
 import { newDb } from "pg-mem";
 import fs from "fs";
 import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
 type DbLike = Pick<Pool, "query" | "end">;
 
@@ -45,4 +48,3 @@ const usePgMem =
   (!process.env.DB_HOST && !process.env.DB_NAME);
 
 export const db: DbLike = usePgMem ? createPgMemDb() : createPostgresDb();
-

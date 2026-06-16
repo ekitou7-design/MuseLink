@@ -35,6 +35,54 @@ IMAGE_MODE_LABELS = {
     "local-complete": "本地图已完成",
     "no-local": "无本地图",
 }
+PROVINCE_OPTIONS = ["北京", "上海", "天津", "重庆", "河北", "山西", "辽宁", "吉林", "黑龙江", "江苏", "浙江", "安徽", "福建", "江西", "山东", "河南", "湖北", "湖南", "广东", "海南", "四川", "贵州", "云南", "陕西", "甘肃", "青海", "台湾", "内蒙古", "广西", "西藏", "宁夏", "新疆", "香港", "澳门", "其他", "未填写"]
+CHINA_PROVINCE_CITIES = {
+    "北京": ["北京"], "上海": ["上海"], "天津": ["天津"], "重庆": ["重庆"],
+    "河北": ["石家庄", "唐山", "保定", "邯郸", "秦皇岛", "承德", "张家口", "廊坊", "沧州", "衡水", "邢台"],
+    "山西": ["太原", "大同", "临汾", "运城", "晋中", "长治", "晋城", "朔州", "忻州", "吕梁", "阳泉"],
+    "辽宁": ["沈阳", "大连", "鞍山", "抚顺", "锦州", "丹东", "本溪", "营口", "阜新", "辽阳", "盘锦", "铁岭", "朝阳", "葫芦岛"],
+    "吉林": ["长春", "吉林", "延边", "通化", "四平", "辽源", "白山", "松原", "白城"],
+    "黑龙江": ["哈尔滨", "齐齐哈尔", "牡丹江", "佳木斯", "大庆", "鸡西", "鹤岗", "双鸭山", "伊春", "七台河", "黑河", "绥化", "大兴安岭"],
+    "江苏": ["南京", "苏州", "无锡", "常州", "徐州", "扬州", "镇江", "南通", "盐城", "泰州", "淮安", "连云港", "宿迁"],
+    "浙江": ["杭州", "宁波", "温州", "绍兴", "嘉兴", "湖州", "金华", "台州", "衢州", "舟山", "丽水"],
+    "安徽": ["合肥", "芜湖", "蚌埠", "安庆", "黄山", "阜阳", "淮南", "马鞍山", "淮北", "铜陵", "滁州", "宿州", "六安", "亳州", "池州", "宣城"],
+    "福建": ["福州", "厦门", "泉州", "漳州", "莆田", "三明", "南平", "龙岩", "宁德"],
+    "江西": ["南昌", "九江", "景德镇", "赣州", "上饶", "萍乡", "新余", "鹰潭", "吉安", "宜春", "抚州"],
+    "山东": ["济南", "青岛", "淄博", "潍坊", "烟台", "曲阜", "临沂", "枣庄", "东营", "济宁", "泰安", "威海", "日照", "德州", "聊城", "滨州", "菏泽"],
+    "河南": ["郑州", "洛阳", "开封", "安阳", "南阳", "许昌", "平顶山", "鹤壁", "新乡", "焦作", "濮阳", "漯河", "三门峡", "商丘", "信阳", "周口", "驻马店"],
+    "湖北": ["武汉", "宜昌", "襄阳", "荆州", "十堰", "黄石", "鄂州", "荆门", "孝感", "黄冈", "咸宁", "随州", "恩施"],
+    "湖南": ["长沙", "株洲", "湘潭", "岳阳", "衡阳", "常德", "邵阳", "张家界", "益阳", "郴州", "永州", "怀化", "娄底", "湘西"],
+    "广东": ["广州", "深圳", "佛山", "东莞", "珠海", "汕头", "中山", "韶关", "河源", "梅州", "惠州", "汕尾", "江门", "阳江", "湛江", "茂名", "肇庆", "清远", "潮州", "揭阳", "云浮"],
+    "海南": ["海口", "三亚", "儋州", "三沙"],
+    "四川": ["成都", "绵阳", "德阳", "乐山", "自贡", "广汉", "攀枝花", "泸州", "遂宁", "内江", "南充", "眉山", "宜宾", "广安", "达州", "雅安", "巴中", "资阳", "阿坝", "甘孜", "凉山"],
+    "贵州": ["贵阳", "遵义", "安顺", "毕节", "六盘水", "铜仁", "黔西南", "黔东南", "黔南"],
+    "云南": ["昆明", "大理", "丽江", "曲靖", "玉溪", "保山", "昭通", "普洱", "临沧", "楚雄", "红河", "文山", "西双版纳", "德宏", "怒江", "迪庆"],
+    "陕西": ["西安", "宝鸡", "咸阳", "渭南", "汉中", "延安", "榆林", "安康", "商洛", "铜川"],
+    "甘肃": ["兰州", "敦煌", "天水", "武威", "张掖", "嘉峪关", "金昌", "白银", "平凉", "酒泉", "庆阳", "定西", "陇南", "临夏", "甘南"],
+    "青海": ["西宁", "海东", "海北", "黄南", "海南", "果洛", "玉树", "海西"],
+    "台湾": ["台北", "台中", "台南", "高雄", "新北", "桃园"],
+    "内蒙古": ["呼和浩特", "包头", "鄂尔多斯", "赤峰", "呼伦贝尔", "通辽", "乌海", "乌兰察布", "巴彦淖尔", "兴安盟", "锡林郭勒", "阿拉善"],
+    "广西": ["南宁", "桂林", "柳州", "北海", "梧州", "防城港", "钦州", "贵港", "玉林", "百色", "贺州", "河池", "来宾", "崇左"],
+    "西藏": ["拉萨", "日喀则", "昌都", "林芝", "山南", "那曲", "阿里"],
+    "宁夏": ["银川", "吴忠", "固原", "石嘴山", "中卫"],
+    "新疆": ["乌鲁木齐", "吐鲁番", "喀什", "伊犁", "克拉玛依", "哈密", "昌吉", "博尔塔拉", "巴音郭楞", "阿克苏", "克孜勒苏", "和田", "塔城", "阿勒泰"],
+    "香港": ["香港"], "澳门": ["澳门"], "其他": ["未知地区"], "未填写": [],
+}
+MUSEUM_TYPE_OPTIONS = [
+    "国家级博物馆",
+    "省级博物馆",
+    "市县级博物馆",
+    "高校博物馆",
+    "遗址博物馆",
+    "专题博物馆",
+    "纪念馆",
+    "美术馆",
+    "考古/文物机构",
+    "宗教场馆",
+    "其他",
+]
+MUSEUM_GRADE_OPTIONS = ["一级", "二级", "三级", "未定级", "未知"]
+MUSEUM_LEVEL_OPTIONS = ["国家一级博物馆", "国家二级博物馆", "国家三级博物馆", "未定级", "未知"]
 
 
 def clean_value(value):
@@ -337,6 +385,7 @@ def attribute_value(artifact, name):
 
 def artifact_to_row(artifact):
     museum = pick(artifact, "museumName", "museum", "所属博物馆", "博物馆")
+    canonical_museum = pick(artifact, "canonicalMuseumName", "canonical_museum_name") or museum
     dynasty = pick(artifact, "dynasty", "period", "era", "朝代", "年代")
     local_image_url = pick(artifact, "localImageUrl", "local_image_url")
     local_thumbnail_url = pick(artifact, "localThumbnailUrl", "local_thumbnail_url")
@@ -367,6 +416,10 @@ def artifact_to_row(artifact):
         "id": clean_value(artifact.get("id")),
         "文物名称": pick(artifact, "name", "文物名称", "名称"),
         "所属博物馆": museum,
+        "标准博物馆": canonical_museum,
+        "museumId": pick(artifact, "museumId", "museum_id"),
+        "museumProvince": pick(artifact, "museumProvince", "museum_province"),
+        "museumCity": pick(artifact, "museumCity", "museum_city"),
         "朝代": dynasty,
         "类别": pick(artifact, "category", "类别", "文物类别"),
         "等级": pick(artifact, "level", "等级") or attribute_value(artifact, "等级"),
@@ -393,13 +446,137 @@ def artifact_to_row(artifact):
     return row
 
 
-def load_data(query=""):
+def load_data(query="", museum_id="", canonical_museum_name=""):
     params = {"limit": "10000"}
     if query:
         params["q"] = query
+    if museum_id:
+        params["museumId"] = museum_id
+    if canonical_museum_name:
+        params["canonicalMuseumName"] = canonical_museum_name
     response = api_request(f"/api/artifacts?{urlencode(params)}")
     artifacts = response.get("artifacts") or []
     return [artifact_to_row(artifact) for artifact in artifacts]
+
+
+def load_museums(params=None, auth=False):
+    params = params or {}
+    query = urlencode({key: value for key, value in params.items() if clean_value(value)})
+    path = "/api/admin/museums" if auth else "/api/museums"
+    if query:
+        path = f"{path}?{query}"
+    try:
+        response = api_request(path, auth=auth)
+    except RuntimeError:
+        if auth:
+            response = api_request(path.replace("/api/admin/museums", "/api/museums"), auth=False)
+        else:
+            raise
+    museums = response.get("museums") or []
+    return museums if isinstance(museums, list) else []
+
+
+def museum_label(museum):
+    return clean_value(museum.get("name")) or clean_value(museum.get("id")) or "未命名博物馆"
+
+
+def museum_count(museum):
+    try:
+        return int(museum.get("artifactCount") or museum.get("artifact_count") or 0)
+    except Exception:
+        return 0
+
+
+def museum_has_cover(museum):
+    return bool(
+        clean_value(museum.get("storageCoverThumbnailUrl"))
+        or clean_value(museum.get("localCoverThumbnailUrl"))
+        or clean_value(museum.get("coverThumbnailUrl"))
+        or clean_value(museum.get("storageCoverImageUrl"))
+        or clean_value(museum.get("localCoverImageUrl"))
+        or clean_value(museum.get("coverImageUrl"))
+        or clean_value(museum.get("displayCoverUrl"))
+        or clean_value(museum.get("imageUrl"))
+    )
+
+
+def museum_cover_image_url(museum):
+    return (
+        clean_value(museum.get("storageCoverImageUrl"))
+        or clean_value(museum.get("localCoverImageUrl"))
+        or clean_value(museum.get("coverImageUrl"))
+        or clean_value(museum.get("displayCoverUrl"))
+        or clean_value(museum.get("imageUrl"))
+    )
+
+
+def museum_cover_thumbnail_url(museum):
+    return (
+        clean_value(museum.get("storageCoverThumbnailUrl"))
+        or clean_value(museum.get("localCoverThumbnailUrl"))
+        or clean_value(museum.get("coverThumbnailUrl"))
+        or museum_cover_image_url(museum)
+    )
+
+
+def short_datetime(value):
+    text = clean_value(value)
+    if not text:
+        return "未记录"
+    normalized = text.replace("Z", "+00:00")
+    try:
+        return datetime.fromisoformat(normalized).strftime("%Y-%m-%d %H:%M")
+    except Exception:
+        pass
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
+        try:
+            return datetime.strptime(text[:19], fmt).strftime("%Y-%m-%d %H:%M")
+        except Exception:
+            continue
+    return text[:16].replace("T", " ") if len(text) > 16 else text
+
+
+def museum_filter_options(museums):
+    provinces = Counter(clean_value(museum.get("province")) or "其他" for museum in museums)
+    cities = Counter(clean_value(museum.get("city")) or "未知地区" for museum in museums)
+    types = Counter(clean_value(museum.get("type")) or "其他" for museum in museums)
+    grades = Counter(clean_value(museum.get("grade")) or "未定级" for museum in museums)
+    return {
+        "provinces": provinces.most_common(),
+        "cities": cities.most_common(),
+        "types": types.most_common(),
+        "grades": grades.most_common(),
+    }
+
+
+def all_city_options():
+    seen = []
+    for cities in CHINA_PROVINCE_CITIES.values():
+        for city in cities:
+            if city not in seen:
+                seen.append(city)
+    return seen
+
+
+def normalize_museum_province(value):
+    text = clean_value(value)
+    if text in ("", "未知地区"):
+        return ""
+    return text if text in PROVINCE_OPTIONS else ""
+
+
+def normalize_museum_city(province, value):
+    text = clean_value(value)
+    if text == "__custom__":
+        return ""
+    if not text:
+        return ""
+    return text
+
+
+def normalize_option(value, options, fallback):
+    text = clean_value(value)
+    return text if text in options else fallback
 
 
 def filter_rows_by_image_mode(rows, mode):
@@ -566,7 +743,7 @@ HTML_TEMPLATE = """
         .danger-zone, .bulk-zone { border: 1px solid #e6b0aa; background: #fff5f5; border-radius: 8px; padding: 16px; margin-top: 20px; }
         .edit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
         .field label { display: block; font-weight: bold; margin-bottom: 6px; }
-        .field input, .field textarea { width: 100%; }
+        .field input, .field textarea, .field select { width: 100%; }
         .field textarea { min-height: 90px; resize: vertical; }
         .muted { color: #8b4513; font-size: 14px; }
         .thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid #d2b48c; background: #fffaf0; }
@@ -591,10 +768,37 @@ HTML_TEMPLATE = """
         .bulk-download-panel.active { display: block; }
         .bulk-progress { font-weight: bold; color: #8b4513; }
         .bulk-failures { margin-top: 8px; color: #c0392b; font-size: 13px; max-height: 180px; overflow: auto; }
+        .compact-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; min-width: 520px; }
+        .compact-form input, .compact-form textarea { width: 100%; padding: 8px; font-size: 13px; }
+        .filter-chip { display: inline-block; padding: 6px 10px; border-radius: 999px; background: #fffaf0; border: 1px solid #ead7bd; color: #8b4513; font-weight: bold; font-size: 13px; }
+        .museum-filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; align-items: end; }
+        .mini-note { font-size: 12px; color: #8b4513; line-height: 1.5; }
+        .sheet-tabs { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 20px; border-bottom: 2px solid #8b4513; }
+        .sheet-tab { padding: 13px 22px; border: 1px solid #d2b48c; border-bottom: none; background: #fffaf0; color: #4a3728; text-decoration: none; font-weight: bold; border-radius: 8px 8px 0 0; margin-right: 6px; }
+        .sheet-tab.active { background: #8b4513; color: #fffaf0; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .field-help { font-size: 12px; color: #8b4513; margin-top: 4px; line-height: 1.45; }
+        .empty-value { color: #9b8b7a; font-style: italic; }
+        .museum-edit-row { display: none; }
+        .museum-edit-row.active { display: table-row; }
+        .museum-edit-cell { background: #fffaf0; border-top: 0; }
+        .museum-edit-form { padding: 14px; border: 1px solid #ead7bd; border-radius: 8px; background: white; }
+        .museum-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .museum-thumb { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #ead7bd; background: #f4f1ea; display: block; }
+        .empty-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 64px; min-height: 28px; padding: 4px 8px; border-radius: 999px; background: #eee8df; color: #8c7b68; font-size: 12px; font-weight: bold; }
+        .date-cell { white-space: nowrap; max-width: 128px; font-size: 13px; color: #6d5b49; }
+        .museum-cover-panel { margin-top: 16px; padding: 16px; border: 1px dashed #d2b48c; border-radius: 8px; background: #fffaf0; }
+        .museum-cover-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 10px; }
+        .museum-cover-card { border: 1px solid #ead7bd; border-radius: 8px; background: white; padding: 10px; }
+        .museum-cover-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 6px; border: 1px solid #ead7bd; background: #f4f1ea; }
+        .museum-cover-status { margin-top: 8px; min-height: 20px; font-weight: bold; }
+        .path-box { margin-top: 8px; padding: 8px; border-radius: 6px; background: #f4f1ea; color: #4a3728; word-break: break-all; font-family: monospace; font-size: 12px; }
     </style>
     <script>
         var bulkDownloadCandidates = {{ bulk_download_candidates_json|safe }};
         var bulkDownloadLimit = {{ bulk_download_limit_json|safe }};
+        var museumLocationOptions = {{ museum_location_options_json|safe }};
 
         function toggleAll(source) {
             document.querySelectorAll('input[name="selected"]').forEach(function(box) { box.checked = source.checked; });
@@ -660,6 +864,120 @@ HTML_TEMPLATE = """
             var detail = (data && (data.error || data.message || data.detail || data.__rawText)) || "";
             return "HTTP " + response.status + "：" + (detail || fallback);
         }
+        function toggleMuseumEdit(museumId) {
+            var row = document.getElementById("museumEdit-" + museumId);
+            if (row) row.classList.toggle("active");
+        }
+        function setMuseumCoverMessage(museumId, message, isError) {
+            var el = document.getElementById("museumCoverMessage-" + museumId);
+            if (!el) return;
+            el.textContent = message || "";
+            el.style.color = isError ? "#c0392b" : "#047857";
+        }
+        async function uploadMuseumCover(museumId) {
+            var input = document.getElementById("museumCoverFile-" + museumId);
+            var button = document.getElementById("museumCoverUploadButton-" + museumId);
+            var file = input && input.files && input.files[0];
+            var token = currentAdminToken();
+            if (!file) {
+                setMuseumCoverMessage(museumId, "请先选择要上传的图片。", true);
+                return;
+            }
+            var validation = validateImageFile(file);
+            if (validation) {
+                setMuseumCoverMessage(museumId, validation, true);
+                return;
+            }
+            if (!token) {
+                setMuseumCoverMessage(museumId, "请先在“导入与工具”页签填写并保存管理员 token。", true);
+                return;
+            }
+            localStorage.setItem("muselink_admin_token", token);
+            localStorage.setItem("muselink_token", token);
+            var formData = new FormData();
+            formData.set("image", file);
+            if (button) button.disabled = true;
+            setMuseumCoverMessage(museumId, "上传中...", false);
+            try {
+                var apiBaseUrl = {{ api_base_url_json|safe }};
+                var response = await fetch(apiBaseUrl.replace(/\/+$/, "") + "/api/admin/museums/" + encodeURIComponent(museumId) + "/cover", {
+                    method: "POST",
+                    headers: { Authorization: "Bearer " + token },
+                    body: formData
+                });
+                var data = await parseJsonResponse(response);
+                if (!response.ok) throw new Error(responseError(response, data, "上传失败"));
+                var syncMessage = data.aiRagSync && data.aiRagSync.coverage ? " AI/RAG 覆盖率：" + data.aiRagSync.coverage : "";
+                setMuseumCoverMessage(museumId, "封面已上传。" + syncMessage, false);
+                setTimeout(function () { window.location.reload(); }, 500);
+            } catch (error) {
+                setMuseumCoverMessage(museumId, error instanceof Error ? error.message : String(error), true);
+                if (button) button.disabled = false;
+            }
+        }
+        async function deleteMuseumCover(museumId) {
+            var button = document.getElementById("museumCoverDeleteButton-" + museumId);
+            var token = currentAdminToken();
+            if (!token) {
+                setMuseumCoverMessage(museumId, "请先在“导入与工具”页签填写并保存管理员 token。", true);
+                return;
+            }
+            if (!confirm("确定删除这个博物馆封面吗？")) return;
+            localStorage.setItem("muselink_admin_token", token);
+            localStorage.setItem("muselink_token", token);
+            if (button) button.disabled = true;
+            setMuseumCoverMessage(museumId, "删除中...", false);
+            try {
+                var apiBaseUrl = {{ api_base_url_json|safe }};
+                var response = await fetch(apiBaseUrl.replace(/\/+$/, "") + "/api/admin/museums/" + encodeURIComponent(museumId) + "/cover", {
+                    method: "DELETE",
+                    headers: { Authorization: "Bearer " + token }
+                });
+                var data = await parseJsonResponse(response);
+                if (!response.ok) throw new Error(responseError(response, data, "删除失败"));
+                var syncMessage = data.aiRagSync && data.aiRagSync.coverage ? " AI/RAG 覆盖率：" + data.aiRagSync.coverage : "";
+                setMuseumCoverMessage(museumId, "封面已删除。" + syncMessage, false);
+                setTimeout(function () { window.location.reload(); }, 500);
+            } catch (error) {
+                setMuseumCoverMessage(museumId, error instanceof Error ? error.message : String(error), true);
+                if (button) button.disabled = false;
+            }
+        }
+        function fillCitySelect(select, province, currentCity) {
+            if (!select) return;
+            var cities = museumLocationOptions[province] || [];
+            var selectedCity = currentCity || select.dataset.currentCity || "";
+            var options = ['<option value="">未填写</option>'].concat(cities.map(function (city) {
+                return '<option value="' + city.replace(/"/g, '&quot;') + '">' + city + '</option>';
+            }));
+            options.push('<option value="__custom__">自定义城市...</option>');
+            select.innerHTML = options.join("");
+            if (selectedCity && cities.indexOf(selectedCity) === -1) {
+                select.value = "__custom__";
+            } else {
+                select.value = selectedCity;
+            }
+        }
+        function bindProvinceCityInputs(scope) {
+            (scope || document).querySelectorAll("[data-city-select]").forEach(function (citySelect) {
+                var provinceInput = document.getElementById(citySelect.dataset.provinceSource || "");
+                var customInput = document.getElementById(citySelect.dataset.customCityInput || "");
+                var hiddenInput = document.getElementById(citySelect.dataset.cityField || "");
+                var updateHidden = function () {
+                    var useCustom = citySelect.value === "__custom__";
+                    if (customInput) customInput.style.display = useCustom ? "block" : "none";
+                    if (hiddenInput) hiddenInput.value = useCustom ? ((customInput && customInput.value.trim()) || "") : citySelect.value;
+                };
+                var updateOptions = function () {
+                    fillCitySelect(citySelect, provinceInput ? provinceInput.value.trim() : "", hiddenInput ? hiddenInput.value.trim() : "");
+                    updateHidden();
+                };
+                updateOptions();
+                if (provinceInput) provinceInput.addEventListener("change", updateOptions);
+                citySelect.addEventListener("change", updateHidden);
+                if (customInput) customInput.addEventListener("input", updateHidden);
+            });
+        }
         function onRowImageSelected(input, artifactId) {
             var file = input.files && input.files[0];
             var preview = document.getElementById("rowPreview-" + artifactId);
@@ -698,7 +1016,7 @@ HTML_TEMPLATE = """
                 return;
             }
             if (!token) {
-                setRowMessage(artifactId, "请先在列表顶部填写管理员 token。", true);
+                setRowMessage(artifactId, "请先在“导入与工具”页签填写并保存管理员 token。", true);
                 return;
             }
             localStorage.setItem("muselink_admin_token", token);
@@ -737,7 +1055,7 @@ HTML_TEMPLATE = """
                 return;
             }
             if (!token) {
-                setRowMessage(artifactId, "请先在列表顶部填写管理员 token。", true);
+                setRowMessage(artifactId, "请先在“导入与工具”页签填写并保存管理员 token。", true);
                 return;
             }
             localStorage.setItem("muselink_admin_token", token);
@@ -765,7 +1083,7 @@ HTML_TEMPLATE = """
         async function bulkDownloadExternalImages() {
             var token = currentAdminToken();
             if (!token) {
-                setBulkStatus("请先填写管理员 token。", []);
+                setBulkStatus("请先在“导入与工具”页签填写并保存管理员 token。", []);
                 return;
             }
             var candidates = Array.isArray(bulkDownloadCandidates) ? bulkDownloadCandidates.slice() : [];
@@ -855,6 +1173,7 @@ HTML_TEMPLATE = """
             if (bulkButton) {
                 bulkButton.addEventListener("click", bulkDownloadExternalImages);
             }
+            bindProvinceCityInputs(document);
         });
     </script>
 </head>
@@ -866,6 +1185,12 @@ HTML_TEMPLATE = """
     <div class="container">
         {% if error %}<div class="card" style="border-color:#c0392b;color:#c0392b;">{{ error }}</div>{% endif %}
 
+        <div class="sheet-tabs">
+            <a class="sheet-tab {% if active_tab == 'artifacts' %}active{% endif %}" href="/?tab=artifacts">文物管理</a>
+            <a class="sheet-tab {% if active_tab == 'museums' %}active{% endif %}" href="/?tab=museums">博物馆管理</a>
+            <a class="sheet-tab {% if active_tab == 'import' %}active{% endif %}" href="/?tab=import">导入与工具</a>
+        </div>
+        <div class="tab-panel {% if active_tab == 'import' %}active{% endif %}">
         <div class="card">
             <h2>📜 馆藏文物导入</h2>
             <p class="muted">上传会调用 /api/import/run，导入完成后由后端同步到统一 artifacts 表。</p>
@@ -890,15 +1215,313 @@ HTML_TEMPLATE = """
                 </div>
             </form>
         </div>
-
         <div class="card">
-            <h2>🖼️ 当前数字馆藏清单</h2>
+            <h2>🛠️ 管理工具</h2>
+            <p class="muted">这里放后台维护用的 token、批量补图报告和导入相关工具。</p>
+            <div class="toolbar">
+                <label style="font-weight:bold;">
+                    管理员 token
+                    <input id="adminToken" type="text" value="{{ admin_token }}" placeholder="上传图片和批量补图需要 Bearer token" style="min-width: 360px; margin-left: 8px;">
+                </label>
+                <button type="button" class="btn btn-secondary" onclick="persistAdminToken()">保存 token</button>
+                <a class="btn btn-secondary" href="/bulk-image-download-report" target="_blank">查看批量图片下载报告</a>
+            </div>
+        </div>
+        </div>
+
+        <div class="tab-panel {% if active_tab == 'museums' %}active{% endif %}">
+        <div class="card">
+            <h2 id="museums">🏛️ 博物馆管理</h2>
+            <p class="muted">管理 museums 表、博物馆所在地、类型等级，并查看每个博物馆下有哪些文物。</p>
+            <form action="/" method="get" class="museum-filter-grid">
+                <input type="hidden" name="tab" value="museums">
+                <div>
+                    <label>搜索标准名 / 别名 / 省市</label><br>
+                    <input type="text" name="museum_q" value="{{ museum_query }}" placeholder="例如：南京大学、江苏、苏州" style="width:100%;">
+                </div>
+                <div>
+                    <label>省份</label><br>
+                    <select id="museumFilterProvince" name="province" style="width:100%;">
+                        <option value="">全部省份</option>
+                        {% for province in province_options %}
+                            <option value="{{ province }}" {% if museum_province == province %}selected{% endif %}>{{ province }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="mini-note">使用标准省级行政区。</div>
+                </div>
+                <div>
+                    <label>城市</label><br>
+                    <input id="museumFilterCityField" type="hidden" name="city" value="{{ museum_city }}">
+                    <select id="museumFilterCitySelect" style="width:100%;" data-province-source="museumFilterProvince" data-city-select="museumFilterCitySelect" data-city-field="museumFilterCityField" data-custom-city-input="museumFilterCustomCity"></select>
+                    <input id="museumFilterCustomCity" type="text" value="{{ museum_city }}" placeholder="输入自定义城市" style="display:none;width:100%;margin-top:8px;">
+                    <div class="mini-note">先选省份后会优先显示对应城市。</div>
+                </div>
+                <div>
+                    <label>类型</label><br>
+                    <select name="type" style="width:100%;">
+                        <option value="">全部类型</option>
+                        {% for type in museum_type_options %}
+                            <option value="{{ type }}" {% if museum_type == type %}selected{% endif %}>{{ type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label>等级</label><br>
+                    <select name="grade" style="width:100%;">
+                        <option value="">全部等级</option>
+                        {% for grade in museum_grade_options %}
+                            <option value="{{ grade }}" {% if museum_grade == grade %}selected{% endif %}>{{ grade }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label>状态</label><br>
+                    <select name="museum_status" style="width:100%;">
+                        <option value="all" {% if museum_status == "all" %}selected{% endif %}>全部</option>
+                        <option value="with-artifacts" {% if museum_status == "with-artifacts" %}selected{% endif %}>只看有文物</option>
+                        <option value="without-artifacts" {% if museum_status == "without-artifacts" %}selected{% endif %}>只看无文物</option>
+                        <option value="created-by-import" {% if museum_status == "created-by-import" %}selected{% endif %}>只看自动创建</option>
+                        <option value="no-cover" {% if museum_status == "no-cover" %}selected{% endif %}>只看无封面图</option>
+                        <option value="duplicates" {% if museum_status == "duplicates" %}selected{% endif %}>只看疑似重复</option>
+                    </select>
+                </div>
+                <div class="toolbar" style="margin-top:0;">
+                    <button type="submit" class="btn">筛选博物馆</button>
+                    <a href="/?tab=museums" class="btn btn-secondary">重置筛选</a>
+                </div>
+            </form>
+            <div class="toolbar">
+                {% if museum_query %}<span class="filter-chip">搜索：{{ museum_query }}</span>{% endif %}
+                {% if museum_province %}<span class="filter-chip">省份：{{ museum_province }}</span>{% endif %}
+                {% if museum_city %}<span class="filter-chip">城市：{{ museum_city }}</span>{% endif %}
+                {% if museum_type %}<span class="filter-chip">类型：{{ museum_type }}</span>{% endif %}
+                {% if museum_grade %}<span class="filter-chip">等级：{{ museum_grade }}</span>{% endif %}
+                {% if museum_status != "all" %}<span class="filter-chip">状态：{{ museum_status }}</span>{% endif %}
+            </div>
+            {% if filtered_museums %}
+                <div style="overflow-x:auto; max-height: 520px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>博物馆</th>
+                                <th>省市</th>
+                                <th>类型 / 等级</th>
+                                <th>文物</th>
+                                <th>封面</th>
+                                <th>更新时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for museum in filtered_museums %}
+                                {% set mid = museum.id|string %}
+                                {% set cover_thumb = museum_cover_thumbnail_url(museum) %}
+                                {% set cover_full = museum_cover_image_url(museum) or cover_thumb %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ museum_label(museum) }}</strong>
+                                        <div class="mini-note">ID {{ mid }} · {% if museum.createdByImport %}自动创建{% else %}人工维护{% endif %}</div>
+                                        {% if museum.aliases %}
+                                            <div class="mini-note">别名：{{ museum.aliases|join("，") }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ museum.province or "其他" }} / {{ museum.city or "未知地区" }}
+                                        {% if not museum.province and not museum.city %}<div class="mini-note empty-value">未知地区</div>{% endif %}
+                                    </td>
+                                    <td>{{ museum.type or "其他" }}<br>{{ museum.grade or museum.level or "未定级" }}</td>
+                                    <td>
+                                        {{ museum_count(museum) }} 件<br>
+                                    </td>
+                                    <td>
+                                        {% if cover_thumb %}
+                                            <a href="{{ image_url(cover_full) }}" target="_blank" title="打开封面原图">
+                                                <img class="museum-thumb" src="{{ image_url(cover_thumb) }}" alt="{{ museum_label(museum) }}封面">
+                                            </a>
+                                        {% else %}
+                                            <span class="empty-badge">无封面</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="date-cell">{{ short_datetime(museum.updatedAt or museum.updated_at) }}</td>
+                                    <td>
+                                        <div class="museum-actions">
+                                            <a class="btn btn-secondary" href="/?tab=artifacts&museumId={{ mid }}" style="padding:6px 10px;font-size:13px;">查看文物</a>
+                                            <button type="button" class="btn" onclick="toggleMuseumEdit('{{ mid }}')" style="padding:6px 10px;font-size:13px;">编辑博物馆</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="museumEdit-{{ mid }}" class="museum-edit-row">
+                                    <td class="museum-edit-cell" colspan="7">
+                                        <form class="museum-edit-form" action="/museum/update/{{ mid }}" method="post">
+                                            <div class="edit-grid">
+                                                <div class="field">
+                                                    <label>标准名称</label>
+                                                    <input type="text" name="name" value="{{ museum_label(museum) }}" placeholder="未填写">
+                                                    <div class="field-help">用于后台列表、文物所属馆和标准馆名展示。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>省份</label>
+                                                    <select id="museumProvince-{{ mid }}" name="province">
+                                                        <option value="">未填写</option>
+                                                        {% for province in province_options %}
+                                                            <option value="{{ province }}" {% if museum.province == province %}selected{% endif %}>{{ province }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="field-help">用于省份 tab 和地区筛选。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>城市</label>
+                                                    <input id="museumCityField-{{ mid }}" type="hidden" name="city" value="{{ museum.city or '' }}">
+                                                    <select id="museumCitySelect-{{ mid }}" data-province-source="museumProvince-{{ mid }}" data-city-select="museumCitySelect-{{ mid }}" data-city-field="museumCityField-{{ mid }}" data-custom-city-input="museumCustomCity-{{ mid }}"></select>
+                                                    <input id="museumCustomCity-{{ mid }}" type="text" value="{{ museum.city or '' }}" placeholder="输入自定义城市" style="display:none;margin-top:8px;">
+                                                    <div class="field-help">用于城市筛选和 RAG 所在地。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>类型</label>
+                                                    <select name="type">
+                                                        {% for type in museum_type_options %}
+                                                            <option value="{{ type }}" {% if (museum.type or '其他') == type %}selected{% endif %}>{{ type }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="field-help">高校博物馆、地方博物馆、遗址博物馆、专题博物馆等。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>等级</label>
+                                                    <select name="grade">
+                                                        {% for grade in museum_grade_options %}
+                                                            <option value="{{ grade }}" {% if (museum.grade or '未定级') == grade %}selected{% endif %}>{{ grade }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="field-help">一级、二级、三级、未定级。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>定级</label>
+                                                    <select name="level">
+                                                        {% for level in museum_level_options %}
+                                                            <option value="{{ level }}" {% if (museum.level or '未定级') == level %}selected{% endif %}>{{ level }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="field-help">保留给原有 level 字段，兼容旧数据。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>地址</label>
+                                                    <input type="text" name="address" value="{{ museum.address or '' }}" placeholder="未填写">
+                                                    <div class="field-help">用于后台查看和后续地图定位。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>官网</label>
+                                                    <input type="text" name="officialWebsite" value="{{ museum.officialWebsite or '' }}" placeholder="未填写">
+                                                    <div class="field-help">博物馆官方网站链接。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>开放时间</label>
+                                                    <input type="text" name="openingHours" value="{{ museum.openingHours or '' }}" placeholder="未填写">
+                                                    <div class="field-help">面向展示和后台查看的开放时间。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>门票信息</label>
+                                                    <input type="text" name="ticketInfo" value="{{ museum.ticketInfo or '' }}" placeholder="未填写">
+                                                    <div class="field-help">免费、预约、票价等信息。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>联系方式</label>
+                                                    <input type="text" name="contact" value="{{ museum.contact or '' }}" placeholder="未填写">
+                                                    <div class="field-help">电话、邮箱或其他联系渠道。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>简介</label>
+                                                    <textarea name="description" placeholder="未填写">{{ museum.description or '' }}</textarea>
+                                                    <div class="field-help">展示和 AI/RAG 可用的博物馆说明。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>历史</label>
+                                                    <textarea name="history" placeholder="未填写">{{ museum.history or '' }}</textarea>
+                                                    <div class="field-help">建馆沿革、机构背景和历史说明。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>特色说明</label>
+                                                    <textarea name="highlights" placeholder="未填写">{{ museum.highlights or '' }}</textarea>
+                                                    <div class="field-help">用于记录重点馆藏、展陈特色或备注。</div>
+                                                </div>
+                                                <div class="field">
+                                                    <label>是否推荐</label>
+                                                    <label style="display:flex;align-items:center;gap:8px;font-weight:normal;">
+                                                        <input type="checkbox" name="isFeatured" value="true" {% if museum.isFeatured %}checked{% endif %}>
+                                                        首页推荐
+                                                    </label>
+                                                    <div class="field-help">勾选后作为推荐博物馆候选。</div>
+                                                </div>
+                                            </div>
+                                            <div class="museum-cover-panel">
+                                                <strong>博物馆封面图上传 / 替换</strong>
+                                                <div class="path-box">当前博物馆 ID：{{ mid }}</div>
+                                                {% if cover_thumb %}
+                                                    <div class="museum-cover-grid">
+                                                        <div class="museum-cover-card">
+                                                            <strong>当前封面原图</strong>
+                                                            <img src="{{ image_url(cover_full) }}" alt="当前封面原图">
+                                                            <div class="path-box">{{ cover_full or "暂无原图路径" }}</div>
+                                                        </div>
+                                                        <div class="museum-cover-card">
+                                                            <strong>当前封面缩略图</strong>
+                                                            <img src="{{ image_url(cover_thumb) }}" alt="当前封面缩略图">
+                                                            <div class="path-box">{{ cover_thumb or "暂无缩略图路径" }}</div>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="path-box">暂无封面图，可上传一张本地图片作为博物馆介绍图。</div>
+                                                {% endif %}
+                                                <div class="toolbar">
+                                                    <label style="font-weight:bold;">
+                                                        选择图片
+                                                        <input id="museumCoverFile-{{ mid }}" type="file" accept="image/jpeg,image/png,image/webp" style="display:block;margin-top:6px;">
+                                                    </label>
+                                                    <button id="museumCoverUploadButton-{{ mid }}" type="button" class="btn" onclick="uploadMuseumCover('{{ mid }}')">上传 / 替换封面</button>
+                                                    <button id="museumCoverDeleteButton-{{ mid }}" type="button" class="btn btn-secondary" onclick="deleteMuseumCover('{{ mid }}')" {% if not cover_thumb %}disabled{% endif %}>删除封面</button>
+                                                </div>
+                                                <div id="museumCoverMessage-{{ mid }}" class="museum-cover-status"></div>
+                                            </div>
+                                            <div class="toolbar">
+                                                <button type="submit" class="btn">保存博物馆</button>
+                                                <button type="button" class="btn btn-secondary" onclick="toggleMuseumEdit('{{ mid }}')">收起</button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p style="text-align:center;font-size:18px;">没有符合条件的博物馆。</p>
+            {% endif %}
+        </div>
+        </div>
+
+        <div class="tab-panel {% if active_tab == 'artifacts' %}active{% endif %}">
+        <div class="card">
+            <h2 id="artifact-list">🖼️ 当前数字馆藏清单</h2>
             <form action="/" method="get" class="toolbar">
+                <input type="hidden" name="tab" value="artifacts">
                 <input type="text" name="q" value="{{ query }}" placeholder="搜索文物名称、馆藏机构、朝代、类别" style="min-width: 320px;">
+                <select name="museumId" style="min-width: 260px;">
+                    <option value="">全部博物馆</option>
+                    {% for museum in museum_catalog %}
+                        {% set mid = museum.id|string %}
+                        <option value="{{ mid }}" {% if selected_museum_id == mid %}selected{% endif %}>
+                            {{ museum_label(museum) }}（{{ museum_count(museum) }}）
+                        </option>
+                    {% endfor %}
+                </select>
                 <input type="hidden" name="mode" value="{{ image_mode }}">
                 <button type="submit" class="btn">搜索</button>
-                <a href="/" class="btn btn-secondary">清空搜索</a>
+                <a href="/?tab=artifacts" class="btn btn-secondary">清空搜索</a>
             </form>
+            <div class="toolbar">
+                {% if query %}<span class="filter-chip">搜索：{{ query }}</span>{% endif %}
+                {% if selected_museum_id %}<span class="filter-chip">博物馆：{{ selected_museum_name or selected_museum_id }}</span>{% endif %}
+                {% if image_mode != "all" %}<span class="filter-chip">图片筛选：{{ image_mode }}</span>{% endif %}
+            </div>
             <div class="filter-tabs">
                 {% for option in image_filter_options %}
                     <a class="filter-tab {% if image_mode == option.id %}active{% endif %}" href="/?{{ option.query }}">{{ option.label }} {{ option.count }}</a>
@@ -908,17 +1531,11 @@ HTML_TEMPLATE = """
                 <button id="bulkDownloadButton" type="button" class="btn">一键下载当前筛选外链图{% if bulk_download_limit %}（测试 {{ bulk_download_limit }}）{% endif %}</button>
                 <a class="btn btn-secondary" href="/bulk-image-download-report" target="_blank">查看下载报告</a>
                 <span class="muted">当前可批量下载 {{ bulk_download_candidates|length }} 件；URL 加 <code>bulk_limit=3</code> 可测试前三件。</span>
+                <span class="muted">上传图片和批量补图需要先在“导入与工具”页签保存管理员 token。</span>
             </div>
             <div id="bulkDownloadPanel" class="bulk-download-panel">
                 <div id="bulkDownloadProgress" class="bulk-progress"></div>
                 <div id="bulkDownloadFailures" class="bulk-failures"></div>
-            </div>
-            <div class="toolbar">
-                <label style="font-weight:bold;">
-                    管理员 token
-                    <input id="adminToken" type="text" value="{{ admin_token }}" placeholder="上传图片需要 Bearer token" style="min-width: 360px; margin-left: 8px;">
-                </label>
-                <button type="button" class="btn btn-secondary" onclick="persistAdminToken()">保存 token</button>
             </div>
 
             {% if data %}
@@ -1023,7 +1640,14 @@ HTML_TEMPLATE = """
                                         </td>
                                         <td>{{ row.id }}</td>
                                         <td>{{ row["文物名称"] }}</td>
-                                        <td>{{ row["所属博物馆"] }}</td>
+                                        <td>
+                                            {{ row["标准博物馆"] or row["所属博物馆"] }}
+                                            {% if row["所属博物馆"] and row["所属博物馆"] != row["标准博物馆"] %}
+                                                <div class="mini-note">原始：{{ row["所属博物馆"] }}</div>
+                                            {% endif %}
+                                            {% if row["museumId"] %}<div class="mini-note">museumId: {{ row["museumId"] }}</div>{% endif %}
+                                            {% if row["museumProvince"] or row["museumCity"] %}<div class="mini-note">{{ row["museumProvince"] }} {{ row["museumCity"] }}</div>{% endif %}
+                                        </td>
                                         <td>{{ row["朝代"] }}</td>
                                         <td>{{ row["类别"] }}</td>
                                         <td>{{ row["材质"] }}</td>
@@ -1038,6 +1662,7 @@ HTML_TEMPLATE = """
             {% else %}
                 <p style="text-align: center; font-size: 20px;">🏮 没有查到文物数据。</p>
             {% endif %}
+        </div>
         </div>
     </div>
 </body>
@@ -1081,7 +1706,7 @@ EDIT_TEMPLATE = """
                 {% include "artifact_fields" %}
                 <div class="toolbar">
                     <button type="submit" class="btn">保存修改</button>
-                    <a href="/" class="btn btn-secondary">返回后台</a>
+                    <a href="/?tab=artifacts" class="btn btn-secondary">返回后台</a>
                 </div>
             </form>
             <div class="image-upload-panel">
@@ -1324,8 +1949,18 @@ def fields_from_row(row=None):
 
 @app.route("/")
 def index():
+    active_tab = clean_value(request.args.get("tab")) or "artifacts"
+    if active_tab not in ("artifacts", "museums", "import"):
+        active_tab = "artifacts"
     query = clean_value(request.args.get("q"))
+    selected_museum_id = clean_value(request.args.get("museumId"))
     image_mode = clean_value(request.args.get("mode")) or "all"
+    museum_query = clean_value(request.args.get("museum_q"))
+    museum_province = clean_value(request.args.get("province"))
+    museum_city = clean_value(request.args.get("city"))
+    museum_type = clean_value(request.args.get("type"))
+    museum_grade = clean_value(request.args.get("grade"))
+    museum_status = clean_value(request.args.get("museum_status")) or "all"
     bulk_limit_raw = clean_value(request.args.get("bulk_limit"))
     try:
         bulk_limit = max(0, int(bulk_limit_raw)) if bulk_limit_raw else 0
@@ -1334,9 +1969,34 @@ def index():
     if image_mode not in IMAGE_MODE_LABELS:
         image_mode = "all"
     error = clean_value(request.args.get("error"))
+    all_museums = []
+    filtered_museums = []
+    selected_museum_name = ""
     try:
-        all_data = load_data(query)
+        all_museums = load_museums({"pageSize": "500"}, auth=True)
+        selected_museum = next((museum for museum in all_museums if clean_value(museum.get("id")) == selected_museum_id), {})
+        selected_museum_name = museum_label(selected_museum) if selected_museum else ""
+        all_data = load_data(query, selected_museum_id, selected_museum_name if selected_museum_id and not selected_museum else "")
         data = filter_rows_by_image_mode(all_data, image_mode)
+        museum_params = {
+            "pageSize": "500",
+            "q": museum_query,
+            "province": museum_province,
+            "city": museum_city,
+            "type": museum_type,
+            "grade": museum_grade,
+        }
+        if museum_status == "with-artifacts":
+            museum_params["hasArtifacts"] = "true"
+        elif museum_status == "without-artifacts":
+            museum_params["hasArtifacts"] = "false"
+        elif museum_status == "created-by-import":
+            museum_params["createdByImport"] = "true"
+        elif museum_status == "no-cover":
+            museum_params["hasCover"] = "false"
+        elif museum_status == "duplicates":
+            museum_params["suspectedDuplicate"] = "true"
+        filtered_museums = load_museums(museum_params, auth=True)
     except RuntimeError as exc:
         all_data = []
         data = []
@@ -1347,9 +2007,11 @@ def index():
         admin_token = ""
 
     def mode_query(mode):
-        params = {"mode": mode}
+        params = {"tab": "artifacts", "mode": mode}
         if query:
             params["q"] = query
+        if selected_museum_id:
+            params["museumId"] = selected_museum_id
         return urlencode(params)
 
     filter_counts = image_mode_counts(all_data)
@@ -1363,9 +2025,11 @@ def index():
         for mode, label in IMAGE_MODE_LABELS.items()
     ]
 
-    query_params = {"mode": image_mode}
+    query_params = {"tab": "artifacts", "mode": image_mode}
     if query:
         query_params["q"] = query
+    if selected_museum_id:
+        query_params["museumId"] = selected_museum_id
 
     bulk_download_candidates = [
         {
@@ -1381,6 +2045,18 @@ def index():
         data=data,
         batches=get_batch_summaries(all_data),
         museums=get_museum_summaries(all_data),
+        museum_catalog=all_museums,
+        filtered_museums=filtered_museums,
+        museum_filter_options=museum_filter_options(all_museums),
+        selected_museum_id=selected_museum_id,
+        selected_museum_name=selected_museum_name,
+        active_tab=active_tab,
+        museum_query=museum_query,
+        museum_province=museum_province,
+        museum_city=museum_city,
+        museum_type=museum_type,
+        museum_grade=museum_grade,
+        museum_status=museum_status,
         fields=fields_from_row({}),
         query=query,
         image_mode=image_mode,
@@ -1390,10 +2066,22 @@ def index():
         bulk_download_limit=bulk_limit,
         bulk_download_limit_json=json.dumps(bulk_limit),
         query_string=urlencode(query_params),
+        province_options=PROVINCE_OPTIONS,
+        city_options=all_city_options(),
+        museum_location_options_json=json.dumps(CHINA_PROVINCE_CITIES, ensure_ascii=False),
+        museum_type_options=MUSEUM_TYPE_OPTIONS,
+        museum_grade_options=MUSEUM_GRADE_OPTIONS,
+        museum_level_options=MUSEUM_LEVEL_OPTIONS,
         api_base_url=API_BASE_URL,
         api_base_url_json=json.dumps(API_BASE_URL),
         admin_token=admin_token,
         image_url=absolute_api_url,
+        museum_label=museum_label,
+        museum_count=museum_count,
+        museum_has_cover=museum_has_cover,
+        museum_cover_image_url=museum_cover_image_url,
+        museum_cover_thumbnail_url=museum_cover_thumbnail_url,
+        short_datetime=short_datetime,
         error=error,
     )
 
@@ -1403,8 +2091,35 @@ def add_item():
     try:
         api_request("/api/artifacts", method="POST", payload=build_payload(request.form), auth=True)
     except RuntimeError as exc:
-        return redirect(f"/?error={quote(str(exc))}")
-    return redirect("/")
+        return redirect(f"/?tab=import&error={quote(str(exc))}")
+    return redirect("/?tab=import")
+
+
+@app.route("/museum/update/<museum_id>", methods=["POST"])
+def update_museum(museum_id):
+    province = normalize_museum_province(request.form.get("province"))
+    payload = {
+        "name": clean_value(request.form.get("name")),
+        "province": province,
+        "city": normalize_museum_city(province, request.form.get("city")),
+        "type": normalize_option(request.form.get("type"), MUSEUM_TYPE_OPTIONS, "其他"),
+        "grade": normalize_option(request.form.get("grade"), MUSEUM_GRADE_OPTIONS, "未定级"),
+        "level": normalize_option(request.form.get("level"), MUSEUM_LEVEL_OPTIONS, "未定级"),
+        "address": clean_value(request.form.get("address")),
+        "officialWebsite": clean_value(request.form.get("officialWebsite")),
+        "description": clean_value(request.form.get("description")),
+        "history": clean_value(request.form.get("history")),
+        "openingHours": clean_value(request.form.get("openingHours")),
+        "ticketInfo": clean_value(request.form.get("ticketInfo")),
+        "highlights": clean_value(request.form.get("highlights")),
+        "contact": clean_value(request.form.get("contact")),
+        "isFeatured": request.form.get("isFeatured") == "true",
+    }
+    try:
+        api_request(f"/api/admin/museums/{quote(museum_id)}", method="PUT", payload=payload, auth=True)
+    except RuntimeError as exc:
+        return redirect(f"/?tab=museums&error={quote(str(exc))}")
+    return redirect("/?tab=museums")
 
 
 @app.route("/bulk", methods=["POST"])
@@ -1412,6 +2127,7 @@ def bulk_action():
     selected_ids = parse_selected_ids(request.form)
     action = request.form.get("action", "")
     query = clean_value(request.args.get("q"))
+    selected_museum_id = clean_value(request.args.get("museumId"))
     image_mode = clean_value(request.args.get("mode")) or "all"
     if image_mode not in IMAGE_MODE_LABELS:
         image_mode = "all"
@@ -1444,11 +2160,13 @@ def bulk_action():
                     )
                     api_request(f"/api/artifacts/{quote(artifact_id)}", method="PUT", payload=payload, auth=True)
     except RuntimeError as exc:
-        return redirect(f"/?error={quote(str(exc))}")
+        return redirect(f"/?tab=artifacts&error={quote(str(exc))}")
 
-    params = {"mode": image_mode}
+    params = {"tab": "artifacts", "mode": image_mode}
     if query:
         params["q"] = query
+    if selected_museum_id:
+        params["museumId"] = selected_museum_id
     return redirect(f"/?{urlencode(params)}")
 
 
@@ -1458,8 +2176,8 @@ def edit_item(artifact_id):
         try:
             api_request(f"/api/artifacts/{quote(artifact_id)}", method="PUT", payload=build_payload(request.form), auth=True)
         except RuntimeError as exc:
-            return redirect(f"/?error={quote(str(exc))}")
-        return redirect("/")
+            return redirect(f"/?tab=artifacts&error={quote(str(exc))}")
+        return redirect("/?tab=artifacts")
 
     detail = api_request(f"/api/artifacts/{quote(artifact_id)}").get("artifact") or {}
     row = artifact_to_row(detail)
@@ -1635,7 +2353,7 @@ def upload_file():
     file = request.files.get("file")
     default_museum = clean_value(request.form.get("default_museum"))
     if not file or not file.filename:
-        return redirect("/")
+        return redirect("/?tab=import")
 
     try:
         records = [
@@ -1654,8 +2372,8 @@ def upload_file():
         }
         api_request("/api/import/run", method="POST", payload=job)
     except Exception as exc:
-        return redirect(f"/?error={quote(str(exc))}")
-    return redirect("/")
+        return redirect(f"/?tab=import&error={quote(str(exc))}")
+    return redirect("/?tab=import")
 
 
 @app.route("/clear", methods=["POST"])
@@ -1670,8 +2388,8 @@ def clear_data():
                 if detect_museum(row) == museum:
                     api_request(f"/api/artifacts/{quote(row['_artifact_id'])}", method="DELETE", auth=True)
     except RuntimeError as exc:
-        return redirect(f"/?error={quote(str(exc))}")
-    return redirect("/")
+        return redirect(f"/?tab=artifacts&error={quote(str(exc))}")
+    return redirect("/?tab=artifacts")
 
 
 if __name__ == "__main__":

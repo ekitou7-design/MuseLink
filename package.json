@@ -17,6 +17,8 @@
     "generate:ai-data": "node --import tsx scripts/generate-ai-data.ts",
     "rebuild:rag-data": "node --import tsx scripts/generate-ai-data.ts",
     "check:rag-data": "node --import tsx scripts/check-rag-data.ts",
+    "check:museums": "node --import tsx scripts/check-museums.ts",
+    "fix:museum-locations": "node --import tsx scripts/fix-museum-locations.ts",
     "cache:artifact-images": "node scripts/cache-artifact-images.mjs",
     "migrate:artifact-image-names": "node --import tsx scripts/migrate-artifact-image-names.mjs",
     "audit:artifact-image-names": "node scripts/audit-artifact-image-names.mjs",

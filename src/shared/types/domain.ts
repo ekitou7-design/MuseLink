@@ -16,6 +16,13 @@ export type ArtifactTag = string | {
 export interface Artifact {
   id: string;
   name: string;
+  museumId?: string;
+  rawMuseumName?: string;
+  canonicalMuseumName?: string;
+  museumType?: string;
+  museumGrade?: string;
+  museumProvince?: string;
+  museumCity?: string;
   museumName?: string;
   museum: string;
   /** 年代/朝代/时代：与 `dynasty`、`era`、中文键「朝代」「时代」「年代」等同义，展示时由 `artifactEraRaw` 归并。 */

@@ -15,6 +15,7 @@ import {
   artifactOriginRaw,
   artifactRemarksRaw,
 } from "../../../src/lib/dbDisplay";
+import { ensureMuseumExists, ensureMuseumSchema, type MuseumResolveResult } from "../../museum-normalizer";
 
 export type DbQuery = {
   query<T = any>(sql: string, params?: unknown[]): Promise<{ rows: T[]; rowCount?: number | null }>;
@@ -30,6 +31,18 @@ type ArtifactRow = {
   dynasty: string;
   museum_id: number | string;
   museum: string;
+  raw_museum_name?: string | null;
+  canonical_museum_name?: string | null;
+  museum_type?: string | null;
+  museum_grade?: string | null;
+  museum_province?: string | null;
+  museum_city?: string | null;
+  museum_cover_image_url?: string | null;
+  museum_cover_thumbnail_url?: string | null;
+  museum_local_cover_image_url?: string | null;
+  museum_local_cover_thumbnail_url?: string | null;
+  museum_storage_cover_image_url?: string | null;
+  museum_storage_cover_thumbnail_url?: string | null;
   category?: string | null;
   short_intro?: string | null;
   description: string;
@@ -166,6 +179,7 @@ async function findExistingArtifactId(db: DbQuery, name: string, museumId: numbe
 }
 
 export async function syncImportedArtifactsToDb(db: DbQuery) {
+  await ensureMuseumSchema(db);
   const artifacts = await readImportedArtifactsForDb();
   if (artifacts.length === 0) {
     return { importedCount: 0, inserted: 0, updated: 0, skipped: true };
@@ -175,8 +189,15 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
   const canWriteSourceUrl = columns.has("source_url");
   const canWriteLocalImageUrl = columns.has("local_image_url");
   const canWriteLocalThumbnailUrl = columns.has("local_thumbnail_url");
+  const canWriteRawMuseumName = columns.has("raw_museum_name");
+  const canWriteCanonicalMuseumName = columns.has("canonical_museum_name");
   let inserted = 0;
   let updated = 0;
+  const museumReport = {
+    matched: [] as Array<{ rawName: string; canonicalName: string; matchType: MuseumResolveResult["matchType"] }>,
+    created: [] as Array<{ name: string }>,
+    possibleDuplicates: [] as Array<{ rawName: string; candidates: NonNullable<MuseumResolveResult["possibleDuplicates"]> }>,
+  };
 
   for (const artifact of artifacts) {
     const name = text(artifactNameRaw(artifact));
@@ -191,10 +212,24 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
     const sourceUrl = text(artifact.sourceUrl || (artifact as any).source_url);
     const tags = normalizeTags(artifact.tags);
 
-    await db.query(`insert into museums (name) values ($1) on conflict (name) do nothing`, [museum]);
-    const museumRows = await db.query<{ id: number | string }>(`select id from museums where name = $1 limit 1`, [museum]);
-    const museumId = museumRows.rows[0]?.id;
+    const resolvedMuseum = await ensureMuseumExists(db, museum, artifact);
+    const museumId = resolvedMuseum?.museum.id;
     if (museumId == null) continue;
+    if (resolvedMuseum.created) {
+      museumReport.created.push({ name: resolvedMuseum.canonicalName });
+    } else if (resolvedMuseum.rawName !== resolvedMuseum.canonicalName || resolvedMuseum.matchType !== "exact") {
+      museumReport.matched.push({
+        rawName: resolvedMuseum.rawName,
+        canonicalName: resolvedMuseum.canonicalName,
+        matchType: resolvedMuseum.matchType,
+      });
+    }
+    if (resolvedMuseum.possibleDuplicates?.length) {
+      museumReport.possibleDuplicates.push({
+        rawName: resolvedMuseum.rawName,
+        candidates: resolvedMuseum.possibleDuplicates,
+      });
+    }
 
     const existingId = await findExistingArtifactId(db, name, museumId);
     const writableImageColumns = [
@@ -218,6 +253,14 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
         params.push(sourceUrl);
         assignments.push(`source_url=$${params.length}`);
       }
+      if (canWriteRawMuseumName) {
+        params.push(resolvedMuseum.rawName);
+        assignments.push(`raw_museum_name=$${params.length}`);
+      }
+      if (canWriteCanonicalMuseumName) {
+        params.push(resolvedMuseum.canonicalName);
+        assignments.push(`canonical_museum_name=$${params.length}`);
+      }
       for (const item of writableImageColumns) {
         params.push(item.value);
         assignments.push(`${item.column}=$${params.length}`);
@@ -236,6 +279,14 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
       if (canWriteSourceUrl) {
         columnsSql.push("source_url");
         params.push(sourceUrl);
+      }
+      if (canWriteRawMuseumName) {
+        columnsSql.push("raw_museum_name");
+        params.push(resolvedMuseum.rawName);
+      }
+      if (canWriteCanonicalMuseumName) {
+        columnsSql.push("canonical_museum_name");
+        params.push(resolvedMuseum.canonicalName);
       }
       for (const item of writableImageColumns) {
         columnsSql.push(item.column);
@@ -273,7 +324,7 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
     };
   }
 
-  return { importedCount: artifacts.length, inserted, updated, skipped: false, aiRagSync };
+  return { importedCount: artifacts.length, inserted, updated, skipped: false, aiRagSync, museumReport };
 }
 
 function normalizeTagsForArtifact(tags: unknown): Array<{ type: string; name: string }> {
@@ -286,6 +337,15 @@ function toArtifact(row: ArtifactRow, attributes: AttributeRow[] = []): Artifact
   const localImageUrl = text(row.local_image_url);
   const localThumbnailUrl = text(row.local_thumbnail_url);
   const sourceUrl = text(row.source_url);
+  const museumCoverImageUrl =
+    text(row.museum_storage_cover_image_url) ||
+    text(row.museum_local_cover_image_url) ||
+    text(row.museum_cover_image_url);
+  const museumCoverThumbnailUrl =
+    text(row.museum_storage_cover_thumbnail_url) ||
+    text(row.museum_local_cover_thumbnail_url) ||
+    text(row.museum_cover_thumbnail_url) ||
+    museumCoverImageUrl;
   const groups = new Map<string, { order: number; items: { name: string; value: string; order: number }[] }>();
 
   attributes.forEach((attribute) => {
@@ -303,6 +363,15 @@ function toArtifact(row: ArtifactRow, attributes: AttributeRow[] = []): Artifact
   return {
     id,
     name: text(row.name),
+    museumId: text(row.museum_id),
+    rawMuseumName: text(row.raw_museum_name || row.museum),
+    canonicalMuseumName: text(row.canonical_museum_name || row.museum),
+    museumType: text(row.museum_type),
+    museumGrade: text(row.museum_grade),
+    museumProvince: text(row.museum_province),
+    museumCity: text(row.museum_city),
+    museumCoverImageUrl,
+    museumCoverThumbnailUrl,
     museumName: text(row.museum),
     museum: text(row.museum),
     period: text(row.dynasty),
@@ -337,13 +406,21 @@ function toArtifact(row: ArtifactRow, attributes: AttributeRow[] = []): Artifact
 }
 
 export async function listArtifactsFromDb(db: DbQuery, limit = 5000) {
+  await ensureMuseumSchema(db);
   const safeLimit = Math.min(Math.max(Number(limit) || 5000, 1), 10000);
   const columns = await getArtifactColumns(db);
   const localImageSelect = columns.has("local_image_url") ? "a.local_image_url" : "'' as local_image_url";
   const localThumbnailSelect = columns.has("local_thumbnail_url") ? "a.local_thumbnail_url" : "'' as local_thumbnail_url";
   const sourceUrlSelect = columns.has("source_url") ? "a.source_url" : "'' as source_url";
+  const rawMuseumNameSelect = columns.has("raw_museum_name") ? "a.raw_museum_name" : "m.name as raw_museum_name";
+  const canonicalMuseumNameSelect = columns.has("canonical_museum_name") ? "a.canonical_museum_name" : "m.name as canonical_museum_name";
   const rows = await db.query<ArtifactRow>(
     `select a.id, a.name, a.dynasty, a.museum_id, m.name as museum, a.category, a.short_intro,
+            ${rawMuseumNameSelect}, ${canonicalMuseumNameSelect},
+            m.type as museum_type, m.grade as museum_grade, m.province as museum_province, m.city as museum_city,
+            m.cover_image_url as museum_cover_image_url, m.cover_thumbnail_url as museum_cover_thumbnail_url,
+            m.local_cover_image_url as museum_local_cover_image_url, m.local_cover_thumbnail_url as museum_local_cover_thumbnail_url,
+            m.storage_cover_image_url as museum_storage_cover_image_url, m.storage_cover_thumbnail_url as museum_storage_cover_thumbnail_url,
             a.description, a.image_url, ${localImageSelect}, ${localThumbnailSelect}, ${sourceUrlSelect}, a.tags, a.created_at, a.updated_at
      from artifacts a
      join museums m on m.id = a.museum_id
@@ -355,12 +432,20 @@ export async function listArtifactsFromDb(db: DbQuery, limit = 5000) {
 }
 
 export async function getArtifactFromDb(db: DbQuery, id: string) {
+  await ensureMuseumSchema(db);
   const columns = await getArtifactColumns(db);
   const localImageSelect = columns.has("local_image_url") ? "a.local_image_url" : "'' as local_image_url";
   const localThumbnailSelect = columns.has("local_thumbnail_url") ? "a.local_thumbnail_url" : "'' as local_thumbnail_url";
   const sourceUrlSelect = columns.has("source_url") ? "a.source_url" : "'' as source_url";
+  const rawMuseumNameSelect = columns.has("raw_museum_name") ? "a.raw_museum_name" : "m.name as raw_museum_name";
+  const canonicalMuseumNameSelect = columns.has("canonical_museum_name") ? "a.canonical_museum_name" : "m.name as canonical_museum_name";
   const rows = await db.query<ArtifactRow>(
     `select a.id, a.name, a.dynasty, a.museum_id, m.name as museum, a.category, a.short_intro,
+            ${rawMuseumNameSelect}, ${canonicalMuseumNameSelect},
+            m.type as museum_type, m.grade as museum_grade, m.province as museum_province, m.city as museum_city,
+            m.cover_image_url as museum_cover_image_url, m.cover_thumbnail_url as museum_cover_thumbnail_url,
+            m.local_cover_image_url as museum_local_cover_image_url, m.local_cover_thumbnail_url as museum_local_cover_thumbnail_url,
+            m.storage_cover_image_url as museum_storage_cover_image_url, m.storage_cover_thumbnail_url as museum_storage_cover_thumbnail_url,
             a.description, a.image_url, ${localImageSelect}, ${localThumbnailSelect}, ${sourceUrlSelect}, a.tags, a.created_at, a.updated_at
      from artifacts a
      join museums m on m.id = a.museum_id

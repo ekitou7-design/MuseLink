@@ -10,6 +10,7 @@ import { deleteAiRagForArtifact, syncAiRagForArtifact } from "../../ai-rag-data"
 import { searchRelics } from "../db/relicSearch";
 import { getArtifactFromDb, listArtifactsFromDb } from "../db/syncImportedArtifacts";
 import type { ArtifactAttributeRow } from "../models/types";
+import { ensureMuseumExists, ensureMuseumSchema } from "../../museum-normalizer";
 
 const ARTIFACT_IMAGES_DIR = path.join(process.cwd(), "public", "artifact-images");
 const ARTIFACT_THUMBS_DIR = path.join(ARTIFACT_IMAGES_DIR, "thumbs");
@@ -264,6 +265,7 @@ async function downloadImageBuffer(rawUrl: string) {
 }
 
 async function ensureArtifactImageColumns() {
+  await ensureMuseumSchema(db);
   await db.query(`alter table artifacts add column if not exists local_image_url text not null default ''`);
   await db.query(`alter table artifacts add column if not exists local_thumbnail_url text not null default ''`);
   await db.query(`alter table artifacts add column if not exists updated_at timestamptz not null default now()`);
@@ -463,12 +465,6 @@ function normalizeArtifactPayload(body: unknown) {
   return { name, museum, dynasty, category, shortIntro, description, imageUrl, sourceUrl, tags, attributes };
 }
 
-async function getMuseumId(name: string) {
-  await db.query(`insert into museums (name) values ($1) on conflict (name) do nothing`, [name]);
-  const result = await db.query<{ id: number | string }>(`select id from museums where name = $1 limit 1`, [name]);
-  return result.rows[0]?.id;
-}
-
 async function writeAttributeRows(artifactId: string | number, rows: ReturnType<typeof normalizeAttributeRows>) {
   await db.query(`delete from artifact_attributes where artifact_id = $1`, [artifactId]);
   for (const row of rows) {
@@ -654,14 +650,41 @@ function toArtifactDetail(row: Record<string, unknown>, attributes: ArtifactAttr
 export async function listArtifacts(req: Request, res: Response) {
   const limit = Math.min(Math.max(Number(req.query.limit || 5000) || 5000, 1), 10000);
   const keyword = typeof req.query.q === "string" ? req.query.q.trim() : "";
+  const museumId = typeof req.query.museumId === "string" ? req.query.museumId.trim() : "";
+  const canonicalMuseumName = typeof req.query.canonicalMuseumName === "string" ? req.query.canonicalMuseumName.trim() : "";
+  const museumProvince = typeof req.query.museumProvince === "string" ? req.query.museumProvince.trim() : "";
+  const museumCity = typeof req.query.museumCity === "string" ? req.query.museumCity.trim() : "";
+  const hasStructuredFilters = Boolean(museumId || canonicalMuseumName || museumProvince || museumCity);
 
-  if (keyword) {
+  if (keyword && !hasStructuredFilters) {
     const artifacts = await searchRelics(db, { keyword, limit });
     return res.json({ source: "database", total: artifacts.length, artifacts });
   }
 
-  const artifacts = await listArtifactsFromDb(db, limit);
-  res.json({ source: "database", total: artifacts.length, artifacts });
+  const artifacts = (await listArtifactsFromDb(db, hasStructuredFilters || keyword ? 10000 : limit)).filter((artifact) => {
+    const record = artifact as unknown as Record<string, unknown>;
+    if (museumId && String(record.museumId || record.museum_id || "") !== museumId) return false;
+    if (canonicalMuseumName) {
+      const canonical = text(record.canonicalMuseumName ?? record.canonical_museum_name ?? artifact.museumName ?? artifact.museum);
+      if (canonical !== canonicalMuseumName) return false;
+    }
+    if (museumProvince && text(record.museumProvince ?? record.museum_province) !== museumProvince) return false;
+    if (museumCity && text(record.museumCity ?? record.museum_city) !== museumCity) return false;
+    if (!keyword) return true;
+    const haystack = [
+      artifact.name,
+      artifact.museumName,
+      artifact.museum,
+      record.canonicalMuseumName,
+      record.rawMuseumName,
+      artifact.dynasty,
+      artifact.period,
+      artifact.category,
+      artifact.description,
+    ].map(text).join(" ").toLowerCase();
+    return haystack.includes(keyword.toLowerCase());
+  });
+  res.json({ source: "database", total: artifacts.length, artifacts: artifacts.slice(0, limit) });
 }
 
 export async function getArtifact(req: Request, res: Response) {
@@ -717,19 +740,22 @@ export async function createArtifact(req: Request, res: Response) {
       return res.status(400).json({ error: "name is required" });
     }
 
-    const museumId = await getMuseumId(payload.museum);
-    if (museumId == null) {
+    const museumResolved = await ensureMuseumExists(db, payload.museum);
+    const museumId = museumResolved?.museum.id;
+    if (museumId == null || !museumResolved) {
       return res.status(400).json({ error: "museum is invalid" });
     }
 
     const inserted = await db.query<{ id: number | string }>(
-      `insert into artifacts (name, dynasty, museum_id, category, short_intro, description, image_url, source_url, tags)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+      `insert into artifacts (name, dynasty, museum_id, raw_museum_name, canonical_museum_name, category, short_intro, description, image_url, source_url, tags)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
        returning id`,
       [
         payload.name,
         payload.dynasty,
         museumId,
+        museumResolved.rawName,
+        museumResolved.canonicalName,
         payload.category,
         payload.shortIntro,
         payload.description,
@@ -766,21 +792,24 @@ export async function updateArtifact(req: Request, res: Response) {
       return res.status(400).json({ error: "name is required" });
     }
 
-    const museumId = await getMuseumId(payload.museum);
-    if (museumId == null) {
+    const museumResolved = await ensureMuseumExists(db, payload.museum);
+    const museumId = museumResolved?.museum.id;
+    if (museumId == null || !museumResolved) {
       return res.status(400).json({ error: "museum is invalid" });
     }
 
     await db.query(
       `update artifacts
-       set name=$2, dynasty=$3, museum_id=$4, category=$5, short_intro=$6,
-           description=$7, image_url=$8, source_url=$9, tags=$10, updated_at=now()
+       set name=$2, dynasty=$3, museum_id=$4, raw_museum_name=$5, canonical_museum_name=$6,
+           category=$7, short_intro=$8, description=$9, image_url=$10, source_url=$11, tags=$12, updated_at=now()
        where id::text=$1`,
       [
         id,
         payload.name,
         payload.dynasty,
         museumId,
+        museumResolved.rawName,
+        museumResolved.canonicalName,
         payload.category,
         payload.shortIntro,
         payload.description,

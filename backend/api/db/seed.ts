@@ -7,11 +7,14 @@ import { migrateArtifactDetails } from "./migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./upgradeArtifactsMuseumFk";
 import { listArtifactsFromDb, syncImportedArtifactsToDb } from "./syncImportedArtifacts";
 import { syncAiRagForArtifacts } from "../../ai-rag-data";
+import { ensureMuseumSchema, seedBuiltInMuseumAliases } from "../../museum-normalizer";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
 async function main() {
   await upgradeArtifactsMuseumFk(db);
+  await ensureMuseumSchema(db);
+  await seedBuiltInMuseumAliases(db);
   await migrateArtifactDetails(db);
   const museums = await ensureSeedMuseums(db);
   console.log(`Seeded/updated provincial museums: ${museums.count}`);

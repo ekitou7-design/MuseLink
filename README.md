@@ -472,6 +472,45 @@ BACKEND_API_BASE_URL=https://你的后端网址
 
 更多细节可以看各文件夹里的 `README.md`。
 
+## 博物馆机构字典
+
+MuseLink 现在把博物馆从文物里的普通字符串升级为独立的 `museums` 机构字典表。`artifacts` 通过 `museumId` / `museum_id` 关联到 `museums`，同时继续保留 `museum`、`museumName`、`rawMuseumName`、`canonicalMuseumName`，以兼容旧展示和导入逻辑。
+
+### 本地后台和脚本的数据源
+
+本地开发有几套入口，数据源容易混淆：
+
+| 入口 | 启动方式 | 数据来源 |
+|------|------|------|
+| React 管理后台 | `npm run dev` 后访问 `/#/admin` | `server.ts` 内置 Express API；默认使用 pg-mem，并在启动时从 `data/imported-artifacts.json` 同步到 `artifacts` / `museums` 表 |
+| Flask 管理后台 | `python3 app.py` 后访问 `http://localhost:9999` | 不直接读本地 JSON；它调用 Node API，默认 `http://localhost:3000` |
+| 独立 Node API | `npm run dev:backend` | `backend/api/server.ts`；默认同样使用 pg-mem，并从 `data/imported-artifacts.json` 同步 |
+| 检查/修复脚本 | `npm run check:museums` / `npm run fix:museum-locations` | 先执行与 dev server 相同的 DB bootstrap：建表、补 schema、导入 `data/imported-artifacts.json`，然后检查当前 DB |
+
+如果 `.env.local` 没有配置 `DB_HOST` / `DB_NAME`，项目会使用 pg-mem。pg-mem 是进程内内存数据库：`npm run dev` 和 `npm run check:museums` 是两个不同进程，不能共享彼此运行中的内存。为了避免脚本读到空库，检查/修复脚本会在运行开始时主动同步 `data/imported-artifacts.json`。如果需要后台手动编辑后的 museums 长期保留并被脚本直接检查，请配置 PostgreSQL，再运行 `npm run db:migrate` / `npm run db:seed`。
+
+新文物导入或后台手动新增/编辑时，后端会自动识别或创建博物馆。比如在文物所属机构字段里填写“南京大学”“南京大学博物馆”“南大博物馆”“南大”，都会归一到“南京大学博物馆”；但“南京博物院”“南京市博物馆”“南京大学博物馆”“南京六朝博物馆”会保持独立，不会因为都包含“南京”或“博物馆”而自动合并。
+
+后台有“博物馆管理”页面，可查看博物馆列表、别名、类型、等级、省市、自动创建状态、馆藏文物数量，并支持编辑简介、历史、地址、官网、开放时间、门票信息、特色说明、首页推荐和封面图。封面图当前保存到 `public/museum-images/{museumId}/cover.jpg` 和 `public/museum-images/{museumId}/thumbs/cover.jpg`，并预留对象存储 URL 字段。
+
+`museums` 表支持 `province` / `city` / `address`。系统会根据导入数据里的省市字段、内置常见博物馆字典和博物馆名称中的明确地名自动推断所在地；无法判断的博物馆会进入“其他 / 未知地区”。后台“博物馆管理”页面可以按省份、城市、类型、等级、状态筛选，也可以手动修改博物馆所在地。
+
+AI-ready 与 RAG 文档会使用标准化后的博物馆信息，并包含 `museumId`、`rawMuseumName`、`canonicalMuseumName`、`museumType`、`museumGrade`、`museumProvince`、`museumCity`。当文物馆藏机构变化、博物馆信息编辑、别名变化或博物馆合并时，后端会同步刷新相关 AI/RAG 派生数据。
+
+可用下面的命令检查博物馆数据质量：
+
+```bash
+npm run check:museums
+```
+
+可用下面的命令一次性补全可明确推断的博物馆省市：
+
+```bash
+npm run fix:museum-locations
+```
+
+这次只做博物馆机构字典、封面图和馆藏文物关联管理；文物多图图集后续再做。
+
 ## 开发同学快速入口
 
 常看文件：

@@ -9,10 +9,22 @@ import { ForbiddenPage } from "./ForbiddenPage";
 import { goBackOrNavigate, navigate } from "../router/router";
 import { SafeImage } from "../components/SafeImage";
 import { artifactImageUrlRaw } from "../lib/dbDisplay";
+import {
+  CITY_OPTIONS_BY_PROVINCE,
+  MUSEUM_GRADE_OPTIONS,
+  MUSEUM_LEVEL_OPTIONS,
+  MUSEUM_TYPE_OPTIONS,
+  PROVINCE_OPTIONS,
+  normalizeMuseumGrade,
+  normalizeMuseumLevel,
+  normalizeMuseumProvince,
+  normalizeMuseumType,
+} from "../constants/locationOptions";
 
-type AdminTab = "artifacts" | "import" | "users";
+type AdminTab = "artifacts" | "museums" | "import" | "users";
 type ArtifactImageFilter = "all" | "no-image" | "remote-only" | "local-broken" | "local-complete" | "no-local";
 type ArtifactImageStatus = "local-complete" | "remote-only" | "no-image" | "local-broken";
+type MuseumStatusFilter = "all" | "with-artifacts" | "without-artifacts" | "created-by-import" | "no-cover" | "duplicates";
 
 type ArtifactLocalImageFileStatus = {
   artifactId: string;
@@ -61,6 +73,73 @@ type ArtifactFormState = {
   remarks: string;
 };
 
+type MuseumAlias = {
+  id: string;
+  alias: string;
+  normalizedAlias: string;
+  source: string;
+  confidence: number;
+};
+
+type MuseumAdminItem = {
+  id: string;
+  name: string;
+  normalizedName?: string;
+  aliases?: string[];
+  type?: string;
+  level?: string;
+  grade?: string;
+  province?: string;
+  city?: string;
+  address?: string;
+  officialWebsite?: string;
+  description?: string;
+  history?: string;
+  highlights?: string;
+  openingHours?: string;
+  ticketInfo?: string;
+  contact?: string;
+  localCoverImageUrl?: string;
+  localCoverThumbnailUrl?: string;
+  storageCoverImageUrl?: string;
+  storageCoverThumbnailUrl?: string;
+  coverImageUrl?: string;
+  coverThumbnailUrl?: string;
+  displayCoverUrl?: string;
+  source?: string;
+  createdByImport?: boolean;
+  artifactCount?: number;
+  isFeatured?: boolean;
+  hasCover?: boolean;
+  updatedAt?: string;
+};
+
+type MuseumDetailResponse = {
+  museum: MuseumAdminItem;
+  aliases: MuseumAlias[];
+  artifacts: Artifact[];
+  stats: { artifactCount: number };
+};
+
+type MuseumFormState = {
+  id?: string;
+  name: string;
+  type: string;
+  level: string;
+  grade: string;
+  province: string;
+  city: string;
+  address: string;
+  officialWebsite: string;
+  description: string;
+  history: string;
+  openingHours: string;
+  ticketInfo: string;
+  highlights: string;
+  contact: string;
+  isFeatured: boolean;
+};
+
 const emptyForm: ArtifactFormState = {
   name: "",
   museum: "",
@@ -75,6 +154,24 @@ const emptyForm: ArtifactFormState = {
   dimensions: "",
   level: "",
   remarks: "",
+};
+
+const emptyMuseumForm: MuseumFormState = {
+  name: "",
+  type: "其他",
+  level: "未定级",
+  grade: "未定级",
+  province: "",
+  city: "",
+  address: "",
+  officialWebsite: "",
+  description: "",
+  history: "",
+  openingHours: "",
+  ticketInfo: "",
+  highlights: "",
+  contact: "",
+  isFeatured: false,
 };
 
 const genderLabels: Record<AdminUserSummary["gender"], string> = {
@@ -276,10 +373,101 @@ function buildArtifactPayload(form: ArtifactFormState) {
   };
 }
 
+function museumFormFromMuseum(museum: MuseumAdminItem): MuseumFormState {
+  return {
+    id: museum.id,
+    name: text(museum.name),
+    type: normalizeMuseumType(museum.type),
+    level: normalizeMuseumLevel(museum.level),
+    grade: normalizeMuseumGrade(museum.grade),
+    province: normalizeMuseumProvince(museum.province),
+    city: text(museum.city),
+    address: text(museum.address),
+    officialWebsite: text(museum.officialWebsite),
+    description: text(museum.description),
+    history: text(museum.history),
+    openingHours: text(museum.openingHours),
+    ticketInfo: text(museum.ticketInfo),
+    highlights: text(museum.highlights),
+    contact: text(museum.contact),
+    isFeatured: Boolean(museum.isFeatured),
+  };
+}
+
+function museumPayloadFromForm(form: MuseumFormState) {
+  return {
+    name: form.name.trim(),
+    type: form.type.trim(),
+    level: form.level.trim(),
+    grade: form.grade.trim(),
+    province: form.province.trim(),
+    city: form.city.trim() === "__custom__" ? "" : form.city.trim(),
+    address: form.address.trim(),
+    officialWebsite: form.officialWebsite.trim(),
+    description: form.description.trim(),
+    history: form.history.trim(),
+    openingHours: form.openingHours.trim(),
+    ticketInfo: form.ticketInfo.trim(),
+    highlights: form.highlights.trim(),
+    contact: form.contact.trim(),
+    isFeatured: form.isFeatured,
+  };
+}
+
+function museumCoverUrl(museum: MuseumAdminItem) {
+  return (
+    museum.storageCoverThumbnailUrl ||
+    museum.localCoverThumbnailUrl ||
+    museum.coverThumbnailUrl ||
+    museum.storageCoverImageUrl ||
+    museum.localCoverImageUrl ||
+    museum.coverImageUrl ||
+    museum.displayCoverUrl ||
+    ""
+  );
+}
+
+function museumOriginalCoverUrl(museum: MuseumAdminItem) {
+  return (
+    museum.storageCoverImageUrl ||
+    museum.localCoverImageUrl ||
+    museum.coverImageUrl ||
+    museum.displayCoverUrl ||
+    ""
+  );
+}
+
+function museumThumbnailCoverUrl(museum: MuseumAdminItem) {
+  return (
+    museum.storageCoverThumbnailUrl ||
+    museum.localCoverThumbnailUrl ||
+    museum.coverThumbnailUrl ||
+    museumCoverUrl(museum)
+  );
+}
+
+function artifactMuseumId(artifact: Artifact) {
+  const record = artifact as Artifact & Record<string, unknown>;
+  return text(record.museumId ?? record.museum_id);
+}
+
+function artifactCanonicalMuseumName(artifact: Artifact) {
+  const record = artifact as Artifact & Record<string, unknown>;
+  return text(record.canonicalMuseumName ?? record.canonical_museum_name ?? artifact.museumName ?? artifact.museum);
+}
+
 function formatDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return date.toLocaleString("zh-CN", { hour12: false });
+}
+
+function formatShortDate(value?: string) {
+  if (!value) return "未记录";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value.length > 16 ? value.slice(0, 16).replace("T", " ") : value;
+  const pad = (num: number) => String(num).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
 function aiRagMessage(sync?: AiRagSyncSummary) {
@@ -293,8 +481,26 @@ export function AdminPage() {
   const [users, setUsers] = useState<AdminUserSummary[]>([]);
   const [stats, setStats] = useState<AdminStatsResponse | null>(null);
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
+  const [museums, setMuseums] = useState<MuseumAdminItem[]>([]);
+  const [allMuseums, setAllMuseums] = useState<MuseumAdminItem[]>([]);
+  const [selectedMuseum, setSelectedMuseum] = useState<MuseumDetailResponse | null>(null);
   const [form, setForm] = useState<ArtifactFormState>(emptyForm);
+  const [museumForm, setMuseumForm] = useState<MuseumFormState>(emptyMuseumForm);
   const [query, setQuery] = useState("");
+  const [artifactMuseumFilter, setArtifactMuseumFilter] = useState("");
+  const [museumQuery, setMuseumQuery] = useState("");
+  const [museumTypeFilter, setMuseumTypeFilter] = useState("");
+  const [museumGradeFilter, setMuseumGradeFilter] = useState("");
+  const [museumProvinceFilter, setMuseumProvinceFilter] = useState("");
+  const [museumCityFilter, setMuseumCityFilter] = useState("");
+  const [museumStatusFilter, setMuseumStatusFilter] = useState<MuseumStatusFilter>("all");
+  const [museumOnlyWithArtifacts, setMuseumOnlyWithArtifacts] = useState(false);
+  const [museumOnlyCreatedByImport, setMuseumOnlyCreatedByImport] = useState(false);
+  const [museumOnlyDuplicates, setMuseumOnlyDuplicates] = useState(false);
+  const [museumArtifactQuery, setMuseumArtifactQuery] = useState("");
+  const [newMuseumAlias, setNewMuseumAlias] = useState("");
+  const [museumCoverFile, setMuseumCoverFile] = useState<File | null>(null);
+  const [museumMessage, setMuseumMessage] = useState<string | null>(null);
   const [imageFilter, setImageFilter] = useState<ArtifactImageFilter>("all");
   const [importText, setImportText] = useState("");
   const [importResult, setImportResult] = useState<string | null>(null);
@@ -328,6 +534,37 @@ export function AdminPage() {
     );
   };
 
+  const loadMuseums = async () => {
+    const params = new URLSearchParams();
+    params.set("pageSize", "300");
+    if (museumQuery.trim()) params.set("q", museumQuery.trim());
+    if (museumTypeFilter) params.set("type", museumTypeFilter);
+    if (museumGradeFilter) params.set("grade", museumGradeFilter);
+    if (museumProvinceFilter) params.set("province", museumProvinceFilter);
+    if (museumCityFilter) params.set("city", museumCityFilter);
+    if (museumStatusFilter === "with-artifacts") params.set("hasArtifacts", "true");
+    if (museumStatusFilter === "without-artifacts") params.set("hasArtifacts", "false");
+    if (museumStatusFilter === "created-by-import") params.set("createdByImport", "true");
+    if (museumStatusFilter === "no-cover") params.set("hasCover", "false");
+    if (museumStatusFilter === "duplicates") params.set("suspectedDuplicate", "true");
+    const data = await apiFetch<{ museums?: MuseumAdminItem[] }>(`/api/admin/museums?${params.toString()}`);
+    setMuseums(Array.isArray(data.museums) ? data.museums : []);
+  };
+
+  const loadMuseumCatalog = async () => {
+    const data = await apiFetch<{ museums?: MuseumAdminItem[] }>("/api/admin/museums?pageSize=500");
+    const items = Array.isArray(data.museums) ? data.museums : [];
+    setAllMuseums(items);
+    setMuseums((current) => current.length ? current : items);
+  };
+
+  const loadMuseumDetail = async (id: string) => {
+    const data = await apiFetch<MuseumDetailResponse>(`/api/admin/museums/${encodeURIComponent(id)}`);
+    setSelectedMuseum(data);
+    setMuseumForm(museumFormFromMuseum(data.museum));
+    setMuseumMessage(null);
+  };
+
   useEffect(() => {
     let cancelled = false;
 
@@ -343,17 +580,20 @@ export function AdminPage() {
           return;
         }
 
-        const [usersResponse, statsResponse, artifactsResponse, imageStatusResponse] = await Promise.all([
+        const [usersResponse, statsResponse, artifactsResponse, imageStatusResponse, museumsResponse] = await Promise.all([
           getAdminUsers(),
           getAdminStats(),
           apiFetch<{ artifacts?: Artifact[] }>("/api/artifacts?limit=5000"),
           apiFetch<{ statuses?: ArtifactLocalImageFileStatus[] }>("/api/admin/artifact-image-file-status"),
+          apiFetch<{ museums?: MuseumAdminItem[] }>("/api/admin/museums?pageSize=300"),
         ]);
         if (cancelled) return;
 
         setUsers(usersResponse.users);
         setStats(statsResponse);
         setArtifacts(Array.isArray(artifactsResponse.artifacts) ? artifactsResponse.artifacts : []);
+        setMuseums(Array.isArray(museumsResponse.museums) ? museumsResponse.museums : []);
+        setAllMuseums(Array.isArray(museumsResponse.museums) ? museumsResponse.museums : []);
         setLocalImageFileStatuses(
           Object.fromEntries((imageStatusResponse.statuses || []).map((item) => [String(item.artifactId), item])),
         );
@@ -385,6 +625,14 @@ export function AdminPage() {
   }, [rowImageSelections]);
 
   useEffect(() => {
+    if (loading || tab !== "museums") return;
+    const handle = window.setTimeout(() => {
+      loadMuseums().catch((e) => setError(e instanceof Error ? e.message : String(e)));
+    }, 250);
+    return () => window.clearTimeout(handle);
+  }, [loading, museumCityFilter, museumGradeFilter, museumProvinceFilter, museumQuery, museumStatusFilter, museumTypeFilter, tab]);
+
+  useEffect(() => {
     return () => {
       Object.values(rowImageSelectionsRef.current).forEach((selection) => URL.revokeObjectURL(selection.previewUrl));
     };
@@ -400,18 +648,29 @@ export function AdminPage() {
         localImageFileStatuses[artifactId],
       );
       if (!artifactMatchesImageFilter(status, imageFilter)) return false;
+      if (artifactMuseumFilter) {
+        const selectedMuseumItem = allMuseums.find((museum) => museum.id === artifactMuseumFilter);
+        const selectedName = selectedMuseumItem?.name || "";
+        const currentMuseumId = artifactMuseumId(artifact);
+        const currentMuseumName = artifactCanonicalMuseumName(artifact);
+        const legacyMuseumName = text(artifact.museumName || artifact.museum);
+        if (currentMuseumId !== artifactMuseumFilter && currentMuseumName !== selectedName && legacyMuseumName !== selectedName) {
+          return false;
+        }
+      }
       if (!keyword) return true;
       const haystack = [
         artifact.name,
         artifact.museumName,
         artifact.museum,
+        artifactCanonicalMuseumName(artifact),
         artifact.dynasty,
         artifact.period,
         artifact.category,
       ].map(text).join(" ").toLowerCase();
       return haystack.includes(keyword);
     });
-  }, [artifacts, failedImageIds, imageFilter, localImageFileStatuses, query]);
+  }, [allMuseums, artifactMuseumFilter, artifacts, failedImageIds, imageFilter, localImageFileStatuses, query]);
 
   const imageFilterCounts = useMemo(() => {
     const counts: Record<ArtifactImageFilter, number> = {
@@ -436,6 +695,97 @@ export function AdminPage() {
 
     return counts;
   }, [artifacts, failedImageIds, localImageFileStatuses]);
+
+  const artifactMuseumOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    artifacts.forEach((artifact) => {
+      const id = artifactMuseumId(artifact);
+      const canonical = artifactCanonicalMuseumName(artifact);
+      const key = id || canonical;
+      if (!key) return;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+    const fromMuseums = allMuseums
+      .map((museum) => ({ id: museum.id, name: museum.name, count: counts.get(museum.id) || counts.get(museum.name) || museum.artifactCount || 0 }))
+      .filter((museum) => museum.count > 0)
+      .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name, "zh-CN"));
+    const knownNames = new Set(fromMuseums.map((museum) => museum.name));
+    const legacy = Array.from(counts.entries())
+      .filter(([key]) => !allMuseums.some((museum) => museum.id === key || museum.name === key) && !knownNames.has(key))
+      .map(([key, count]) => ({ id: key, name: key, count }))
+      .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name, "zh-CN"));
+    return [...fromMuseums, ...legacy];
+  }, [allMuseums, artifacts]);
+
+  const museumFilterOptions = useMemo(() => {
+    const source = allMuseums.length ? allMuseums : museums;
+    const types = [...MUSEUM_TYPE_OPTIONS];
+    const grades = [...MUSEUM_GRADE_OPTIONS];
+    const provinces = [...PROVINCE_OPTIONS];
+    const cities = museumProvinceFilter
+      ? [...(CITY_OPTIONS_BY_PROVINCE[museumProvinceFilter] || [])]
+      : Array.from(new Set(Object.values(CITY_OPTIONS_BY_PROVINCE).flat())).sort((a, b) => a.localeCompare(b, "zh-CN"));
+    const provinceCounts = new Map<string, number>();
+    const typeCounts = new Map<string, number>();
+    const gradeCounts = new Map<string, number>();
+    source.forEach((museum) => {
+      const province = museum.province || "其他";
+      const type = museum.type || "其他";
+      const grade = museum.grade || "未定级";
+      provinceCounts.set(province, (provinceCounts.get(province) || 0) + 1);
+      typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
+      gradeCounts.set(grade, (gradeCounts.get(grade) || 0) + 1);
+    });
+    return { types, grades, provinces, cities, provinceCounts, typeCounts, gradeCounts };
+  }, [allMuseums, museumProvinceFilter, museums]);
+
+  const museumFormCityOptions = useMemo(() => CITY_OPTIONS_BY_PROVINCE[museumForm.province] || [], [museumForm.province]);
+  const museumFormUsesCustomCity = museumForm.city === "__custom__" || Boolean(museumForm.city && !museumFormCityOptions.includes(museumForm.city));
+
+  const museumStatusCounts = useMemo(() => {
+    const source = allMuseums.length ? allMuseums : museums;
+    return {
+      all: source.length,
+      "with-artifacts": source.filter((museum) => (museum.artifactCount || 0) > 0).length,
+      "without-artifacts": source.filter((museum) => (museum.artifactCount || 0) === 0).length,
+      "created-by-import": source.filter((museum) => museum.createdByImport).length,
+      "no-cover": source.filter((museum) => !museum.hasCover).length,
+      duplicates: 0,
+    } as Record<MuseumStatusFilter, number>;
+  }, [allMuseums, museums]);
+
+  const selectedMuseumArtifacts = useMemo(() => {
+    const keyword = museumArtifactQuery.trim().toLowerCase();
+    const source = selectedMuseum?.artifacts || [];
+    if (!keyword) return source;
+    return source.filter((artifact) => [
+      artifact.name,
+      artifact.dynasty,
+      artifact.period,
+      artifact.category,
+      artifact.material,
+      artifact.description,
+    ].map(text).join(" ").toLowerCase().includes(keyword));
+  }, [museumArtifactQuery, selectedMuseum]);
+
+  const activeMuseumFilterTags = useMemo(() => {
+    const tags: string[] = [];
+    if (museumQuery.trim()) tags.push(`搜索：${museumQuery.trim()}`);
+    if (museumProvinceFilter) tags.push(`省份：${museumProvinceFilter}`);
+    if (museumCityFilter) tags.push(`城市：${museumCityFilter}`);
+    if (museumTypeFilter) tags.push(`类型：${museumTypeFilter}`);
+    if (museumGradeFilter) tags.push(`等级：${museumGradeFilter}`);
+    const statusLabels: Record<MuseumStatusFilter, string> = {
+      all: "",
+      "with-artifacts": "有文物",
+      "without-artifacts": "无文物",
+      "created-by-import": "自动创建",
+      "no-cover": "无封面图",
+      duplicates: "疑似重复",
+    };
+    if (museumStatusFilter !== "all") tags.push(statusLabels[museumStatusFilter]);
+    return tags;
+  }, [museumCityFilter, museumGradeFilter, museumProvinceFilter, museumQuery, museumStatusFilter, museumTypeFilter]);
 
   const onLogout = async () => {
     await AuthService.logout();
@@ -772,10 +1122,149 @@ export function AdminPage() {
       );
       const sync = result.dbSync?.aiRagSync || result.aiRagSync;
       const syncMessage = aiRagMessage(sync);
+      const museumReport = (result.dbSync as any)?.museumReport;
+      const museumText = museumReport
+        ? ` 博物馆识别：已有 ${museumReport.matched?.length || 0}，新增 ${museumReport.created?.length || 0}，疑似重复 ${museumReport.possibleDuplicates?.length || 0}。`
+        : "";
       setImportResult(
-        `导入成功：${result.validRecords ?? 0} 条有效记录，文件库 ${result.fileStoreCount ?? 0} 条，DB 新增 ${result.dbSync?.inserted ?? 0}、更新 ${result.dbSync?.updated ?? 0}。${syncMessage}`,
+        `导入成功：${result.validRecords ?? 0} 条有效记录，文件库 ${result.fileStoreCount ?? 0} 条，DB 新增 ${result.dbSync?.inserted ?? 0}、更新 ${result.dbSync?.updated ?? 0}。${museumText}${syncMessage}`,
       );
       await loadArtifacts();
+      await loadMuseumCatalog();
+      await loadMuseums();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onSelectMuseum = async (museum: MuseumAdminItem) => {
+    setTab("museums");
+    setError(null);
+    try {
+      await loadMuseumDetail(museum.id);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const onSaveMuseum = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!museumForm.id) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const result = await apiFetch<{ museum: MuseumAdminItem; aiRagSync?: AiRagSyncSummary }>(`/api/admin/museums/${encodeURIComponent(museumForm.id)}`, {
+        method: "PUT",
+        body: JSON.stringify(museumPayloadFromForm(museumForm)),
+      });
+      setMuseumMessage(`博物馆信息已保存。${aiRagMessage(result.aiRagSync)}`);
+      await loadMuseumCatalog();
+      await loadMuseums();
+      await loadMuseumDetail(result.museum.id);
+      await loadArtifacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onUploadMuseumCover = async () => {
+    if (!museumForm.id || !museumCoverFile) return;
+    const token = (getAuthToken() || adminTokenInput).trim();
+    if (!token) {
+      setError("请先登录管理员账号或填写管理员 token。");
+      return;
+    }
+    setAuthToken(token);
+    setSaving(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.set("image", museumCoverFile);
+      const response = await fetch(apiUrl(`/api/admin/museums/${encodeURIComponent(museumForm.id)}/cover`), {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "上传失败");
+      setMuseumCoverFile(null);
+      setMuseumMessage(`博物馆封面已上传。${aiRagMessage(data.aiRagSync)}`);
+      await loadMuseumCatalog();
+      await loadMuseums();
+      await loadMuseumDetail(museumForm.id);
+      await loadArtifacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onDeleteMuseumCover = async () => {
+    if (!museumForm.id) return;
+    const token = (getAuthToken() || adminTokenInput).trim();
+    if (!token) {
+      setError("请先登录管理员账号或填写管理员 token。");
+      return;
+    }
+    setAuthToken(token);
+    setSaving(true);
+    setError(null);
+    try {
+      const response = await fetch(apiUrl(`/api/admin/museums/${encodeURIComponent(museumForm.id)}/cover`), {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "删除失败");
+      setMuseumCoverFile(null);
+      setMuseumMessage(`博物馆封面已删除。${aiRagMessage(data.aiRagSync)}`);
+      await loadMuseumCatalog();
+      await loadMuseums();
+      await loadMuseumDetail(museumForm.id);
+      await loadArtifacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onAddMuseumAlias = async () => {
+    if (!museumForm.id || !newMuseumAlias.trim()) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const result = await apiFetch<{ aiRagSync?: AiRagSyncSummary }>(`/api/admin/museums/${encodeURIComponent(museumForm.id)}/aliases`, {
+        method: "POST",
+        body: JSON.stringify({ alias: newMuseumAlias.trim() }),
+      });
+      setNewMuseumAlias("");
+      setMuseumMessage(`别名已新增。${aiRagMessage(result.aiRagSync)}`);
+      await loadMuseumCatalog();
+      await loadMuseums();
+      await loadMuseumDetail(museumForm.id);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onDeleteMuseumAlias = async (aliasId: string) => {
+    if (!museumForm.id) return;
+    setSaving(true);
+    setError(null);
+    try {
+      await apiFetch(`/api/admin/museums/${encodeURIComponent(museumForm.id)}/aliases/${encodeURIComponent(aliasId)}`, { method: "DELETE" });
+      setMuseumMessage("别名已删除。");
+      await loadMuseumCatalog();
+      await loadMuseums();
+      await loadMuseumDetail(museumForm.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -813,6 +1302,7 @@ export function AdminPage() {
           <nav className="mt-6 flex flex-wrap gap-2">
             {[
               ["artifacts", "文物管理"],
+              ["museums", "博物馆管理"],
               ["import", "导入文物"],
               ["users", "用户统计"],
             ].map(([id, label]) => (
@@ -933,12 +1423,50 @@ export function AdminPage() {
                 {imageUploadMessage && <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-bold text-emerald-700">{imageUploadMessage}</div>}
 
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <h2 className="text-lg font-black text-gray-900">文物列表</h2>
-                  <div className="mt-1 text-sm text-gray-500">统一 artifacts 表当前 {artifacts.length} 条，筛选显示 {filteredArtifacts.length} 条。</div>
-                </div>
+                  <div>
+                    <h2 className="text-lg font-black text-gray-900">文物列表</h2>
+                    <div className="mt-1 text-sm text-gray-500">统一 artifacts 表当前 {artifacts.length} 条，筛选显示 {filteredArtifacts.length} 条。</div>
+                  </div>
                   <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索名称、馆藏机构、朝代、类别" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500 md:w-80" />
                 </div>
+
+                <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
+                  <select
+                    value={artifactMuseumFilter}
+                    onChange={(e) => setArtifactMuseumFilter(e.target.value)}
+                    className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500"
+                  >
+                    <option value="">全部博物馆</option>
+                    {artifactMuseumOptions.map((museum) => (
+                      <option key={museum.id} value={museum.id}>
+                        {museum.name}（{museum.count}）
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setQuery("");
+                      setArtifactMuseumFilter("");
+                      setImageFilter("all");
+                    }}
+                    className="rounded-2xl bg-gray-100 px-4 py-2 text-sm font-black text-gray-700"
+                  >
+                    重置筛选
+                  </button>
+                </div>
+
+                {(query || artifactMuseumFilter || imageFilter !== "all") && (
+                  <div className="flex flex-wrap gap-2">
+                    {query && <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-black text-gray-700">搜索：{query}</span>}
+                    {artifactMuseumFilter && (
+                      <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-black text-gray-700">
+                        博物馆：{artifactMuseumOptions.find((museum) => museum.id === artifactMuseumFilter)?.name || artifactMuseumFilter}
+                      </span>
+                    )}
+                    {imageFilter !== "all" && <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-black text-gray-700">图片：{imageStatusLabel(imageFilter as ArtifactImageStatus) || imageFilter}</span>}
+                  </div>
+                )}
 
                 <div className="flex flex-wrap gap-2">
                   {([
@@ -1111,6 +1639,353 @@ export function AdminPage() {
                   </tbody>
                 </table>
               </div>
+            </section>
+          </div>
+        )}
+
+        {!loading && tab === "museums" && (
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_460px]">
+            <section className="rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="space-y-4 border-b border-gray-100 p-6">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                  <div>
+                    <h2 className="text-lg font-black text-gray-900">博物馆列表</h2>
+                    <div className="mt-1 text-sm text-gray-500">当前显示 {museums.length} 个博物馆机构，文物会通过 museumId 关联到这里。</div>
+                  </div>
+                  <input
+                    value={museumQuery}
+                    onChange={(e) => setMuseumQuery(e.target.value)}
+                    placeholder="搜索标准名、别名、省市"
+                    className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500 lg:w-80"
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMuseumProvinceFilter("");
+                      setMuseumCityFilter("");
+                    }}
+                    className={`rounded-2xl px-4 py-2 text-sm font-black ${!museumProvinceFilter ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"}`}
+                  >
+                    全部省份 {museumStatusCounts.all}
+                  </button>
+                  {museumFilterOptions.provinces.map((province) => (
+                    <button
+                      key={province}
+                      type="button"
+                      onClick={() => {
+                        setMuseumProvinceFilter(province);
+                        setMuseumCityFilter("");
+                      }}
+                      className={`rounded-2xl px-4 py-2 text-sm font-black ${museumProvinceFilter === province ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"}`}
+                    >
+                      {province} {museumFilterOptions.provinceCounts.get(province) || 0}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="grid gap-3 md:grid-cols-5">
+                  <select
+                    value={museumProvinceFilter}
+                    onChange={(e) => {
+                      setMuseumProvinceFilter(e.target.value);
+                      setMuseumCityFilter("");
+                    }}
+                    className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500"
+                  >
+                    <option value="">全部省份</option>
+                    {museumFilterOptions.provinces.map((item) => <option key={item} value={item}>{item}（{museumFilterOptions.provinceCounts.get(item) || 0}）</option>)}
+                  </select>
+                  <select value={museumCityFilter} onChange={(e) => setMuseumCityFilter(e.target.value)} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500">
+                    <option value="">全部城市</option>
+                    {museumFilterOptions.cities.map((item) => <option key={item} value={item}>{item}</option>)}
+                  </select>
+                  <select value={museumTypeFilter} onChange={(e) => setMuseumTypeFilter(e.target.value)} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500">
+                    <option value="">全部类型</option>
+                    {museumFilterOptions.types.map((item) => <option key={item} value={item}>{item}（{museumFilterOptions.typeCounts.get(item) || 0}）</option>)}
+                  </select>
+                  <select value={museumGradeFilter} onChange={(e) => setMuseumGradeFilter(e.target.value)} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500">
+                    <option value="">全部等级</option>
+                    {museumFilterOptions.grades.map((item) => <option key={item} value={item}>{item}（{museumFilterOptions.gradeCounts.get(item) || 0}）</option>)}
+                  </select>
+                  <select value={museumStatusFilter} onChange={(e) => setMuseumStatusFilter(e.target.value as MuseumStatusFilter)} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500">
+                    <option value="all">全部状态（{museumStatusCounts.all}）</option>
+                    <option value="with-artifacts">只看有文物（{museumStatusCounts["with-artifacts"]}）</option>
+                    <option value="without-artifacts">只看无文物（{museumStatusCounts["without-artifacts"]}）</option>
+                    <option value="created-by-import">只看自动创建（{museumStatusCounts["created-by-import"]}）</option>
+                    <option value="no-cover">只看无封面图（{museumStatusCounts["no-cover"]}）</option>
+                    <option value="duplicates">只看疑似重复</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMuseumQuery("");
+                      setMuseumProvinceFilter("");
+                      setMuseumCityFilter("");
+                      setMuseumTypeFilter("");
+                      setMuseumGradeFilter("");
+                      setMuseumStatusFilter("all");
+                    }}
+                    className="rounded-2xl bg-gray-100 px-4 py-2 text-sm font-black text-gray-700"
+                  >
+                    重置筛选
+                  </button>
+                  {activeMuseumFilterTags.map((tag) => (
+                    <span key={tag} className="rounded-full bg-gray-100 px-3 py-1 text-xs font-black text-gray-700">{tag}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="max-h-[760px] overflow-auto">
+                <table className="min-w-full text-sm">
+                  <thead className="sticky top-0 bg-gray-50 text-gray-500">
+                    <tr>
+                      <th className="px-5 py-3 text-left font-bold">博物馆</th>
+                      <th className="px-5 py-3 text-left font-bold">类型/等级</th>
+                      <th className="px-5 py-3 text-left font-bold">省市</th>
+                      <th className="px-5 py-3 text-left font-bold">文物</th>
+                      <th className="px-5 py-3 text-left font-bold">更新时间</th>
+                      <th className="px-5 py-3 text-right font-bold">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {museums.map((museum) => {
+                      const cover = museumCoverUrl(museum);
+                      return (
+                        <tr key={museum.id} className="border-t border-gray-100">
+                          <td className="px-5 py-4 align-top">
+                            <div className="flex min-w-72 gap-3">
+                              {cover ? (
+                                <button type="button" onClick={() => onSelectMuseum(museum)} className="shrink-0">
+                                  <img src={cover} alt="" className="h-12 w-16 rounded-xl bg-gray-100 object-cover" />
+                                </button>
+                              ) : (
+                                <div className="flex h-12 w-16 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-xs font-black text-gray-400">无封面</div>
+                              )}
+                              <div>
+                                <div className="font-black text-gray-900">{museum.name}</div>
+                                <div className="mt-1 line-clamp-1 text-xs text-gray-500">{(museum.aliases || []).join("，") || "暂无别名"}</div>
+                                <div className="mt-1 text-xs text-gray-400">{museum.createdByImport ? "自动创建" : "人工维护"} · {museum.hasCover ? "有封面" : "无封面"}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-5 py-4 align-top text-gray-700">
+                            <div>{museum.type || "-"}</div>
+                            <div className="mt-1 text-xs text-gray-400">{museum.grade || "-"} / {museum.level || "-"}</div>
+                          </td>
+                          <td className="px-5 py-4 align-top text-gray-700">{[museum.province, museum.city].filter(Boolean).join(" / ") || "-"}</td>
+                          <td className="px-5 py-4 align-top font-black text-gray-900">{museum.artifactCount || 0}</td>
+                          <td className="whitespace-nowrap px-5 py-4 align-top text-xs text-gray-500">{formatShortDate(museum.updatedAt)}</td>
+                          <td className="px-5 py-4 align-top">
+                            <div className="flex justify-end gap-2">
+                              <button type="button" onClick={() => onSelectMuseum(museum)} className="rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white">
+                                查看 / 编辑
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {museums.length === 0 && (
+                      <tr>
+                        <td colSpan={6} className="px-5 py-10 text-center text-sm text-gray-400">当前筛选下没有博物馆。</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+              {selectedMuseum ? (
+                <form onSubmit={onSaveMuseum} className="space-y-5">
+                  <div>
+                    <h2 className="text-lg font-black text-gray-900">博物馆详情</h2>
+                    <div className="mt-1 text-xs text-gray-500">ID {selectedMuseum.museum.id} · 馆藏文物 {selectedMuseum.stats.artifactCount} 件</div>
+                  </div>
+
+                  <div className="grid gap-3">
+                    <label className="grid gap-1 text-xs font-black text-gray-500">
+                      标准名称
+                      <input value={museumForm.name} onChange={(e) => setMuseumForm({ ...museumForm, name: e.target.value })} placeholder="标准名称" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
+                    </label>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <label className="grid gap-1 text-xs font-black text-gray-500">
+                        类型
+                        <select value={museumForm.type} onChange={(e) => setMuseumForm({ ...museumForm, type: e.target.value })} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500">
+                          {MUSEUM_TYPE_OPTIONS.map((item) => <option key={item} value={item}>{item}</option>)}
+                        </select>
+                      </label>
+                      <label className="grid gap-1 text-xs font-black text-gray-500">
+                        等级
+                        <select value={museumForm.grade} onChange={(e) => setMuseumForm({ ...museumForm, grade: e.target.value })} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500">
+                          {MUSEUM_GRADE_OPTIONS.map((item) => <option key={item} value={item}>{item}</option>)}
+                        </select>
+                      </label>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <label className="grid gap-1 text-xs font-black text-gray-500">
+                        定级
+                        <select value={museumForm.level} onChange={(e) => setMuseumForm({ ...museumForm, level: e.target.value })} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500">
+                          {MUSEUM_LEVEL_OPTIONS.map((item) => <option key={item} value={item}>{item}</option>)}
+                        </select>
+                      </label>
+                      <label className="grid gap-1 text-xs font-black text-gray-500">
+                        官网
+                        <input value={museumForm.officialWebsite} onChange={(e) => setMuseumForm({ ...museumForm, officialWebsite: e.target.value })} placeholder="官网" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
+                      </label>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <label className="grid gap-1 text-xs font-black text-gray-500">
+                        省份
+                        <select
+                          value={museumForm.province}
+                          onChange={(e) => setMuseumForm({ ...museumForm, province: e.target.value, city: "" })}
+                          className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500"
+                        >
+                          <option value="">未填写</option>
+                          {PROVINCE_OPTIONS.map((item) => <option key={item} value={item}>{item}</option>)}
+                        </select>
+                      </label>
+                      <label className="grid gap-1 text-xs font-black text-gray-500">
+                        城市
+                        <div className="grid gap-2">
+                          <select
+                            value={museumFormUsesCustomCity ? "__custom__" : museumForm.city}
+                            onChange={(e) => setMuseumForm({ ...museumForm, city: e.target.value })}
+                            className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500"
+                          >
+                            <option value="">未填写</option>
+                            {museumFormCityOptions.map((item) => <option key={item} value={item}>{item}</option>)}
+                            <option value="__custom__">自定义城市...</option>
+                          </select>
+                        {museumFormUsesCustomCity && (
+                          <input
+                            value={museumForm.city === "__custom__" ? "" : museumForm.city}
+                            onChange={(e) => setMuseumForm({ ...museumForm, city: e.target.value })}
+                            placeholder="自定义城市、区县或特殊地区"
+                            className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500"
+                          />
+                        )}
+                        </div>
+                      </label>
+                    </div>
+                    <label className="grid gap-1 text-xs font-black text-gray-500">
+                      地址
+                      <input value={museumForm.address} onChange={(e) => setMuseumForm({ ...museumForm, address: e.target.value })} placeholder="地址" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
+                    </label>
+                    <label className="grid gap-1 text-xs font-black text-gray-500">
+                      简介
+                      <textarea value={museumForm.description} onChange={(e) => setMuseumForm({ ...museumForm, description: e.target.value })} placeholder="简介" rows={3} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
+                    </label>
+                    <label className="grid gap-1 text-xs font-black text-gray-500">
+                      历史
+                      <textarea value={museumForm.history} onChange={(e) => setMuseumForm({ ...museumForm, history: e.target.value })} placeholder="历史" rows={3} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
+                    </label>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <label className="grid gap-1 text-xs font-black text-gray-500">
+                        开放时间
+                        <input value={museumForm.openingHours} onChange={(e) => setMuseumForm({ ...museumForm, openingHours: e.target.value })} placeholder="开放时间" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
+                      </label>
+                      <label className="grid gap-1 text-xs font-black text-gray-500">
+                        门票信息
+                        <input value={museumForm.ticketInfo} onChange={(e) => setMuseumForm({ ...museumForm, ticketInfo: e.target.value })} placeholder="门票信息" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
+                      </label>
+                    </div>
+                    <label className="grid gap-1 text-xs font-black text-gray-500">
+                      联系方式
+                      <input value={museumForm.contact} onChange={(e) => setMuseumForm({ ...museumForm, contact: e.target.value })} placeholder="联系方式" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
+                    </label>
+                    <label className="grid gap-1 text-xs font-black text-gray-500">
+                      特色说明
+                      <textarea value={museumForm.highlights} onChange={(e) => setMuseumForm({ ...museumForm, highlights: e.target.value })} placeholder="特色说明" rows={2} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
+                    </label>
+                    <label className="inline-flex items-center gap-2 text-sm font-black text-gray-700">
+                      <input type="checkbox" checked={museumForm.isFeatured} onChange={(e) => setMuseumForm({ ...museumForm, isFeatured: e.target.checked })} />
+                      首页推荐
+                    </label>
+                  </div>
+
+                  <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4">
+                    <div className="text-sm font-black text-gray-900">博物馆封面图上传 / 替换</div>
+                    <div className="mt-1 text-xs text-gray-500">当前博物馆 ID：{selectedMuseum.museum.id}</div>
+                    {museumCoverUrl(selectedMuseum.museum) ? (
+                      <div className="mt-3 grid gap-3 md:grid-cols-2">
+                        <div className="rounded-2xl border border-gray-100 bg-white p-3">
+                          <div className="text-xs font-black text-gray-500">当前封面原图</div>
+                          <img src={museumOriginalCoverUrl(selectedMuseum.museum) || museumCoverUrl(selectedMuseum.museum)} alt="" className="mt-2 h-40 w-full rounded-xl bg-gray-100 object-cover" />
+                          <div className="mt-2 break-all rounded-xl bg-gray-50 p-2 font-mono text-xs text-gray-500">
+                            {museumOriginalCoverUrl(selectedMuseum.museum) || "暂无原图路径"}
+                          </div>
+                        </div>
+                        <div className="rounded-2xl border border-gray-100 bg-white p-3">
+                          <div className="text-xs font-black text-gray-500">当前封面缩略图</div>
+                          <img src={museumThumbnailCoverUrl(selectedMuseum.museum)} alt="" className="mt-2 h-40 w-full rounded-xl bg-gray-100 object-cover" />
+                          <div className="mt-2 break-all rounded-xl bg-gray-50 p-2 font-mono text-xs text-gray-500">
+                            {museumThumbnailCoverUrl(selectedMuseum.museum) || "暂无缩略图路径"}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-3 rounded-2xl bg-white p-4 text-sm font-bold text-gray-400">暂无封面图，可上传一张本地图片作为博物馆介绍图。</div>
+                    )}
+                    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setMuseumCoverFile(e.target.files?.[0] || null)} className="mt-3 block w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-2 file:text-xs file:font-black file:text-white" />
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button type="button" disabled={saving || !museumCoverFile} onClick={onUploadMuseumCover} className="rounded-xl bg-gray-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50">
+                        上传 / 替换封面
+                      </button>
+                      <button type="button" disabled={saving || !museumCoverUrl(selectedMuseum.museum)} onClick={onDeleteMuseumCover} className="rounded-xl bg-rose-50 px-4 py-2 text-xs font-black text-rose-700 disabled:opacity-50">
+                        删除封面
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl bg-gray-50 p-4">
+                    <div className="text-sm font-black text-gray-900">别名</div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {selectedMuseum.aliases.map((alias) => (
+                        <span key={alias.id} className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-gray-700">
+                          {alias.alias}
+                          <button type="button" onClick={() => onDeleteMuseumAlias(alias.id)} className="text-rose-600">删除</button>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="mt-3 flex gap-2">
+                      <input value={newMuseumAlias} onChange={(e) => setNewMuseumAlias(e.target.value)} placeholder="新增别名，如 南大博物馆" className="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-amber-500" />
+                      <button type="button" disabled={saving || !newMuseumAlias.trim()} onClick={onAddMuseumAlias} className="rounded-xl bg-amber-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50">新增</button>
+                    </div>
+                  </div>
+
+                  {museumMessage && <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-bold text-emerald-700">{museumMessage}</div>}
+
+                  <button disabled={saving || !museumForm.name.trim()} className="w-full rounded-2xl bg-gray-900 px-4 py-3 text-sm font-black text-white disabled:opacity-50">
+                    {saving ? "保存中..." : "保存博物馆信息"}
+                  </button>
+
+                  <div className="border-t border-gray-100 pt-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-sm font-black text-gray-900">该馆文物</div>
+                      <input value={museumArtifactQuery} onChange={(e) => setMuseumArtifactQuery(e.target.value)} placeholder="搜索文物" className="w-40 rounded-xl border border-gray-200 px-3 py-2 text-xs outline-none focus:border-amber-500" />
+                    </div>
+                    <div className="mt-3 max-h-80 space-y-2 overflow-auto">
+                      {selectedMuseumArtifacts.map((artifact) => (
+                        <button key={artifact.id} type="button" onClick={() => onEditArtifact(artifact)} className="block w-full rounded-2xl bg-gray-50 p-3 text-left">
+                          <div className="text-sm font-black text-gray-900">{artifact.name}</div>
+                          <div className="mt-1 text-xs text-gray-500">{artifact.dynasty || artifact.period || "-"} · {artifact.category || "-"}</div>
+                        </button>
+                      ))}
+                      {selectedMuseumArtifacts.length === 0 && <div className="py-6 text-center text-sm text-gray-400">暂无匹配文物。</div>}
+                    </div>
+                  </div>
+                </form>
+              ) : (
+                <div className="py-16 text-center text-sm text-gray-400">从左侧选择一个博物馆查看详情、编辑信息和上传封面。</div>
+              )}
             </section>
           </div>
         )}
