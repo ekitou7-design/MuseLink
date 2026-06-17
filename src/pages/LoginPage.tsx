@@ -85,8 +85,8 @@ export function LoginPage() {
     setLoggingIn(true);
     setError(null);
     try {
-      await AuthService.loginWithCode(channel, normalizedTarget, nextCode);
-      navigate("/home");
+      const res = await AuthService.loginWithCode(channel, normalizedTarget, nextCode);
+      navigate(res.role === "admin" ? "/admin" : "/home");
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -109,8 +109,8 @@ export function LoginPage() {
     setLoggingIn(true);
     setError(null);
     try {
-      await AuthService.login(normalizedMuseId, password);
-      navigate("/home");
+      const res = await AuthService.login(normalizedMuseId, password);
+      navigate(res.role === "admin" ? "/admin" : "/home");
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {

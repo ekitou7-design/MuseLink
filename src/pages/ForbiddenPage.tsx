@@ -10,10 +10,6 @@ export function ForbiddenPage() {
           <div className="text-sm text-gray-500">当前账号没有后台管理权限，请使用管理员账号登录。</div>
         </div>
 
-        <div className="rounded-2xl bg-amber-50 border border-amber-100 px-4 py-3 text-sm text-amber-900">
-          管理员账号：jiangzhong，密码：jiangzhong
-        </div>
-
         <button
           onClick={() => goBackOrNavigate("/home")}
           className="w-full bg-amber-800 text-white rounded-2xl py-3 text-sm font-bold"

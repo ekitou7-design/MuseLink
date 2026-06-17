@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import type { Artifact } from "../src/types";
 import { syncAiRagForArtifacts, type AiRagSyncSummary } from "./ai-rag-data";
-import { syncMuseumStoreFromArtifacts } from "./museums";
+import { refreshMuseumArtifactIndex } from "./api/services/museumsStore";
 
 export type ArtifactImportFormat = "json" | "ndjson" | "csv";
 export type ArtifactImportMode = "append" | "replace-museum" | "replace-all";
@@ -744,7 +744,7 @@ async function persistArtifactsToFile(
   const store = await readArtifactStore();
   const mergedArtifacts = mergeArtifacts(store.artifacts, artifacts, mode);
   await writeArtifactStore(mergedArtifacts);
-  await syncMuseumStoreFromArtifacts(mergedArtifacts);
+  await refreshMuseumArtifactIndex();
   return { count: mergedArtifacts.length, artifacts: mergedArtifacts };
 }
 

@@ -357,6 +357,34 @@
           "likes": 0,
           "following": 0,
           "followers": 0
+        },
+        "curatorTI": {
+          "code": "TKLA",
+          "title": "主题研究型 / 知识讲解派 / 学习展示向 / AI 托管型",
+          "description": "围绕茶、科举、山水画、节日等文化主题展开；知识干货，有深度讲解；用于学习、教学或作业展示；希望 AI 完成选品、排序和文案，可直接发布",
+          "answers": {
+            "source": "theme",
+            "expression": "knowledge",
+            "audience": "learning",
+            "navigation": "timeline",
+            "collaboration": "auto",
+            "tone": "warm",
+            "length": "short",
+            "publish": "limited",
+            "storyPreference": "complete",
+            "visitPath": "guided",
+            "digitalImpression": "interaction",
+            "takeaway": "understood",
+            "artifactCuriosity": "owner",
+            "titleStyle": "academic",
+            "remixAttitude": "protect",
+            "experience": "mature",
+            "painPoint": "selection",
+            "mustHave": "must",
+            "interactionDesign": "quiet",
+            "visualMood": "quiet"
+          },
+          "updatedAt": "2026-06-17T07:54:07.487Z"
         }
       }
     },

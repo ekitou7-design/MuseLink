@@ -1,5 +1,6 @@
 import { apiFetch, clearAuthToken, setAuthToken } from "./api";
 import { MUSE_ID_REGEX } from "./authUtils";
+import { resolveUserRole } from "../auth/admin";
 
 export type UserRole = "user" | "admin";
 export type LoginChannel = "phone" | "email";
@@ -122,14 +123,6 @@ function getRoleFromPayload(payload: unknown): UserRole | null {
   return null;
 }
 
-function requireRole(payload: unknown, action: "登录"): UserRole {
-  const role = getRoleFromPayload(payload);
-  if (!role) {
-    throw new Error(`${action}成功，但接口没有返回有效的角色信息。`);
-  }
-  return role;
-}
-
 export async function register(password: string, confirmPassword: string): Promise<RegisterResponse> {
   const res = await apiFetch<{ museId?: string; userNumber?: number | string; user_number?: number | string }>(
     "/api/auth/register",
@@ -155,7 +148,7 @@ export async function login(museId: string, password: string): Promise<LoginResp
     body: JSON.stringify({ museId, password }),
   });
   const normalized = requireMuseId(res, "登录");
-  const role = requireRole(res, "登录");
+  const role = resolveUserRole(getRoleFromPayload(res), normalized.museId);
   setAuthToken(res.token);
   return { token: res.token, museId: normalized.museId, role };
 }
@@ -187,7 +180,7 @@ export async function loginWithCode(
     body: JSON.stringify({ channel, target, code }),
   });
   const normalized = requireMuseId(res, "登录");
-  const role = requireRole(res, "登录");
+  const role = resolveUserRole(getRoleFromPayload(res), normalized.museId);
   setAuthToken(res.token);
   return { token: res.token, museId: normalized.museId, role };
 }

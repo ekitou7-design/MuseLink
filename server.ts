@@ -51,14 +51,23 @@ import {
   updateExhibition,
 } from "./backend/exhibitions";
 import { getFavExhibitions, getFavorites, toggleFavExhibition, toggleFavorite } from "./backend/user-data";
-import { buildMuseumsFromArtifacts, syncMuseumStoreFromArtifacts } from "./backend/museums";
 import { db as appDb } from "./backend/api/db/client";
 import { migrateArtifactDetails } from "./backend/api/db/migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./backend/api/db/upgradeArtifactsMuseumFk";
-import { getArtifactFromDb, listArtifactsFromDb, syncImportedArtifactsToDb } from "./backend/api/db/syncImportedArtifacts";
-import { searchRelics as searchRelicsInDb } from "./backend/api/db/relicSearch";
+import { syncImportedArtifactsToDb } from "./backend/api/db/syncImportedArtifacts";
+import { syncImportedMuseumsToDb } from "./backend/api/db/syncImportedMuseums";
 import { museumRoutes } from "./backend/api/routes/museumRoutes";
 import { ensureMuseumSchema, seedBuiltInMuseumAliases } from "./backend/museum-normalizer";
+import {
+  getArtifactFromStore,
+  listArtifactsFromStore,
+  searchArtifactsInStore,
+} from "./backend/api/services/artifactsStore";
+import {
+  getMuseumArtifactsFromStore,
+  listMuseumsFromStore,
+  refreshMuseumArtifactIndex,
+} from "./backend/api/services/museumsStore";
 import {
   createArtifact,
   deleteArtifact,
@@ -172,9 +181,11 @@ const unifiedDbReady = (async () => {
     await seedBuiltInMuseumAliases(appDb);
     await migrateArtifactDetails(appDb);
     const sync = await syncImportedArtifactsToDb(appDb);
+    const museumSync = await syncImportedMuseumsToDb(appDb);
     if (!sync.skipped) {
       console.log(`Synced imported artifacts to unified DB: ${sync.importedCount} file rows, ${sync.inserted} inserted, ${sync.updated} updated`);
     }
+    console.log(`Synced imported museums to runtime DB: ${museumSync.importedCount} file rows, ${museumSync.inserted} inserted, ${museumSync.updated} updated`);
   } catch (error) {
     console.error("Unified artifact DB sync failed:", error);
   }
@@ -692,14 +703,9 @@ async function resolveArtifactsSource(source = "auto") {
     return { artifacts: SEED_ARTIFACTS, source: "seed" };
   }
 
-  const dbArtifacts = await listArtifactsFromDb(appDb, 10000);
-  if (dbArtifacts.length > 0) {
-    return { artifacts: dbArtifacts, source: "database" };
-  }
-
-  const importedArtifacts = await getImportedArtifacts();
+  const importedArtifacts = await listArtifactsFromStore(10000);
   if (importedArtifacts.length > 0) {
-    return { artifacts: importedArtifacts, source: "imported-file-fallback" };
+    return { artifacts: importedArtifacts, source: "imported-artifacts-json" };
   }
 
   return { artifacts: SEED_ARTIFACTS, source: "seed-fallback" };
@@ -2237,12 +2243,11 @@ async function startServer() {
       const source = getSingleQueryParam(req.query.source as string | string[] | undefined) || "auto";
       const id = decodeURIComponent(req.params.id);
       if (source !== "seed") {
-        await unifiedDbReady;
-        const dbArtifact = await getArtifactFromDb(appDb, id);
-        if (dbArtifact) {
+        const storeArtifact = await getArtifactFromStore(id);
+        if (storeArtifact) {
           return res.json({
-            source: "database",
-            artifact: buildArtifactDetail(dbArtifact),
+            source: "imported-artifacts-json",
+            artifact: buildArtifactDetail(storeArtifact),
           });
         }
       }
@@ -2275,11 +2280,10 @@ async function startServer() {
       }
 
       const limit = Number.isFinite(limitValue) ? limitValue : 100;
-      await unifiedDbReady;
-      const artifacts = await searchRelicsInDb(appDb, { keyword, limit });
+      const artifacts = await searchArtifactsInStore(keyword, limit);
 
       res.json({
-        source: "database",
+        source: "imported-artifacts-json",
         keyword,
         total: artifacts.length,
         artifacts,
@@ -2368,12 +2372,10 @@ async function startServer() {
 
   app.get("/api/museums", async (req, res) => {
     try {
-      const source = getSingleQueryParam(req.query.source as string | string[] | undefined) || "auto";
-      const { artifacts, source: resolvedSource } = await resolveArtifactsSource(source);
-      const museums = await syncMuseumStoreFromArtifacts(artifacts);
+      const museums = await listMuseumsFromStore();
 
       res.json({
-        source: resolvedSource,
+        source: "imported-museums-json",
         total: museums.length,
         museums,
       });
@@ -2384,21 +2386,17 @@ async function startServer() {
 
   app.get(["/api/museums/:id", "/api/museum/:id"], async (req, res) => {
     try {
-      const source = getSingleQueryParam(req.query.source as string | string[] | undefined) || "auto";
-      const { artifacts, source: resolvedSource } = await resolveArtifactsSource(source);
-      const museums = buildMuseumsFromArtifacts(artifacts);
       const idOrName = decodeURIComponent(req.params.id);
-      const museum = museums.find((item) => item.id === idOrName || item.name === idOrName);
+      const { museum, artifacts } = await getMuseumArtifactsFromStore(idOrName);
 
       if (!museum) {
         return res.status(404).json({ error: "Museum not found." });
       }
 
-      const artifactIdSet = new Set(museum.artifactIds);
       res.json({
-        source: resolvedSource,
+        source: "imported-museums-json",
         museum,
-        artifacts: artifacts.filter((artifact) => artifactIdSet.has(artifact.id)),
+        artifacts,
       });
     } catch (error) {
       res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
@@ -2435,7 +2433,8 @@ async function startServer() {
       });
       await unifiedDbReady;
       const dbSync = await syncImportedArtifactsToDb(appDb);
-      await syncMuseumStoreFromArtifacts(result.artifacts);
+      await syncImportedMuseumsToDb(appDb);
+      await refreshMuseumArtifactIndex();
       res.json({ ...result, dbSync });
     } catch (error) {
       res.status(400).json({ error: error instanceof Error ? error.message : String(error) });

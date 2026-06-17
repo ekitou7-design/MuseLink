@@ -8,6 +8,7 @@ import { AdminPage } from "./pages/AdminPage";
 import { UserSession } from "./auth/UserSession";
 import { AuthGuard } from "./router/AuthGuard";
 import { AdminGuard } from "./router/AdminGuard";
+import { isCurrentUserAdmin } from "./router/authChecks";
 
 export default function RootApp() {
   const route = useRoute();
@@ -20,16 +21,22 @@ export default function RootApp() {
   // - If logged in -> go home
   // - If not -> go login
   useEffect(() => {
+    let cancelled = false;
     const snap = UserSession.snapshot();
     if (snap.isLoggedIn && snap.token && snap.museId) {
       if (route === "/login" || route === "/register") {
-        navigate("/home");
+        isCurrentUserAdmin().then((isAdmin) => {
+          if (!cancelled) navigate(isAdmin ? "/admin" : "/home");
+        });
       }
     } else {
       if (route === "/home" || route === "/swipe" || route === "/profile" || route === "/admin" || route.startsWith("/museums/")) {
         navigate("/login");
       }
     }
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

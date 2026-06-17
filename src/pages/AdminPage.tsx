@@ -653,9 +653,9 @@ function ImageCropperPanel({
   };
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-gray-950/70 p-4">
-      <div className="max-h-[92vh] w-full max-w-5xl overflow-auto rounded-3xl bg-white p-5 shadow-2xl">
-        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+    <div className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-gray-950/70 p-2">
+      <div className="max-h-none w-full max-w-5xl overflow-visible rounded-3xl bg-white p-3 shadow-2xl">
+        <div className="flex flex-col gap-3">
           <div>
             <h2 className="text-lg font-black text-gray-900">{request.title}</h2>
             <div className="mt-1 text-sm font-bold text-amber-800">{CROP_HELP_TEXT}</div>
@@ -665,7 +665,7 @@ function ImageCropperPanel({
           </div>
         </div>
 
-        <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+        <div className="mt-4 grid gap-4">
           <div className="overflow-auto rounded-2xl bg-gray-950 p-3">
             <div className="relative mx-auto w-fit max-w-full">
               <img
@@ -674,7 +674,7 @@ function ImageCropperPanel({
                 alt=""
                 draggable={false}
                 onLoad={resetCrop}
-                className="block max-h-[58vh] max-w-full select-none"
+                className="block max-h-[44vh] max-w-full select-none"
               />
               {box && (
                 <div className="absolute inset-0">
@@ -800,6 +800,10 @@ export function AdminPage() {
   const imageFilePreviewUrlRef = useRef<string | null>(null);
   const museumCoverPreviewUrlRef = useRef<string | null>(null);
   const cropTargetRef = useRef<CropTarget | null>(null);
+  const artifactFormRef = useRef<HTMLFormElement | null>(null);
+  const artifactListRef = useRef<HTMLElement | null>(null);
+  const museumListRef = useRef<HTMLElement | null>(null);
+  const museumDetailRef = useRef<HTMLElement | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1791,30 +1795,319 @@ export function AdminPage() {
 
   const regularUserCount = stats ? Math.max(stats.totalUsers - stats.adminCount, 0) : 0;
 
+  const scrollToAdminSection = (ref: React.RefObject<HTMLElement | HTMLFormElement | null>) => {
+    window.setTimeout(() => {
+      ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  };
+
+  const featureEntries: Array<{
+    title: string;
+    description: string;
+    actionLabel: string;
+    onClick: () => void;
+  }> = [
+    {
+      title: "文物本地上传",
+      description: "进入文物表单；编辑已有文物后可选择图片并裁剪。",
+      actionLabel: "去文物表单",
+      onClick: () => {
+        setTab("artifacts");
+        scrollToAdminSection(artifactFormRef);
+      },
+    },
+    {
+      title: "文物列表补图",
+      description: "筛选无本地图文物，逐条上传或从链接下载补图。",
+      actionLabel: "去补图列表",
+      onClick: () => {
+        setTab("artifacts");
+        setImageFilter("no-local");
+        scrollToAdminSection(artifactListRef);
+      },
+    },
+    {
+      title: "博物馆封面上传",
+      description: "筛选无封面博物馆，选择后在详情里上传封面。",
+      actionLabel: "去博物馆",
+      onClick: () => {
+        setTab("museums");
+        setMuseumStatusFilter("no-cover");
+        scrollToAdminSection(selectedMuseum ? museumDetailRef : museumListRef);
+      },
+    },
+    {
+      title: "图片裁剪预览弹窗",
+      description: "选择文物图片或博物馆封面后，会自动打开裁剪预览。",
+      actionLabel: "去裁剪入口",
+      onClick: () => {
+        setTab("artifacts");
+        setImageFilter("no-local");
+        scrollToAdminSection(artifactListRef);
+      },
+    },
+  ];
+
+  const renderArtifactMobileCard = (artifact: Artifact) => {
+    const artifactId = String(artifact.id);
+    const imageStatus = getArtifactImageStatusInfo(
+      artifact,
+      Boolean(failedImageIds[artifactId]),
+      localImageFileStatuses[artifactId],
+    );
+    const rowSelection = rowImageSelections[artifactId];
+    const suggestedDownloadUrl = suggestedRemoteImageUrl(imageStatus.fields);
+    const rowHasCustomUrl = Object.prototype.hasOwnProperty.call(rowImageUrls, artifactId);
+    const rowDownloadUrl = rowHasCustomUrl ? rowImageUrls[artifactId] : suggestedDownloadUrl;
+    const showInlineUploader = imageStatus.status !== "local-complete";
+    const uploadButtonLabel = "保存裁剪图";
+    const downloadButtonLabel = imageStatus.status === "local-broken" ? "从外链下载补图" : "下载补图";
+    const rowHint = imageStatus.status === "remote-only"
+      ? "当前只有外链图，可直接下载成本地图。"
+      : imageStatus.status === "no-image"
+        ? "当前完全无图，请上传图片或粘贴图片链接。"
+        : imageStatus.hasMissingLocalFile
+          ? "本地图片文件不存在，请重新上传或从外链补图。"
+          : "图片加载失败，请重新上传或从外链补图。";
+    const editorRecommendationDraft = getEditorRecommendationDraft(artifact);
+    const isSavingEditorRecommendation = Boolean(editorRecommendationSavingIds[artifactId]);
+
+    return (
+      <article key={artifact.id} className="space-y-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+        <div className="flex min-w-0 gap-3">
+          <SafeImage
+            src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")}
+            alt={artifact.name || "文物图片"}
+            width={56}
+            height={56}
+            onLoad={() => setFailedImageIds((current) => ({ ...current, [artifactId]: false }))}
+            onError={() => setFailedImageIds((current) => ({ ...current, [artifactId]: true }))}
+            className="h-14 w-14 shrink-0 rounded-2xl bg-gray-100 object-cover"
+          />
+          <div className="min-w-0 flex-1">
+            <div className="break-words font-black text-gray-900">{artifact.name || "未命名文物"}</div>
+            <div className="mt-1 line-clamp-2 text-xs text-gray-500">{artifact.shortIntro || artifact.description || "暂无简介"}</div>
+            <div className="mt-1 font-mono text-[11px] text-gray-400">#{artifact.id}</div>
+          </div>
+        </div>
+
+        <div className="grid gap-2 text-xs text-gray-600">
+          <div><span className="font-black text-gray-900">馆藏：</span>{artifact.museumName || artifact.museum || "-"}</div>
+          <div><span className="font-black text-gray-900">时代：</span>{artifact.dynasty || artifact.period || "-"}</div>
+          <div><span className="font-black text-gray-900">类别：</span>{artifact.category || "-"}</div>
+        </div>
+
+        <div className="rounded-2xl bg-gray-50 p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${imageStatusClassName(imageStatus.status)}`}>
+              {imageStatusLabel(imageStatus.status)}
+            </span>
+            <span className="text-xs font-bold text-gray-400">图片状态</span>
+          </div>
+          <div className="mt-2 text-xs leading-relaxed text-gray-500">
+            {imageStatus.status === "local-complete" && "本地文件存在，可正常显示。"}
+            {imageStatus.status === "remote-only" && "无本地图，使用外链预览。"}
+            {imageStatus.status === "no-image" && "四个图片字段均为空。"}
+            {imageStatus.status === "local-broken" && rowHint}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-gray-100 p-3">
+          <div className="text-xs font-black text-gray-500">首页推荐</div>
+          <div className="mt-3 space-y-3">
+            <label className="inline-flex items-center gap-2 text-xs font-black text-gray-700">
+              <input
+                type="checkbox"
+                checked={editorRecommendationDraft.isEditorRecommended}
+                onChange={(event) => updateEditorRecommendationDraft(artifact, { isEditorRecommended: event.target.checked })}
+                className="h-4 w-4 rounded border-gray-300 text-amber-800 focus:ring-amber-500"
+              />
+              首页推荐
+            </label>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-gray-500">排序</span>
+              <input
+                type="number"
+                min={0}
+                max={9999}
+                value={editorRecommendationDraft.editorRecommendationOrder}
+                disabled={!editorRecommendationDraft.isEditorRecommended}
+                onChange={(event) => updateEditorRecommendationDraft(artifact, {
+                  editorRecommendationOrder: Math.max(0, Math.min(9999, Number(event.target.value) || 0)),
+                })}
+                className="w-24 rounded-xl border border-gray-200 px-3 py-2 text-xs outline-none focus:border-amber-500 disabled:bg-gray-50 disabled:text-gray-400"
+              />
+              <button
+                type="button"
+                disabled={isSavingEditorRecommendation}
+                onClick={() => onSaveEditorRecommendation(artifact)}
+                className="min-w-0 flex-1 rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50"
+              >
+                {isSavingEditorRecommendation ? "保存中..." : "保存推荐"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-3">
+          <div className="text-xs font-black text-gray-500">文物列表补图</div>
+          {showInlineUploader ? (
+            <div className="mt-3 space-y-3">
+              <div className="text-xs font-bold leading-relaxed text-gray-500">{rowHint}</div>
+              <div className="grid grid-cols-2 gap-2">
+                <label className="cursor-pointer rounded-xl bg-white px-3 py-2 text-center text-xs font-black text-gray-700">
+                  选择并裁剪
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      e.currentTarget.value = "";
+                      onSelectRowImage(artifactId, file);
+                    }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  disabled={Boolean(rowUploadingIds[artifactId]) || !rowSelection}
+                  onClick={() => onUploadRowImage(artifact)}
+                  className="rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50"
+                >
+                  {rowUploadingIds[artifactId] ? "上传中..." : uploadButtonLabel}
+                </button>
+              </div>
+              <input
+                value={rowDownloadUrl || ""}
+                onChange={(e) => setRowImageUrls((current) => ({ ...current, [artifactId]: e.target.value }))}
+                placeholder="粘贴图片链接：https://..."
+                className="w-full rounded-xl border border-gray-200 px-3 py-2 text-xs outline-none focus:border-amber-500"
+              />
+              <button
+                type="button"
+                disabled={Boolean(rowDownloadingIds[artifactId]) || !String(rowDownloadUrl || "").trim()}
+                onClick={() => onDownloadRowImageUrl(artifact)}
+                className="w-full rounded-xl bg-amber-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50"
+              >
+                {rowDownloadingIds[artifactId] ? "下载中..." : downloadButtonLabel}
+              </button>
+              {rowSelection && (
+                <div className="flex gap-3 rounded-2xl bg-white p-3">
+                  <img src={rowSelection.previewUrl} alt="" className="aspect-[4/3] w-20 shrink-0 rounded-xl bg-gray-100 object-cover" />
+                  <div className="min-w-0 text-xs text-gray-500">
+                    <div className="truncate font-bold text-gray-800">{rowSelection.file.name}</div>
+                    <div className="mt-1">{formatFileSize(rowSelection.file.size)}</div>
+                    <div className="mt-1 font-bold text-amber-800">裁剪结果尚未保存</div>
+                  </div>
+                </div>
+              )}
+              {rowImageErrors[artifactId] && <div className="text-xs font-bold text-rose-700">{rowImageErrors[artifactId]}</div>}
+            </div>
+          ) : (
+            <div className="mt-2 text-xs text-gray-400">本地图已完成，无需补图。</div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" onClick={() => onEditArtifact(artifact)} className="rounded-xl bg-amber-50 px-3 py-2 text-xs font-black text-amber-800">
+            编辑
+          </button>
+          <button type="button" onClick={() => onDeleteArtifact(artifact)} className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-black text-rose-700">
+            删除
+          </button>
+        </div>
+      </article>
+    );
+  };
+
+  const renderMuseumMobileCard = (museum: MuseumAdminItem) => {
+    const cover = museumCoverUrl(museum);
+    return (
+      <article key={museum.id} className="space-y-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+        <div className="flex min-w-0 gap-3">
+          {cover ? (
+            <button type="button" onClick={() => onSelectMuseum(museum)} className="shrink-0">
+              <img src={cover} alt="" className="h-14 w-20 rounded-xl bg-gray-100 object-cover" />
+            </button>
+          ) : (
+            <div className="flex h-14 w-20 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-xs font-black text-gray-400">无封面</div>
+          )}
+          <div className="min-w-0 flex-1">
+            <div className="break-words font-black text-gray-900">{museum.name}</div>
+            <div className="mt-1 line-clamp-2 text-xs text-gray-500">{(museum.aliases || []).join("，") || "暂无别名"}</div>
+            <div className="mt-1 text-xs text-gray-400">{museum.createdByImport ? "自动创建" : "人工维护"} · {museum.hasCover ? "有封面" : "无封面"}</div>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
+          <div className="rounded-xl bg-gray-50 p-2"><div className="font-black text-gray-900">类型/等级</div><div className="mt-1">{museum.type || "-"} / {museum.grade || museum.level || "-"}</div></div>
+          <div className="rounded-xl bg-gray-50 p-2"><div className="font-black text-gray-900">省市</div><div className="mt-1">{[museum.province, museum.city].filter(Boolean).join(" / ") || "-"}</div></div>
+          <div className="rounded-xl bg-gray-50 p-2"><div className="font-black text-gray-900">文物</div><div className="mt-1">{museum.artifactCount || 0}</div></div>
+          <div className="rounded-xl bg-gray-50 p-2"><div className="font-black text-gray-900">更新时间</div><div className="mt-1">{formatShortDate(museum.updatedAt)}</div></div>
+        </div>
+        <button type="button" onClick={() => onSelectMuseum(museum)} className="w-full rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white">
+          查看 / 编辑
+        </button>
+      </article>
+    );
+  };
+
+  const renderUserMobileCard = (user: AdminUserSummary) => (
+    <article key={user.id} className="space-y-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+      <div className="flex min-w-0 items-start gap-3">
+        <img src={user.photoURL} alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-gray-100 object-cover" referrerPolicy="no-referrer" />
+        <div className="min-w-0 flex-1">
+          <div className="break-words font-black text-gray-900">{user.displayName || "未命名用户"}</div>
+          <div className="mt-1 font-mono text-xs text-gray-500">#{user.id}</div>
+          <span className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-black ${user.role === "admin" ? "bg-amber-100 text-amber-900" : "bg-gray-100 text-gray-700"}`}>
+            {user.role === "admin" ? "管理员" : "用户"}
+          </span>
+        </div>
+      </div>
+      <div className="grid gap-2 text-xs text-gray-600">
+        <div><span className="font-black text-gray-900">MuseLink ID：</span><span className="font-mono">{user.museId || "-"}</span></div>
+        <div><span className="font-black text-gray-900">登录方式：</span>{user.contact.hasPassword ? "密码" : "验证码"}</div>
+        <div><span className="font-black text-gray-900">可见性：</span>{user.profileVisibility === "all" ? "所有人" : "关注者"}</div>
+        <div><span className="font-black text-gray-900">性别：</span>{genderLabels[user.gender]}</div>
+        <div><span className="font-black text-gray-900">生日：</span>{user.birthday || "-"}</div>
+        <div><span className="font-black text-gray-900">地区：</span>{user.location || "-"}</div>
+        <div className="break-words"><span className="font-black text-gray-900">简介：</span>{user.bio || "暂无简介"}</div>
+        <div className="break-words"><span className="font-black text-gray-900">邮箱：</span>{user.contact.email || "-"}</div>
+        <div><span className="font-black text-gray-900">手机：</span>{user.contact.phone || "-"}</div>
+        <div><span className="font-black text-gray-900">创建时间：</span>{formatDate(user.createdAt)}</div>
+      </div>
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="rounded-2xl bg-gray-50 p-3"><div className="font-black text-gray-900">{user.activity.favoriteArtifacts}</div><div className="mt-1 text-gray-400">文物收藏</div></div>
+        <div className="rounded-2xl bg-gray-50 p-3"><div className="font-black text-gray-900">{user.activity.favoriteExhibitions}</div><div className="mt-1 text-gray-400">展陈收藏</div></div>
+        <div className="rounded-2xl bg-gray-50 p-3"><div className="font-black text-gray-900">{user.activity.exhibitions}</div><div className="mt-1 text-gray-400">总展陈</div></div>
+        <div className="rounded-2xl bg-gray-50 p-3"><div className="font-black text-gray-900">{user.activity.publicExhibitions}</div><div className="mt-1 text-gray-400">公开展陈</div></div>
+      </div>
+    </article>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <header className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
+    <div className="h-full min-h-0 overflow-y-auto bg-gray-50 p-3">
+      <div className="mx-auto max-w-7xl space-y-4">
+        <header className="rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
+          <div className="grid gap-4">
+            <div className="min-w-0">
               <div className="text-xs font-black uppercase tracking-[0.24em] text-amber-800">Admin Console</div>
-              <h1 className="mt-1 text-2xl font-black text-gray-900">MuseLink 后台管理</h1>
-              <div className="mt-1 text-sm text-gray-500">
+              <h1 className="mt-1 break-words text-2xl font-black leading-tight text-gray-900">MuseLink 后台管理</h1>
+              <div className="mt-1 text-sm leading-relaxed text-gray-500">
                 当前管理员：{UserSession.getMuseId() || "jiangzhong"}，管理统一文物库、导入任务和用户数据。
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <button onClick={() => goBackOrNavigate("/home")} className="rounded-2xl bg-gray-100 px-4 py-2 text-sm font-bold text-gray-700">
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={() => goBackOrNavigate("/home")} className="rounded-2xl bg-gray-100 px-3 py-2 text-sm font-bold text-gray-700">
                 返回前台
               </button>
-              <button onClick={onLogout} className="rounded-2xl bg-rose-50 px-4 py-2 text-sm font-bold text-rose-700">
+              <button onClick={onLogout} className="rounded-2xl bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">
                 退出登录
               </button>
             </div>
           </div>
 
-          <nav className="mt-6 flex flex-wrap gap-2">
+          <nav className="mt-5 grid grid-cols-2 gap-2">
             {[
               ["artifacts", "文物管理"],
               ["museums", "博物馆管理"],
@@ -1824,7 +2117,7 @@ export function AdminPage() {
               <button
                 key={id}
                 onClick={() => setTab(id as AdminTab)}
-                className={`rounded-2xl px-4 py-2 text-sm font-black ${
+                className={`rounded-2xl px-3 py-2 text-sm font-black ${
                   tab === id ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"
                 }`}
               >
@@ -1832,18 +2125,33 @@ export function AdminPage() {
               </button>
             ))}
           </nav>
+
+          <div className="mt-4 grid gap-2">
+            {featureEntries.map(({ title, description, actionLabel, onClick }) => (
+              <button
+                key={title}
+                type="button"
+                onClick={onClick}
+                className="min-w-0 rounded-2xl bg-gray-50 px-3 py-3 text-left transition hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-800/20"
+              >
+                <div className="break-words text-sm font-black leading-snug text-gray-900">{title}</div>
+                <div className="mt-1 text-xs font-bold leading-relaxed text-gray-500">{description}</div>
+                <div className="mt-2 text-xs font-black text-amber-800">{actionLabel}</div>
+              </button>
+            ))}
+          </div>
         </header>
 
-        {loading && <div className="rounded-3xl border border-gray-100 bg-white p-6 text-sm text-gray-500 shadow-sm">正在加载后台数据...</div>}
-        {!loading && error && <div className="rounded-3xl border border-rose-100 bg-rose-50 p-6 text-sm text-rose-700">后台操作失败：{error}</div>}
+        {loading && <div className="rounded-3xl border border-gray-100 bg-white p-4 text-sm text-gray-500 shadow-sm">正在加载后台数据...</div>}
+        {!loading && error && <div className="rounded-3xl border border-rose-100 bg-rose-50 p-4 text-sm text-rose-700">后台操作失败：{error}</div>}
 
         {!loading && tab === "artifacts" && (
-          <div className="grid gap-6 lg:grid-cols-[420px_minmax(0,1fr)]">
-            <form onSubmit={onSaveArtifact} className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+          <div className="grid min-w-0 gap-4">
+            <form ref={artifactFormRef} onSubmit={onSaveArtifact} className="scroll-mt-3 min-w-0 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h2 className="text-lg font-black text-gray-900">{form.id ? "编辑文物" : "新增文物"}</h2>
-                  <div className="mt-1 text-xs text-gray-500">{form.id ? `ID ${form.id}` : "写入统一 artifacts 表"}</div>
+                  <div className="mt-1 text-xs text-gray-500">{form.id ? `ID ${form.id}` : "写入统一 JSON 数据源"}</div>
                 </div>
                 {form.id && (
                   <button
@@ -1862,7 +2170,7 @@ export function AdminPage() {
               <div className="mt-5 grid gap-3">
                 <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="文物名称 *" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 <input value={form.museum} onChange={(e) => setForm({ ...form, museum: e.target.value })} placeholder="馆藏单位 *" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
-                <div className="grid gap-3 md:grid-cols-2">
+                <div className="grid gap-3">
                   <input value={form.dynasty} onChange={(e) => setForm({ ...form, dynasty: e.target.value })} placeholder="时代/朝代" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                   <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="类别" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 </div>
@@ -1923,11 +2231,11 @@ export function AdminPage() {
                 )}
                 <input value={form.sourceUrl} onChange={(e) => setForm({ ...form, sourceUrl: e.target.value })} placeholder="来源 URL" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 <input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="标签，用逗号分隔" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
-                <div className="grid gap-3 md:grid-cols-2">
+                <div className="grid gap-3">
                   <input value={form.material} onChange={(e) => setForm({ ...form, material: e.target.value })} placeholder="材质" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                   <input value={form.dimensions} onChange={(e) => setForm({ ...form, dimensions: e.target.value })} placeholder="尺寸" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 </div>
-                <div className="grid gap-3 md:grid-cols-2">
+                <div className="grid gap-3">
                   <input value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })} placeholder="等级" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                   <input value={form.remarks} onChange={(e) => setForm({ ...form, remarks: e.target.value })} placeholder="备注" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 </div>
@@ -1938,12 +2246,12 @@ export function AdminPage() {
               </button>
             </form>
 
-            <section className="rounded-3xl border border-gray-100 bg-white shadow-sm">
-              <div className="space-y-4 border-b border-gray-100 p-6">
+            <section ref={artifactListRef} className="scroll-mt-3 min-w-0 rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="space-y-4 border-b border-gray-100 p-4">
                 {!getAuthToken() && (
                   <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
                     <div className="text-sm font-black text-amber-900">管理员 token</div>
-                    <div className="mt-2 flex flex-col gap-2 md:flex-row">
+                    <div className="mt-2 flex flex-col gap-2">
                       <input
                         value={adminTokenInput}
                         onChange={(e) => setAdminTokenInput(e.target.value)}
@@ -1959,15 +2267,15 @@ export function AdminPage() {
 
                 {imageUploadMessage && <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm font-bold text-emerald-700">{imageUploadMessage}</div>}
 
-                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="flex flex-col gap-3">
                   <div>
                     <h2 className="text-lg font-black text-gray-900">文物列表</h2>
-                    <div className="mt-1 text-sm text-gray-500">统一 artifacts 表当前 {artifacts.length} 条，筛选显示 {filteredArtifacts.length} 条。</div>
+                    <div className="mt-1 text-sm text-gray-500">统一 JSON 数据源当前 {artifacts.length} 条，筛选显示 {filteredArtifacts.length} 条。</div>
                   </div>
-                  <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索名称、馆藏机构、朝代、类别" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500 md:w-80" />
+                  <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索名称、馆藏机构、朝代、类别" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500" />
                 </div>
 
-                <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
+                <div className="grid gap-3">
                   <select
                     value={artifactMuseumFilter}
                     onChange={(e) => setArtifactMuseumFilter(e.target.value)}
@@ -2005,7 +2313,7 @@ export function AdminPage() {
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {([
                     ["all", "全部文物"],
                     ["no-image", "完全无图"],
@@ -2018,7 +2326,7 @@ export function AdminPage() {
                       key={id}
                       type="button"
                       onClick={() => setImageFilter(id as ArtifactImageFilter)}
-                      className={`rounded-2xl px-4 py-2 text-sm font-black ${
+                      className={`rounded-2xl px-3 py-2 text-xs font-black ${
                         imageFilter === id ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-700"
                       }`}
                     >
@@ -2028,7 +2336,16 @@ export function AdminPage() {
                 </div>
               </div>
 
-              <div className="max-h-[760px] overflow-auto">
+              <div className="space-y-3 bg-gray-50 p-3">
+                {filteredArtifacts.map(renderArtifactMobileCard)}
+                {filteredArtifacts.length === 0 && (
+                  <div className="rounded-2xl bg-white px-4 py-10 text-center text-sm text-gray-400">
+                    当前筛选下没有文物。
+                  </div>
+                )}
+              </div>
+
+              <div className="hidden">
                 <table className="min-w-full text-sm">
                   <thead className="sticky top-0 bg-gray-50 text-gray-500">
                     <tr>
@@ -2223,10 +2540,10 @@ export function AdminPage() {
         )}
 
         {!loading && tab === "museums" && (
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_460px]">
-            <section className="rounded-3xl border border-gray-100 bg-white shadow-sm">
-              <div className="space-y-4 border-b border-gray-100 p-6">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="grid min-w-0 gap-4">
+            <section ref={museumListRef} className="scroll-mt-3 min-w-0 rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="space-y-4 border-b border-gray-100 p-4">
+                <div className="flex flex-col gap-3">
                   <div>
                     <h2 className="text-lg font-black text-gray-900">博物馆列表</h2>
                     <div className="mt-1 text-sm text-gray-500">当前显示 {museums.length} 个博物馆机构，文物会通过 museumId 关联到这里。</div>
@@ -2235,7 +2552,7 @@ export function AdminPage() {
                     value={museumQuery}
                     onChange={(e) => setMuseumQuery(e.target.value)}
                     placeholder="搜索标准名、别名、省市"
-                    className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500 lg:w-80"
+                    className="rounded-2xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-amber-500"
                   />
                 </div>
 
@@ -2265,7 +2582,7 @@ export function AdminPage() {
                   ))}
                 </div>
 
-                <div className="grid gap-3 md:grid-cols-5">
+                <div className="grid gap-3">
                   <select
                     value={museumProvinceFilter}
                     onChange={(e) => {
@@ -2320,7 +2637,16 @@ export function AdminPage() {
                 </div>
               </div>
 
-              <div className="max-h-[760px] overflow-auto">
+              <div className="space-y-3 bg-gray-50 p-3">
+                {museums.map(renderMuseumMobileCard)}
+                {museums.length === 0 && (
+                  <div className="rounded-2xl bg-white px-4 py-10 text-center text-sm text-gray-400">
+                    当前筛选下没有博物馆。
+                  </div>
+                )}
+              </div>
+
+              <div className="hidden">
                 <table className="min-w-full text-sm">
                   <thead className="sticky top-0 bg-gray-50 text-gray-500">
                     <tr>
@@ -2380,7 +2706,7 @@ export function AdminPage() {
               </div>
             </section>
 
-            <section className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+            <section ref={museumDetailRef} className="scroll-mt-3 min-w-0 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
               {selectedMuseum ? (
                 <form onSubmit={onSaveMuseum} className="space-y-5">
                   <div>
@@ -2393,7 +2719,7 @@ export function AdminPage() {
                       标准名称
                       <input value={museumForm.name} onChange={(e) => setMuseumForm({ ...museumForm, name: e.target.value })} placeholder="标准名称" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
                     </label>
-                    <div className="grid gap-3 md:grid-cols-2">
+                    <div className="grid gap-3">
                       <label className="grid gap-1 text-xs font-black text-gray-500">
                         类型
                         <select value={museumForm.type} onChange={(e) => setMuseumForm({ ...museumForm, type: e.target.value })} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500">
@@ -2407,7 +2733,7 @@ export function AdminPage() {
                         </select>
                       </label>
                     </div>
-                    <div className="grid gap-3 md:grid-cols-2">
+                    <div className="grid gap-3">
                       <label className="grid gap-1 text-xs font-black text-gray-500">
                         定级
                         <select value={museumForm.level} onChange={(e) => setMuseumForm({ ...museumForm, level: e.target.value })} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500">
@@ -2419,7 +2745,7 @@ export function AdminPage() {
                         <input value={museumForm.officialWebsite} onChange={(e) => setMuseumForm({ ...museumForm, officialWebsite: e.target.value })} placeholder="官网" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
                       </label>
                     </div>
-                    <div className="grid gap-3 md:grid-cols-2">
+                    <div className="grid gap-3">
                       <label className="grid gap-1 text-xs font-black text-gray-500">
                         省份
                         <select
@@ -2466,7 +2792,7 @@ export function AdminPage() {
                       历史
                       <textarea value={museumForm.history} onChange={(e) => setMuseumForm({ ...museumForm, history: e.target.value })} placeholder="历史" rows={3} className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
                     </label>
-                    <div className="grid gap-3 md:grid-cols-2">
+                    <div className="grid gap-3">
                       <label className="grid gap-1 text-xs font-black text-gray-500">
                         开放时间
                         <input value={museumForm.openingHours} onChange={(e) => setMuseumForm({ ...museumForm, openingHours: e.target.value })} placeholder="开放时间" className="rounded-2xl border border-gray-200 px-4 py-3 text-sm font-normal text-gray-900 outline-none focus:border-amber-500" />
@@ -2495,7 +2821,7 @@ export function AdminPage() {
                     <div className="mt-1 text-xs text-gray-500">当前博物馆 ID：{selectedMuseum.museum.id}，选择后先进入 16:9 卡片裁剪预览。</div>
                     <div className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">{CROP_HELP_TEXT}</div>
                     {museumCoverUrl(selectedMuseum.museum) ? (
-                      <div className="mt-3 grid gap-3 md:grid-cols-2">
+                      <div className="mt-3 grid gap-3">
                         <div className="rounded-2xl border border-gray-100 bg-white p-3">
                           <div className="text-xs font-black text-gray-500">当前封面原图</div>
                           <img src={museumOriginalCoverUrl(selectedMuseum.museum) || museumCoverUrl(selectedMuseum.museum)} alt="" className="mt-2 h-40 w-full rounded-xl bg-gray-100 object-cover" />
@@ -2534,17 +2860,17 @@ export function AdminPage() {
                         </div>
                       </div>
                     )}
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <button type="button" disabled={saving || !museumCoverFile} onClick={onUploadMuseumCover} className="rounded-xl bg-gray-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50">
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      <button type="button" disabled={saving || !museumCoverFile} onClick={onUploadMuseumCover} className="rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50">
                         保存裁剪封面
                       </button>
-                      <button type="button" disabled={saving || !museumCoverUrl(selectedMuseum.museum)} onClick={onDeleteMuseumCover} className="rounded-xl bg-rose-50 px-4 py-2 text-xs font-black text-rose-700 disabled:opacity-50">
+                      <button type="button" disabled={saving || !museumCoverUrl(selectedMuseum.museum)} onClick={onDeleteMuseumCover} className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-black text-rose-700 disabled:opacity-50">
                         删除封面
                       </button>
                     </div>
                     <div className="mt-5 border-t border-dashed border-gray-200 pt-4">
                       <div className="text-xs font-black text-gray-500">图片链接</div>
-                      <div className="mt-2 flex flex-col gap-2 md:flex-row">
+                      <div className="mt-2 flex flex-col gap-2">
                       <input
                         value={museumCoverUrlToDownload}
                         onChange={(e) => setMuseumCoverUrlToDownload(e.target.value)}
@@ -2555,7 +2881,7 @@ export function AdminPage() {
                         type="button"
                         disabled={downloadingMuseumCoverUrl || !museumCoverUrlToDownload.trim()}
                         onClick={onDownloadMuseumCoverUrl}
-                        className="rounded-xl bg-amber-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50 md:w-48"
+                        className="rounded-xl bg-amber-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50"
                       >
                         {downloadingMuseumCoverUrl ? "下载中..." : "从链接下载并同步封面"}
                       </button>
@@ -2574,7 +2900,7 @@ export function AdminPage() {
                         </span>
                       ))}
                     </div>
-                    <div className="mt-3 flex gap-2">
+                    <div className="mt-3 grid gap-2">
                       <input value={newMuseumAlias} onChange={(e) => setNewMuseumAlias(e.target.value)} placeholder="新增别名，如 南大博物馆" className="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-amber-500" />
                       <button type="button" disabled={saving || !newMuseumAlias.trim()} onClick={onAddMuseumAlias} className="rounded-xl bg-amber-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50">新增</button>
                     </div>
@@ -2587,9 +2913,9 @@ export function AdminPage() {
                   </button>
 
                   <div className="border-t border-gray-100 pt-5">
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="grid gap-3">
                       <div className="text-sm font-black text-gray-900">该馆文物</div>
-                      <input value={museumArtifactQuery} onChange={(e) => setMuseumArtifactQuery(e.target.value)} placeholder="搜索文物" className="w-40 rounded-xl border border-gray-200 px-3 py-2 text-xs outline-none focus:border-amber-500" />
+                      <input value={museumArtifactQuery} onChange={(e) => setMuseumArtifactQuery(e.target.value)} placeholder="搜索文物" className="w-full rounded-xl border border-gray-200 px-3 py-2 text-xs outline-none focus:border-amber-500" />
                     </div>
                     <div className="mt-3 max-h-80 space-y-2 overflow-auto">
                       {selectedMuseumArtifacts.map((artifact) => (
@@ -2610,11 +2936,11 @@ export function AdminPage() {
         )}
 
         {!loading && tab === "import" && (
-          <section className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <section className="min-w-0 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
+            <div className="flex flex-col gap-3">
               <div>
                 <h2 className="text-lg font-black text-gray-900">导入文物</h2>
-                <div className="mt-1 text-sm text-gray-500">导入执行接口固定为 /api/import/run，完成后同步到统一 artifacts 表。</div>
+                <div className="mt-1 text-sm text-gray-500">导入执行接口固定为 /api/import/run，完成后同步到统一 JSON 数据源。</div>
               </div>
               <button onClick={loadImportTemplate} className="rounded-2xl bg-gray-100 px-4 py-2 text-sm font-bold text-gray-700">
                 填入导入模板
@@ -2626,9 +2952,9 @@ export function AdminPage() {
               onChange={(e) => setImportText(e.target.value)}
               placeholder='粘贴导入任务 JSON，例如 {"sourceType":"inline","format":"json","records":[...],"mode":"append"}'
               rows={18}
-              className="mt-5 w-full rounded-2xl border border-gray-200 px-4 py-3 font-mono text-sm outline-none focus:border-amber-500"
+              className="mt-5 w-full min-w-0 rounded-2xl border border-gray-200 px-4 py-3 font-mono text-sm outline-none focus:border-amber-500"
             />
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-4 grid gap-3">
               <button disabled={saving || !importText.trim()} onClick={runImport} className="rounded-2xl bg-gray-900 px-5 py-3 text-sm font-black text-white disabled:opacity-50">
                 {saving ? "导入中..." : "执行导入"}
               </button>
@@ -2639,27 +2965,30 @@ export function AdminPage() {
 
         {!loading && tab === "users" && stats && (
           <>
-            <div className="grid gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3">
               {[
                 ["Total Users", stats.totalUsers, "系统中的用户总数"],
                 ["Admins", stats.adminCount, "拥有后台权限的账号数量"],
                 ["Members", regularUserCount, "普通用户账号数量"],
                 ["Contacts", stats.usersWithContact, "绑定手机或邮箱的用户"],
               ].map(([label, value, desc]) => (
-                <div key={label} className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-                  <div className="text-xs font-bold uppercase tracking-[0.24em] text-gray-400">{label}</div>
-                  <div className="mt-3 text-3xl font-black text-gray-900">{value}</div>
-                  <div className="mt-1 text-sm text-gray-500">{desc}</div>
+                <div key={label} className="min-w-0 rounded-3xl border border-gray-100 bg-white p-4 shadow-sm">
+                  <div className="break-words text-xs font-bold uppercase tracking-[0.16em] text-gray-400">{label}</div>
+                  <div className="mt-3 text-2xl font-black text-gray-900">{value}</div>
+                  <div className="mt-1 text-xs leading-relaxed text-gray-500">{desc}</div>
                 </div>
               ))}
             </div>
 
-            <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
-              <div className="border-b border-gray-100 px-6 py-5">
+            <div className="min-w-0 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+              <div className="border-b border-gray-100 px-4 py-5">
                 <div className="text-lg font-black text-gray-900">用户列表</div>
                 <div className="mt-1 text-sm text-gray-500">管理员可查看用户资料、联系方式状态与内容数据统计。</div>
               </div>
-              <div className="overflow-x-auto">
+              <div className="space-y-3 bg-gray-50 p-3">
+                {users.map(renderUserMobileCard)}
+              </div>
+              <div className="hidden">
                 <table className="min-w-full text-sm">
                   <thead className="bg-gray-50 text-gray-500">
                     <tr>

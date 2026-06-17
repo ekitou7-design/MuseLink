@@ -16,8 +16,8 @@ import pandas as pd
 app = Flask(__name__)
 
 # Original standalone backend management site.
-# It now uses the unified Node backend API, whose artifact endpoints read/write
-# the unified PostgreSQL/pg-mem artifacts table.
+# It now uses the unified Node backend API, whose artifact and museum endpoints
+# read/write data/imported-artifacts.json and data/imported-museums.json.
 API_BASE_URL = os.environ.get("MUSELINK_API_BASE_URL", "http://localhost:3000").rstrip("/")
 ADMIN_MUSE_ID = os.environ.get("MUSELINK_ADMIN_MUSE_ID", "jiangzhong")
 ADMIN_PASSWORD = os.environ.get("MUSELINK_ADMIN_PASSWORD", "jiangzhong")
@@ -463,7 +463,7 @@ def artifact_to_row(artifact):
         "来源链接": pick(artifact, "sourceUrl", "source_url", "来源链接"),
         "标签": "，".join(normalize_tags(artifact.get("tags"))),
     }
-    row["__source_file"] = "artifacts 表"
+    row["__source_file"] = "data/imported-artifacts.json"
     row["__import_batch"] = "database"
     return row
 
@@ -629,7 +629,7 @@ def get_batch_summaries(data):
     batches = {}
     for item in data:
         batch_id = clean_value(item.get("__import_batch")) or "database"
-        source_file = clean_value(item.get("__source_file")) or "artifacts 表"
+        source_file = clean_value(item.get("__source_file")) or "data/imported-artifacts.json"
         museum = detect_museum(item)
         if batch_id not in batches:
             batches[batch_id] = {
@@ -1246,7 +1246,7 @@ HTML_TEMPLATE = """
 <body>
     <div class="header">
         <h1>🏺 博悟 (MuseLink) 管理后台</h1>
-        <p>当前数据源：统一 artifacts 表；后端 API：{{ api_base_url }}</p>
+        <p>当前数据源：data/imported-artifacts.json + data/imported-museums.json；后端 API：{{ api_base_url }}</p>
     </div>
     <div class="container">
         {% if error %}<div class="card" style="border-color:#c0392b;color:#c0392b;">{{ error }}</div>{% endif %}
@@ -1259,7 +1259,7 @@ HTML_TEMPLATE = """
         <div class="tab-panel {% if active_tab == 'import' %}active{% endif %}">
         <div class="card">
             <h2>📜 馆藏文物导入</h2>
-            <p class="muted">上传会调用 /api/import/run，导入完成后由后端同步到统一 artifacts 表。</p>
+            <p class="muted">上传会调用 /api/import/run，导入完成后写入 data/imported-artifacts.json 并刷新博物馆 JSON。</p>
             <div class="upload-zone">
                 <form action="/upload" method="post" enctype="multipart/form-data">
                     <div style="margin-bottom: 15px;">
@@ -1267,7 +1267,7 @@ HTML_TEMPLATE = """
                         <input type="text" name="default_museum" placeholder="例如：辽宁省博物馆" style="width: 260px; margin-top: 5px;">
                     </div>
                     <input type="file" name="file" accept=".csv, .xlsx, .xls, .json, .txt">
-                    <button type="submit" class="btn">✨ 点击导入并同步到 artifacts 表</button>
+                    <button type="submit" class="btn">✨ 点击导入并同步到 JSON 数据源</button>
                 </form>
             </div>
         </div>
@@ -1277,7 +1277,7 @@ HTML_TEMPLATE = """
             <form action="/add" method="post">
                 {% include "artifact_fields" %}
                 <div class="toolbar">
-                    <button type="submit" class="btn">新增到 artifacts 表</button>
+                    <button type="submit" class="btn">新增到 JSON 数据源</button>
                 </div>
             </form>
         </div>
@@ -1616,7 +1616,7 @@ HTML_TEMPLATE = """
                 <div class="summary-grid">
                     <div class="summary-item">
                         <div class="summary-title">表内数据</div>
-                        <div class="summary-meta">当前显示 {{ data|length }} 件；来源为 artifacts 表。</div>
+                        <div class="summary-meta">当前显示 {{ data|length }} 件；来源为 data/imported-artifacts.json。</div>
                     </div>
                     <div class="summary-item">
                         <div class="summary-title">按博物馆统计</div>

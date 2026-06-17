@@ -1,5 +1,6 @@
 import { clearAuthToken, getAuthToken } from "../lib/api";
 import type { UserRole } from "../lib/authClient";
+import { isAdminMuseId } from "./admin";
 
 const KEY_MUSE_ID = "muselink_museId";
 const KEY_LOGIN_STATE = "muselink_loginState";
@@ -22,6 +23,7 @@ export class UserSession {
   }
 
   static getRole(): UserRole | null {
+    if (isAdminMuseId(UserSession.getMuseId())) return "admin";
     const role = localStorage.getItem(KEY_ROLE);
     return role === "admin" || role === "user" ? role : null;
   }

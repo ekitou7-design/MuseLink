@@ -147,6 +147,7 @@ export default function App({
   const [activeTab, setActiveTab] = useState(initialTab);
   const [user, setUser] = useState<{ id: number; displayName: string; photoURL: string } | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const canAccessAdmin = userProfile?.role === 'admin';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [artifactPool, setArtifactPool] = useState<Artifact[]>(MOCK_ARTIFACTS);
   const [editorRecommendedArtifacts, setEditorRecommendedArtifacts] = useState<Artifact[]>([]);
@@ -970,7 +971,7 @@ export default function App({
           photoURL: me.profile?.photoURL || '',
           bio: me.profile?.bio || '',
           headerUrl: me.profile?.headerUrl || '',
-          role: me.profile?.role || 'user',
+          role: me.profile?.role === 'admin' ? 'admin' : 'user',
           privacySettings: me.profile?.privacySettings || { profileVisibility: 'all' },
           curatorTI: me.profile?.curatorTI as CuratorTI | undefined,
           stats: me.profile?.stats || { favArtifacts: 0, myExhibitions: 0, favExhibitions: 0, likes: 0, following: 0, followers: 0 },
@@ -1977,7 +1978,7 @@ export default function App({
                   </div>
 
                   {user ? (
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-4">
                       <button
                         type="button"
                         onClick={() => setIsAIModalOpen(true)}
@@ -1993,13 +1994,19 @@ export default function App({
                       >
                         手动新建
                       </button>
-                      {myExhibitions.map(exh => (
-                        <ExhibitionCard
-                          key={exh.id}
-                          exhibition={exh}
-                          onClick={() => setSelectedExhibition(exh)}
-                        />
-                      ))}
+                      {myExhibitions.length > 0 && (
+                        <div className="columns-2 gap-3 [column-fill:_balance]">
+                          {myExhibitions.map(exh => (
+                            <div key={exh.id} className="mb-3 break-inside-avoid">
+                              <ExhibitionCard
+                                exhibition={exh}
+                                onClick={() => setSelectedExhibition(exh)}
+                                variant="masonry"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {myExhibitions.length === 0 && (
                         <div className="space-y-3 rounded-[5px] border border-gray-100 bg-white py-12 text-center">
                           <p className="text-xs font-bold text-gray-500">还没有自己的展览</p>
@@ -2036,15 +2043,16 @@ export default function App({
                     </div>
                   </div>
 
-                  <div className="columns-2 gap-1.5">
+                  <div className="columns-2 gap-3">
                     {squareExhibitions.map(exh => (
-                      <div key={exh.id} className="break-inside-avoid mb-1.5">
+                      <div key={exh.id} className="mb-3 break-inside-avoid">
                         <ExhibitionCard
                           exhibition={exh}
                           onClick={() => setSelectedExhibition(exh)}
                           showFavoriteButton={Boolean(user)}
                           isFavorite={favExhibitionIds.includes(exh.id)}
                           onFavoriteClick={() => toggleExhibitionFavorite(exh.id)}
+                          variant="masonry"
                         />
                       </div>
                     ))}
@@ -2075,6 +2083,22 @@ export default function App({
                     userProfile={userProfile}
                     onOpenCuratorTIQuiz={() => setIsCuratorTIQuizOpen(true)}
                   />
+
+                  {canAccessAdmin && (
+                    <div className="px-4 pt-4">
+                      <button
+                        type="button"
+                        onClick={() => navigate("/admin")}
+                        className="flex w-full items-center justify-between rounded-[5px] bg-gray-900 px-4 py-3 text-left text-white shadow-sm"
+                      >
+                        <span>
+                          <span className="block text-sm font-black">后台管理</span>
+                          <span className="mt-0.5 block text-xs font-bold text-white/70">文物图片、博物馆封面与用户统计</span>
+                        </span>
+                        <ArrowRight size={18} />
+                      </button>
+                    </div>
+                  )}
 
                   {/* Profile Tabs */}
                   <ProfileTabBar
@@ -2151,6 +2175,7 @@ export default function App({
                                     onClick={() => isExhMultiSelect ? (
                                       setSelectedExhIds(prev => prev.includes(exh.id) ? prev.filter(id => id !== exh.id) : [...prev, exh.id])
                                     ) : setSelectedExhibition(exh)} 
+                                    variant="masonry"
                                   />
                                   {isExhMultiSelect && (
                                     <div 

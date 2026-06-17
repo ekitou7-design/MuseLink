@@ -195,6 +195,8 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
   const canWriteCanonicalMuseumName = columns.has("canonical_museum_name");
   let inserted = 0;
   let updated = 0;
+  let pruned = 0;
+  const seenArtifactIds = new Set<string>();
   const museumReport = {
     matched: [] as Array<{ rawName: string; canonicalName: string; matchType: MuseumResolveResult["matchType"] }>,
     created: [] as Array<{ name: string }>,
@@ -306,8 +308,20 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
     }
 
     if (artifactId != null) {
+      seenArtifactIds.add(String(artifactId));
       await upsertAttributeRows(db, artifactId, attributeItemsFromArtifact(artifact));
     }
+  }
+
+  const allDbArtifacts = await db.query<{ id: number | string }>(`select id from artifacts`);
+  for (const row of allDbArtifacts.rows) {
+    const artifactId = String(row.id);
+    if (seenArtifactIds.has(artifactId)) continue;
+    await db.query(`delete from artifact_attributes where artifact_id::text = $1`, [artifactId]).catch(() => undefined);
+    await db.query(`delete from exhibition_items where artifact_id::text = $1`, [artifactId]).catch(() => undefined);
+    await db.query(`delete from likes where target_type = 'artifact' and target_id::text = $1`, [artifactId]).catch(() => undefined);
+    await db.query(`delete from artifacts where id::text = $1`, [artifactId]);
+    pruned += 1;
   }
 
   let aiRagSync: AiRagSyncSummary | undefined;
@@ -321,12 +335,12 @@ export async function syncImportedArtifactsToDb(db: DbQuery) {
       ragDocumentCount: 0,
       relationCount: 0,
       coverage: "0 / 0",
-      message: "导入文物已同步到 artifacts 表；AI/RAG 派生数据生成失败。",
+      message: "导入文物已同步到 data/imported-artifacts.json 的运行时缓存；AI/RAG 派生数据生成失败。",
       error: error instanceof Error ? error.message : String(error),
     };
   }
 
-  return { importedCount: artifacts.length, inserted, updated, skipped: false, aiRagSync, museumReport };
+  return { importedCount: artifacts.length, inserted, updated, pruned, skipped: false, aiRagSync, museumReport };
 }
 
 function normalizeTagsForArtifact(tags: unknown): Array<{ type: string; name: string }> {

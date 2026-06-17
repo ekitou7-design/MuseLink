@@ -7,13 +7,24 @@ import { db } from "../db/client";
 import { downloadImageBuffer } from "../lib/imageDownloader";
 import type { ArtifactRow, MuseumRow } from "../models/types";
 import { syncAiRagForArtifacts } from "../../ai-rag-data";
-import { listArtifactsFromDb } from "../db/syncImportedArtifacts";
+import { listArtifactsFromDb, syncImportedArtifactsToDb } from "../db/syncImportedArtifacts";
+import { syncImportedMuseumsToDb } from "../db/syncImportedMuseums";
 import {
   ensureMuseumSchema,
   findPossibleMuseumDuplicates,
   normalizeMuseumName,
   normalizedMuseumKey,
 } from "../../museum-normalizer";
+import {
+  addMuseumAliasInStore,
+  deleteMuseumAliasInStore,
+  deleteMuseumCoverFromStore,
+  getMuseumArtifactsFromStore,
+  getMuseumFromStore,
+  listMuseumsFromStore,
+  updateMuseumInStore,
+  upsertMuseumCoverInStore,
+} from "../services/museumsStore";
 import {
   MUSEUM_GRADE_OPTIONS,
   MUSEUM_LEVEL_OPTIONS,
@@ -133,6 +144,19 @@ function toCamelAlias(row: Record<string, unknown>) {
   };
 }
 
+function aliasesFromStore(museum: { aliases?: string[] }) {
+  return (museum.aliases || []).map((alias, index) => ({
+    id: String(index),
+    museumId: "",
+    alias,
+    normalizedAlias: normalizedMuseumKey(alias) || alias,
+    source: "imported-museums-json",
+    confidence: 1,
+    createdAt: "",
+    updatedAt: "",
+  }));
+}
+
 function toArtifactSummary(row: ArtifactRow) {
   return {
     id: String(row.id),
@@ -169,7 +193,16 @@ async function syncAiRagAfterMuseumChange() {
   return syncAiRagForArtifacts(await listArtifactsFromDb(db));
 }
 
-function museumImagePaths(id: number) {
+async function refreshMuseumRuntimeCache() {
+  try {
+    await syncImportedArtifactsToDb(db);
+  } catch {}
+  try {
+    await syncImportedMuseumsToDb(db);
+  } catch {}
+}
+
+function museumImagePaths(id: number | string) {
   const dir = path.join(MUSEUM_IMAGES_DIR, String(id));
   const thumbsDir = path.join(dir, "thumbs");
   return {
@@ -191,6 +224,60 @@ async function addMuseumAliasKeys(museumId: number | string, aliases: string[]) 
 }
 
 export async function listMuseums(req: Request, res: Response) {
+  try {
+    const page = Math.max(Number(req.query.page || 1) || 1, 1);
+    const pageSize = Math.min(Math.max(Number(req.query.pageSize || req.query.limit || 100) || 100, 1), 500);
+    const search = text(req.query.q || req.query.search).toLowerCase();
+    const province = text(req.query.province);
+    const city = text(req.query.city);
+    const type = text(req.query.type);
+    const grade = text(req.query.grade);
+    const hasArtifacts = optionalBoolParam(req.query.hasArtifacts ?? req.query.withArtifacts);
+    const createdByImport = optionalBoolParam(req.query.createdByImport);
+    const hasCover = optionalBoolParam(req.query.hasCover);
+    const onlyDuplicates = boolParam(req.query.suspectedDuplicate ?? req.query.duplicates);
+
+    let museums = await listMuseumsFromStore();
+    museums = museums.filter((museum) => {
+      if (search) {
+        const haystack = [museum.name, museum.province, museum.city, museum.type, museum.grade, ...(museum.aliases || [])]
+          .map(text)
+          .join(" ")
+          .toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+      if (province && museum.province !== province) return false;
+      if (city && museum.city !== city) return false;
+      if (type && museum.type !== type) return false;
+      if (grade && museum.grade !== grade) return false;
+      if (hasArtifacts === true && (museum.artifactCount || 0) <= 0) return false;
+      if (hasArtifacts === false && (museum.artifactCount || 0) > 0) return false;
+      if (createdByImport === true && !museum.createdByImport) return false;
+      if (createdByImport === false && museum.createdByImport) return false;
+      if (hasCover === true && !museum.hasCover) return false;
+      if (hasCover === false && museum.hasCover) return false;
+      return true;
+    });
+    if (onlyDuplicates) {
+      museums = museums.filter((museum) => museums.some((candidate) => {
+        const left = normalizedMuseumKey(museum.name) || "";
+        const right = normalizedMuseumKey(candidate.name) || "";
+        return candidate.id !== museum.id && left && right && (left.includes(right) || right.includes(left));
+      }));
+    }
+    const total = museums.length;
+    const offset = (page - 1) * pageSize;
+    return res.json({
+      source: "imported-museums-json",
+      museums: museums.slice(offset, offset + pageSize),
+      total,
+      page,
+      pageSize,
+    });
+  } catch {
+    // Fall back to the runtime DB cache below if the JSON store is temporarily unreadable.
+  }
+
   await ensureMuseumSchema(db);
   await refreshMuseumArtifactCounts();
   const page = Math.max(Number(req.query.page || 1) || 1, 1);
@@ -258,6 +345,34 @@ export async function listMuseums(req: Request, res: Response) {
 }
 
 export async function getMuseum(req: Request, res: Response) {
+  const idOrName = String(req.params.id || "");
+  const fromStore = await getMuseumArtifactsFromStore(idOrName);
+  if (fromStore.museum) {
+    return res.json({
+      source: "imported-museums-json",
+      museum: fromStore.museum,
+      aliases: aliasesFromStore(fromStore.museum),
+      artifacts: fromStore.artifacts.map((artifact) => ({
+        id: String(artifact.id),
+        name: artifact.name,
+        dynasty: artifact.dynasty || artifact.period,
+        museumId: fromStore.museum!.id,
+        museum: fromStore.museum!.name,
+        category: artifact.category || "",
+        shortIntro: artifact.shortIntro || "",
+        description: artifact.description,
+        imageUrl: artifact.imageUrl,
+        image_url: artifact.imageUrl,
+        localImageUrl: artifact.localImageUrl || "",
+        local_image_url: artifact.localImageUrl || "",
+        localThumbnailUrl: artifact.localThumbnailUrl || "",
+        local_thumbnail_url: artifact.localThumbnailUrl || "",
+        tags: artifact.tags || [],
+      })),
+      stats: { artifactCount: fromStore.artifacts.length },
+    });
+  }
+
   await ensureMuseumSchema(db);
   const id = Number(req.params.id);
   if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
@@ -286,13 +401,10 @@ export async function getMuseum(req: Request, res: Response) {
 }
 
 export async function updateMuseum(req: Request, res: Response) {
-  await ensureMuseumSchema(db);
-  const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
+  const idOrName = String(req.params.id || "");
   const body = req.body && typeof req.body === "object" ? (req.body as Record<string, unknown>) : {};
   const name = normalizeMuseumName(body.name);
   if (!name) return res.status(400).json({ error: "name is required" });
-  const normalizedName = normalizedMuseumKey(name);
   const rawProvince = text(body.province);
   const rawType = text(body.type);
   const rawGrade = text(body.grade);
@@ -315,45 +427,32 @@ export async function updateMuseum(req: Request, res: Response) {
   const grade = normalizeMuseumGrade(body.grade);
   const level = normalizeMuseumLevel(body.level);
 
-  const result = await db.query<MuseumRow>(
-    `update museums
-     set name=$2, normalized_name=$3, type=$4, level=$5, grade=$6, province=$7, city=$8,
-         address=$9, official_website=$10, description=$11, history=$12, opening_hours=$13,
-         ticket_info=$14, highlights=$15, contact=$16, is_featured=$17, location=$18, updated_at=now()
-     where id=$1
-     returning *`,
-    [
-      id,
-      name,
-      normalizedName,
-      type,
-      level,
-      grade,
-      province,
-      city,
-      text(body.address) || null,
-      text(body.officialWebsite ?? body.official_website) || null,
-      text(body.description),
-      text(body.history),
-      text(body.openingHours ?? body.opening_hours),
-      text(body.ticketInfo ?? body.ticket_info),
-      text(body.highlights),
-      text(body.contact),
-      Boolean(body.isFeatured ?? body.is_featured),
-      [city, text(body.address)].filter(Boolean).join(" "),
-    ],
-  );
-  const museum = result.rows[0];
-  if (!museum) return res.status(404).json({ error: "Not found" });
-  await db.query(`update artifacts set canonical_museum_name=$2, updated_at=now() where museum_id=$1`, [id, name]);
-  const aiRagSync = await syncAiRagAfterMuseumChange();
-  res.json({ museum: toCamelMuseum(museum as unknown as Record<string, unknown>), aiRagSync });
+  const storeMuseum = await updateMuseumInStore(idOrName, {
+    name,
+    type,
+    level,
+    grade,
+    province,
+    city,
+    address: text(body.address),
+    officialWebsite: text(body.officialWebsite ?? body.official_website),
+    description: text(body.description),
+    history: text(body.history),
+    openingHours: text(body.openingHours ?? body.opening_hours),
+    ticketInfo: text(body.ticketInfo ?? body.ticket_info),
+    highlights: text(body.highlights),
+    contact: text(body.contact),
+    isFeatured: Boolean(body.isFeatured ?? body.is_featured),
+    location: [city, text(body.address)].filter(Boolean).join(" "),
+  });
+  if (!storeMuseum) return res.status(404).json({ error: "Not found" });
+  await refreshMuseumRuntimeCache();
+  await syncAiRagAfterMuseumChange().catch(() => undefined);
+  return res.json({ source: "imported-museums-json", museum: storeMuseum });
 }
 
 export async function uploadMuseumCover(req: Request, res: Response) {
-  await ensureMuseumSchema(db);
-  const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
+  const id = String(req.params.id || "");
   if (!req.file) return res.status(400).json({ error: "请先选择要上传的图片。" });
 
   try {
@@ -364,9 +463,9 @@ export async function uploadMuseumCover(req: Request, res: Response) {
   }
 }
 
-async function persistMuseumCoverBuffer(id: number, buffer: Buffer, imageSource: "local_upload" | "url_download") {
-  const museum = await db.query(`select id from museums where id=$1 limit 1`, [id]);
-  if (!museum.rows[0]) throw new Error("Not found");
+async function persistMuseumCoverBuffer(id: number | string, buffer: Buffer, imageSource: "local_upload" | "url_download") {
+  const museum = await getMuseumFromStore(String(id));
+  if (!museum) throw new Error("Not found");
 
   const { thumbsDir, imagePath, thumbPath, legacyThumbPath, localCoverImageUrl, localCoverThumbnailUrl } = museumImagePaths(id);
   await fs.mkdir(thumbsDir, { recursive: true });
@@ -375,17 +474,20 @@ async function persistMuseumCoverBuffer(id: number, buffer: Buffer, imageSource:
   await image.clone().resize({ width: 640, height: 360, fit: "cover" }).jpeg({ quality: 84 }).toFile(thumbPath);
   await fs.rm(legacyThumbPath, { force: true }).catch(() => undefined);
 
-  const result = await db.query<MuseumRow>(
-    `update museums
-     set local_cover_image_url=$2, local_cover_thumbnail_url=$3, cover_image_url=$2,
-         cover_thumbnail_url=$3, image_url=$3, image_source=$4, updated_at=now()
-     where id=$1
-     returning *`,
-    [id, localCoverImageUrl, localCoverThumbnailUrl, imageSource],
-  );
-  const aiRagSync = await syncAiRagAfterMuseumChange();
+  const updatedMuseum = await upsertMuseumCoverInStore(String(id), localCoverImageUrl, localCoverThumbnailUrl, imageSource);
+  await refreshMuseumRuntimeCache();
+  const aiRagSync = await syncAiRagAfterMuseumChange().catch((error) => ({
+    ok: false,
+    artifactCount: 0,
+    aiReadyCount: 0,
+    ragDocumentCount: 0,
+    relationCount: 0,
+    coverage: "0 / 0",
+    message: "博物馆封面已保存；AI/RAG 派生数据生成失败。",
+    error: error instanceof Error ? error.message : String(error),
+  }));
   return {
-    museum: toCamelMuseum(result.rows[0] as unknown as Record<string, unknown>),
+    museum: updatedMuseum,
     localCoverImageUrl,
     localCoverThumbnailUrl,
     aiRagSync,
@@ -393,9 +495,7 @@ async function persistMuseumCoverBuffer(id: number, buffer: Buffer, imageSource:
 }
 
 export async function uploadMuseumCoverFromUrl(req: Request, res: Response) {
-  await ensureMuseumSchema(db);
-  const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
+  const id = String(req.params.id || "");
   const imageUrl = text(req.body?.imageUrl);
   if (!imageUrl) return res.status(400).json({ error: "请先填写图片链接。" });
 
@@ -409,61 +509,38 @@ export async function uploadMuseumCoverFromUrl(req: Request, res: Response) {
 }
 
 export async function deleteMuseumCover(req: Request, res: Response) {
-  await ensureMuseumSchema(db);
-  const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
-  const result = await db.query<MuseumRow>(
-    `update museums
-     set local_cover_image_url='', local_cover_thumbnail_url='', cover_image_url='', cover_thumbnail_url='',
-         image_url='', image_source='', updated_at=now()
-     where id=$1`,
-    [id],
-  );
-  if (!result.rowCount) return res.status(404).json({ error: "Not found" });
+  const id = String(req.params.id || "");
+  const updated = await deleteMuseumCoverFromStore(id);
+  if (!updated) return res.status(404).json({ error: "Not found" });
   const { imagePath, thumbPath, legacyThumbPath } = museumImagePaths(id);
   await fs.rm(imagePath, { force: true }).catch(() => undefined);
   await fs.rm(thumbPath, { force: true }).catch(() => undefined);
   await fs.rm(legacyThumbPath, { force: true }).catch(() => undefined);
-  const aiRagSync = await syncAiRagAfterMuseumChange();
-  res.json({ ok: true, aiRagSync });
+  await refreshMuseumRuntimeCache();
+  const aiRagSync = await syncAiRagAfterMuseumChange().catch(() => undefined);
+  res.json({ ok: true, museum: updated, aiRagSync });
 }
 
 export async function addMuseumAlias(req: Request, res: Response) {
-  await ensureMuseumSchema(db);
-  const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });
+  const id = String(req.params.id || "");
   const alias = normalizeMuseumName(req.body?.alias);
   const normalizedAlias = normalizedMuseumKey(alias);
   if (!alias || !normalizedAlias) return res.status(400).json({ error: "alias is required" });
-  const confidence = Number(req.body?.confidence ?? 1);
-  const existing = await db.query<{ id: number | string }>(`select id from museum_aliases where normalized_alias=$1 limit 1`, [normalizedAlias]);
-  const result = existing.rows[0]
-    ? await db.query(
-      `update museum_aliases
-       set museum_id=$2, alias=$3, source=$4, confidence=$5, updated_at=now()
-       where id=$1
-       returning *`,
-      [existing.rows[0].id, id, alias, text(req.body?.source) || "admin", Number.isFinite(confidence) ? confidence : 1],
-    )
-    : await db.query(
-      `insert into museum_aliases (museum_id, alias, normalized_alias, source, confidence)
-       values ($1,$2,$3,$4,$5)
-       returning *`,
-      [id, alias, normalizedAlias, text(req.body?.source) || "admin", Number.isFinite(confidence) ? confidence : 1],
-    );
-  await addMuseumAliasKeys(id, [normalizedAlias]);
-  const aiRagSync = await syncAiRagAfterMuseumChange();
-  res.status(201).json({ alias: toCamelAlias(result.rows[0]), aiRagSync });
+  const museum = await addMuseumAliasInStore(id, alias);
+  if (!museum) return res.status(404).json({ error: "Not found" });
+  await refreshMuseumRuntimeCache();
+  const aiRagSync = await syncAiRagAfterMuseumChange().catch(() => undefined);
+  return res.status(201).json({ alias: aliasesFromStore(museum).find((item) => item.alias === alias), museum, aiRagSync });
 }
 
 export async function deleteMuseumAlias(req: Request, res: Response) {
-  await ensureMuseumSchema(db);
-  const id = Number(req.params.id);
-  const aliasId = Number(req.params.aliasId);
-  if (!Number.isFinite(id) || !Number.isFinite(aliasId)) return res.status(400).json({ error: "Invalid id" });
-  await db.query(`delete from museum_aliases where id=$1 and museum_id=$2`, [aliasId, id]);
-  const aiRagSync = await syncAiRagAfterMuseumChange();
-  res.json({ ok: true, aiRagSync });
+  const id = String(req.params.id || "");
+  const aliasId = String(req.params.aliasId || "");
+  const museum = await deleteMuseumAliasInStore(id, aliasId);
+  if (!museum) return res.status(404).json({ error: "Not found" });
+  await refreshMuseumRuntimeCache();
+  const aiRagSync = await syncAiRagAfterMuseumChange().catch(() => undefined);
+  res.json({ ok: true, museum, aiRagSync });
 }
 
 export async function mergeMuseum(req: Request, res: Response) {
@@ -507,6 +584,23 @@ export async function mergeMuseum(req: Request, res: Response) {
 }
 
 export async function listMuseumArtifacts(req: Request, res: Response) {
+  const idOrName = String(req.params.id || "");
+  const fromStore = await getMuseumArtifactsFromStore(idOrName);
+  if (fromStore.museum) {
+    const search = text(req.query.search || req.query.q).toLowerCase();
+    const dynasty = text(req.query.dynasty || req.query.period);
+    const category = text(req.query.category);
+    const material = text(req.query.material);
+    const artifacts = fromStore.artifacts.filter((artifact) => {
+      if (search && ![artifact.name, artifact.description, artifact.period, artifact.dynasty, artifact.category].map(text).join(" ").toLowerCase().includes(search)) return false;
+      if (dynasty && !text(artifact.dynasty || artifact.period).includes(dynasty)) return false;
+      if (category && !text(artifact.category).includes(category)) return false;
+      if (material && !text(artifact.material).includes(material)) return false;
+      return true;
+    });
+    return res.json({ source: "imported-museums-json", artifacts, total: artifacts.length });
+  }
+
   await ensureMuseumSchema(db);
   const id = Number(req.params.id);
   if (!Number.isFinite(id)) return res.status(400).json({ error: "Invalid id" });

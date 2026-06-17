@@ -10,14 +10,20 @@ export const ExhibitionCard = ({
   isFavorite = false,
   onFavoriteClick,
   showFavoriteButton = false,
+  variant = 'default',
 }: {
   exhibition: Exhibition,
   onClick: () => void,
   isFavorite?: boolean,
   onFavoriteClick?: () => void,
   showFavoriteButton?: boolean,
+  variant?: 'default' | 'masonry',
 }) => {
   const artifactCount = exhibition.artifactIds?.length ?? 0;
+  const seed = Array.from(exhibition.id).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const masonryAspects = ['4 / 5', '1 / 1.18', '3 / 4', '1 / 1.05'];
+  const coverAspect = variant === 'masonry' ? masonryAspects[seed % masonryAspects.length] : '4 / 5';
+  const isMasonry = variant === 'masonry';
 
   return (
     <motion.div
@@ -25,9 +31,14 @@ export const ExhibitionCard = ({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       onClick={onClick}
-      className="ios-card mb-3 cursor-pointer overflow-hidden break-inside-avoid group"
+      className={cn(
+        "cursor-pointer overflow-hidden break-inside-avoid group",
+        isMasonry
+          ? "rounded-[8px] border border-black/5 bg-white shadow-sm"
+          : "ios-card mb-3",
+      )}
     >
-      <div className="aspect-[4/5] relative">
+      <div className="relative bg-gray-100" style={{ aspectRatio: coverAspect }}>
         <SafeImage 
            src={exhibition.coverUrl} 
            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
@@ -53,16 +64,24 @@ export const ExhibitionCard = ({
           </button>
         )}
       </div>
-      <div className="space-y-2 p-3">
-        <h3 className="min-w-0 break-words text-[13px] font-black leading-snug text-gray-950">{exhibition.title}</h3>
-        <div className="flex min-w-0 items-center gap-1.5">
-          {exhibition.userPhoto && (
-            <SafeImage 
-               src={exhibition.userPhoto} 
-               className="h-4 w-4 flex-shrink-0 rounded-full" 
-             />
+      <div className={cn("space-y-2", isMasonry ? "p-2.5" : "p-3")}>
+        <h3 className={cn(
+          "min-w-0 break-words font-black leading-snug text-gray-950",
+          isMasonry ? "text-[12px]" : "text-[13px]",
+        )}>{exhibition.title}</h3>
+        <div className="flex min-w-0 items-center justify-between gap-1.5">
+          <div className="flex min-w-0 items-center gap-1.5">
+            {exhibition.userPhoto && (
+              <SafeImage 
+                 src={exhibition.userPhoto} 
+                 className="h-4 w-4 flex-shrink-0 rounded-full" 
+               />
+            )}
+            <span className="min-w-0 truncate text-[10px] font-medium text-gray-500">{exhibition.userName}</span>
+          </div>
+          {isMasonry && (
+            <span className="shrink-0 text-[10px] font-bold text-gray-400">{exhibition.likesCount || 0}</span>
           )}
-          <span className="min-w-0 break-words text-[11px] font-medium text-gray-500">{exhibition.userName}</span>
         </div>
       </div>
     </motion.div>

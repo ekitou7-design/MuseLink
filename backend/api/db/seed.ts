@@ -6,6 +6,7 @@ import { ensureSeedMuseums } from "./seedMuseums";
 import { migrateArtifactDetails } from "./migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./upgradeArtifactsMuseumFk";
 import { listArtifactsFromDb, syncImportedArtifactsToDb } from "./syncImportedArtifacts";
+import { syncImportedMuseumsToDb } from "./syncImportedMuseums";
 import { syncAiRagForArtifacts } from "../../ai-rag-data";
 import { ensureMuseumSchema, seedBuiltInMuseumAliases } from "../../museum-normalizer";
 
@@ -28,6 +29,8 @@ async function main() {
   if (!imported.skipped) {
     console.log(`Synced imported artifacts: ${imported.importedCount} file rows, ${imported.inserted} inserted, ${imported.updated} updated`);
   }
+  const importedMuseums = await syncImportedMuseumsToDb(db);
+  console.log(`Synced imported museums: ${importedMuseums.importedCount} file rows, ${importedMuseums.inserted} inserted, ${importedMuseums.updated} updated`);
   const aiRag = imported.skipped || !imported.aiRagSync
     ? await syncAiRagForArtifacts(await listArtifactsFromDb(db))
     : imported.aiRagSync;

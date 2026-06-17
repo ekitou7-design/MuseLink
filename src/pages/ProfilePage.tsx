@@ -2,14 +2,36 @@ import React, { useEffect, useState } from "react";
 import { UserSession } from "../auth/UserSession";
 import { AuthService } from "../auth/AuthService";
 import { goBackOrNavigate, navigate } from "../router/router";
+import { me } from "../lib/authClient";
 
 export function ProfilePage() {
   const [museId, setMuseId] = useState<string | null>(null);
   const [role, setRole] = useState<"user" | "admin" | null>(null);
+  const [canAccessAdmin, setCanAccessAdmin] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+
     setMuseId(UserSession.getMuseId());
-    setRole(UserSession.getRole());
+    setRole(null);
+    setCanAccessAdmin(false);
+
+    me()
+      .then((currentUser) => {
+        if (cancelled) return;
+        const currentRole = currentUser.profile.role === "admin" ? "admin" : "user";
+        setRole(currentRole);
+        setCanAccessAdmin(currentRole === "admin");
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setRole(null);
+        setCanAccessAdmin(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const onLogout = async () => {
@@ -38,12 +60,12 @@ export function ProfilePage() {
             <div className="text-xs text-gray-500">账号角色</div>
             <div className="text-lg font-black text-gray-900">{role || "-"}</div>
           </div>
-          {role === "admin" && (
+          {canAccessAdmin && (
             <button
               onClick={() => navigate("/admin")}
               className="w-full mt-4 bg-emerald-50 text-emerald-700 rounded-2xl py-3 text-sm font-black"
             >
-              进入后台管理
+              后台管理
             </button>
           )}
           <button

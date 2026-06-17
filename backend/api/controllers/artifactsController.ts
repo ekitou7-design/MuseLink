@@ -6,15 +6,25 @@ import sharp from "sharp";
 import { db } from "../db/client";
 import { downloadImageBuffer } from "../lib/imageDownloader";
 import { deleteAiRagForArtifact, syncAiRagForArtifact } from "../../ai-rag-data";
-import { searchRelics } from "../db/relicSearch";
 import {
   ensureArtifactEditorRecommendationColumns,
   getArtifactFromDb,
   listArtifactsFromDb,
   listEditorRecommendedArtifactsFromDb,
+  syncImportedArtifactsToDb,
 } from "../db/syncImportedArtifacts";
+import { syncImportedMuseumsToDb } from "../db/syncImportedMuseums";
 import type { ArtifactAttributeRow } from "../models/types";
 import { ensureMuseumExists, ensureMuseumSchema } from "../../museum-normalizer";
+import {
+  deleteArtifactFromStore,
+  getArtifactFromStore,
+  listArtifactsFromStore,
+  patchArtifactInStore,
+  searchArtifactsInStore,
+  upsertArtifactInStore,
+} from "../services/artifactsStore";
+import { refreshMuseumArtifactIndex } from "../services/museumsStore";
 
 const ARTIFACT_IMAGES_DIR = path.join(process.cwd(), "public", "artifact-images");
 const ARTIFACT_THUMBS_DIR = path.join(ARTIFACT_IMAGES_DIR, "thumbs");
@@ -346,6 +356,18 @@ async function safeSyncAiRagAfterArtifactChange(artifact: Awaited<ReturnType<typ
   }
 }
 
+async function refreshRuntimeCaches() {
+  try {
+    await syncImportedArtifactsToDb(db);
+  } catch {}
+  try {
+    await refreshMuseumArtifactIndex();
+  } catch {}
+  try {
+    await syncImportedMuseumsToDb(db);
+  } catch {}
+}
+
 function normalizeTags(tags: unknown) {
   const rawTags = Array.isArray(tags)
     ? tags
@@ -396,12 +418,21 @@ async function persistArtifactImageBuffer(
     existing,
     sourceImageUrl,
   );
-  const artifact = (await findDbArtifact(id)) || existing;
-  const aiRagSync = await safeSyncAiRagAfterArtifactChange(artifact as Awaited<ReturnType<typeof getArtifactFromDb>>);
+  await patchArtifactInStore(id, {
+    localImageUrl,
+    localThumbnailUrl,
+    local_image_url: localImageUrl,
+    local_thumbnail_url: localThumbnailUrl,
+    ...(sourceImageUrl ? { imageUrl: sourceImageUrl, image_url: sourceImageUrl, "图片链接": sourceImageUrl } : {}),
+  });
+  await refreshRuntimeCaches();
+  const artifact = (await getArtifactFromStore(id)) || (await findDbArtifact(id)) || existing;
+  const dbArtifact = await findDbArtifact(id);
+  const aiRagSync = await safeSyncAiRagAfterArtifactChange(dbArtifact as Awaited<ReturnType<typeof getArtifactFromDb>>);
 
   return {
     ok: true,
-    source: dbUpdated ? "database" : "imported-artifacts-json",
+    source: "imported-artifacts-json",
     artifact,
     artifactName: artifactName(existing),
     imageUrl: sourceImageUrl || cleanText(existing.imageUrl ?? existing.image_url),
@@ -501,10 +532,23 @@ function toArtifactDetail(row: Record<string, unknown>, attributes: ArtifactAttr
 export async function listEditorRecommendedArtifacts(req: Request, res: Response) {
   try {
     const limit = Math.min(Math.max(Number(req.query.limit || 6) || 6, 1), 24);
-    const artifacts = await listEditorRecommendedArtifactsFromDb(db, limit);
-    return res.json({ source: "database", total: artifacts.length, artifacts });
+    const artifacts = (await listArtifactsFromStore(10000))
+      .filter((artifact) => Boolean(artifact.isEditorRecommended ?? artifact.is_editor_recommended))
+      .sort((left, right) => {
+        const leftOrder = Number(left.editorRecommendationOrder ?? left.editor_recommendation_order ?? 0) || 0;
+        const rightOrder = Number(right.editorRecommendationOrder ?? right.editor_recommendation_order ?? 0) || 0;
+        return leftOrder - rightOrder || String(left.id).localeCompare(String(right.id), "zh-CN");
+      })
+      .slice(0, limit);
+    return res.json({ source: "imported-artifacts-json", total: artifacts.length, artifacts });
   } catch (error) {
-    return res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    try {
+      const limit = Math.min(Math.max(Number(req.query.limit || 6) || 6, 1), 24);
+      const artifacts = await listEditorRecommendedArtifactsFromDb(db, limit);
+      return res.json({ source: "database-fallback", total: artifacts.length, artifacts });
+    } catch {
+      return res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
   }
 }
 
@@ -517,12 +561,10 @@ export async function listArtifacts(req: Request, res: Response) {
   const museumCity = typeof req.query.museumCity === "string" ? req.query.museumCity.trim() : "";
   const hasStructuredFilters = Boolean(museumId || canonicalMuseumName || museumProvince || museumCity);
 
-  if (keyword && !hasStructuredFilters) {
-    const artifacts = await searchRelics(db, { keyword, limit });
-    return res.json({ source: "database", total: artifacts.length, artifacts });
-  }
-
-  const artifacts = (await listArtifactsFromDb(db, hasStructuredFilters || keyword ? 10000 : limit)).filter((artifact) => {
+  const artifacts = (keyword && !hasStructuredFilters
+    ? await searchArtifactsInStore(keyword, limit)
+    : await listArtifactsFromStore(hasStructuredFilters || keyword ? 10000 : limit)
+  ).filter((artifact) => {
     const record = artifact as unknown as Record<string, unknown>;
     if (museumId && String(record.museumId || record.museum_id || "") !== museumId) return false;
     if (canonicalMuseumName) {
@@ -545,14 +587,14 @@ export async function listArtifacts(req: Request, res: Response) {
     ].map(text).join(" ").toLowerCase();
     return haystack.includes(keyword.toLowerCase());
   });
-  res.json({ source: "database", total: artifacts.length, artifacts: artifacts.slice(0, limit) });
+  res.json({ source: "imported-artifacts-json", total: artifacts.length, artifacts: artifacts.slice(0, limit) });
 }
 
 export async function getArtifact(req: Request, res: Response) {
   const id = String(req.params.id || "");
-  const artifact = await getArtifactFromDb(db, id);
+  const artifact = await getArtifactFromStore(id);
   if (!artifact) return res.status(404).json({ error: "Not found" });
-  res.json({ source: "database", artifact });
+  res.json({ source: "imported-artifacts-json", artifact });
 }
 
 export async function searchArtifacts(req: Request, res: Response) {
@@ -562,11 +604,9 @@ export async function searchArtifacts(req: Request, res: Response) {
     return res.status(400).json({ error: "请输入搜索内容" });
   }
 
-  const artifacts = await searchRelics(db, {
-    keyword,
-    limit: Number.isFinite(limit) ? limit : 100,
-  });
+  const artifacts = await searchArtifactsInStore(keyword, Number.isFinite(limit) ? limit : 100);
   res.json({
+    source: "imported-artifacts-json",
     keyword,
     total: artifacts.length,
     artifacts,
@@ -583,11 +623,11 @@ export async function ragSearchArtifacts(req: Request, res: Response) {
     return res.status(400).json({ error: "q is required" });
   }
 
-  const artifacts = await searchRelics(db, { keyword: q, limit });
+  const artifacts = await searchArtifactsInStore(q, limit);
   const artifactIds = artifacts.map((artifact) => artifact.id);
 
   res.json({
-    mode: "database-keyword",
+    mode: "json-keyword",
     artifactIds,
     keywordArtifactIds: artifactIds,
     semanticArtifactIds: [] as string[],
@@ -601,40 +641,11 @@ export async function createArtifact(req: Request, res: Response) {
       return res.status(400).json({ error: "name is required" });
     }
 
-    const museumResolved = await ensureMuseumExists(db, payload.museum);
-    const museumId = museumResolved?.museum.id;
-    if (museumId == null || !museumResolved) {
-      return res.status(400).json({ error: "museum is invalid" });
-    }
-
-    const inserted = await db.query<{ id: number | string }>(
-      `insert into artifacts (name, dynasty, museum_id, raw_museum_name, canonical_museum_name, category, short_intro, description, image_url, source_url, tags)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
-       returning id`,
-      [
-        payload.name,
-        payload.dynasty,
-        museumId,
-        museumResolved.rawName,
-        museumResolved.canonicalName,
-        payload.category,
-        payload.shortIntro,
-        payload.description,
-        payload.imageUrl,
-        payload.sourceUrl,
-        payload.tags,
-      ],
-    );
-
-    const id = inserted.rows[0]?.id;
-    if (id == null) {
-      return res.status(500).json({ error: "Failed to create artifact" });
-    }
-
-    await writeAttributeRows(id, payload.attributes);
-    const artifact = await getArtifactFromDb(db, String(id));
-    const aiRagSync = await safeSyncAiRagAfterArtifactChange(artifact);
-    return res.status(201).json({ source: "database", artifact, aiRagSync });
+    const artifact = await upsertArtifactInStore({ ...payload, attributes: payload.attributes });
+    await refreshRuntimeCaches();
+    const dbArtifact = await getArtifactFromDb(db, String(artifact.id)).catch(() => null);
+    const aiRagSync = await safeSyncAiRagAfterArtifactChange(dbArtifact);
+    return res.status(201).json({ source: "imported-artifacts-json", artifact, aiRagSync });
   } catch (error) {
     return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }
@@ -643,7 +654,7 @@ export async function createArtifact(req: Request, res: Response) {
 export async function updateArtifact(req: Request, res: Response) {
   try {
     const id = String(req.params.id || "");
-    const existing = await getArtifactFromDb(db, id);
+    const existing = await getArtifactFromStore(id);
     if (!existing) {
       return res.status(404).json({ error: "Not found" });
     }
@@ -653,37 +664,11 @@ export async function updateArtifact(req: Request, res: Response) {
       return res.status(400).json({ error: "name is required" });
     }
 
-    const museumResolved = await ensureMuseumExists(db, payload.museum);
-    const museumId = museumResolved?.museum.id;
-    if (museumId == null || !museumResolved) {
-      return res.status(400).json({ error: "museum is invalid" });
-    }
-
-    await db.query(
-      `update artifacts
-       set name=$2, dynasty=$3, museum_id=$4, raw_museum_name=$5, canonical_museum_name=$6,
-           category=$7, short_intro=$8, description=$9, image_url=$10, source_url=$11, tags=$12, updated_at=now()
-       where id::text=$1`,
-      [
-        id,
-        payload.name,
-        payload.dynasty,
-        museumId,
-        museumResolved.rawName,
-        museumResolved.canonicalName,
-        payload.category,
-        payload.shortIntro,
-        payload.description,
-        payload.imageUrl,
-        payload.sourceUrl,
-        payload.tags,
-      ],
-    );
-
-    await writeAttributeRows(id, payload.attributes);
-    const artifact = await getArtifactFromDb(db, id);
-    const aiRagSync = await safeSyncAiRagAfterArtifactChange(artifact);
-    return res.json({ source: "database", artifact, aiRagSync });
+    const artifact = await upsertArtifactInStore({ ...payload, id, attributes: payload.attributes });
+    await refreshRuntimeCaches();
+    const dbArtifact = await getArtifactFromDb(db, id).catch(() => null);
+    const aiRagSync = await safeSyncAiRagAfterArtifactChange(dbArtifact);
+    return res.json({ source: "imported-artifacts-json", artifact, aiRagSync });
   } catch (error) {
     return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }
@@ -692,29 +677,25 @@ export async function updateArtifact(req: Request, res: Response) {
 export async function updateArtifactEditorRecommendation(req: Request, res: Response) {
   try {
     const id = String(req.params.id || "");
-    const existing = await getArtifactFromDb(db, id);
+    const existing = await getArtifactFromStore(id);
     if (!existing) {
       return res.status(404).json({ error: "Not found" });
     }
 
-    await ensureArtifactEditorRecommendationColumns(db);
     const isEditorRecommended = Boolean(req.body?.isEditorRecommended ?? req.body?.is_editor_recommended);
     const orderRaw = Number(req.body?.editorRecommendationOrder ?? req.body?.editor_recommendation_order ?? 0);
     const editorRecommendationOrder = Number.isFinite(orderRaw)
       ? Math.max(0, Math.min(9999, Math.trunc(orderRaw)))
       : 0;
 
-    await db.query(
-      `update artifacts
-       set is_editor_recommended=$2,
-           editor_recommendation_order=$3,
-           updated_at=now()
-       where id::text=$1`,
-      [id, isEditorRecommended, editorRecommendationOrder],
-    );
-
-    const artifact = await getArtifactFromDb(db, id);
-    return res.json({ source: "database", artifact });
+    const artifact = await patchArtifactInStore(id, {
+      isEditorRecommended,
+      is_editor_recommended: isEditorRecommended,
+      editorRecommendationOrder,
+      editor_recommendation_order: editorRecommendationOrder,
+    });
+    await refreshRuntimeCaches();
+    return res.json({ source: "imported-artifacts-json", artifact });
   } catch (error) {
     return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }
@@ -723,9 +704,10 @@ export async function updateArtifactEditorRecommendation(req: Request, res: Resp
 export async function uploadArtifactImage(req: Request, res: Response) {
   try {
     const id = String(req.params.id || "");
+    const storeArtifact = await getArtifactFromStore(id);
     const dbArtifact = await findDbArtifact(id);
     const importedArtifact = await findImportedArtifact(id);
-    const existing = (dbArtifact || importedArtifact) as Record<string, unknown> | null;
+    const existing = (storeArtifact || dbArtifact || importedArtifact) as Record<string, unknown> | null;
     if (!existing) {
       return res.status(404).json({ error: "Not found" });
     }
@@ -748,9 +730,10 @@ export async function uploadArtifactImageFromUrl(req: Request, res: Response) {
       return res.status(400).json({ error: "请先填写图片链接。" });
     }
 
+    const storeArtifact = await getArtifactFromStore(id);
     const dbArtifact = await findDbArtifact(id);
     const importedArtifact = await findImportedArtifact(id);
-    const existing = (dbArtifact || importedArtifact) as Record<string, unknown> | null;
+    const existing = (storeArtifact || dbArtifact || importedArtifact) as Record<string, unknown> | null;
     if (!existing) {
       return res.status(404).json({ error: "Not found" });
     }
@@ -765,15 +748,17 @@ export async function uploadArtifactImageFromUrl(req: Request, res: Response) {
 export async function deleteArtifact(req: Request, res: Response) {
   try {
     const id = String(req.params.id || "");
-    const existing = await getArtifactFromDb(db, id);
+    const existing = await getArtifactFromStore(id);
     if (!existing) {
       return res.status(404).json({ error: "Not found" });
     }
 
-    await db.query(`delete from exhibition_items where artifact_id::text = $1`, [id]);
-    await db.query(`delete from likes where target_type = 'artifact' and target_id::text = $1`, [id]);
-    await db.query(`delete from artifacts where id::text = $1`, [id]);
-    const remainingArtifacts = await listArtifactsFromDb(db);
+    await deleteArtifactFromStore(id);
+    await refreshRuntimeCaches();
+    await db.query(`delete from exhibition_items where artifact_id::text = $1`, [id]).catch(() => undefined);
+    await db.query(`delete from likes where target_type = 'artifact' and target_id::text = $1`, [id]).catch(() => undefined);
+    await db.query(`delete from artifacts where id::text = $1`, [id]).catch(() => undefined);
+    const remainingArtifacts = await listArtifactsFromDb(db).catch(() => []);
     const aiRagSync = await deleteAiRagForArtifact(id, remainingArtifacts);
     return res.json({ ok: true, id, aiRagSync });
   } catch (error) {

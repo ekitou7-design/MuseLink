@@ -11,6 +11,7 @@ import { db } from "./db/client";
 import { migrateArtifactDetails } from "./db/migrateArtifactDetails";
 import { upgradeArtifactsMuseumFk } from "./db/upgradeArtifactsMuseumFk";
 import { syncImportedArtifactsToDb } from "./db/syncImportedArtifacts";
+import { syncImportedMuseumsToDb } from "./db/syncImportedMuseums";
 import { ensureMuseumSchema, seedBuiltInMuseumAliases } from "../museum-normalizer";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
@@ -82,7 +83,7 @@ app.get("/upload", (_req, res) => {
   <main>
     <section>
       <h1>MuseLink 文物图片上传</h1>
-      <p>输入文物 artifactId，选择本地图片或粘贴图片直链。图片会写入 public/artifact-images，并同步 data/imported-artifacts.json；如数据库可用，也会同步 artifacts 表。</p>
+      <p>输入文物 artifactId，选择本地图片或粘贴图片直链。图片会写入 public/artifact-images，并同步 data/imported-artifacts.json；运行时数据库只作为 JSON 的缓存刷新。</p>
       <form id="uploadForm">
         <label for="artifactId">artifactId</label>
         <input id="artifactId" name="artifactId" placeholder="例如 ncha-third-001-166d402e" required />
@@ -373,6 +374,8 @@ app.listen(port, "0.0.0.0", () => {
     if (!sync.skipped) {
       console.log(`Synced imported artifacts to DB: ${sync.importedCount} file rows, ${sync.inserted} inserted, ${sync.updated} updated`);
     }
+    const museumSync = await syncImportedMuseumsToDb(db);
+    console.log(`Synced imported museums to DB: ${museumSync.importedCount} file rows, ${museumSync.inserted} inserted, ${museumSync.updated} updated`);
   } catch (err) {
     console.error("DB upgrade failed:", err);
   }
