@@ -4,10 +4,12 @@ import {
   createArtifact,
   deleteArtifact,
   getArtifact,
+  listEditorRecommendedArtifacts,
   listArtifacts,
   ragSearchArtifacts,
   searchArtifacts,
   updateArtifact,
+  updateArtifactEditorRecommendation,
   uploadArtifactImage,
   uploadArtifactImageFile,
   uploadArtifactImageFromUrl,
@@ -21,12 +23,16 @@ artifactRoutes.post("/api/rag/search", ragSearchArtifacts);
 artifactRoutes.post("/rag/search", ragSearchArtifacts);
 artifactRoutes.get("/artifacts/search", searchArtifacts);
 artifactRoutes.get("/api/artifacts/search", searchArtifacts);
+artifactRoutes.get("/api/editor-recommended-artifacts", listEditorRecommendedArtifacts);
+artifactRoutes.get("/editor-recommended-artifacts", listEditorRecommendedArtifacts);
 artifactRoutes.post("/api/artifacts", requireAdmin, createArtifact);
 artifactRoutes.post("/artifacts", requireAdmin, createArtifact);
 artifactRoutes.post("/api/admin/artifacts/:id/image", requireAdmin, uploadArtifactImageFile, uploadArtifactImage);
 artifactRoutes.post("/admin/artifacts/:id/image", requireAdmin, uploadArtifactImageFile, uploadArtifactImage);
 artifactRoutes.post("/api/admin/artifacts/:id/image-url", requireAdmin, uploadArtifactImageFromUrl);
 artifactRoutes.post("/admin/artifacts/:id/image-url", requireAdmin, uploadArtifactImageFromUrl);
+artifactRoutes.patch("/api/admin/artifacts/:id/editor-recommendation", requireAdmin, updateArtifactEditorRecommendation);
+artifactRoutes.patch("/admin/artifacts/:id/editor-recommendation", requireAdmin, updateArtifactEditorRecommendation);
 artifactRoutes.put("/api/artifacts/:id", requireAdmin, updateArtifact);
 artifactRoutes.put("/artifacts/:id", requireAdmin, updateArtifact);
 artifactRoutes.delete("/api/artifacts/:id", requireAdmin, deleteArtifact);

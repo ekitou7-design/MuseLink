@@ -39,6 +39,10 @@ export interface Artifact {
   localThumbnailUrl?: string;
   externalImageUrl?: string;
   sourceUrl?: string;
+  isEditorRecommended?: boolean;
+  is_editor_recommended?: boolean;
+  editorRecommendationOrder?: number;
+  editor_recommendation_order?: number;
   tags: ArtifactTag[];
   attributes?: ArtifactAttributeGroup[];
   favsCount: number;

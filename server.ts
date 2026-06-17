@@ -62,7 +62,9 @@ import { ensureMuseumSchema, seedBuiltInMuseumAliases } from "./backend/museum-n
 import {
   createArtifact,
   deleteArtifact,
+  listEditorRecommendedArtifacts,
   updateArtifact,
+  updateArtifactEditorRecommendation,
   uploadArtifactImage,
   uploadArtifactImageFile,
   uploadArtifactImageFromUrl,
@@ -2076,6 +2078,7 @@ async function startServer() {
   app.post("/api/artifacts", requireAdmin, createArtifact);
   app.post("/api/admin/artifacts/:id/image", requireAdmin, uploadArtifactImageFile, uploadArtifactImage);
   app.post("/api/admin/artifacts/:id/image-url", requireAdmin, uploadArtifactImageFromUrl);
+  app.patch("/api/admin/artifacts/:id/editor-recommendation", requireAdmin, updateArtifactEditorRecommendation);
   app.put("/api/artifacts/:id", requireAdmin, updateArtifact);
   app.delete("/api/artifacts/:id", requireAdmin, deleteArtifact);
   app.use(museumRoutes);
@@ -2259,6 +2262,8 @@ async function startServer() {
       res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
     }
   });
+
+  app.get("/api/editor-recommended-artifacts", listEditorRecommendedArtifacts);
 
   app.get("/api/relics/search", async (req, res) => {
     try {

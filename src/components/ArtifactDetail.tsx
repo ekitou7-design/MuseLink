@@ -203,6 +203,7 @@ export type ArtifactDetailProps = {
   isFavorite: boolean;
   toggleFavorite: (id: string) => void | Promise<void>;
   onArtifactClick: (artifact: Artifact) => void;
+  onMuseumClick?: (artifact: Artifact) => void;
   lightboxUrl?: string | null;
   setLightboxUrl?: (url: string | null) => void;
 };
@@ -214,6 +215,7 @@ export function ArtifactDetail({
   isFavorite,
   toggleFavorite,
   onArtifactClick,
+  onMuseumClick,
   lightboxUrl: controlledLightboxUrl,
   setLightboxUrl: setControlledLightboxUrl,
 }: ArtifactDetailProps) {
@@ -410,7 +412,19 @@ export function ArtifactDetail({
         <dl className="mt-4 grid grid-cols-1 gap-3 text-[14px] leading-relaxed text-gray-700">
           <div className="flex gap-3">
             <dt className="w-20 shrink-0 text-gray-400">所属博物馆</dt>
-            <dd className="min-w-0 flex-1 break-words"><RequiredValue value={museumRaw} /></dd>
+            <dd className="min-w-0 flex-1 break-words">
+              {onMuseumClick && !isBlankValue(museumRaw) ? (
+                <button
+                  type="button"
+                  onClick={() => onMuseumClick(currentArtifact)}
+                  className="break-words text-left font-bold text-amber-700 underline-offset-4 active:underline"
+                >
+                  {displayValue(museumRaw)}
+                </button>
+              ) : (
+                <RequiredValue value={museumRaw} />
+              )}
+            </dd>
           </div>
           <div className="flex gap-3">
             <dt className="w-20 shrink-0 text-gray-400">时代/朝代</dt>

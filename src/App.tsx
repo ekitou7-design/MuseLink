@@ -36,7 +36,7 @@ import {
   displayDbString,
 } from './lib/dbDisplay';
 import { PROVINCIAL_MUSEUMS } from '../backend/provincial-museums';
-import { fetchMergedArtifacts, searchRelics } from './modules/artifacts/services/artifactsService';
+import { fetchEditorRecommendedArtifacts, fetchMergedArtifacts, searchRelics } from './modules/artifacts/services/artifactsService';
 import {
   buildArtifactRecommendations,
   readRecommendationPreferences,
@@ -68,6 +68,7 @@ import { Drawer } from './shared/ui/Drawer';
 import { SettingsModal } from './modules/profile/components/SettingsModal';
 import { ProfileFeaturePanel } from './modules/profile/components/ProfileFeaturePanel';
 import { MuseumSelectorOverlay } from './modules/museums/components/MuseumSelectorOverlay';
+import { MuseumDetail } from './modules/museums/components/MuseumDetail';
 import { BottomNav } from './app/components/BottomNav';
 import { TopNav } from './app/components/TopNav';
 import { ProfileHeader } from './modules/profile/components/ProfileHeader';
@@ -96,6 +97,7 @@ import {
   readSwipeHistory,
   type UserPreferenceProfile,
 } from './modules/swipe/utils/preferenceProfile';
+import { goBackOrNavigate, navigate } from './router/router';
 
 // --- Components ---
 
@@ -132,7 +134,13 @@ type ToastState = {
 
 // --- Main App ---
 
-export default function App({ initialTab = 'explore' }: { initialTab?: string }) {
+export default function App({
+  initialTab = 'explore',
+  initialMuseumId,
+}: {
+  initialTab?: string;
+  initialMuseumId?: string | null;
+}) {
   const goLogin = () => {
     window.location.hash = '#/login';
   };
@@ -141,7 +149,9 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [artifactPool, setArtifactPool] = useState<Artifact[]>(MOCK_ARTIFACTS);
+  const [editorRecommendedArtifacts, setEditorRecommendedArtifacts] = useState<Artifact[]>([]);
   const [museumPool, setMuseumPool] = useState<Museum[]>([]);
+  const [selectedMuseumId, setSelectedMuseumId] = useState<string | null>(initialMuseumId || null);
   const [selectedArtifact, setSelectedArtifact] = useState<Artifact | null>(null);
   const [selectedArtifactLightboxUrl, setSelectedArtifactLightboxUrl] = useState<string | null>(null);
   const [selectedExhibition, setSelectedExhibition] = useState<Exhibition | null>(null);
@@ -212,6 +222,39 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
     setToast({ id: Date.now(), message, tone });
   };
 
+  const openMuseumDetail = useCallback((museumOrId: Museum | string) => {
+    const rawId = typeof museumOrId === 'string' ? museumOrId : museumOrId.id || museumOrId.name;
+    const id = String(rawId || '').trim();
+    if (!id) return;
+    setIsSearching(false);
+    setIsMessaging(false);
+    setIsMuseumSelectorOpen(false);
+    setSelectedArtifactLightboxUrl(null);
+    setSelectedMuseumId(id);
+    const path: `/museums/${string}` = `/museums/${encodeURIComponent(id)}`;
+    navigate(path);
+  }, []);
+
+  const openArtifactMuseum = useCallback((artifact: Artifact) => {
+    const record = artifact as unknown as Record<string, unknown>;
+    const rawMuseumId = artifact.museumId ?? record.museum_id;
+    if (rawMuseumId !== null && rawMuseumId !== undefined && String(rawMuseumId).trim()) {
+      openMuseumDetail(String(rawMuseumId));
+      return;
+    }
+
+    const museumName = displayDbString(artifactMuseumRaw(artifact));
+    const matchedMuseum = museumPool.find((museum) => museum.name === museumName);
+    if (matchedMuseum) {
+      openMuseumDetail(matchedMuseum);
+      return;
+    }
+
+    if (museumName && museumName !== '暂无信息') {
+      openMuseumDetail(museumName);
+    }
+  }, [museumPool, openMuseumDetail]);
+
   const openImmersiveExhibition = (exhibition: Exhibition | null) => {
     const normalized = normalizeExhibition(exhibition);
     if (!normalized) return;
@@ -235,6 +278,10 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
   useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
+
+  useEffect(() => {
+    setSelectedMuseumId(initialMuseumId || null);
+  }, [initialMuseumId]);
 
   useEffect(() => {
     const refreshPreferenceProfile = (event?: Event) => {
@@ -711,19 +758,6 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
     return { categories, materials, eras, museums, tags };
   }, [artifactPool, countArtifactValues]);
 
-  const editorRecommendedArtifacts = useMemo(
-    () => artifactPool
-      .slice()
-      .sort((a, b) => {
-        const imageA = String(artifactImageUrlRaw(a, "thumbnail") ?? '').trim() ? 1 : 0;
-        const imageB = String(artifactImageUrlRaw(b, "thumbnail") ?? '').trim() ? 1 : 0;
-        if (imageA !== imageB) return imageB - imageA;
-        return (b.favsCount || 0) - (a.favsCount || 0);
-      })
-      .slice(0, 6),
-    [artifactPool],
-  );
-
   const editorRecommendedExhibitions = useMemo(
     () => [TEST_EDITOR_RECOMMENDED_EXHIBITION].slice(0, EDITOR_RECOMMENDED_EXHIBITION_LIMIT),
     []
@@ -757,6 +791,33 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
      }
      return null;
    }, [museumPool, museumSubTab]);
+
+  const selectedMuseum = useMemo(() => {
+    if (!selectedMuseumId) return null;
+    const decodedId = decodeURIComponent(selectedMuseumId);
+    const fromPool = museumPool.find((museum) => (
+      String(museum.id) === decodedId || museum.name === decodedId
+    ));
+    if (fromPool) return fromPool;
+
+    const fromSeed = PROVINCIAL_MUSEUMS.find((museum) => museum.name === decodedId);
+    if (fromSeed) {
+      return {
+        id: fromSeed.name,
+        name: fromSeed.name,
+        description: `${fromSeed.name}是位于${fromSeed.location}的国家一级博物馆。`,
+        location: fromSeed.location,
+        imageUrl: '',
+        artifactIds: artifactPool.filter((artifact) => displayDbString(artifactMuseumRaw(artifact)) === fromSeed.name).map((artifact) => artifact.id),
+        artifactCount: artifactPool.filter((artifact) => displayDbString(artifactMuseumRaw(artifact)) === fromSeed.name).length,
+        periods: [],
+        materials: [],
+        updatedAt: new Date().toISOString(),
+      } as Museum;
+    }
+
+    return null;
+  }, [artifactPool, museumPool, selectedMuseumId]);
 
   const eraArtifacts = artifactPool
     .filter(a => eraSubTab === '全部' || String(artifactEraRaw(a) ?? '').includes(eraSubTab))
@@ -1010,6 +1071,32 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
     // 每 30 秒自动刷新一次数据，确保与管理后台同步
     const interval = setInterval(fetchArtifacts, 30000);
     
+    return () => {
+      controller.abort();
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchEditorRecommendations = async () => {
+      try {
+        const data = await fetchEditorRecommendedArtifacts({ limit: 6, signal: controller.signal });
+        if (!controller.signal.aborted) {
+          setEditorRecommendedArtifacts(Array.isArray(data.artifacts) ? data.artifacts : []);
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("Fetch editor recommended artifacts error:", error);
+          setEditorRecommendedArtifacts([]);
+        }
+      }
+    };
+
+    fetchEditorRecommendations();
+    const interval = setInterval(fetchEditorRecommendations, 30000);
+
     return () => {
       controller.abort();
       clearInterval(interval);
@@ -1400,28 +1487,30 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
                       </button>
 
                       {/* 3. Editor Artifact Recommendations */}
-                      <div className="space-y-4">
-                        <h2 className="text-lg font-bold text-secondary font-serif flex items-center gap-2 force-nowrap">
-                          <BookmarkCheck size={18} className="text-primary flex-shrink-0" />
-                          编辑推荐文物
-                        </h2>
+                      {editorRecommendedArtifacts.length > 0 && (
+                        <div className="space-y-4">
+                          <h2 className="text-lg font-bold text-secondary font-serif flex items-center gap-2 force-nowrap">
+                            <BookmarkCheck size={18} className="text-primary flex-shrink-0" />
+                            编辑推荐文物
+                          </h2>
 
-                        <div className="columns-2 gap-1.5">
-                          {editorRecommendedArtifacts.map(artifact => (
-                            <div key={`editor-artifact-${artifact.id}`} className="break-inside-avoid mb-1.5">
-                              <ArtifactCard
-                                artifact={artifact}
-                                isFavorite={favorites.includes(artifact.id)}
-                                onFavoriteClick={() => toggleFavorite(artifact.id)}
-                                onClick={() => {
-                                  setSelectedArtifact(artifact);
-                                  addToHistory(artifact.id);
-                                }}
-                              />
-                            </div>
-                          ))}
+                          <div className="columns-2 gap-1.5">
+                            {editorRecommendedArtifacts.map(artifact => (
+                              <div key={`editor-artifact-${artifact.id}`} className="break-inside-avoid mb-1.5">
+                                <ArtifactCard
+                                  artifact={artifact}
+                                  isFavorite={favorites.includes(artifact.id)}
+                                  onFavoriteClick={() => toggleFavorite(artifact.id)}
+                                  onClick={() => {
+                                    setSelectedArtifact(artifact);
+                                    addToHistory(artifact.id);
+                                  }}
+                                />
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       {/* 4. Discovery Section */}
                       <div className="space-y-4">
@@ -1727,6 +1816,14 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
                             <p className="break-words text-xs leading-relaxed text-gray-500">
                               {activeMuseum.description}
                             </p>
+                            <button
+                              type="button"
+                              onClick={() => openMuseumDetail(activeMuseum)}
+                              className="mt-2 inline-flex items-center gap-1 rounded-[5px] bg-primary px-3 py-2 text-[11px] font-bold text-white shadow-sm active:scale-[0.98]"
+                            >
+                              查看博物馆主页
+                              <ArrowRight size={13} />
+                            </button>
                           </div>
                         </div>
                       )}
@@ -2311,6 +2408,7 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
             setExploreTab={setExploreTab}
             setMuseumSubTab={setMuseumSubTab}
             setResourceView={setResourceView}
+            onMuseumClick={openMuseumDetail}
           />
         )}
 
@@ -2375,8 +2473,27 @@ export default function App({ initialTab = 'explore' }: { initialTab?: string })
               setSelectedArtifactLightboxUrl(null);
               setSelectedArtifact(a);
             }}
+            onMuseumClick={openArtifactMuseum}
             lightboxUrl={selectedArtifactLightboxUrl}
             setLightboxUrl={setSelectedArtifactLightboxUrl}
+          />
+        )}
+
+        {selectedMuseumId && (
+          <MuseumDetail
+            key={`museum-detail-${selectedMuseumId}`}
+            museumId={selectedMuseumId}
+            museum={selectedMuseum}
+            allArtifacts={artifactPool}
+            onClose={() => {
+              setSelectedMuseumId(null);
+              goBackOrNavigate("/home");
+            }}
+            onArtifactClick={(artifact) => {
+              setSelectedArtifactLightboxUrl(null);
+              setSelectedArtifact(artifact);
+              addToHistory(artifact.id);
+            }}
           />
         )}
       </AnimatePresence>

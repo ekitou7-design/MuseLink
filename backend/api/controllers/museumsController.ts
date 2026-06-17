@@ -114,7 +114,7 @@ function toCamelMuseum(row: Record<string, unknown>) {
     hasCover: Boolean(coverUrl(row)),
     displayCoverUrl: coverUrl(row),
     location: text(row.location),
-    imageUrl: text(row.image_url),
+    imageUrl: coverUrl(row),
     createdAt: text(row.created_at),
     updatedAt: text(row.updated_at),
   };
@@ -144,6 +144,11 @@ function toArtifactSummary(row: ArtifactRow) {
     shortIntro: row.short_intro || "",
     description: row.description,
     imageUrl: row.image_url,
+    image_url: row.image_url,
+    localImageUrl: row.local_image_url || "",
+    local_image_url: row.local_image_url || "",
+    localThumbnailUrl: row.local_thumbnail_url || "",
+    local_thumbnail_url: row.local_thumbnail_url || "",
     tags: row.tags || [],
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -264,7 +269,7 @@ export async function getMuseum(req: Request, res: Response) {
   const aliases = await db.query(`select * from museum_aliases where museum_id = $1 order by confidence desc, alias asc`, [id]);
   const artifacts = await db.query<ArtifactRow>(
     `select a.id, a.name, a.dynasty, a.museum_id, m.name as museum, a.category, a.short_intro,
-            a.description, a.image_url, a.tags, a.created_at, a.updated_at
+            a.description, a.image_url, a.local_image_url, a.local_thumbnail_url, a.tags, a.created_at, a.updated_at
      from artifacts a
      join museums m on m.id = a.museum_id
      where a.museum_id = $1
@@ -367,7 +372,7 @@ async function persistMuseumCoverBuffer(id: number, buffer: Buffer, imageSource:
   await fs.mkdir(thumbsDir, { recursive: true });
   const image = sharp(buffer).rotate();
   await image.clone().jpeg({ quality: 92 }).toFile(imagePath);
-  await image.clone().resize({ width: 640, height: 420, fit: "cover" }).jpeg({ quality: 84 }).toFile(thumbPath);
+  await image.clone().resize({ width: 640, height: 360, fit: "cover" }).jpeg({ quality: 84 }).toFile(thumbPath);
   await fs.rm(legacyThumbPath, { force: true }).catch(() => undefined);
 
   const result = await db.query<MuseumRow>(
@@ -532,7 +537,7 @@ export async function listMuseumArtifacts(req: Request, res: Response) {
   }
   const rows = await db.query<ArtifactRow>(
     `select a.id, a.name, a.dynasty, a.museum_id, m.name as museum, a.category, a.short_intro,
-            a.description, a.image_url, a.tags, a.created_at, a.updated_at
+            a.description, a.image_url, a.local_image_url, a.local_thumbnail_url, a.tags, a.created_at, a.updated_at
      from artifacts a
      join museums m on m.id = a.museum_id
      where ${where.join(" and ")}

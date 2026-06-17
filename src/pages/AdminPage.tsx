@@ -56,6 +56,23 @@ type RowImageSelection = {
   previewUrl: string;
 };
 
+type EditorRecommendationDraft = {
+  isEditorRecommended: boolean;
+  editorRecommendationOrder: number;
+};
+
+type CropTarget =
+  | { kind: "artifact-form"; file: File; previewUrl: string; aspect: number; title: string }
+  | { kind: "artifact-row"; artifactId: string; artifactName: string; file: File; previewUrl: string; aspect: number; title: string }
+  | { kind: "museum-cover"; file: File; previewUrl: string; aspect: number; title: string };
+
+type CropBox = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 type ArtifactFormState = {
   id?: string;
   name: string;
@@ -194,6 +211,15 @@ function fieldText(record: unknown, keys: string[]) {
     if (value) return value;
   }
   return "";
+}
+
+function artifactIsEditorRecommended(artifact: Artifact) {
+  return Boolean(artifact.isEditorRecommended ?? artifact.is_editor_recommended);
+}
+
+function artifactEditorRecommendationOrder(artifact: Artifact) {
+  const value = Number(artifact.editorRecommendationOrder ?? artifact.editor_recommendation_order ?? 0);
+  return Number.isFinite(value) ? value : 0;
 }
 
 function isPlaceholderImageUrl(value: unknown) {
@@ -476,6 +502,252 @@ function aiRagMessage(sync?: AiRagSyncSummary) {
   return `文物已入库；AI/RAG 文档已生成；关系候选已更新；当前 AI/RAG 覆盖率：${sync.coverage}`;
 }
 
+const ARTIFACT_CARD_CROP_ASPECT = 4 / 3;
+const MUSEUM_CARD_CROP_ASPECT = 16 / 9;
+const CROP_HELP_TEXT = "裁剪框内区域 = 前端卡片中可见区域，框外部分可能不会显示。";
+
+function cropOutputSize(aspect: number) {
+  return Math.abs(aspect - MUSEUM_CARD_CROP_ASPECT) < 0.01
+    ? { width: 1600, height: 900 }
+    : { width: 1200, height: 900 };
+}
+
+function clampCropBox(box: CropBox, bounds: { width: number; height: number }) {
+  const width = Math.min(box.width, bounds.width);
+  const height = Math.min(box.height, bounds.height);
+  return {
+    width,
+    height,
+    x: Math.min(Math.max(0, box.x), Math.max(0, bounds.width - width)),
+    y: Math.min(Math.max(0, box.y), Math.max(0, bounds.height - height)),
+  };
+}
+
+function initialCropBox(bounds: { width: number; height: number }, aspect: number, scale = 0.84): CropBox {
+  let width = bounds.width * scale;
+  let height = width / aspect;
+  if (height > bounds.height * scale) {
+    height = bounds.height * scale;
+    width = height * aspect;
+  }
+  return {
+    x: (bounds.width - width) / 2,
+    y: (bounds.height - height) / 2,
+    width,
+    height,
+  };
+}
+
+function ImageCropperPanel({
+  request,
+  onCancel,
+  onConfirm,
+}: {
+  request: CropTarget;
+  onCancel: () => void;
+  onConfirm: (file: File) => void;
+}) {
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const [box, setBox] = useState<CropBox | null>(null);
+  const [imageBounds, setImageBounds] = useState({ width: 0, height: 0 });
+  const [cropScale, setCropScale] = useState(84);
+  const [dragStart, setDragStart] = useState<{
+    pointerId: number;
+    pointerX: number;
+    pointerY: number;
+    box: CropBox;
+  } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const resetCrop = () => {
+    const image = imgRef.current;
+    if (!image) return;
+    const width = image.clientWidth;
+    const height = image.clientHeight;
+    if (!width || !height) return;
+    const bounds = { width, height };
+    setImageBounds(bounds);
+    setBox(initialCropBox(bounds, request.aspect, cropScale / 100));
+  };
+
+  useEffect(() => {
+    setBox(null);
+    setCropScale(84);
+    setError("");
+  }, [request.previewUrl]);
+
+  useEffect(() => {
+    if (!imageBounds.width || !imageBounds.height) return;
+    const centered = initialCropBox(imageBounds, request.aspect, cropScale / 100);
+    setBox((current) => {
+      if (!current) return centered;
+      const width = centered.width;
+      const height = centered.height;
+      return clampCropBox(
+        {
+          x: current.x + (current.width - width) / 2,
+          y: current.y + (current.height - height) / 2,
+          width,
+          height,
+        },
+        imageBounds,
+      );
+    });
+  }, [cropScale, imageBounds, request.aspect]);
+
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!box) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragStart({
+      pointerId: event.pointerId,
+      pointerX: event.clientX,
+      pointerY: event.clientY,
+      box,
+    });
+  };
+
+  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragStart || !box) return;
+    const next = clampCropBox(
+      {
+        ...dragStart.box,
+        x: dragStart.box.x + event.clientX - dragStart.pointerX,
+        y: dragStart.box.y + event.clientY - dragStart.pointerY,
+      },
+      imageBounds,
+    );
+    setBox(next);
+  };
+
+  const onPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStart?.pointerId === event.pointerId) setDragStart(null);
+  };
+
+  const confirmCrop = async () => {
+    const image = imgRef.current;
+    if (!image || !box || !imageBounds.width || !imageBounds.height) return;
+    setSaving(true);
+    setError("");
+    try {
+      const output = cropOutputSize(request.aspect);
+      const canvas = document.createElement("canvas");
+      canvas.width = output.width;
+      canvas.height = output.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("当前浏览器不支持图片裁剪。");
+      const sourceX = (box.x / imageBounds.width) * image.naturalWidth;
+      const sourceY = (box.y / imageBounds.height) * image.naturalHeight;
+      const sourceWidth = (box.width / imageBounds.width) * image.naturalWidth;
+      const sourceHeight = (box.height / imageBounds.height) * image.naturalHeight;
+      ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, output.width, output.height);
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.92));
+      if (!blob) throw new Error("裁剪图片生成失败。");
+      const originalName = request.file.name.replace(/\.[^.]+$/, "");
+      onConfirm(new File([blob], `${originalName}-card-crop.jpg`, { type: "image/jpeg" }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-gray-950/70 p-4">
+      <div className="max-h-[92vh] w-full max-w-5xl overflow-auto rounded-3xl bg-white p-5 shadow-2xl">
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h2 className="text-lg font-black text-gray-900">{request.title}</h2>
+            <div className="mt-1 text-sm font-bold text-amber-800">{CROP_HELP_TEXT}</div>
+          </div>
+          <div className="rounded-full bg-gray-100 px-3 py-1 text-xs font-black text-gray-600">
+            比例 {Math.abs(request.aspect - MUSEUM_CARD_CROP_ASPECT) < 0.01 ? "16:9" : "4:3"}
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+          <div className="overflow-auto rounded-2xl bg-gray-950 p-3">
+            <div className="relative mx-auto w-fit max-w-full">
+              <img
+                ref={imgRef}
+                src={request.previewUrl}
+                alt=""
+                draggable={false}
+                onLoad={resetCrop}
+                className="block max-h-[58vh] max-w-full select-none"
+              />
+              {box && (
+                <div className="absolute inset-0">
+                  <div className="absolute left-0 right-0 top-0 bg-gray-950/55" style={{ height: box.y }} />
+                  <div className="absolute left-0 bg-gray-950/55" style={{ top: box.y, width: box.x, height: box.height }} />
+                  <div
+                    className="absolute right-0 bg-gray-950/55"
+                    style={{ top: box.y, left: box.x + box.width, height: box.height }}
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gray-950/55" style={{ top: box.y + box.height }} />
+                  <div
+                    role="presentation"
+                    onPointerDown={onPointerDown}
+                    onPointerMove={onPointerMove}
+                    onPointerUp={onPointerUp}
+                    onPointerCancel={onPointerUp}
+                    className="absolute cursor-move border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.35)]"
+                    style={{ left: box.x, top: box.y, width: box.width, height: box.height }}
+                  >
+                    <div className="h-full w-full bg-white/5" />
+                    <div className="absolute left-1/3 top-0 h-full w-px bg-white/55" />
+                    <div className="absolute left-2/3 top-0 h-full w-px bg-white/55" />
+                    <div className="absolute left-0 top-1/3 h-px w-full bg-white/55" />
+                    <div className="absolute left-0 top-2/3 h-px w-full bg-white/55" />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-4 rounded-2xl bg-gray-50 p-4">
+            <div>
+              <label className="text-xs font-black text-gray-500" htmlFor="crop-scale">
+                裁剪框大小
+              </label>
+              <input
+                id="crop-scale"
+                type="range"
+                min={38}
+                max={96}
+                value={cropScale}
+                onChange={(event) => setCropScale(Number(event.target.value))}
+                className="mt-2 w-full"
+              />
+            </div>
+            <div className="rounded-2xl bg-white p-3 text-xs leading-relaxed text-gray-500">
+              拖动白色裁剪框调整位置；框内内容会保存为本地图片，并同步生成缩略图。
+            </div>
+            <div className="text-xs text-gray-500">
+              <div className="truncate font-bold text-gray-800">{request.file.name}</div>
+              <div className="mt-1">{formatFileSize(request.file.size)}</div>
+            </div>
+            {error && <div className="rounded-2xl bg-rose-50 p-3 text-xs font-bold text-rose-700">{error}</div>}
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                disabled={saving || !box}
+                onClick={confirmCrop}
+                className="rounded-xl bg-gray-900 px-4 py-3 text-xs font-black text-white disabled:opacity-50"
+              >
+                {saving ? "正在生成..." : "使用裁剪结果"}
+              </button>
+              <button type="button" onClick={onCancel} className="rounded-xl bg-white px-4 py-3 text-xs font-black text-gray-700">
+                取消
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function AdminPage() {
   const [tab, setTab] = useState<AdminTab>("artifacts");
   const [users, setUsers] = useState<AdminUserSummary[]>([]);
@@ -500,6 +772,7 @@ export function AdminPage() {
   const [museumArtifactQuery, setMuseumArtifactQuery] = useState("");
   const [newMuseumAlias, setNewMuseumAlias] = useState("");
   const [museumCoverFile, setMuseumCoverFile] = useState<File | null>(null);
+  const [museumCoverPreviewUrl, setMuseumCoverPreviewUrl] = useState<string | null>(null);
   const [museumCoverUrlToDownload, setMuseumCoverUrlToDownload] = useState("");
   const [downloadingMuseumCoverUrl, setDownloadingMuseumCoverUrl] = useState(false);
   const [museumMessage, setMuseumMessage] = useState<string | null>(null);
@@ -507,23 +780,142 @@ export function AdminPage() {
   const [importText, setImportText] = useState("");
   const [importResult, setImportResult] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFilePreviewUrl, setImageFilePreviewUrl] = useState<string | null>(null);
   const [imageUrlToDownload, setImageUrlToDownload] = useState("");
   const [imageUploadMessage, setImageUploadMessage] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [downloadingImageUrl, setDownloadingImageUrl] = useState(false);
+  const [cropTarget, setCropTarget] = useState<CropTarget | null>(null);
   const [rowImageSelections, setRowImageSelections] = useState<Record<string, RowImageSelection>>({});
   const [rowImageUrls, setRowImageUrls] = useState<Record<string, string>>({});
   const [rowUploadingIds, setRowUploadingIds] = useState<Record<string, boolean>>({});
   const [rowDownloadingIds, setRowDownloadingIds] = useState<Record<string, boolean>>({});
   const [rowImageErrors, setRowImageErrors] = useState<Record<string, string>>({});
+  const [editorRecommendationDrafts, setEditorRecommendationDrafts] = useState<Record<string, EditorRecommendationDraft>>({});
+  const [editorRecommendationSavingIds, setEditorRecommendationSavingIds] = useState<Record<string, boolean>>({});
   const [failedImageIds, setFailedImageIds] = useState<Record<string, boolean>>({});
   const [localImageFileStatuses, setLocalImageFileStatuses] = useState<Record<string, ArtifactLocalImageFileStatus>>({});
   const [adminTokenInput, setAdminTokenInput] = useState(() => getAuthToken() || "");
   const rowImageSelectionsRef = useRef(rowImageSelections);
+  const imageFilePreviewUrlRef = useRef<string | null>(null);
+  const museumCoverPreviewUrlRef = useRef<string | null>(null);
+  const cropTargetRef = useRef<CropTarget | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [forbidden, setForbidden] = useState(false);
+
+  const clearArtifactImageFile = () => {
+    if (imageFilePreviewUrlRef.current) URL.revokeObjectURL(imageFilePreviewUrlRef.current);
+    imageFilePreviewUrlRef.current = null;
+    setImageFile(null);
+    setImageFilePreviewUrl(null);
+  };
+
+  const setArtifactImageFileSelection = (file: File, previewUrl: string) => {
+    if (imageFilePreviewUrlRef.current) URL.revokeObjectURL(imageFilePreviewUrlRef.current);
+    imageFilePreviewUrlRef.current = previewUrl;
+    setImageFile(file);
+    setImageFilePreviewUrl(previewUrl);
+  };
+
+  const clearMuseumCoverFile = () => {
+    if (museumCoverPreviewUrlRef.current) URL.revokeObjectURL(museumCoverPreviewUrlRef.current);
+    museumCoverPreviewUrlRef.current = null;
+    setMuseumCoverFile(null);
+    setMuseumCoverPreviewUrl(null);
+  };
+
+  const setMuseumCoverFileSelection = (file: File, previewUrl: string) => {
+    if (museumCoverPreviewUrlRef.current) URL.revokeObjectURL(museumCoverPreviewUrlRef.current);
+    museumCoverPreviewUrlRef.current = previewUrl;
+    setMuseumCoverFile(file);
+    setMuseumCoverPreviewUrl(previewUrl);
+  };
+
+  const closeCropTarget = () => {
+    if (cropTargetRef.current) URL.revokeObjectURL(cropTargetRef.current.previewUrl);
+    cropTargetRef.current = null;
+    setCropTarget(null);
+  };
+
+  const openCropTarget = (target: CropTarget) => {
+    closeCropTarget();
+    cropTargetRef.current = target;
+    setCropTarget(target);
+  };
+
+  const openArtifactCrop = (file: File, title: string, artifact?: Artifact) => {
+    const validationError = validateArtifactImageFile(file);
+    if (validationError) {
+      if (artifact) {
+        setRowImageErrors((current) => ({ ...current, [String(artifact.id)]: validationError }));
+      } else {
+        setError(validationError);
+      }
+      return;
+    }
+
+    const base = {
+      file,
+      previewUrl: URL.createObjectURL(file),
+      aspect: ARTIFACT_CARD_CROP_ASPECT,
+      title,
+    };
+    if (artifact) {
+      openCropTarget({
+        ...base,
+        kind: "artifact-row",
+        artifactId: String(artifact.id),
+        artifactName: artifact.name || String(artifact.id),
+      });
+      return;
+    }
+    openCropTarget({ ...base, kind: "artifact-form" });
+  };
+
+  const openMuseumCoverCrop = (file: File) => {
+    const validationError = validateArtifactImageFile(file);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    openCropTarget({
+      kind: "museum-cover",
+      file,
+      previewUrl: URL.createObjectURL(file),
+      aspect: MUSEUM_CARD_CROP_ASPECT,
+      title: "裁剪博物馆卡片封面",
+    });
+  };
+
+  const onConfirmCrop = (file: File) => {
+    const target = cropTargetRef.current;
+    if (!target) return;
+    const previewUrl = URL.createObjectURL(file);
+
+    if (target.kind === "artifact-form") {
+      setArtifactImageFileSelection(file, previewUrl);
+      setImageUploadMessage("裁剪预览已生成，点击“保存裁剪图并同步”后才会写入本地图片和缩略图。");
+    }
+    if (target.kind === "artifact-row") {
+      setRowImageSelections((current) => {
+        const existing = current[target.artifactId];
+        if (existing) URL.revokeObjectURL(existing.previewUrl);
+        return {
+          ...current,
+          [target.artifactId]: { file, previewUrl },
+        };
+      });
+      setRowImageErrors((current) => ({ ...current, [target.artifactId]: "" }));
+    }
+    if (target.kind === "museum-cover") {
+      setMuseumCoverFileSelection(file, previewUrl);
+      setMuseumMessage("裁剪预览已生成，点击“保存裁剪封面”后才会写入本地图片和缩略图。");
+    }
+
+    closeCropTarget();
+  };
 
   const loadArtifacts = async () => {
     const [data, imageStatusData] = await Promise.all([
@@ -628,6 +1020,10 @@ export function AdminPage() {
   }, [rowImageSelections]);
 
   useEffect(() => {
+    cropTargetRef.current = cropTarget;
+  }, [cropTarget]);
+
+  useEffect(() => {
     if (loading || tab !== "museums") return;
     const handle = window.setTimeout(() => {
       loadMuseums().catch((e) => setError(e instanceof Error ? e.message : String(e)));
@@ -638,6 +1034,9 @@ export function AdminPage() {
   useEffect(() => {
     return () => {
       Object.values(rowImageSelectionsRef.current).forEach((selection) => URL.revokeObjectURL(selection.previewUrl));
+      if (imageFilePreviewUrlRef.current) URL.revokeObjectURL(imageFilePreviewUrlRef.current);
+      if (museumCoverPreviewUrlRef.current) URL.revokeObjectURL(museumCoverPreviewUrlRef.current);
+      if (cropTargetRef.current) URL.revokeObjectURL(cropTargetRef.current.previewUrl);
     };
   }, []);
 
@@ -860,7 +1259,7 @@ export function AdminPage() {
       const localImageUrl = String(data.localImageUrl || data.originalPath || "");
       const localThumbnailUrl = String(data.localThumbnailUrl || data.thumbnailPath || "");
       setForm((current) => ({ ...current, imageUrl: localImageUrl || current.imageUrl }));
-      setImageFile(null);
+      clearArtifactImageFile();
       const syncMessage = aiRagMessage(data.aiRagSync);
       setImageUploadMessage(`图片已上传：${localImageUrl || "-"}，缩略图：${localThumbnailUrl || "-"}。${syncMessage}`);
       await loadArtifacts();
@@ -937,27 +1336,84 @@ export function AdminPage() {
     setImageUploadMessage("管理员 token 已保存。");
   };
 
+  const getEditorRecommendationDraft = (artifact: Artifact): EditorRecommendationDraft => {
+    const artifactId = String(artifact.id);
+    return editorRecommendationDrafts[artifactId] || {
+      isEditorRecommended: artifactIsEditorRecommended(artifact),
+      editorRecommendationOrder: artifactEditorRecommendationOrder(artifact),
+    };
+  };
+
+  const updateEditorRecommendationDraft = (
+    artifact: Artifact,
+    patch: Partial<EditorRecommendationDraft>,
+  ) => {
+    const artifactId = String(artifact.id);
+    setEditorRecommendationDrafts((current) => ({
+      ...current,
+      [artifactId]: {
+        ...(current[artifactId] || {
+          isEditorRecommended: artifactIsEditorRecommended(artifact),
+          editorRecommendationOrder: artifactEditorRecommendationOrder(artifact),
+        }),
+        ...patch,
+      },
+    }));
+  };
+
+  const onSaveEditorRecommendation = async (artifact: Artifact) => {
+    const artifactId = String(artifact.id);
+    const draft = getEditorRecommendationDraft(artifact);
+
+    setEditorRecommendationSavingIds((current) => ({ ...current, [artifactId]: true }));
+    setError(null);
+    setImageUploadMessage(null);
+
+    try {
+      const data = await apiFetch<{ artifact?: Artifact }>(
+        `/api/admin/artifacts/${encodeURIComponent(artifactId)}/editor-recommendation`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            isEditorRecommended: draft.isEditorRecommended,
+            editorRecommendationOrder: draft.editorRecommendationOrder,
+          }),
+        },
+      );
+      if (!data.artifact) throw new Error("接口没有返回更新后的文物。");
+      setArtifacts((current) => current.map((item) => String(item.id) === artifactId ? data.artifact! : item));
+      setEditorRecommendationDrafts((current) => {
+        const next = { ...current };
+        delete next[artifactId];
+        return next;
+      });
+      setImageUploadMessage(`「${data.artifact.name || artifact.name || artifactId}」首页推荐设置已保存。`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setEditorRecommendationSavingIds((current) => ({ ...current, [artifactId]: false }));
+    }
+  };
+
   const onSelectRowImage = (artifactId: string, file: File | null) => {
     setRowImageErrors((current) => ({ ...current, [artifactId]: "" }));
-    setRowImageSelections((current) => {
-      const existing = current[artifactId];
-      if (existing) URL.revokeObjectURL(existing.previewUrl);
-      const next = { ...current };
-      delete next[artifactId];
-      if (!file) return next;
-
-      const validationError = validateArtifactImageFile(file);
-      if (validationError) {
-        setRowImageErrors((errors) => ({ ...errors, [artifactId]: validationError }));
+    if (!file) {
+      setRowImageSelections((current) => {
+        const existing = current[artifactId];
+        if (existing) URL.revokeObjectURL(existing.previewUrl);
+        const next = { ...current };
+        delete next[artifactId];
         return next;
-      }
+      });
+      return;
+    }
 
-      next[artifactId] = {
-        file,
-        previewUrl: URL.createObjectURL(file),
-      };
-      return next;
-    });
+    const artifact = artifacts.find((item) => String(item.id) === artifactId);
+    if (!artifact) {
+      setRowImageErrors((current) => ({ ...current, [artifactId]: "未找到对应文物。" }));
+      return;
+    }
+    openArtifactCrop(file, `裁剪文物卡片图片：${artifact.name || artifactId}`, artifact);
   };
 
   const onUploadRowImage = async (artifact: Artifact) => {
@@ -1077,7 +1533,7 @@ export function AdminPage() {
   const onEditArtifact = (artifact: Artifact) => {
     setTab("artifacts");
     setForm(formFromArtifact(artifact));
-    setImageFile(null);
+    clearArtifactImageFile();
     setImageUrlToDownload("");
     setImageUploadMessage(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1194,7 +1650,7 @@ export function AdminPage() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "上传失败");
-      setMuseumCoverFile(null);
+      clearMuseumCoverFile();
       setMuseumMessage(`博物馆封面已上传。${aiRagMessage(data.aiRagSync)}`);
       await loadMuseumCatalog();
       await loadMuseums();
@@ -1280,7 +1736,7 @@ export function AdminPage() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "删除失败");
-      setMuseumCoverFile(null);
+      clearMuseumCoverFile();
       setMuseumMessage(`博物馆封面已删除。${aiRagMessage(data.aiRagSync)}`);
       await loadMuseumCatalog();
       await loadMuseums();
@@ -1390,7 +1846,14 @@ export function AdminPage() {
                   <div className="mt-1 text-xs text-gray-500">{form.id ? `ID ${form.id}` : "写入统一 artifacts 表"}</div>
                 </div>
                 {form.id && (
-                  <button type="button" onClick={() => setForm(emptyForm)} className="rounded-xl bg-gray-100 px-3 py-2 text-xs font-bold text-gray-700">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setForm(emptyForm);
+                      clearArtifactImageFile();
+                    }}
+                    className="rounded-xl bg-gray-100 px-3 py-2 text-xs font-bold text-gray-700"
+                  >
                     取消编辑
                   </button>
                 )}
@@ -1409,20 +1872,35 @@ export function AdminPage() {
                 {form.id && (
                   <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4">
                     <div className="text-sm font-black text-gray-900">上传本地图片</div>
-                    <div className="mt-1 text-xs text-gray-500">支持 jpg/jpeg/png/webp，上传后会同步为前端优先展示图片。</div>
+                    <div className="mt-1 text-xs text-gray-500">支持 jpg/jpeg/png/webp，选择后先进入 4:3 卡片裁剪预览。</div>
+                    <div className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">{CROP_HELP_TEXT}</div>
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/webp"
-                      onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        e.currentTarget.value = "";
+                        if (file) openArtifactCrop(file, "裁剪文物卡片图片");
+                      }}
                       className="mt-3 block w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-2 file:text-xs file:font-black file:text-white"
                     />
+                    {imageFile && imageFilePreviewUrl && (
+                      <div className="mt-3 flex gap-3 rounded-2xl bg-white p-3">
+                        <img src={imageFilePreviewUrl} alt="" className="aspect-[4/3] w-24 rounded-xl bg-gray-100 object-cover" />
+                        <div className="min-w-0 text-xs text-gray-500">
+                          <div className="truncate font-bold text-gray-800">{imageFile.name}</div>
+                          <div className="mt-1">{formatFileSize(imageFile.size)}</div>
+                          <div className="mt-1 font-bold text-amber-800">裁剪结果尚未保存</div>
+                        </div>
+                      </div>
+                    )}
                     <button
                       type="button"
                       disabled={uploadingImage || !imageFile}
                       onClick={onUploadArtifactImage}
                       className="mt-3 rounded-xl bg-gray-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50"
                     >
-                      {uploadingImage ? "上传中..." : "上传并同步图片"}
+                      {uploadingImage ? "保存中..." : "保存裁剪图并同步"}
                     </button>
                     <div className="mt-4 grid gap-2">
                       <input
@@ -1557,6 +2035,7 @@ export function AdminPage() {
                       <th className="px-5 py-3 text-left font-bold">文物</th>
                       <th className="px-5 py-3 text-left font-bold">馆藏/时代</th>
                       <th className="px-5 py-3 text-left font-bold">图片状态</th>
+                      <th className="px-5 py-3 text-left font-bold">首页推荐</th>
                       <th className="px-5 py-3 text-left font-bold">补图</th>
                       <th className="px-5 py-3 text-right font-bold">操作</th>
                     </tr>
@@ -1574,7 +2053,7 @@ export function AdminPage() {
                       const rowHasCustomUrl = Object.prototype.hasOwnProperty.call(rowImageUrls, artifactId);
                       const rowDownloadUrl = rowHasCustomUrl ? rowImageUrls[artifactId] : suggestedDownloadUrl;
                       const showInlineUploader = imageStatus.status !== "local-complete";
-                      const uploadButtonLabel = imageStatus.status === "local-broken" ? "重新上传" : "上传图片";
+                      const uploadButtonLabel = "保存裁剪图";
                       const downloadButtonLabel = imageStatus.status === "local-broken" ? "从外链下载补图" : "下载补图";
                       const rowHint = imageStatus.status === "remote-only"
                         ? "当前只有外链图，可直接下载成本地图。"
@@ -1583,6 +2062,8 @@ export function AdminPage() {
                           : imageStatus.hasMissingLocalFile
                             ? "本地图片文件不存在，请重新上传或从外链补图。"
                             : "图片加载失败，请重新上传或从外链补图。";
+                      const editorRecommendationDraft = getEditorRecommendationDraft(artifact);
+                      const isSavingEditorRecommendation = Boolean(editorRecommendationSavingIds[artifactId]);
 
                       return (
                       <tr key={artifact.id} className="border-t border-gray-100">
@@ -1621,17 +2102,56 @@ export function AdminPage() {
                           </div>
                         </td>
                         <td className="px-5 py-4 align-top">
+                          <div className="min-w-44 space-y-3">
+                            <label className="inline-flex items-center gap-2 text-xs font-black text-gray-700">
+                              <input
+                                type="checkbox"
+                                checked={editorRecommendationDraft.isEditorRecommended}
+                                onChange={(event) => updateEditorRecommendationDraft(artifact, { isEditorRecommended: event.target.checked })}
+                                className="h-4 w-4 rounded border-gray-300 text-amber-800 focus:ring-amber-500"
+                              />
+                              首页推荐
+                            </label>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-gray-500">排序</span>
+                              <input
+                                type="number"
+                                min={0}
+                                max={9999}
+                                value={editorRecommendationDraft.editorRecommendationOrder}
+                                disabled={!editorRecommendationDraft.isEditorRecommended}
+                                onChange={(event) => updateEditorRecommendationDraft(artifact, {
+                                  editorRecommendationOrder: Math.max(0, Math.min(9999, Number(event.target.value) || 0)),
+                                })}
+                                className="w-20 rounded-xl border border-gray-200 px-3 py-2 text-xs outline-none focus:border-amber-500 disabled:bg-gray-50 disabled:text-gray-400"
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              disabled={isSavingEditorRecommendation}
+                              onClick={() => onSaveEditorRecommendation(artifact)}
+                              className="rounded-xl bg-gray-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50"
+                            >
+                              {isSavingEditorRecommendation ? "保存中..." : "保存推荐"}
+                            </button>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4 align-top">
                           {showInlineUploader ? (
                             <div className="min-w-64 space-y-3">
                               <div className="text-xs font-bold text-gray-500">{rowHint}</div>
                               <div className="flex flex-wrap items-center gap-2">
                                 <label className="cursor-pointer rounded-xl bg-gray-100 px-3 py-2 text-xs font-black text-gray-700">
-                                  选择图片
+                                  选择并裁剪
                                   <input
                                     type="file"
                                     accept="image/jpeg,image/png,image/webp"
                                     className="hidden"
-                                    onChange={(e) => onSelectRowImage(artifactId, e.target.files?.[0] || null)}
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0] || null;
+                                      e.currentTarget.value = "";
+                                      onSelectRowImage(artifactId, file);
+                                    }}
                                   />
                                 </label>
                                 <button
@@ -1661,11 +2181,11 @@ export function AdminPage() {
                               </div>
                               {rowSelection && (
                                 <div className="flex gap-3 rounded-2xl bg-gray-50 p-3">
-                                  <img src={rowSelection.previewUrl} alt="" className="h-16 w-16 rounded-xl bg-white object-cover" />
+                                  <img src={rowSelection.previewUrl} alt="" className="aspect-[4/3] w-20 rounded-xl bg-white object-cover" />
                                   <div className="min-w-0 text-xs text-gray-500">
                                     <div className="truncate font-bold text-gray-800">{rowSelection.file.name}</div>
                                     <div className="mt-1">{formatFileSize(rowSelection.file.size)}</div>
-                                    <div className="mt-1">{rowSelection.file.type || "-"}</div>
+                                    <div className="mt-1 font-bold text-amber-800">裁剪结果尚未保存</div>
                                   </div>
                                 </div>
                               )}
@@ -1690,7 +2210,7 @@ export function AdminPage() {
                     })}
                     {filteredArtifacts.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="px-5 py-10 text-center text-sm text-gray-400">
+                        <td colSpan={6} className="px-5 py-10 text-center text-sm text-gray-400">
                           当前筛选下没有文物。
                         </td>
                       </tr>
@@ -1972,7 +2492,8 @@ export function AdminPage() {
 
                   <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4">
                     <div className="text-sm font-black text-gray-900">博物馆封面图上传 / 替换</div>
-                    <div className="mt-1 text-xs text-gray-500">当前博物馆 ID：{selectedMuseum.museum.id}</div>
+                    <div className="mt-1 text-xs text-gray-500">当前博物馆 ID：{selectedMuseum.museum.id}，选择后先进入 16:9 卡片裁剪预览。</div>
+                    <div className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">{CROP_HELP_TEXT}</div>
                     {museumCoverUrl(selectedMuseum.museum) ? (
                       <div className="mt-3 grid gap-3 md:grid-cols-2">
                         <div className="rounded-2xl border border-gray-100 bg-white p-3">
@@ -1993,10 +2514,29 @@ export function AdminPage() {
                     ) : (
                       <div className="mt-3 rounded-2xl bg-white p-4 text-sm font-bold text-gray-400">暂无封面图，可上传一张本地图片作为博物馆介绍图。</div>
                     )}
-                    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setMuseumCoverFile(e.target.files?.[0] || null)} className="mt-3 block w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-2 file:text-xs file:font-black file:text-white" />
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        e.currentTarget.value = "";
+                        if (file) openMuseumCoverCrop(file);
+                      }}
+                      className="mt-3 block w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-gray-900 file:px-3 file:py-2 file:text-xs file:font-black file:text-white"
+                    />
+                    {museumCoverFile && museumCoverPreviewUrl && (
+                      <div className="mt-3 flex gap-3 rounded-2xl bg-white p-3">
+                        <img src={museumCoverPreviewUrl} alt="" className="aspect-[16/9] w-32 rounded-xl bg-gray-100 object-cover" />
+                        <div className="min-w-0 text-xs text-gray-500">
+                          <div className="truncate font-bold text-gray-800">{museumCoverFile.name}</div>
+                          <div className="mt-1">{formatFileSize(museumCoverFile.size)}</div>
+                          <div className="mt-1 font-bold text-amber-800">裁剪结果尚未保存</div>
+                        </div>
+                      </div>
+                    )}
                     <div className="mt-3 flex flex-wrap gap-2">
                       <button type="button" disabled={saving || !museumCoverFile} onClick={onUploadMuseumCover} className="rounded-xl bg-gray-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50">
-                        上传 / 替换封面
+                        保存裁剪封面
                       </button>
                       <button type="button" disabled={saving || !museumCoverUrl(selectedMuseum.museum)} onClick={onDeleteMuseumCover} className="rounded-xl bg-rose-50 px-4 py-2 text-xs font-black text-rose-700 disabled:opacity-50">
                         删除封面
@@ -2177,6 +2717,13 @@ export function AdminPage() {
               </div>
             </div>
           </>
+        )}
+        {cropTarget && (
+          <ImageCropperPanel
+            request={cropTarget}
+            onCancel={closeCropTarget}
+            onConfirm={onConfirmCrop}
+          />
         )}
       </div>
     </div>

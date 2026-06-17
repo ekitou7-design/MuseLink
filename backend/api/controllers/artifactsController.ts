@@ -7,7 +7,12 @@ import { db } from "../db/client";
 import { downloadImageBuffer } from "../lib/imageDownloader";
 import { deleteAiRagForArtifact, syncAiRagForArtifact } from "../../ai-rag-data";
 import { searchRelics } from "../db/relicSearch";
-import { getArtifactFromDb, listArtifactsFromDb } from "../db/syncImportedArtifacts";
+import {
+  ensureArtifactEditorRecommendationColumns,
+  getArtifactFromDb,
+  listArtifactsFromDb,
+  listEditorRecommendedArtifactsFromDb,
+} from "../db/syncImportedArtifacts";
 import type { ArtifactAttributeRow } from "../models/types";
 import { ensureMuseumExists, ensureMuseumSchema } from "../../museum-normalizer";
 
@@ -484,9 +489,23 @@ function toArtifactDetail(row: Record<string, unknown>, attributes: ArtifactAttr
     description: text(row.description),
     sourceUrl,
     source_url: sourceUrl,
+    isEditorRecommended: Boolean(row.is_editor_recommended),
+    is_editor_recommended: Boolean(row.is_editor_recommended),
+    editorRecommendationOrder: Number(row.editor_recommendation_order || 0),
+    editor_recommendation_order: Number(row.editor_recommendation_order || 0),
     attributes: buildAttributeGroups(attributes, row),
     tags: normalizeTags(row.tags),
   };
+}
+
+export async function listEditorRecommendedArtifacts(req: Request, res: Response) {
+  try {
+    const limit = Math.min(Math.max(Number(req.query.limit || 6) || 6, 1), 24);
+    const artifacts = await listEditorRecommendedArtifactsFromDb(db, limit);
+    return res.json({ source: "database", total: artifacts.length, artifacts });
+  } catch (error) {
+    return res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+  }
 }
 
 export async function listArtifacts(req: Request, res: Response) {
@@ -665,6 +684,37 @@ export async function updateArtifact(req: Request, res: Response) {
     const artifact = await getArtifactFromDb(db, id);
     const aiRagSync = await safeSyncAiRagAfterArtifactChange(artifact);
     return res.json({ source: "database", artifact, aiRagSync });
+  } catch (error) {
+    return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+  }
+}
+
+export async function updateArtifactEditorRecommendation(req: Request, res: Response) {
+  try {
+    const id = String(req.params.id || "");
+    const existing = await getArtifactFromDb(db, id);
+    if (!existing) {
+      return res.status(404).json({ error: "Not found" });
+    }
+
+    await ensureArtifactEditorRecommendationColumns(db);
+    const isEditorRecommended = Boolean(req.body?.isEditorRecommended ?? req.body?.is_editor_recommended);
+    const orderRaw = Number(req.body?.editorRecommendationOrder ?? req.body?.editor_recommendation_order ?? 0);
+    const editorRecommendationOrder = Number.isFinite(orderRaw)
+      ? Math.max(0, Math.min(9999, Math.trunc(orderRaw)))
+      : 0;
+
+    await db.query(
+      `update artifacts
+       set is_editor_recommended=$2,
+           editor_recommendation_order=$3,
+           updated_at=now()
+       where id::text=$1`,
+      [id, isEditorRecommended, editorRecommendationOrder],
+    );
+
+    const artifact = await getArtifactFromDb(db, id);
+    return res.json({ source: "database", artifact });
   } catch (error) {
     return res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
   }

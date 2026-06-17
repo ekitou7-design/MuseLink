@@ -50,6 +50,8 @@ type ArtifactRow = {
   local_image_url?: string | null;
   local_thumbnail_url?: string | null;
   source_url?: string | null;
+  is_editor_recommended?: boolean | null;
+  editor_recommendation_order?: number | null;
   tags: string[] | null;
   created_at?: string;
   updated_at?: string;
@@ -390,6 +392,10 @@ function toArtifact(row: ArtifactRow, attributes: AttributeRow[] = []): Artifact
     image_url: imageUrl,
     sourceUrl,
     source_url: sourceUrl,
+    isEditorRecommended: Boolean(row.is_editor_recommended),
+    is_editor_recommended: Boolean(row.is_editor_recommended),
+    editorRecommendationOrder: Number(row.editor_recommendation_order || 0),
+    editor_recommendation_order: Number(row.editor_recommendation_order || 0),
     tags: normalizeTagsForArtifact(row.tags),
     attributes: Array.from(groups.entries())
       .map(([group, entry]) => ({
@@ -412,6 +418,8 @@ export async function listArtifactsFromDb(db: DbQuery, limit = 5000) {
   const localImageSelect = columns.has("local_image_url") ? "a.local_image_url" : "'' as local_image_url";
   const localThumbnailSelect = columns.has("local_thumbnail_url") ? "a.local_thumbnail_url" : "'' as local_thumbnail_url";
   const sourceUrlSelect = columns.has("source_url") ? "a.source_url" : "'' as source_url";
+  const editorRecommendedSelect = columns.has("is_editor_recommended") ? "a.is_editor_recommended" : "false as is_editor_recommended";
+  const editorOrderSelect = columns.has("editor_recommendation_order") ? "a.editor_recommendation_order" : "0 as editor_recommendation_order";
   const rawMuseumNameSelect = columns.has("raw_museum_name") ? "a.raw_museum_name" : "m.name as raw_museum_name";
   const canonicalMuseumNameSelect = columns.has("canonical_museum_name") ? "a.canonical_museum_name" : "m.name as canonical_museum_name";
   const rows = await db.query<ArtifactRow>(
@@ -421,7 +429,8 @@ export async function listArtifactsFromDb(db: DbQuery, limit = 5000) {
             m.cover_image_url as museum_cover_image_url, m.cover_thumbnail_url as museum_cover_thumbnail_url,
             m.local_cover_image_url as museum_local_cover_image_url, m.local_cover_thumbnail_url as museum_local_cover_thumbnail_url,
             m.storage_cover_image_url as museum_storage_cover_image_url, m.storage_cover_thumbnail_url as museum_storage_cover_thumbnail_url,
-            a.description, a.image_url, ${localImageSelect}, ${localThumbnailSelect}, ${sourceUrlSelect}, a.tags, a.created_at, a.updated_at
+            a.description, a.image_url, ${localImageSelect}, ${localThumbnailSelect}, ${sourceUrlSelect},
+            ${editorRecommendedSelect}, ${editorOrderSelect}, a.tags, a.created_at, a.updated_at
      from artifacts a
      join museums m on m.id = a.museum_id
      order by a.id asc
@@ -437,6 +446,8 @@ export async function getArtifactFromDb(db: DbQuery, id: string) {
   const localImageSelect = columns.has("local_image_url") ? "a.local_image_url" : "'' as local_image_url";
   const localThumbnailSelect = columns.has("local_thumbnail_url") ? "a.local_thumbnail_url" : "'' as local_thumbnail_url";
   const sourceUrlSelect = columns.has("source_url") ? "a.source_url" : "'' as source_url";
+  const editorRecommendedSelect = columns.has("is_editor_recommended") ? "a.is_editor_recommended" : "false as is_editor_recommended";
+  const editorOrderSelect = columns.has("editor_recommendation_order") ? "a.editor_recommendation_order" : "0 as editor_recommendation_order";
   const rawMuseumNameSelect = columns.has("raw_museum_name") ? "a.raw_museum_name" : "m.name as raw_museum_name";
   const canonicalMuseumNameSelect = columns.has("canonical_museum_name") ? "a.canonical_museum_name" : "m.name as canonical_museum_name";
   const rows = await db.query<ArtifactRow>(
@@ -446,7 +457,8 @@ export async function getArtifactFromDb(db: DbQuery, id: string) {
             m.cover_image_url as museum_cover_image_url, m.cover_thumbnail_url as museum_cover_thumbnail_url,
             m.local_cover_image_url as museum_local_cover_image_url, m.local_cover_thumbnail_url as museum_local_cover_thumbnail_url,
             m.storage_cover_image_url as museum_storage_cover_image_url, m.storage_cover_thumbnail_url as museum_storage_cover_thumbnail_url,
-            a.description, a.image_url, ${localImageSelect}, ${localThumbnailSelect}, ${sourceUrlSelect}, a.tags, a.created_at, a.updated_at
+            a.description, a.image_url, ${localImageSelect}, ${localThumbnailSelect}, ${sourceUrlSelect},
+            ${editorRecommendedSelect}, ${editorOrderSelect}, a.tags, a.created_at, a.updated_at
      from artifacts a
      join museums m on m.id = a.museum_id
      where a.id::text = $1
@@ -463,4 +475,38 @@ export async function getArtifactFromDb(db: DbQuery, id: string) {
     [row.id],
   );
   return toArtifact(row, attrs.rows);
+}
+
+export async function ensureArtifactEditorRecommendationColumns(db: DbQuery) {
+  await db.query(`alter table artifacts add column if not exists is_editor_recommended boolean not null default false`);
+  await db.query(`alter table artifacts add column if not exists editor_recommendation_order int not null default 0`);
+}
+
+export async function listEditorRecommendedArtifactsFromDb(db: DbQuery, limit = 6) {
+  await ensureMuseumSchema(db);
+  await ensureArtifactEditorRecommendationColumns(db);
+  const safeLimit = Math.min(Math.max(Number(limit) || 6, 1), 24);
+  const columns = await getArtifactColumns(db);
+  const localImageSelect = columns.has("local_image_url") ? "a.local_image_url" : "'' as local_image_url";
+  const localThumbnailSelect = columns.has("local_thumbnail_url") ? "a.local_thumbnail_url" : "'' as local_thumbnail_url";
+  const sourceUrlSelect = columns.has("source_url") ? "a.source_url" : "'' as source_url";
+  const rawMuseumNameSelect = columns.has("raw_museum_name") ? "a.raw_museum_name" : "m.name as raw_museum_name";
+  const canonicalMuseumNameSelect = columns.has("canonical_museum_name") ? "a.canonical_museum_name" : "m.name as canonical_museum_name";
+  const rows = await db.query<ArtifactRow>(
+    `select a.id, a.name, a.dynasty, a.museum_id, m.name as museum, a.category, a.short_intro,
+            ${rawMuseumNameSelect}, ${canonicalMuseumNameSelect},
+            m.type as museum_type, m.grade as museum_grade, m.province as museum_province, m.city as museum_city,
+            m.cover_image_url as museum_cover_image_url, m.cover_thumbnail_url as museum_cover_thumbnail_url,
+            m.local_cover_image_url as museum_local_cover_image_url, m.local_cover_thumbnail_url as museum_local_cover_thumbnail_url,
+            m.storage_cover_image_url as museum_storage_cover_image_url, m.storage_cover_thumbnail_url as museum_storage_cover_thumbnail_url,
+            a.description, a.image_url, ${localImageSelect}, ${localThumbnailSelect}, ${sourceUrlSelect},
+            a.is_editor_recommended, a.editor_recommendation_order, a.tags, a.created_at, a.updated_at
+     from artifacts a
+     join museums m on m.id = a.museum_id
+     where a.is_editor_recommended = true
+     order by a.editor_recommendation_order asc, a.updated_at desc, a.id asc
+     limit $1`,
+    [safeLimit],
+  );
+  return rows.rows.map((row) => toArtifact(row));
 }

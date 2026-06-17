@@ -35,3 +35,17 @@ export async function fetchMergedArtifacts({
   }
   return (await response.json()) as ArtifactsResponse;
 }
+
+export async function fetchEditorRecommendedArtifacts({
+  limit = 6,
+  signal,
+}: {
+  limit?: number;
+  signal?: AbortSignal;
+} = {}) {
+  const response = await fetch(apiUrl(`/api/editor-recommended-artifacts?limit=${limit}`), { signal });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch editor recommended artifacts: ${response.status}`);
+  }
+  return (await response.json()) as ArtifactsResponse;
+}

@@ -106,6 +106,8 @@ create table if not exists artifacts (
   local_image_url text not null default '',
   local_thumbnail_url text not null default '',
   source_url text not null default '',
+  is_editor_recommended boolean not null default false,
+  editor_recommendation_order int not null default 0,
   tags text[] not null default '{}'::text[],
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -116,6 +118,8 @@ alter table artifacts add column if not exists short_intro text not null default
 alter table artifacts add column if not exists local_image_url text not null default '';
 alter table artifacts add column if not exists local_thumbnail_url text not null default '';
 alter table artifacts add column if not exists source_url text not null default '';
+alter table artifacts add column if not exists is_editor_recommended boolean not null default false;
+alter table artifacts add column if not exists editor_recommendation_order int not null default 0;
 alter table artifacts add column if not exists updated_at timestamptz not null default now();
 alter table artifacts add column if not exists raw_museum_name text not null default '';
 alter table artifacts add column if not exists canonical_museum_name text not null default '';

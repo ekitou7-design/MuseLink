@@ -21,7 +21,11 @@ export type ArtifactRow = {
   short_intro?: string;
   description: string;
   image_url: string;
+  local_image_url?: string;
+  local_thumbnail_url?: string;
   source_url?: string;
+  is_editor_recommended?: boolean;
+  editor_recommendation_order?: number;
   tags: string[];
   created_at: string;
   updated_at?: string;

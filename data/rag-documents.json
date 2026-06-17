@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-16T14:43:35.086Z",
+  "updatedAt": "2026-06-17T02:03:16.632Z",
   "source": "full-artifacts-sync",
   "documents": [
     {
@@ -21,8 +21,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "暂无信息",
           "陶",
@@ -32,7 +32,7 @@
         "imageUrl": "/artifact-images/WW-辽-金灰陶罐形扑满-0.jpg",
         "localImageUrl": "/artifact-images/WW-辽-金灰陶罐形扑满-0.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-10",
@@ -52,8 +52,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "宝玉石",
@@ -63,7 +63,7 @@
         "imageUrl": "/artifact-images/WW-清狮钮青玉印-9.jpg",
         "localImageUrl": "/artifact-images/WW-清狮钮青玉印-9.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-100",
@@ -100,7 +100,7 @@
         "imageUrl": "/artifact-images/ncha-third-008.jpg",
         "localImageUrl": "/artifact-images/ncha-third-008.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-101",
@@ -137,7 +137,7 @@
         "imageUrl": "/artifact-images/101.jpg",
         "localImageUrl": "/artifact-images/101.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-102",
@@ -174,7 +174,7 @@
         "imageUrl": "/artifact-images/102.jpg",
         "localImageUrl": "/artifact-images/102.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-103",
@@ -211,7 +211,7 @@
         "imageUrl": "/artifact-images/103.jpg",
         "localImageUrl": "/artifact-images/103.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-104",
@@ -248,7 +248,7 @@
         "imageUrl": "/artifact-images/104.jpg",
         "localImageUrl": "/artifact-images/104.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-105",
@@ -285,7 +285,7 @@
         "imageUrl": "/artifact-images/ncha-third-013.jpg",
         "localImageUrl": "/artifact-images/ncha-third-013.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-106",
@@ -322,7 +322,7 @@
         "imageUrl": "/artifact-images/106.jpg",
         "localImageUrl": "/artifact-images/106.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-107",
@@ -359,7 +359,7 @@
         "imageUrl": "/artifact-images/ncha-third-015.jpg",
         "localImageUrl": "/artifact-images/ncha-third-015.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-108",
@@ -396,7 +396,7 @@
         "imageUrl": "/artifact-images/108.jpg",
         "localImageUrl": "/artifact-images/108.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-109",
@@ -432,7 +432,7 @@
         "imageUrl": "/artifact-images/109.jpg",
         "localImageUrl": "/artifact-images/109.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-11",
@@ -452,8 +452,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "宝玉石",
@@ -463,7 +463,7 @@
         "imageUrl": "/artifact-images/WW-民国浮雕造像巴林石印-10.jpg",
         "localImageUrl": "/artifact-images/WW-民国浮雕造像巴林石印-10.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-110",
@@ -499,7 +499,7 @@
         "imageUrl": "/artifact-images/110.jpg",
         "localImageUrl": "/artifact-images/110.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-111",
@@ -535,7 +535,7 @@
         "imageUrl": "/artifact-images/111.jpg",
         "localImageUrl": "/artifact-images/111.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-112",
@@ -571,7 +571,7 @@
         "imageUrl": "/artifact-images/112.jpg",
         "localImageUrl": "/artifact-images/112.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-113",
@@ -607,7 +607,7 @@
         "imageUrl": "/artifact-images/113.jpg",
         "localImageUrl": "/artifact-images/113.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-114",
@@ -643,7 +643,7 @@
         "imageUrl": "/artifact-images/114.jpg",
         "localImageUrl": "/artifact-images/114.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-115",
@@ -679,7 +679,7 @@
         "imageUrl": "/artifact-images/115.jpg",
         "localImageUrl": "/artifact-images/115.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-116",
@@ -711,7 +711,7 @@
         "imageUrl": "/artifact-images/ncha-third-024.jpg",
         "localImageUrl": "/artifact-images/ncha-third-024.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-117",
@@ -743,7 +743,7 @@
         "imageUrl": "/artifact-images/ncha-third-025.jpg",
         "localImageUrl": "/artifact-images/ncha-third-025.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-118",
@@ -779,7 +779,7 @@
         "imageUrl": "/artifact-images/ncha-third-026.jpg",
         "localImageUrl": "/artifact-images/ncha-third-026.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-119",
@@ -815,7 +815,7 @@
         "imageUrl": "/artifact-images/119.jpg",
         "localImageUrl": "/artifact-images/119.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-12",
@@ -835,8 +835,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "宝玉石",
@@ -846,7 +846,7 @@
         "imageUrl": "/artifact-images/WW-清寿山石印-11.jpg",
         "localImageUrl": "/artifact-images/WW-清寿山石印-11.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-120",
@@ -882,7 +882,7 @@
         "imageUrl": "/artifact-images/120.jpg",
         "localImageUrl": "/artifact-images/120.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-121",
@@ -918,7 +918,7 @@
         "imageUrl": "/artifact-images/121.jpg",
         "localImageUrl": "/artifact-images/121.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-122",
@@ -954,7 +954,7 @@
         "imageUrl": "/artifact-images/122.jpg",
         "localImageUrl": "/artifact-images/122.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-123",
@@ -990,7 +990,7 @@
         "imageUrl": "/artifact-images/ncha-third-031.jpg",
         "localImageUrl": "/artifact-images/ncha-third-031.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-124",
@@ -1026,7 +1026,7 @@
         "imageUrl": "/artifact-images/124.jpg",
         "localImageUrl": "/artifact-images/124.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-125",
@@ -1062,7 +1062,7 @@
         "imageUrl": "/artifact-images/125.jpg",
         "localImageUrl": "/artifact-images/125.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-126",
@@ -1098,7 +1098,7 @@
         "imageUrl": "/artifact-images/ncha-third-034.jpg",
         "localImageUrl": "/artifact-images/ncha-third-034.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-127",
@@ -1134,7 +1134,7 @@
         "imageUrl": "/artifact-images/127.jpg",
         "localImageUrl": "/artifact-images/127.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-128",
@@ -1170,7 +1170,7 @@
         "imageUrl": "/artifact-images/128.jpg",
         "localImageUrl": "/artifact-images/128.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-129",
@@ -1206,7 +1206,7 @@
         "imageUrl": "/artifact-images/129.jpg",
         "localImageUrl": "/artifact-images/129.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-13",
@@ -1226,8 +1226,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "生活用品类",
           "玻璃",
@@ -1237,7 +1237,7 @@
         "imageUrl": "/artifact-images/WW-清内画山水花鸟鼻烟壶-12.jpg",
         "localImageUrl": "/artifact-images/WW-清内画山水花鸟鼻烟壶-12.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-130",
@@ -1257,8 +1257,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "禁止出境展览文物",
           "国家一级文物",
@@ -1273,7 +1273,7 @@
         "imageUrl": "/artifact-images/130.jpg",
         "localImageUrl": "/artifact-images/130.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-131",
@@ -1309,7 +1309,7 @@
         "imageUrl": "/artifact-images/131.jpg",
         "localImageUrl": "/artifact-images/131.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-132",
@@ -1345,7 +1345,7 @@
         "imageUrl": "/artifact-images/132.jpg",
         "localImageUrl": "/artifact-images/132.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-133",
@@ -1381,7 +1381,7 @@
         "imageUrl": "/artifact-images/133.jpg",
         "localImageUrl": "/artifact-images/133.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-134",
@@ -1417,7 +1417,7 @@
         "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Celadon_Vase_with_Bowstring_Patterns%2C_Guan_Ware%2C_2016-09.jpg",
         "localImageUrl": ""
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-135",
@@ -1453,7 +1453,7 @@
         "imageUrl": "/artifact-images/135.jpg",
         "localImageUrl": "/artifact-images/135.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-136",
@@ -1489,7 +1489,7 @@
         "imageUrl": "/artifact-images/ncha-third-044.jpg",
         "localImageUrl": "/artifact-images/ncha-third-044.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-137",
@@ -1525,7 +1525,7 @@
         "imageUrl": "/artifact-images/ncha-third-045.jpg",
         "localImageUrl": "/artifact-images/ncha-third-045.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-138",
@@ -1561,7 +1561,7 @@
         "imageUrl": "/artifact-images/ncha-third-046.jpg",
         "localImageUrl": "/artifact-images/ncha-third-046.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-139",
@@ -1597,7 +1597,7 @@
         "imageUrl": "/artifact-images/139.jpg",
         "localImageUrl": "/artifact-images/139.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-14",
@@ -1617,8 +1617,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "生活用品类",
           "玻璃",
@@ -1628,7 +1628,7 @@
         "imageUrl": "/artifact-images/WW-清白地贴花鼻烟壶-13.jpg",
         "localImageUrl": "/artifact-images/WW-清白地贴花鼻烟壶-13.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-140",
@@ -1664,7 +1664,7 @@
         "imageUrl": "/artifact-images/ncha-third-048.jpg",
         "localImageUrl": "/artifact-images/ncha-third-048.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-141",
@@ -1701,7 +1701,7 @@
         "imageUrl": "/artifact-images/141.jpg",
         "localImageUrl": "/artifact-images/141.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-142",
@@ -1738,7 +1738,7 @@
         "imageUrl": "/artifact-images/142.jpg",
         "localImageUrl": "/artifact-images/142.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-143",
@@ -1775,7 +1775,7 @@
         "imageUrl": "/artifact-images/143.jpg",
         "localImageUrl": "/artifact-images/143.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-144",
@@ -1812,7 +1812,7 @@
         "imageUrl": "/artifact-images/144.jpg",
         "localImageUrl": "/artifact-images/144.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-145",
@@ -1849,7 +1849,7 @@
         "imageUrl": "/artifact-images/145.jpg",
         "localImageUrl": "/artifact-images/145.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-146",
@@ -1886,7 +1886,7 @@
         "imageUrl": "/artifact-images/146.jpg",
         "localImageUrl": "/artifact-images/146.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-147",
@@ -1923,7 +1923,7 @@
         "imageUrl": "/artifact-images/ncha-third-055.jpg",
         "localImageUrl": "/artifact-images/ncha-third-055.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-148",
@@ -1960,7 +1960,7 @@
         "imageUrl": "/artifact-images/148.jpg",
         "localImageUrl": "/artifact-images/148.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-149",
@@ -1997,7 +1997,7 @@
         "imageUrl": "/artifact-images/ncha-third-057.jpg",
         "localImageUrl": "/artifact-images/ncha-third-057.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-15",
@@ -2017,8 +2017,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "生活用品类",
           "宝玉石",
@@ -2028,7 +2028,7 @@
         "imageUrl": "/artifact-images/WW-清浮雕人物玛瑙鼻烟壶-14.jpg",
         "localImageUrl": "/artifact-images/WW-清浮雕人物玛瑙鼻烟壶-14.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-150",
@@ -2065,7 +2065,7 @@
         "imageUrl": "/artifact-images/150.jpg",
         "localImageUrl": "/artifact-images/150.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-151",
@@ -2102,7 +2102,7 @@
         "imageUrl": "/artifact-images/151.jpg",
         "localImageUrl": "/artifact-images/151.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-152",
@@ -2139,7 +2139,7 @@
         "imageUrl": "/artifact-images/152.jpg",
         "localImageUrl": "/artifact-images/152.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-153",
@@ -2176,7 +2176,7 @@
         "imageUrl": "/artifact-images/153.jpg",
         "localImageUrl": "/artifact-images/153.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-154",
@@ -2213,7 +2213,7 @@
         "imageUrl": "/artifact-images/ncha-third-062.jpg",
         "localImageUrl": "/artifact-images/ncha-third-062.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-155",
@@ -2250,7 +2250,7 @@
         "imageUrl": "/artifact-images/155.jpg",
         "localImageUrl": "/artifact-images/155.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-156",
@@ -2287,7 +2287,7 @@
         "imageUrl": "/artifact-images/156.jpg",
         "localImageUrl": "/artifact-images/156.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-157",
@@ -2324,7 +2324,7 @@
         "imageUrl": "/artifact-images/157.jpg",
         "localImageUrl": "/artifact-images/157.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-158",
@@ -2361,7 +2361,7 @@
         "imageUrl": "/artifact-images/158.jpg",
         "localImageUrl": "/artifact-images/158.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-159",
@@ -2398,7 +2398,7 @@
         "imageUrl": "/artifact-images/ncha-third-067.jpg",
         "localImageUrl": "/artifact-images/ncha-third-067.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-16",
@@ -2418,8 +2418,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "生活用品类",
           "玻璃",
@@ -2429,7 +2429,7 @@
         "imageUrl": "/artifact-images/WW-清内画山水玻璃鼻烟壶-15.jpg",
         "localImageUrl": "/artifact-images/WW-清内画山水玻璃鼻烟壶-15.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-160",
@@ -2466,7 +2466,7 @@
         "imageUrl": "/artifact-images/ncha-third-068.jpg",
         "localImageUrl": "/artifact-images/ncha-third-068.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-161",
@@ -2502,7 +2502,7 @@
         "imageUrl": "/artifact-images/161.jpg",
         "localImageUrl": "/artifact-images/161.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-162",
@@ -2539,7 +2539,7 @@
         "imageUrl": "/artifact-images/162.jpg",
         "localImageUrl": "/artifact-images/162.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-163",
@@ -2576,7 +2576,7 @@
         "imageUrl": "/artifact-images/163.jpg",
         "localImageUrl": "/artifact-images/163.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-164",
@@ -2613,7 +2613,7 @@
         "imageUrl": "/artifact-images/164.jpg",
         "localImageUrl": "/artifact-images/164.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-165",
@@ -2650,7 +2650,7 @@
         "imageUrl": "/artifact-images/165.jpg",
         "localImageUrl": "/artifact-images/165.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-166",
@@ -2686,7 +2686,7 @@
         "imageUrl": "/artifact-images/ncha-third-074.jpg",
         "localImageUrl": "/artifact-images/ncha-third-074.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-167",
@@ -2723,7 +2723,7 @@
         "imageUrl": "/artifact-images/167.jpg",
         "localImageUrl": "/artifact-images/167.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-168",
@@ -2760,7 +2760,7 @@
         "imageUrl": "/artifact-images/ncha-third-076.jpg",
         "localImageUrl": "/artifact-images/ncha-third-076.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-169",
@@ -2797,7 +2797,7 @@
         "imageUrl": "/artifact-images/169.jpg",
         "localImageUrl": "/artifact-images/169.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-17",
@@ -2817,8 +2817,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "宝玉石",
@@ -2828,7 +2828,7 @@
         "imageUrl": "/artifact-images/WW-清玉鼻烟壶-16.jpg",
         "localImageUrl": "/artifact-images/WW-清玉鼻烟壶-16.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-170",
@@ -2865,7 +2865,7 @@
         "imageUrl": "/artifact-images/170.jpg",
         "localImageUrl": "/artifact-images/170.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-171",
@@ -2902,7 +2902,7 @@
         "imageUrl": "/artifact-images/171.jpg",
         "localImageUrl": "/artifact-images/171.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-172",
@@ -2939,7 +2939,7 @@
         "imageUrl": "/artifact-images/ncha-third-080.jpg",
         "localImageUrl": "/artifact-images/ncha-third-080.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-173",
@@ -2976,7 +2976,7 @@
         "imageUrl": "/artifact-images/173.jpg",
         "localImageUrl": "/artifact-images/173.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-174",
@@ -3012,7 +3012,7 @@
         "imageUrl": "/artifact-images/ncha-third-082.jpg",
         "localImageUrl": "/artifact-images/ncha-third-082.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-175",
@@ -3049,7 +3049,7 @@
         "imageUrl": "/artifact-images/175.jpg",
         "localImageUrl": "/artifact-images/175.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-176",
@@ -3086,7 +3086,7 @@
         "imageUrl": "/artifact-images/ncha-third-084.jpg",
         "localImageUrl": "/artifact-images/ncha-third-084.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-177",
@@ -3123,7 +3123,7 @@
         "imageUrl": "/artifact-images/177.jpg",
         "localImageUrl": "/artifact-images/177.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-178",
@@ -3160,7 +3160,7 @@
         "imageUrl": "/artifact-images/178.jpg",
         "localImageUrl": "/artifact-images/178.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-179",
@@ -3197,7 +3197,7 @@
         "imageUrl": "/artifact-images/179.jpg",
         "localImageUrl": "/artifact-images/179.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-18",
@@ -3217,8 +3217,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "生活用品类",
           "玻璃",
@@ -3228,7 +3228,7 @@
         "imageUrl": "/artifact-images/WW-清内画山水清供玻璃鼻烟壶-17.jpg",
         "localImageUrl": "/artifact-images/WW-清内画山水清供玻璃鼻烟壶-17.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-180",
@@ -3265,7 +3265,7 @@
         "imageUrl": "/artifact-images/180.jpg",
         "localImageUrl": "/artifact-images/180.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-181",
@@ -3302,7 +3302,7 @@
         "imageUrl": "/artifact-images/181.jpg",
         "localImageUrl": "/artifact-images/181.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-182",
@@ -3339,7 +3339,7 @@
         "imageUrl": "/artifact-images/182.jpg",
         "localImageUrl": "/artifact-images/182.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-183",
@@ -3376,7 +3376,7 @@
         "imageUrl": "/artifact-images/183.jpg",
         "localImageUrl": "/artifact-images/183.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-184",
@@ -3413,7 +3413,7 @@
         "imageUrl": "/artifact-images/184.jpg",
         "localImageUrl": "/artifact-images/184.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-185",
@@ -3450,7 +3450,7 @@
         "imageUrl": "/artifact-images/185.jpg",
         "localImageUrl": "/artifact-images/185.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-186",
@@ -3487,7 +3487,7 @@
         "imageUrl": "/artifact-images/ncha-third-094.jpg",
         "localImageUrl": "/artifact-images/ncha-third-094.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.774Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-187",
@@ -3525,7 +3525,7 @@
         "imageUrl": "/artifact-images/ncha-first-core-001.jpg",
         "localImageUrl": "/artifact-images/ncha-first-core-001.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-188",
@@ -3563,7 +3563,7 @@
         "imageUrl": "/artifact-images/188.jpg",
         "localImageUrl": "/artifact-images/188.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-189",
@@ -3601,7 +3601,7 @@
         "imageUrl": "/artifact-images/189.jpg",
         "localImageUrl": "/artifact-images/189.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-19",
@@ -3621,8 +3621,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "宝玉石",
@@ -3632,7 +3632,7 @@
         "imageUrl": "/artifact-images/WW-清浮雕盖耳青玉鼻烟壶-18.jpg",
         "localImageUrl": "/artifact-images/WW-清浮雕盖耳青玉鼻烟壶-18.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-190",
@@ -3670,7 +3670,7 @@
         "imageUrl": "/artifact-images/190.jpg",
         "localImageUrl": "/artifact-images/190.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-191",
@@ -3708,7 +3708,7 @@
         "imageUrl": "/artifact-images/191.jpg",
         "localImageUrl": "/artifact-images/191.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-192",
@@ -3746,7 +3746,7 @@
         "imageUrl": "/artifact-images/192.jpg",
         "localImageUrl": "/artifact-images/192.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-193",
@@ -3784,7 +3784,7 @@
         "imageUrl": "/artifact-images/193.jpg",
         "localImageUrl": "/artifact-images/193.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-194",
@@ -3822,7 +3822,7 @@
         "imageUrl": "/artifact-images/194.jpg",
         "localImageUrl": "/artifact-images/194.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-195",
@@ -3860,7 +3860,7 @@
         "imageUrl": "/artifact-images/195.jpg",
         "localImageUrl": "/artifact-images/195.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-196",
@@ -3898,7 +3898,7 @@
         "imageUrl": "/artifact-images/196.jpg",
         "localImageUrl": "/artifact-images/196.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-197",
@@ -3936,7 +3936,7 @@
         "imageUrl": "/artifact-images/197.jpg",
         "localImageUrl": "/artifact-images/197.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-198",
@@ -3974,7 +3974,7 @@
         "imageUrl": "/artifact-images/198.jpg",
         "localImageUrl": "/artifact-images/198.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-199",
@@ -4006,7 +4006,7 @@
         "imageUrl": "/artifact-images/199.jpg",
         "localImageUrl": "/artifact-images/199.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-2",
@@ -4026,8 +4026,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "宝玉石",
@@ -4037,7 +4037,7 @@
         "imageUrl": "/artifact-images/WW-民国巴林石印-1.jpg",
         "localImageUrl": "/artifact-images/WW-民国巴林石印-1.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-20",
@@ -4057,8 +4057,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "宝玉石",
@@ -4068,7 +4068,7 @@
         "imageUrl": "/artifact-images/WW-清白玉鼻烟壶-19.jpg",
         "localImageUrl": "/artifact-images/WW-清白玉鼻烟壶-19.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-200",
@@ -4106,7 +4106,7 @@
         "imageUrl": "/artifact-images/200.jpg",
         "localImageUrl": "/artifact-images/200.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-201",
@@ -4144,7 +4144,7 @@
         "imageUrl": "/artifact-images/201.jpg",
         "localImageUrl": "/artifact-images/201.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-202",
@@ -4182,7 +4182,7 @@
         "imageUrl": "/artifact-images/202.jpg",
         "localImageUrl": "/artifact-images/202.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-203",
@@ -4221,7 +4221,7 @@
         "imageUrl": "/artifact-images/203.jpg",
         "localImageUrl": "/artifact-images/203.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-204",
@@ -4260,7 +4260,7 @@
         "imageUrl": "/artifact-images/204.jpg",
         "localImageUrl": "/artifact-images/204.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-205",
@@ -4299,7 +4299,7 @@
         "imageUrl": "/artifact-images/205.jpg",
         "localImageUrl": "/artifact-images/205.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-206",
@@ -4338,7 +4338,7 @@
         "imageUrl": "/artifact-images/206.jpg",
         "localImageUrl": "/artifact-images/206.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-207",
@@ -4376,7 +4376,7 @@
         "imageUrl": "/artifact-images/207.jpg",
         "localImageUrl": "/artifact-images/207.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-208",
@@ -4415,7 +4415,7 @@
         "imageUrl": "/artifact-images/208.jpg",
         "localImageUrl": "/artifact-images/208.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-209",
@@ -4453,7 +4453,7 @@
         "imageUrl": "/artifact-images/209.jpg",
         "localImageUrl": "/artifact-images/209.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-21",
@@ -4473,8 +4473,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "宝玉石",
@@ -4484,7 +4484,7 @@
         "imageUrl": "/artifact-images/WW-清浮雕猿猴黄玉鼻烟壶-20.jpg",
         "localImageUrl": "/artifact-images/WW-清浮雕猿猴黄玉鼻烟壶-20.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-210",
@@ -4523,7 +4523,7 @@
         "imageUrl": "/artifact-images/210.jpg",
         "localImageUrl": "/artifact-images/210.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-211",
@@ -4561,7 +4561,7 @@
         "imageUrl": "/artifact-images/211.jpg",
         "localImageUrl": "/artifact-images/211.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-212",
@@ -4581,8 +4581,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "首批禁止出国（境）展览文物",
           "禁止出境展览文物",
@@ -4600,7 +4600,7 @@
         "imageUrl": "/artifact-images/212.jpg",
         "localImageUrl": "/artifact-images/212.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-213",
@@ -4638,7 +4638,7 @@
         "imageUrl": "/artifact-images/213.jpg",
         "localImageUrl": "/artifact-images/213.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-214",
@@ -4676,7 +4676,7 @@
         "imageUrl": "/artifact-images/214.jpg",
         "localImageUrl": "/artifact-images/214.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-215",
@@ -4708,7 +4708,7 @@
         "imageUrl": "/artifact-images/215.jpg",
         "localImageUrl": "/artifact-images/215.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-216",
@@ -4746,7 +4746,7 @@
         "imageUrl": "/artifact-images/ncha-first-core-030.jpg",
         "localImageUrl": "/artifact-images/ncha-first-core-030.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-217",
@@ -4784,7 +4784,7 @@
         "imageUrl": "/artifact-images/217.jpg",
         "localImageUrl": "/artifact-images/217.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-218",
@@ -4823,7 +4823,7 @@
         "imageUrl": "/artifact-images/218.jpg",
         "localImageUrl": "/artifact-images/218.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-219",
@@ -4861,7 +4861,7 @@
         "imageUrl": "/artifact-images/219.jpg",
         "localImageUrl": "/artifact-images/219.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-22",
@@ -4881,8 +4881,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "暂无信息",
           "骨角牙",
@@ -4892,7 +4892,7 @@
         "imageUrl": "/artifact-images/WW-现代牙雕鹌鹑黍穗盒-21.jpg",
         "localImageUrl": "/artifact-images/WW-现代牙雕鹌鹑黍穗盒-21.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-220",
@@ -4930,7 +4930,7 @@
         "imageUrl": "/artifact-images/220.jpg",
         "localImageUrl": "/artifact-images/220.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-221",
@@ -4968,7 +4968,7 @@
         "imageUrl": "/artifact-images/221.jpg",
         "localImageUrl": "/artifact-images/221.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-222",
@@ -5000,7 +5000,7 @@
         "imageUrl": "/artifact-images/222.jpg",
         "localImageUrl": "/artifact-images/222.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-223",
@@ -5038,7 +5038,7 @@
         "imageUrl": "/artifact-images/ncha-first-core-037.jpg",
         "localImageUrl": "/artifact-images/ncha-first-core-037.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-224",
@@ -5076,7 +5076,7 @@
         "imageUrl": "/artifact-images/224.jpg",
         "localImageUrl": "/artifact-images/224.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-225",
@@ -5114,7 +5114,7 @@
         "imageUrl": "/artifact-images/225.jpg",
         "localImageUrl": "/artifact-images/225.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-226",
@@ -5153,7 +5153,7 @@
         "imageUrl": "/artifact-images/226.jpg",
         "localImageUrl": "/artifact-images/226.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-227",
@@ -5186,7 +5186,7 @@
         "imageUrl": "/artifact-images/227.jpg",
         "localImageUrl": "/artifact-images/227.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-228",
@@ -5220,7 +5220,7 @@
         "imageUrl": "/artifact-images/228.jpg",
         "localImageUrl": "/artifact-images/228.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-229",
@@ -5253,7 +5253,7 @@
         "imageUrl": "/artifact-images/229.jpg",
         "localImageUrl": "/artifact-images/229.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-23",
@@ -5273,8 +5273,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "暂无信息",
@@ -5284,7 +5284,7 @@
         "imageUrl": "/artifact-images/WW-现代玉雕巧作子母鸡-22.jpg",
         "localImageUrl": "/artifact-images/WW-现代玉雕巧作子母鸡-22.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-230",
@@ -5318,7 +5318,7 @@
         "imageUrl": "/artifact-images/230.jpg",
         "localImageUrl": "/artifact-images/230.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-231",
@@ -5352,7 +5352,7 @@
         "imageUrl": "/artifact-images/231.jpg",
         "localImageUrl": "/artifact-images/231.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-232",
@@ -5386,7 +5386,7 @@
         "imageUrl": "/artifact-images/232.jpg",
         "localImageUrl": "/artifact-images/232.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.775Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-233",
@@ -5419,7 +5419,7 @@
         "imageUrl": "/artifact-images/233.jpg",
         "localImageUrl": "/artifact-images/233.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-234",
@@ -5453,7 +5453,7 @@
         "imageUrl": "/artifact-images/234.jpg",
         "localImageUrl": "/artifact-images/234.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-235",
@@ -5486,7 +5486,7 @@
         "imageUrl": "/artifact-images/235.jpg",
         "localImageUrl": "/artifact-images/235.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-236",
@@ -5520,7 +5520,7 @@
         "imageUrl": "/artifact-images/236.jpg",
         "localImageUrl": "/artifact-images/236.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-237",
@@ -5554,7 +5554,7 @@
         "imageUrl": "/artifact-images/237.jpg",
         "localImageUrl": "/artifact-images/237.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-238",
@@ -5588,7 +5588,7 @@
         "imageUrl": "/artifact-images/238.jpg",
         "localImageUrl": "/artifact-images/238.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-239",
@@ -5622,7 +5622,7 @@
         "imageUrl": "/artifact-images/239.jpg",
         "localImageUrl": "/artifact-images/239.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-24",
@@ -5642,8 +5642,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "印信、符牌",
           "暂无信息",
@@ -5653,7 +5653,7 @@
         "imageUrl": "/artifact-images/WW-清督催查验牙印-23.jpg",
         "localImageUrl": "/artifact-images/WW-清督催查验牙印-23.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-240",
@@ -5687,7 +5687,7 @@
         "imageUrl": "/artifact-images/prohibited-export-1-046.jpg",
         "localImageUrl": "/artifact-images/prohibited-export-1-046.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-241",
@@ -5721,7 +5721,7 @@
         "imageUrl": "/artifact-images/241.jpg",
         "localImageUrl": "/artifact-images/241.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-242",
@@ -5754,7 +5754,7 @@
         "imageUrl": "/artifact-images/242.jpg",
         "localImageUrl": "/artifact-images/242.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-243",
@@ -5788,7 +5788,7 @@
         "imageUrl": "/artifact-images/243.jpg",
         "localImageUrl": "/artifact-images/243.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-244",
@@ -5822,7 +5822,7 @@
         "imageUrl": "/artifact-images/244.jpg",
         "localImageUrl": "/artifact-images/244.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-245",
@@ -5855,7 +5855,7 @@
         "imageUrl": "/artifact-images/245.jpg",
         "localImageUrl": "/artifact-images/245.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-246",
@@ -5889,7 +5889,7 @@
         "imageUrl": "/artifact-images/246.jpg",
         "localImageUrl": "/artifact-images/246.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-247",
@@ -5922,7 +5922,7 @@
         "imageUrl": "/artifact-images/247.jpg",
         "localImageUrl": "/artifact-images/247.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-248",
@@ -5955,7 +5955,7 @@
         "imageUrl": "/artifact-images/248.jpg",
         "localImageUrl": "/artifact-images/248.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-249",
@@ -5989,7 +5989,7 @@
         "imageUrl": "/artifact-images/249.jpg",
         "localImageUrl": "/artifact-images/249.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-25",
@@ -6009,8 +6009,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "暂无信息",
           "其他动物质",
@@ -6020,7 +6020,7 @@
         "imageUrl": "/artifact-images/WW-现代贝雕虾蟹掛幅-24.jpg",
         "localImageUrl": "/artifact-images/WW-现代贝雕虾蟹掛幅-24.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-250",
@@ -6054,7 +6054,7 @@
         "imageUrl": "/artifact-images/250.jpg",
         "localImageUrl": "/artifact-images/250.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-251",
@@ -6088,7 +6088,7 @@
         "imageUrl": "/artifact-images/251.jpg",
         "localImageUrl": "/artifact-images/251.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-252",
@@ -6121,7 +6121,7 @@
         "imageUrl": "/artifact-images/252.jpg",
         "localImageUrl": "/artifact-images/252.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-253",
@@ -6155,7 +6155,7 @@
         "imageUrl": "/artifact-images/253.jpg",
         "localImageUrl": "/artifact-images/253.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-254",
@@ -6190,7 +6190,7 @@
         "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E9%99%86%E6%9C%BA%E8%8D%89%E9%9A%B6%E5%B9%B3%E5%A4%8D%E5%B8%96%E5%8D%B7.png",
         "localImageUrl": ""
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-255",
@@ -6225,7 +6225,7 @@
         "imageUrl": "/artifact-images/255.jpg",
         "localImageUrl": "/artifact-images/255.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-256",
@@ -6260,7 +6260,7 @@
         "imageUrl": "/artifact-images/256.jpg",
         "localImageUrl": "/artifact-images/256.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-257",
@@ -6280,8 +6280,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "禁止出国（境）展览文物",
           "一级文物",
@@ -6295,7 +6295,7 @@
         "imageUrl": "/artifact-images/257.jpg",
         "localImageUrl": "/artifact-images/257.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-258",
@@ -6330,7 +6330,7 @@
         "imageUrl": "/artifact-images/258.jpg",
         "localImageUrl": "/artifact-images/258.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-259",
@@ -6365,7 +6365,7 @@
         "imageUrl": "/artifact-images/259.jpg",
         "localImageUrl": "/artifact-images/259.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-26",
@@ -6385,8 +6385,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "其它",
           "骨角牙",
@@ -6396,7 +6396,7 @@
         "imageUrl": "/artifact-images/WW-现代贝彫柳蝉掛幅-25.jpg",
         "localImageUrl": "/artifact-images/WW-现代贝彫柳蝉掛幅-25.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-260",
@@ -6431,7 +6431,7 @@
         "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E6%9D%9C%E7%89%A7%E8%A1%8C%E4%B9%A6%E5%BC%A0%E5%A5%BD%E5%A5%BD%E8%AF%97%E5%8D%B7%202.png",
         "localImageUrl": ""
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-261",
@@ -6451,8 +6451,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "禁止出国（境）展览文物",
           "一级文物",
@@ -6466,7 +6466,7 @@
         "imageUrl": "/artifact-images/261.jpg",
         "localImageUrl": "/artifact-images/261.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-262",
@@ -6501,7 +6501,7 @@
         "imageUrl": "/artifact-images/262.jpg",
         "localImageUrl": "/artifact-images/262.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-263",
@@ -6536,7 +6536,7 @@
         "imageUrl": "/artifact-images/263.jpg",
         "localImageUrl": "/artifact-images/263.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-264",
@@ -6571,7 +6571,7 @@
         "imageUrl": "/artifact-images/264.jpg",
         "localImageUrl": "/artifact-images/264.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-265",
@@ -6606,7 +6606,7 @@
         "imageUrl": "/artifact-images/265.jpg",
         "localImageUrl": "/artifact-images/265.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-266",
@@ -6641,7 +6641,7 @@
         "imageUrl": "/artifact-images/266.jpg",
         "localImageUrl": "/artifact-images/266.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-267",
@@ -6676,7 +6676,7 @@
         "imageUrl": "/artifact-images/267.jpg",
         "localImageUrl": "/artifact-images/267.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-268",
@@ -6711,7 +6711,7 @@
         "imageUrl": "/artifact-images/268.jpg",
         "localImageUrl": "/artifact-images/268.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-269",
@@ -6746,7 +6746,7 @@
         "imageUrl": "/artifact-images/269.jpg",
         "localImageUrl": "/artifact-images/269.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-27",
@@ -6766,8 +6766,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "文具",
           "其他有机质",
@@ -6777,7 +6777,7 @@
         "imageUrl": "/artifact-images/WW-清朱墨-26.jpg",
         "localImageUrl": "/artifact-images/WW-清朱墨-26.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-270",
@@ -6797,8 +6797,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "禁止出国（境）展览文物",
           "一级文物",
@@ -6812,7 +6812,7 @@
         "imageUrl": "/artifact-images/270.jpg",
         "localImageUrl": "/artifact-images/270.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-271",
@@ -6847,7 +6847,7 @@
         "imageUrl": "/artifact-images/271.jpg",
         "localImageUrl": "/artifact-images/271.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-272",
@@ -6882,7 +6882,7 @@
         "imageUrl": "/artifact-images/272.jpg",
         "localImageUrl": "/artifact-images/272.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-273",
@@ -6917,7 +6917,7 @@
         "imageUrl": "/artifact-images/273.jpg",
         "localImageUrl": "/artifact-images/273.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-274",
@@ -6952,7 +6952,7 @@
         "imageUrl": "/artifact-images/274.jpg",
         "localImageUrl": "/artifact-images/274.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-275",
@@ -6987,7 +6987,7 @@
         "imageUrl": "/artifact-images/275.jpg",
         "localImageUrl": "/artifact-images/275.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-276",
@@ -7022,7 +7022,7 @@
         "imageUrl": "/artifact-images/276.jpg",
         "localImageUrl": "/artifact-images/276.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.776Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-277",
@@ -7057,7 +7057,7 @@
         "imageUrl": "/artifact-images/277.jpg",
         "localImageUrl": "/artifact-images/277.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-278",
@@ -7092,7 +7092,7 @@
         "imageUrl": "/artifact-images/278.jpg",
         "localImageUrl": "/artifact-images/278.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-279",
@@ -7127,7 +7127,7 @@
         "imageUrl": "/artifact-images/279.jpg",
         "localImageUrl": "/artifact-images/279.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-28",
@@ -7147,8 +7147,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "暂无信息",
           "纸",
@@ -7158,7 +7158,7 @@
         "imageUrl": "/artifact-images/WW-元-清地契-27.jpg",
         "localImageUrl": "/artifact-images/WW-元-清地契-27.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-280",
@@ -7178,8 +7178,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "禁止出国（境）展览文物",
           "一级文物",
@@ -7193,7 +7193,7 @@
         "imageUrl": "/artifact-images/280.jpg",
         "localImageUrl": "/artifact-images/280.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-281",
@@ -7228,7 +7228,7 @@
         "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Huang-Quan-Xie-sheng-zhen-qin-tu.jpg",
         "localImageUrl": ""
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-282",
@@ -7263,7 +7263,7 @@
         "imageUrl": "/artifact-images/prohibited-export-2-093.jpg",
         "localImageUrl": "/artifact-images/prohibited-export-2-093.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-283",
@@ -7298,7 +7298,7 @@
         "imageUrl": "/artifact-images/283.jpg",
         "localImageUrl": "/artifact-images/283.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-284",
@@ -7333,7 +7333,7 @@
         "imageUrl": "/artifact-images/284.jpg",
         "localImageUrl": "/artifact-images/284.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-285",
@@ -7368,7 +7368,7 @@
         "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E7%A5%81%E5%BA%8F%E6%B1%9F%E5%B1%B1%E6%94%BE%E7%89%A7%E5%9B%BE%E5%8D%B7.png",
         "localImageUrl": ""
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-286",
@@ -7403,7 +7403,7 @@
         "imageUrl": "/artifact-images/286.jpg",
         "localImageUrl": "/artifact-images/286.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-287",
@@ -7438,7 +7438,7 @@
         "imageUrl": "/artifact-images/287.jpg",
         "localImageUrl": "/artifact-images/287.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-288",
@@ -7473,7 +7473,7 @@
         "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E5%90%8E%E8%B5%A4%E5%A3%81%E5%9B%BE%E8%B5%B5%E6%9E%84%E4%B9%A6%E8%B5%8B%E5%8D%B7.png",
         "localImageUrl": ""
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-289",
@@ -7508,7 +7508,7 @@
         "imageUrl": "/artifact-images/289.jpg",
         "localImageUrl": "/artifact-images/289.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-29",
@@ -7528,8 +7528,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "纸",
@@ -7539,7 +7539,7 @@
         "imageUrl": "/artifact-images/WW-清按院颁契尾-28.jpg",
         "localImageUrl": "/artifact-images/WW-清按院颁契尾-28.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-290",
@@ -7574,7 +7574,7 @@
         "imageUrl": "/artifact-images/290.jpg",
         "localImageUrl": "/artifact-images/290.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-291",
@@ -7607,7 +7607,7 @@
         "imageUrl": "/artifact-images/prohibited-export-3-125.jpg",
         "localImageUrl": "/artifact-images/prohibited-export-3-125.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-292",
@@ -7640,7 +7640,7 @@
         "imageUrl": "/artifact-images/292.jpg",
         "localImageUrl": "/artifact-images/292.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.777Z"
+      "updatedAt": "2026-06-17T02:03:16.306Z"
     },
     {
       "id": "rag-3",
@@ -7660,8 +7660,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "宝玉石",
@@ -7671,7 +7671,7 @@
         "imageUrl": "/artifact-images/WW-清浮雕瓜瓞天台石印-2.jpg",
         "localImageUrl": "/artifact-images/WW-清浮雕瓜瓞天台石印-2.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-30",
@@ -7691,8 +7691,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "其它金属器",
           "铁",
@@ -7702,7 +7702,7 @@
         "imageUrl": "/artifact-images/WW-西汉铁器残块-29.jpg",
         "localImageUrl": "/artifact-images/WW-西汉铁器残块-29.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-31",
@@ -7722,8 +7722,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "石",
@@ -7733,7 +7733,7 @@
         "imageUrl": "/artifact-images/WW-清浮雕葡萄纹纽寿山石印-30.jpg",
         "localImageUrl": "/artifact-images/WW-清浮雕葡萄纹纽寿山石印-30.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-32",
@@ -7753,8 +7753,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "石",
@@ -7764,7 +7764,7 @@
         "imageUrl": "/artifact-images/WW-清雍正制“玉音”端砚-31.jpg",
         "localImageUrl": "/artifact-images/WW-清雍正制“玉音”端砚-31.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-33",
@@ -7784,8 +7784,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "纸",
@@ -7795,7 +7795,7 @@
         "imageUrl": "/artifact-images/WW-清高丽发笺-32.jpg",
         "localImageUrl": "/artifact-images/WW-清高丽发笺-32.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-34",
@@ -7815,8 +7815,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "纸",
@@ -7826,7 +7826,7 @@
         "imageUrl": "/artifact-images/WW-清洒金笺-33.jpg",
         "localImageUrl": "/artifact-images/WW-清洒金笺-33.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-35",
@@ -7846,8 +7846,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "其它",
           "银",
@@ -7857,7 +7857,7 @@
         "imageUrl": "/artifact-images/WW-民国红十字银质章-34.jpg",
         "localImageUrl": "/artifact-images/WW-民国红十字银质章-34.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-36",
@@ -7877,8 +7877,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "武器",
           "其他金属",
@@ -7888,7 +7888,7 @@
         "imageUrl": "/artifact-images/WW-民国日本短刀-35.jpg",
         "localImageUrl": "/artifact-images/WW-民国日本短刀-35.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-37",
@@ -7908,8 +7908,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "其它",
           "暂无信息",
@@ -7919,7 +7919,7 @@
         "imageUrl": "/artifact-images/WW-民国伪满各种证章-36.jpg",
         "localImageUrl": "/artifact-images/WW-民国伪满各种证章-36.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-38",
@@ -7939,8 +7939,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "生活用品类",
           "暂无信息",
@@ -7950,7 +7950,7 @@
         "imageUrl": "/artifact-images/WW-现代竹编三叠式长方提盒-37.jpg",
         "localImageUrl": "/artifact-images/WW-现代竹编三叠式长方提盒-37.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-39",
@@ -7970,8 +7970,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "陶器",
           "陶",
@@ -7981,7 +7981,7 @@
         "imageUrl": "/artifact-images/WW-唐人首陶□-38.jpg",
         "localImageUrl": "/artifact-images/WW-唐人首陶□-38.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-4",
@@ -8001,8 +8001,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "印信、符牌",
           "木",
@@ -8012,7 +8012,7 @@
         "imageUrl": "/artifact-images/WW-清雕钮天然木根印-3.jpg",
         "localImageUrl": "/artifact-images/WW-清雕钮天然木根印-3.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-40",
@@ -8032,8 +8032,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "纸",
@@ -8043,7 +8043,7 @@
         "imageUrl": "/artifact-images/WW-明-清鱼鳞图册-39.jpg",
         "localImageUrl": "/artifact-images/WW-明-清鱼鳞图册-39.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-41",
@@ -8063,8 +8063,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "暂无信息",
           "二级",
@@ -8073,7 +8073,7 @@
         "imageUrl": "/artifact-images/WW-现代象牙雕蟹笼-40.jpg",
         "localImageUrl": "/artifact-images/WW-现代象牙雕蟹笼-40.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-42",
@@ -8093,8 +8093,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "暂无信息",
           "骨角牙",
@@ -8104,7 +8104,7 @@
         "imageUrl": "/artifact-images/WW-现代象牙雕岳飞战金岳插屏-41.jpg",
         "localImageUrl": "/artifact-images/WW-现代象牙雕岳飞战金岳插屏-41.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-43",
@@ -8124,8 +8124,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "瓷",
@@ -8135,7 +8135,7 @@
         "imageUrl": "/artifact-images/WW-清白料贴花博古鼻烟壶（无盖）-42.jpg",
         "localImageUrl": "/artifact-images/WW-清白料贴花博古鼻烟壶（无盖）-42.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-44",
@@ -8155,8 +8155,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "玻璃",
@@ -8166,7 +8166,7 @@
         "imageUrl": "/artifact-images/WW-清烧蓝蟠螭玻璃地鼻烟壶-43.jpg",
         "localImageUrl": "/artifact-images/WW-清烧蓝蟠螭玻璃地鼻烟壶-43.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-45",
@@ -8186,8 +8186,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "瓷器",
           "玻璃",
@@ -8197,7 +8197,7 @@
         "imageUrl": "/artifact-images/WW-清白地堆花鼻烟壶（无盖）-44.jpg",
         "localImageUrl": "/artifact-images/WW-清白地堆花鼻烟壶（无盖）-44.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-46",
@@ -8217,8 +8217,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "玻璃",
@@ -8228,7 +8228,7 @@
         "imageUrl": "/artifact-images/WW-清红鼻烟壶-45.jpg",
         "localImageUrl": "/artifact-images/WW-清红鼻烟壶-45.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-47",
@@ -8248,8 +8248,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "玻璃",
@@ -8259,7 +8259,7 @@
         "imageUrl": "/artifact-images/WW-清内画花鸟玻璃鼻烟壶-46.jpg",
         "localImageUrl": "/artifact-images/WW-清内画花鸟玻璃鼻烟壶-46.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-48",
@@ -8279,8 +8279,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "石",
@@ -8290,7 +8290,7 @@
         "imageUrl": "/artifact-images/WW-白果青田石印-47.jpg",
         "localImageUrl": "/artifact-images/WW-白果青田石印-47.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-49",
@@ -8310,8 +8310,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "毛",
@@ -8321,7 +8321,7 @@
         "imageUrl": "/artifact-images/WW-清代花翎-48.jpg",
         "localImageUrl": "/artifact-images/WW-清代花翎-48.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-5",
@@ -8341,8 +8341,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "宝玉石",
@@ -8352,7 +8352,7 @@
         "imageUrl": "/artifact-images/WW-清浮雕梅花天台石印-4.jpg",
         "localImageUrl": "/artifact-images/WW-清浮雕梅花天台石印-4.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-50",
@@ -8372,8 +8372,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "纸",
@@ -8383,7 +8383,7 @@
         "imageUrl": "/artifact-images/WW-清描金冰梅玉版粉笺-49.jpg",
         "localImageUrl": "/artifact-images/WW-清描金冰梅玉版粉笺-49.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-51",
@@ -8403,8 +8403,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "杂类",
           "暂无信息",
@@ -8414,7 +8414,7 @@
         "imageUrl": "/artifact-images/WW-民国国民党匪军证章、肩章、帽徽等-50.jpg",
         "localImageUrl": "/artifact-images/WW-民国国民党匪军证章、肩章、帽徽等-50.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-52",
@@ -8434,8 +8434,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "宝玉石",
@@ -8445,7 +8445,7 @@
         "imageUrl": "/artifact-images/WW-清环钮青玉印-51.jpg",
         "localImageUrl": "/artifact-images/WW-清环钮青玉印-51.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-53",
@@ -8465,8 +8465,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "宝玉石",
@@ -8476,7 +8476,7 @@
         "imageUrl": "/artifact-images/WW-青玉环-52.jpg",
         "localImageUrl": "/artifact-images/WW-青玉环-52.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-54",
@@ -8496,8 +8496,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "宝玉石",
@@ -8507,7 +8507,7 @@
         "imageUrl": "/artifact-images/WW-青玉玦-53.jpg",
         "localImageUrl": "/artifact-images/WW-青玉玦-53.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-55",
@@ -8527,8 +8527,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "玉器",
           "宝玉石",
@@ -8538,7 +8538,7 @@
         "imageUrl": "/artifact-images/WW-玉饰件-54.jpg",
         "localImageUrl": "/artifact-images/WW-玉饰件-54.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-56",
@@ -8558,8 +8558,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "石",
@@ -8569,7 +8569,7 @@
         "imageUrl": "/artifact-images/WW-民国秋江为康有为刻“开天天室”印-55.jpg",
         "localImageUrl": "/artifact-images/WW-民国秋江为康有为刻“开天天室”印-55.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-57",
@@ -8589,8 +8589,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "银",
@@ -8600,7 +8600,7 @@
         "imageUrl": "/artifact-images/WW-辽银面具-56.jpg",
         "localImageUrl": "/artifact-images/WW-辽银面具-56.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-58",
@@ -8620,8 +8620,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -8631,7 +8631,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金节约-57.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金节约-57.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-59",
@@ -8651,8 +8651,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -8662,7 +8662,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金花瓣形饰形-58.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金花瓣形饰形-58.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-6",
@@ -8682,8 +8682,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "印信、符牌",
           "石",
@@ -8693,7 +8693,7 @@
         "imageUrl": "/artifact-images/WW-清豆瓣青田石印-5.jpg",
         "localImageUrl": "/artifact-images/WW-清豆瓣青田石印-5.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-60",
@@ -8713,8 +8713,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -8724,7 +8724,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金铜铃-59.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金铜铃-59.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-61",
@@ -8744,8 +8744,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -8755,7 +8755,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金双龙纹铊尾-60.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金双龙纹铊尾-60.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-62",
@@ -8775,8 +8775,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜",
@@ -8786,7 +8786,7 @@
         "imageUrl": "/artifact-images/WW-春秋嵌红铜螭虎纹盖鼎-61.jpg",
         "localImageUrl": "/artifact-images/WW-春秋嵌红铜螭虎纹盖鼎-61.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-63",
@@ -8806,8 +8806,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -8817,7 +8817,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金雁形饰件-62.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金雁形饰件-62.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-64",
@@ -8837,8 +8837,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -8848,7 +8848,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金龙纹\"圭\"字形铊尾-63.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金龙纹\"圭\"字形铊尾-63.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-65",
@@ -8868,8 +8868,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -8879,7 +8879,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金卷草纹带箍-64.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金卷草纹带箍-64.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-66",
@@ -8899,8 +8899,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜",
@@ -8910,7 +8910,7 @@
         "imageUrl": "/artifact-images/WW-清三兽足铜火盆-65.jpg",
         "localImageUrl": "/artifact-images/WW-清三兽足铜火盆-65.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-67",
@@ -8930,8 +8930,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -8941,7 +8941,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金双龙戏珠纹带饰-66.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金双龙戏珠纹带饰-66.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-68",
@@ -8961,8 +8961,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -8972,7 +8972,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金卷纹带饰-67.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金卷纹带饰-67.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-69",
@@ -8992,8 +8992,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜",
@@ -9003,7 +9003,7 @@
         "imageUrl": "/artifact-images/WW-明钮铸铭文铜镜-68.jpg",
         "localImageUrl": "/artifact-images/WW-明钮铸铭文铜镜-68.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-7",
@@ -9023,8 +9023,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "宝玉石",
@@ -9034,7 +9034,7 @@
         "imageUrl": "/artifact-images/WW-清浮雕树石昌化长方石印-6.jpg",
         "localImageUrl": "/artifact-images/WW-清浮雕树石昌化长方石印-6.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-70",
@@ -9054,8 +9054,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -9065,7 +9065,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金扣钉-69.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金扣钉-69.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-71",
@@ -9085,8 +9085,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -9096,7 +9096,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金活带扣-70.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金活带扣-70.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-72",
@@ -9116,8 +9116,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -9127,7 +9127,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金带扣-71.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金带扣-71.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-73",
@@ -9147,8 +9147,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜",
@@ -9158,7 +9158,7 @@
         "imageUrl": "/artifact-images/WW-金六耳铜锅-72.jpg",
         "localImageUrl": "/artifact-images/WW-金六耳铜锅-72.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-74",
@@ -9178,8 +9178,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -9189,7 +9189,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金双鱼形饰件-73.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金双鱼形饰件-73.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-75",
@@ -9209,8 +9209,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "暂无信息",
@@ -9220,7 +9220,7 @@
         "imageUrl": "/artifact-images/WW-汉双环耳铜钫-74.jpg",
         "localImageUrl": "/artifact-images/WW-汉双环耳铜钫-74.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-76",
@@ -9240,8 +9240,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -9251,7 +9251,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金龙纹铊尾-75.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金龙纹铊尾-75.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-77",
@@ -9271,8 +9271,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜",
@@ -9282,7 +9282,7 @@
         "imageUrl": "/artifact-images/WW-春秋战国曲刃青铜短剑-76.jpg",
         "localImageUrl": "/artifact-images/WW-春秋战国曲刃青铜短剑-76.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-78",
@@ -9302,8 +9302,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜",
@@ -9313,7 +9313,7 @@
         "imageUrl": "/artifact-images/WW-明\"一百九十四号\"铜铳-77.jpg",
         "localImageUrl": "/artifact-images/WW-明\"一百九十四号\"铜铳-77.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-79",
@@ -9333,8 +9333,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜",
@@ -9344,7 +9344,7 @@
         "imageUrl": "/artifact-images/WW-明\"胜字五百九号\"铜铳-78.jpg",
         "localImageUrl": "/artifact-images/WW-明\"胜字五百九号\"铜铳-78.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-8",
@@ -9364,8 +9364,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "宝玉石",
@@ -9375,7 +9375,7 @@
         "imageUrl": "/artifact-images/WW-清螭钮寿山石印-7.jpg",
         "localImageUrl": "/artifact-images/WW-清螭钮寿山石印-7.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-80",
@@ -9395,8 +9395,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜",
@@ -9406,7 +9406,7 @@
         "imageUrl": "/artifact-images/WW-明\"胜字九百囗囗号\"铜铳-79.jpg",
         "localImageUrl": "/artifact-images/WW-明\"胜字九百囗囗号\"铜铳-79.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-81",
@@ -9426,8 +9426,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜",
@@ -9437,7 +9437,7 @@
         "imageUrl": "/artifact-images/WW-\"王恭厂二百七十号\"铜铳-80.jpg",
         "localImageUrl": "/artifact-images/WW-\"王恭厂二百七十号\"铜铳-80.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-82",
@@ -9457,8 +9457,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "铜器",
           "铜,金",
@@ -9468,7 +9468,7 @@
         "imageUrl": "/artifact-images/WW-辽铜鎏金双龙椭圆形带饰-81.jpg",
         "localImageUrl": "/artifact-images/WW-辽铜鎏金双龙椭圆形带饰-81.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.772Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-83",
@@ -9488,8 +9488,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "牙角器",
           "骨角牙",
@@ -9499,7 +9499,7 @@
         "imageUrl": "/artifact-images/WW-清象牙镇纸-82.jpg",
         "localImageUrl": "/artifact-images/WW-清象牙镇纸-82.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-84",
@@ -9519,8 +9519,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "书法",
           "纸",
@@ -9530,7 +9530,7 @@
         "imageUrl": "/artifact-images/WW-清翁同龢行书手札册-83.jpg",
         "localImageUrl": "/artifact-images/WW-清翁同龢行书手札册-83.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-85",
@@ -9550,8 +9550,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "绘画",
           "暂无信息",
@@ -9561,7 +9561,7 @@
         "imageUrl": "/artifact-images/WW-现代金振之摹周昉簪花仕女卷-84.jpg",
         "localImageUrl": "/artifact-images/WW-现代金振之摹周昉簪花仕女卷-84.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-86",
@@ -9581,8 +9581,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "绘画",
           "纸",
@@ -9592,7 +9592,7 @@
         "imageUrl": "/artifact-images/WW-清傅雯指画寿同山岳图轴-85.jpg",
         "localImageUrl": "/artifact-images/WW-清傅雯指画寿同山岳图轴-85.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-87",
@@ -9612,8 +9612,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "绘画",
           "纸",
@@ -9623,7 +9623,7 @@
         "imageUrl": "/artifact-images/WW-清薜澱仿黄公望秋溪萧寺图轴-86.jpg",
         "localImageUrl": "/artifact-images/WW-清薜澱仿黄公望秋溪萧寺图轴-86.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-88",
@@ -9643,8 +9643,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "绘画",
           "纸",
@@ -9654,7 +9654,7 @@
         "imageUrl": "/artifact-images/WW-清刘渡雪栈图轴-87.jpg",
         "localImageUrl": "/artifact-images/WW-清刘渡雪栈图轴-87.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-89",
@@ -9674,8 +9674,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "绘画",
           "暂无信息",
@@ -9685,7 +9685,7 @@
         "imageUrl": "/artifact-images/WW-现代齐白石荔枝鹌鹑立轴-88.jpg",
         "localImageUrl": "/artifact-images/WW-现代齐白石荔枝鹌鹑立轴-88.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-9",
@@ -9705,8 +9705,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "石器",
           "宝玉石",
@@ -9716,7 +9716,7 @@
         "imageUrl": "/artifact-images/WW-清螭钮大田石椭圆印-8.jpg",
         "localImageUrl": "/artifact-images/WW-清螭钮大田石椭圆印-8.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.771Z"
+      "updatedAt": "2026-06-17T02:03:16.304Z"
     },
     {
       "id": "rag-90",
@@ -9736,8 +9736,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "书法",
           "纸",
@@ -9747,7 +9747,7 @@
         "imageUrl": "/artifact-images/WW-明周日庠草书七绝诗卷-89.jpg",
         "localImageUrl": "/artifact-images/WW-明周日庠草书七绝诗卷-89.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-91",
@@ -9767,8 +9767,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "绘画",
           "其他有机质",
@@ -9778,7 +9778,7 @@
         "imageUrl": "/artifact-images/WW-明吴湘人物屏-90.jpg",
         "localImageUrl": "/artifact-images/WW-明吴湘人物屏-90.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-92",
@@ -9798,8 +9798,8 @@
         "museumGrade": "未定级",
         "museumProvince": "辽宁",
         "museumCity": "沈阳",
-        "museumCoverImageUrl": "/museum-images/2/cover.jpg",
-        "museumCoverThumbnailUrl": "/museum-images/2/thumbs/cover-thumb.jpg",
+        "museumCoverImageUrl": "",
+        "museumCoverThumbnailUrl": "",
         "tags": [
           "绘画",
           "纸",
@@ -9809,7 +9809,7 @@
         "imageUrl": "/artifact-images/WW-清叶道芬竹院逢僧轴-91.jpg",
         "localImageUrl": "/artifact-images/WW-清叶道芬竹院逢僧轴-91.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-93",
@@ -9846,7 +9846,7 @@
         "imageUrl": "/artifact-images/ncha-third-001.jpg",
         "localImageUrl": "/artifact-images/ncha-third-001.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-94",
@@ -9883,7 +9883,7 @@
         "imageUrl": "/artifact-images/ncha-third-002.jpg",
         "localImageUrl": "/artifact-images/ncha-third-002.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-95",
@@ -9920,7 +9920,7 @@
         "imageUrl": "/artifact-images/ncha-third-003.jpg",
         "localImageUrl": "/artifact-images/ncha-third-003.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-96",
@@ -9957,7 +9957,7 @@
         "imageUrl": "/artifact-images/ncha-third-004.jpg",
         "localImageUrl": "/artifact-images/ncha-third-004.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-97",
@@ -9994,7 +9994,7 @@
         "imageUrl": "/artifact-images/ncha-third-005.jpg",
         "localImageUrl": "/artifact-images/ncha-third-005.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-98",
@@ -10031,7 +10031,7 @@
         "imageUrl": "/artifact-images/ncha-third-006.jpg",
         "localImageUrl": "/artifact-images/ncha-third-006.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     },
     {
       "id": "rag-99",
@@ -10068,7 +10068,7 @@
         "imageUrl": "/artifact-images/ncha-third-007.jpg",
         "localImageUrl": "/artifact-images/ncha-third-007.jpg"
       },
-      "updatedAt": "2026-06-16T14:43:34.773Z"
+      "updatedAt": "2026-06-17T02:03:16.305Z"
     }
   ]
 }

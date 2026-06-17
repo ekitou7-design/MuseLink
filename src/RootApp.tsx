@@ -12,6 +12,9 @@ import { AdminGuard } from "./router/AdminGuard";
 export default function RootApp() {
   const route = useRoute();
   const homeInitialTab = getRouteSearchParams().get("tab") || "explore";
+  const museumRouteId = route.startsWith("/museums/")
+    ? decodeURIComponent(route.replace("/museums/", ""))
+    : null;
 
   // Auto-login / Auto-redirect on app start:
   // - If logged in -> go home
@@ -23,7 +26,7 @@ export default function RootApp() {
         navigate("/home");
       }
     } else {
-      if (route === "/home" || route === "/swipe" || route === "/profile" || route === "/admin") {
+      if (route === "/home" || route === "/swipe" || route === "/profile" || route === "/admin" || route.startsWith("/museums/")) {
         navigate("/login");
       }
     }
@@ -32,6 +35,7 @@ export default function RootApp() {
 
   if (route === "/register") return <RegisterPage />;
   if (route === "/home") return <AuthGuard><HomePage initialTab={homeInitialTab} /></AuthGuard>;
+  if (museumRouteId) return <AuthGuard><HomePage initialTab="explore" initialMuseumId={museumRouteId} /></AuthGuard>;
   if (route === "/swipe") return <AuthGuard><HomePage initialTab="swipe" /></AuthGuard>;
   if (route === "/profile") return <AuthGuard><ProfilePage /></AuthGuard>;
   if (route === "/admin") return <AdminGuard><AdminPage /></AdminGuard>;
