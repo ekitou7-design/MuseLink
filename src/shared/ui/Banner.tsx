@@ -17,7 +17,12 @@ import {
 
 const RECOMMENDATION_BANNER_LIMIT = 5;
 
-export const Banner = ({ artifacts }: { artifacts: Artifact[] }) => {
+type BannerProps = {
+  artifacts: Artifact[];
+  onArtifactClick?: (artifact: Artifact) => void;
+};
+
+export const Banner = ({ artifacts, onArtifactClick }: BannerProps) => {
   const [index, setIndex] = useState(0);
   const banners = useMemo(() => (
     artifacts
@@ -31,6 +36,7 @@ export const Banner = ({ artifacts }: { artifacts: Artifact[] }) => {
           .join(' · ');
 
         return {
+          artifact,
           id: artifact.id,
           title: displayDbString(artifactNameRaw(artifact)),
           subtitle: subtitle || '馆藏推荐',
@@ -65,7 +71,12 @@ export const Banner = ({ artifacts }: { artifacts: Artifact[] }) => {
   const activeBanner = banners[index] ?? banners[0];
 
   return (
-    <div className="relative h-[200px] rounded-[5px] overflow-hidden group shadow-xl shadow-primary/10">
+    <button
+      type="button"
+      onClick={() => onArtifactClick?.(activeBanner.artifact)}
+      aria-label={`查看文物详情：${activeBanner.title}`}
+      className="group relative h-[200px] w-full overflow-hidden rounded-[5px] text-left shadow-xl shadow-primary/10 transition-transform active:scale-[0.99]"
+    >
       <AnimatePresence mode="wait">
         <motion.div
           key={activeBanner.id}
@@ -92,7 +103,7 @@ export const Banner = ({ artifacts }: { artifacts: Artifact[] }) => {
         </motion.div>
       </AnimatePresence>
       
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+      <div className="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
         {banners.map((_, i) => (
           <div 
             key={i} 
@@ -103,6 +114,6 @@ export const Banner = ({ artifacts }: { artifacts: Artifact[] }) => {
           />
         ))}
       </div>
-    </div>
+    </button>
   );
 };

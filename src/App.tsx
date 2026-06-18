@@ -1432,7 +1432,13 @@ export default function App({
                           <Sparkles size={18} className="text-primary flex-shrink-0" />
                           为你推荐
                         </h2>
-                        <Banner artifacts={recommendedArtifacts} />
+                        <Banner
+                          artifacts={recommendedArtifacts}
+                          onArtifactClick={(artifact) => {
+                            setSelectedArtifact(artifact);
+                            addToHistory(artifact.id);
+                          }}
+                        />
                       </div>
 
                       <button
@@ -1982,10 +1988,10 @@ export default function App({
                       <button
                         type="button"
                         onClick={() => setIsAIModalOpen(true)}
-                        className="flex min-h-20 items-center justify-center gap-2 rounded-[5px] border border-primary/10 bg-neutral text-xs font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-white"
+                        className="flex h-12 w-full items-center justify-center gap-2 rounded-[5px] border border-primary/10 bg-neutral text-xs font-bold text-primary shadow-sm transition-all hover:bg-primary hover:text-white"
                       >
-                        <Sparkles size={18} />
-                        生成个人展览
+                        <Sparkles size={18} className="flex-shrink-0" />
+                        <span className="force-nowrap">生成个人展览</span>
                       </button>
                       <button
                         type="button"
