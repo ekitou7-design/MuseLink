@@ -60,6 +60,24 @@ export async function listSquareExhibitions(limit = 10): Promise<ExhibitionRecor
     .slice(0, limit);
 }
 
+export async function listAllPublicExhibitions(limit = 500): Promise<ExhibitionRecord[]> {
+  const db = await loadDb();
+  const safeLimit = Math.min(Math.max(Number(limit) || 500, 1), 1000);
+  return db.exhibitions
+    .filter((e) => e.isPublic)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, safeLimit);
+}
+
+export async function listPublicExhibitionsByIds(ids: string[]): Promise<ExhibitionRecord[]> {
+  if (ids.length === 0) return [];
+  const db = await loadDb();
+  const order = new Map(ids.map((id, index) => [id, index]));
+  return db.exhibitions
+    .filter((e) => e.isPublic && order.has(e.id))
+    .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+}
+
 export async function listMyExhibitions(userId: number): Promise<ExhibitionRecord[]> {
   const db = await loadDb();
   return db.exhibitions

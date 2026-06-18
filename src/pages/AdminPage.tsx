@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import type { Artifact } from "../types";
+import type { Artifact, Exhibition } from "../types";
 import { AuthService } from "../auth/AuthService";
 import { UserSession } from "../auth/UserSession";
 import { apiFetch, apiUrl, getAuthToken, setAuthToken } from "../lib/api";
@@ -9,6 +9,17 @@ import { ForbiddenPage } from "./ForbiddenPage";
 import { goBackOrNavigate, navigate } from "../router/router";
 import { SafeImage } from "../components/SafeImage";
 import { artifactImageUrlRaw } from "../lib/dbDisplay";
+import {
+  emptyHomeRecommendationsConfig,
+  fetchAdminRecommendations,
+  saveAdminRecommendations,
+  searchRecommendationArtifactCandidates,
+  searchRecommendationExhibitionCandidates,
+  type HomeRecommendationItem,
+  type HomeRecommendationsConfig,
+  type RecommendationTargetType,
+  type ResolvedHomeRecommendations,
+} from "../modules/recommendations/services/homeRecommendationsService";
 import {
   CITY_OPTIONS_BY_PROVINCE,
   MUSEUM_GRADE_OPTIONS,
@@ -22,6 +33,7 @@ import {
 } from "../constants/locationOptions";
 
 type AdminTab = "artifacts" | "museums" | "import" | "users";
+type AdminRoute = "/admin" | `/admin/${string}`;
 type ArtifactImageFilter = "all" | "no-image" | "remote-only" | "local-broken" | "local-complete" | "no-local";
 type ArtifactImageStatus = "local-complete" | "remote-only" | "no-image" | "local-broken";
 type MuseumStatusFilter = "all" | "with-artifacts" | "without-artifacts" | "created-by-import" | "no-cover" | "duplicates";
@@ -748,7 +760,7 @@ function ImageCropperPanel({
   );
 }
 
-export function AdminPage() {
+export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) {
   const [tab, setTab] = useState<AdminTab>("artifacts");
   const [users, setUsers] = useState<AdminUserSummary[]>([]);
   const [stats, setStats] = useState<AdminStatsResponse | null>(null);
@@ -759,6 +771,10 @@ export function AdminPage() {
   const [form, setForm] = useState<ArtifactFormState>(emptyForm);
   const [museumForm, setMuseumForm] = useState<MuseumFormState>(emptyMuseumForm);
   const [query, setQuery] = useState("");
+  const [artifactFilterOpen, setArtifactFilterOpen] = useState(false);
+  const [artifactProvinceFilter, setArtifactProvinceFilter] = useState("");
+  const [artifactCityFilter, setArtifactCityFilter] = useState("");
+  const [artifactCategoryFilter, setArtifactCategoryFilter] = useState("");
   const [artifactMuseumFilter, setArtifactMuseumFilter] = useState("");
   const [museumQuery, setMuseumQuery] = useState("");
   const [museumTypeFilter, setMuseumTypeFilter] = useState("");
@@ -796,10 +812,19 @@ export function AdminPage() {
   const [failedImageIds, setFailedImageIds] = useState<Record<string, boolean>>({});
   const [localImageFileStatuses, setLocalImageFileStatuses] = useState<Record<string, ArtifactLocalImageFileStatus>>({});
   const [adminTokenInput, setAdminTokenInput] = useState(() => getAuthToken() || "");
+  const [recommendationsConfig, setRecommendationsConfig] = useState<HomeRecommendationsConfig>(() => emptyHomeRecommendationsConfig());
+  const [resolvedRecommendations, setResolvedRecommendations] = useState<ResolvedHomeRecommendations | null>(null);
+  const [recommendationTab, setRecommendationTab] = useState<"artifacts" | "exhibitions" | "editor-picks">("artifacts");
+  const [recommendationSearchQuery, setRecommendationSearchQuery] = useState("");
+  const [recommendationArtifactCandidates, setRecommendationArtifactCandidates] = useState<Artifact[]>([]);
+  const [recommendationExhibitionCandidates, setRecommendationExhibitionCandidates] = useState<Exhibition[]>([]);
+  const [recommendationsSaving, setRecommendationsSaving] = useState(false);
+  const [recommendationsMessage, setRecommendationsMessage] = useState<string | null>(null);
   const rowImageSelectionsRef = useRef(rowImageSelections);
   const imageFilePreviewUrlRef = useRef<string | null>(null);
   const museumCoverPreviewUrlRef = useRef<string | null>(null);
   const cropTargetRef = useRef<CropTarget | null>(null);
+  const adminScrollRef = useRef<HTMLDivElement | null>(null);
   const artifactFormRef = useRef<HTMLFormElement | null>(null);
   const artifactListRef = useRef<HTMLElement | null>(null);
   const museumListRef = useRef<HTMLElement | null>(null);
@@ -808,6 +833,13 @@ export function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [forbidden, setForbidden] = useState(false);
+
+  const markArtifactImageFailed = (artifactId: string, failed: boolean) => {
+    setFailedImageIds((current) => {
+      if (Boolean(current[artifactId]) === failed) return current;
+      return { ...current, [artifactId]: failed };
+    });
+  };
 
   const clearArtifactImageFile = () => {
     if (imageFilePreviewUrlRef.current) URL.revokeObjectURL(imageFilePreviewUrlRef.current);
@@ -979,12 +1011,13 @@ export function AdminPage() {
           return;
         }
 
-        const [usersResponse, statsResponse, artifactsResponse, imageStatusResponse, museumsResponse] = await Promise.all([
+        const [usersResponse, statsResponse, artifactsResponse, imageStatusResponse, museumsResponse, recommendationsResponse] = await Promise.all([
           getAdminUsers(),
           getAdminStats(),
           apiFetch<{ artifacts?: Artifact[] }>("/api/artifacts?limit=5000"),
           apiFetch<{ statuses?: ArtifactLocalImageFileStatus[] }>("/api/admin/artifact-image-file-status"),
           apiFetch<{ museums?: MuseumAdminItem[] }>("/api/admin/museums?pageSize=300"),
+          fetchAdminRecommendations(),
         ]);
         if (cancelled) return;
 
@@ -993,6 +1026,8 @@ export function AdminPage() {
         setArtifacts(Array.isArray(artifactsResponse.artifacts) ? artifactsResponse.artifacts : []);
         setMuseums(Array.isArray(museumsResponse.museums) ? museumsResponse.museums : []);
         setAllMuseums(Array.isArray(museumsResponse.museums) ? museumsResponse.museums : []);
+        setRecommendationsConfig(recommendationsResponse.config);
+        setResolvedRecommendations(recommendationsResponse.resolved);
         setLocalImageFileStatuses(
           Object.fromEntries((imageStatusResponse.statuses || []).map((item) => [String(item.artifactId), item])),
         );
@@ -1028,12 +1063,21 @@ export function AdminPage() {
   }, [cropTarget]);
 
   useEffect(() => {
-    if (loading || tab !== "museums") return;
+    if (loading || (!adminPath.startsWith("/admin/museums") && tab !== "museums")) return;
     const handle = window.setTimeout(() => {
       loadMuseums().catch((e) => setError(e instanceof Error ? e.message : String(e)));
     }, 250);
     return () => window.clearTimeout(handle);
-  }, [loading, museumCityFilter, museumGradeFilter, museumProvinceFilter, museumQuery, museumStatusFilter, museumTypeFilter, tab]);
+  }, [adminPath, loading, museumCityFilter, museumGradeFilter, museumProvinceFilter, museumQuery, museumStatusFilter, museumTypeFilter, tab]);
+
+  useEffect(() => {
+    if (loading || adminPath !== "/admin/recommendations") return;
+    const handle = window.setTimeout(() => {
+      refreshRecommendationCandidates();
+    }, 250);
+    return () => window.clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adminPath, loading, recommendationSearchQuery, recommendationTab]);
 
   useEffect(() => {
     return () => {
@@ -1054,16 +1098,24 @@ export function AdminPage() {
         localImageFileStatuses[artifactId],
       );
       if (!artifactMatchesImageFilter(status, imageFilter)) return false;
+      const currentMuseumId = artifactMuseumId(artifact);
+      const currentMuseumName = artifactCanonicalMuseumName(artifact);
+      const legacyMuseumName = text(artifact.museumName || artifact.museum);
+      const currentMuseumItem = allMuseums.find((museum) => (
+        museum.id === currentMuseumId ||
+        museum.name === currentMuseumName ||
+        museum.name === legacyMuseumName
+      ));
       if (artifactMuseumFilter) {
         const selectedMuseumItem = allMuseums.find((museum) => museum.id === artifactMuseumFilter);
         const selectedName = selectedMuseumItem?.name || "";
-        const currentMuseumId = artifactMuseumId(artifact);
-        const currentMuseumName = artifactCanonicalMuseumName(artifact);
-        const legacyMuseumName = text(artifact.museumName || artifact.museum);
         if (currentMuseumId !== artifactMuseumFilter && currentMuseumName !== selectedName && legacyMuseumName !== selectedName) {
           return false;
         }
       }
+      if (artifactProvinceFilter && currentMuseumItem?.province !== artifactProvinceFilter) return false;
+      if (artifactCityFilter && currentMuseumItem?.city !== artifactCityFilter) return false;
+      if (artifactCategoryFilter && text(artifact.category) !== artifactCategoryFilter) return false;
       if (!keyword) return true;
       const haystack = [
         artifact.name,
@@ -1076,7 +1128,7 @@ export function AdminPage() {
       ].map(text).join(" ").toLowerCase();
       return haystack.includes(keyword);
     });
-  }, [allMuseums, artifactMuseumFilter, artifacts, failedImageIds, imageFilter, localImageFileStatuses, query]);
+  }, [allMuseums, artifactCategoryFilter, artifactCityFilter, artifactMuseumFilter, artifactProvinceFilter, artifacts, failedImageIds, imageFilter, localImageFileStatuses, query]);
 
   const imageFilterCounts = useMemo(() => {
     const counts: Record<ArtifactImageFilter, number> = {
@@ -1122,6 +1174,43 @@ export function AdminPage() {
       .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name, "zh-CN"));
     return [...fromMuseums, ...legacy];
   }, [allMuseums, artifacts]);
+
+  const artifactCategoryOptions = useMemo(() => (
+    Array.from(new Set(artifacts.map((artifact) => text(artifact.category)).filter(Boolean)))
+      .sort((left, right) => left.localeCompare(right, "zh-CN"))
+  ), [artifacts]);
+
+  const artifactCityOptions = useMemo(() => (
+    artifactProvinceFilter
+      ? [...(CITY_OPTIONS_BY_PROVINCE[artifactProvinceFilter] || [])]
+      : Array.from(new Set(allMuseums.map((museum) => museum.city).filter(Boolean) as string[]))
+        .sort((left, right) => left.localeCompare(right, "zh-CN"))
+  ), [allMuseums, artifactProvinceFilter]);
+
+  const imageFilterLabel = (filter: ArtifactImageFilter) => {
+    const labels: Record<ArtifactImageFilter, string> = {
+      all: "全部",
+      "local-complete": "本地图已完成",
+      "remote-only": "仅有外链图",
+      "no-local": "无本地图",
+      "local-broken": "本地图异常",
+      "no-image": "完全无图",
+    };
+    return labels[filter];
+  };
+
+  const activeArtifactFilterTags = useMemo(() => {
+    const tags: string[] = [];
+    if (query.trim()) tags.push(`搜索：${query.trim()}`);
+    if (artifactProvinceFilter) tags.push(`省份：${artifactProvinceFilter}`);
+    if (artifactCityFilter) tags.push(`城市：${artifactCityFilter}`);
+    if (artifactCategoryFilter) tags.push(`类型：${artifactCategoryFilter}`);
+    if (imageFilter !== "all") tags.push(`图片：${imageFilterLabel(imageFilter)}`);
+    if (artifactMuseumFilter) {
+      tags.push(`馆藏：${artifactMuseumOptions.find((museum) => museum.id === artifactMuseumFilter)?.name || artifactMuseumFilter}`);
+    }
+    return tags;
+  }, [artifactCategoryFilter, artifactCityFilter, artifactMuseumFilter, artifactMuseumOptions, artifactProvinceFilter, imageFilter, query]);
 
   const museumFilterOptions = useMemo(() => {
     const source = allMuseums.length ? allMuseums : museums;
@@ -1540,7 +1629,8 @@ export function AdminPage() {
     clearArtifactImageFile();
     setImageUrlToDownload("");
     setImageUploadMessage(null);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    navigate("/admin/artifacts/new");
+    adminScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const onDeleteArtifact = async (artifact: Artifact) => {
@@ -1607,6 +1697,7 @@ export function AdminPage() {
     setError(null);
     try {
       await loadMuseumDetail(museum.id);
+      navigate("/admin/museums/list");
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     }
@@ -1791,6 +1882,109 @@ export function AdminPage() {
     }
   };
 
+  const refreshRecommendationCandidates = async () => {
+    setError(null);
+    try {
+      if (recommendationTab === "artifacts") {
+        const data = await searchRecommendationArtifactCandidates(recommendationSearchQuery);
+        setRecommendationArtifactCandidates(Array.isArray(data.artifacts) ? data.artifacts : []);
+        return;
+      }
+      if (recommendationTab === "exhibitions") {
+        const data = await searchRecommendationExhibitionCandidates(recommendationSearchQuery);
+        setRecommendationExhibitionCandidates(Array.isArray(data.exhibitions) ? data.exhibitions : []);
+        return;
+      }
+      const [artifactData, exhibitionData] = await Promise.all([
+        searchRecommendationArtifactCandidates(recommendationSearchQuery),
+        searchRecommendationExhibitionCandidates(recommendationSearchQuery),
+      ]);
+      setRecommendationArtifactCandidates(Array.isArray(artifactData.artifacts) ? artifactData.artifacts : []);
+      setRecommendationExhibitionCandidates(Array.isArray(exhibitionData.exhibitions) ? exhibitionData.exhibitions : []);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  const recommendationItemsForTab = (config = recommendationsConfig) => {
+    if (recommendationTab === "artifacts") return config.artifactRecommendations;
+    if (recommendationTab === "exhibitions") return config.exhibitionRecommendations;
+    return config.editorPicks.items;
+  };
+
+  const setRecommendationItemsForTab = (items: HomeRecommendationItem[]) => {
+    const normalizedItems = items
+      .slice()
+      .sort((left, right) => left.order - right.order)
+      .map((item, index) => ({ ...item, order: index + 1 }));
+    setRecommendationsConfig((current) => {
+      if (recommendationTab === "artifacts") return { ...current, artifactRecommendations: normalizedItems };
+      if (recommendationTab === "exhibitions") return { ...current, exhibitionRecommendations: normalizedItems };
+      return { ...current, editorPicks: { ...current.editorPicks, items: normalizedItems } };
+    });
+  };
+
+  const addRecommendationItem = (type: RecommendationTargetType, targetId: string) => {
+    const currentItems = recommendationItemsForTab();
+    if (currentItems.some((item) => item.type === type && item.targetId === targetId)) {
+      setRecommendationsMessage("这个内容已经在当前栏目里。");
+      return;
+    }
+    const item: HomeRecommendationItem = {
+      id: `rec-${type}-${Date.now()}-${Math.random().toString(16).slice(2, 7)}`,
+      type,
+      targetId,
+      title: "",
+      reason: "",
+      coverUrl: "",
+      order: currentItems.length + 1,
+      enabled: true,
+    };
+    setRecommendationItemsForTab([...currentItems, item]);
+    setRecommendationsMessage("已加入当前推荐栏目，记得保存。");
+  };
+
+  const patchRecommendationItem = (id: string, patch: Partial<HomeRecommendationItem>) => {
+    setRecommendationItemsForTab(recommendationItemsForTab().map((item) => item.id === id ? { ...item, ...patch } : item));
+  };
+
+  const removeRecommendationItem = (id: string) => {
+    setRecommendationItemsForTab(recommendationItemsForTab().filter((item) => item.id !== id));
+  };
+
+  const moveRecommendationItem = (id: string, direction: -1 | 1) => {
+    const items = recommendationItemsForTab().slice().sort((left, right) => left.order - right.order);
+    const index = items.findIndex((item) => item.id === id);
+    const nextIndex = index + direction;
+    if (index < 0 || nextIndex < 0 || nextIndex >= items.length) return;
+    const nextItems = items.slice();
+    [nextItems[index], nextItems[nextIndex]] = [nextItems[nextIndex], nextItems[index]];
+    setRecommendationItemsForTab(nextItems);
+  };
+
+  const onSaveRecommendations = async () => {
+    setRecommendationsSaving(true);
+    setError(null);
+    setRecommendationsMessage(null);
+    try {
+      const data = await saveAdminRecommendations(recommendationsConfig);
+      setRecommendationsConfig(data.config);
+      setResolvedRecommendations(data.resolved);
+      setRecommendationsMessage("推荐配置已保存，刷新首页即可同步看到。");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setRecommendationsSaving(false);
+    }
+  };
+
+  const updateEditorPicksMeta = (patch: Partial<HomeRecommendationsConfig["editorPicks"]>) => {
+    setRecommendationsConfig((current) => ({
+      ...current,
+      editorPicks: { ...current.editorPicks, ...patch },
+    }));
+  };
+
   if (forbidden) return <ForbiddenPage />;
 
   const regularUserCount = stats ? Math.max(stats.totalUsers - stats.adminCount, 0) : 0;
@@ -1880,8 +2074,8 @@ export function AdminPage() {
             alt={artifact.name || "文物图片"}
             width={56}
             height={56}
-            onLoad={() => setFailedImageIds((current) => ({ ...current, [artifactId]: false }))}
-            onError={() => setFailedImageIds((current) => ({ ...current, [artifactId]: true }))}
+            onLoad={() => markArtifactImageFailed(artifactId, false)}
+            onError={() => markArtifactImageFailed(artifactId, true)}
             className="h-14 w-14 shrink-0 rounded-2xl bg-gray-100 object-cover"
           />
           <div className="min-w-0 flex-1">
@@ -2083,6 +2277,680 @@ export function AdminPage() {
       </div>
     </article>
   );
+
+  const navigateAdmin = (path: AdminRoute) => {
+    navigate(path);
+    adminScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const clearArtifactFilters = () => {
+    setQuery("");
+    setArtifactProvinceFilter("");
+    setArtifactCityFilter("");
+    setArtifactCategoryFilter("");
+    setImageFilter("all");
+    setArtifactMuseumFilter("");
+  };
+
+  const imageRepairArtifacts = filteredArtifacts.filter((artifact) => {
+    const artifactId = String(artifact.id);
+    const status = getArtifactImageStatusInfo(
+      artifact,
+      Boolean(failedImageIds[artifactId]),
+      localImageFileStatuses[artifactId],
+    );
+    return status.status === "no-image" || status.status === "remote-only" || status.status === "local-broken";
+  });
+
+  const noCoverMuseums = museums.filter((museum) => !museum.hasCover && !museumCoverUrl(museum));
+
+  const renderAdminShell = (children: React.ReactNode) => (
+    <div
+      ref={adminScrollRef}
+      className="absolute inset-x-0 bottom-0 overflow-y-auto overflow-x-hidden bg-[#F7F4ED] p-3 text-gray-950"
+      style={{ top: "var(--app-status-bar-height)", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" }}
+    >
+      <div className="mx-auto max-w-6xl space-y-4 pb-6">
+        <header className="rounded-[8px] border border-stone-200 bg-white px-4 py-4 shadow-sm">
+          <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
+            <div className="min-w-0">
+              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-800">Admin Console</div>
+              <h1 className="mt-1 text-2xl font-black leading-tight text-[#17211f]">MuseLink 后台管理</h1>
+              <div className="mt-1 text-xs font-bold leading-relaxed text-stone-500">
+                当前管理员：{UserSession.getMuseId() || "jiangzhong"}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <button type="button" onClick={() => goBackOrNavigate("/home")} className="rounded-[5px] bg-stone-100 px-3 py-2 text-xs font-black text-stone-700">
+                返回前台
+              </button>
+              <button type="button" onClick={onLogout} className="rounded-[5px] bg-rose-50 px-3 py-2 text-xs font-black text-rose-700">
+                退出登录
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {loading && <div className="rounded-[8px] border border-stone-200 bg-white p-4 text-sm font-bold text-stone-500 shadow-sm">正在加载后台数据...</div>}
+        {!loading && error && <div className="rounded-[8px] border border-rose-100 bg-rose-50 p-4 text-sm font-bold text-rose-700">后台操作失败：{error}</div>}
+        {!loading && children}
+        {cropTarget && (
+          <ImageCropperPanel
+            request={cropTarget}
+            onCancel={closeCropTarget}
+            onConfirm={onConfirmCrop}
+          />
+        )}
+      </div>
+    </div>
+  );
+
+  const AdminSectionHeader = ({ title, description, backTo }: { title: string; description?: string; backTo?: AdminRoute }) => (
+    <div className="flex flex-col gap-3 rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0">
+        <h2 className="text-xl font-black leading-tight text-[#17211f]">{title}</h2>
+        {description && <p className="mt-1 text-sm font-bold leading-relaxed text-stone-500">{description}</p>}
+      </div>
+      {backTo && (
+        <button type="button" onClick={() => navigateAdmin(backTo)} className="rounded-[5px] bg-stone-100 px-3 py-2 text-xs font-black text-stone-700">
+          返回上级
+        </button>
+      )}
+    </div>
+  );
+
+  const AdminEntryCard = ({
+    title,
+    description,
+    action,
+    onClick,
+    muted = false,
+  }: {
+    title: string;
+    description: string;
+    action: string;
+    onClick: () => void;
+    muted?: boolean;
+  }) => (
+    <article className="flex min-h-40 flex-col justify-between rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+      <div>
+        <h3 className="text-lg font-black text-[#17211f]">{title}</h3>
+        <p className="mt-2 text-sm font-bold leading-relaxed text-stone-500">{description}</p>
+      </div>
+      <button
+        type="button"
+        onClick={onClick}
+        className={`mt-5 rounded-[5px] px-4 py-2 text-sm font-black ${muted ? "bg-stone-100 text-stone-600" : "bg-[#17211f] text-white"}`}
+      >
+        {action}
+      </button>
+    </article>
+  );
+
+  const AdminDashboard = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="控制台首页" description="选择一个管理模块进入，首页不直接展示长列表或表单。" />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <AdminEntryCard title="文物管理" description={`管理 ${artifacts.length} 件文物的列表、编辑、补图和推荐。`} action="进入文物管理" onClick={() => navigateAdmin("/admin/artifacts")} />
+        <AdminEntryCard title="博物馆管理" description={`维护 ${museums.length} 个馆藏机构、封面和地区信息。`} action="进入博物馆管理" onClick={() => navigateAdmin("/admin/museums")} />
+        <AdminEntryCard title="导入文物" description="使用现有导入任务接口导入文物，并同步到统一数据源。" action="进入导入文物" onClick={() => navigateAdmin("/admin/import")} />
+        <AdminEntryCard title="用户统计" description="查看管理员、普通用户、联系方式和内容数据统计。" action="进入用户统计" onClick={() => navigateAdmin("/admin/users")} />
+        <AdminEntryCard title="图片工具" description="集中处理裁剪、异常图片检查和补图入口。" action="进入图片工具" onClick={() => navigateAdmin("/admin/image-tools")} />
+        <AdminEntryCard title="编辑推荐管理" description="管理首页展示的文物推荐、展览推荐和编辑精选内容。" action="进入推荐管理" onClick={() => navigateAdmin("/admin/recommendations")} />
+      </div>
+    </div>
+  );
+
+  const AdminArtifactsHome = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="文物管理" description="选择一个文物管理任务，避免在入口页堆叠列表和表单。" backTo="/admin" />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <AdminEntryCard title="文物列表" description="查看、搜索、筛选和编辑已有文物。" action="进入列表" onClick={() => navigateAdmin("/admin/artifacts/list")} />
+        <AdminEntryCard title="新增文物" description="按基础信息、图片信息、扩展信息分组录入文物。" action="新建文物" onClick={() => { setForm(emptyForm); clearArtifactImageFile(); navigateAdmin("/admin/artifacts/new"); }} />
+        <AdminEntryCard title="文物补图" description={`处理完全无图、仅外链图、本地图异常的文物。`} action="进入补图" onClick={() => { setImageFilter("no-local"); navigateAdmin("/admin/artifacts/images"); }} />
+        <AdminEntryCard title="首页推荐管理" description="在列表中编辑文物首页推荐状态与排序。" action="管理推荐" onClick={() => navigateAdmin("/admin/artifacts/list")} />
+        <AdminEntryCard title="批量操作" description="保留为后续批量任务入口；当前不新增接口。" action="查看说明" muted onClick={() => navigateAdmin("/admin/artifacts/bulk")} />
+      </div>
+    </div>
+  );
+
+  const AdminArtifactFilterPanel = () => (
+    <div className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <select value={artifactProvinceFilter} onChange={(e) => { setArtifactProvinceFilter(e.target.value); setArtifactCityFilter(""); }} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700">
+          <option value="">全部省份</option>
+          {PROVINCE_OPTIONS.map((item) => <option key={item} value={item}>{item}</option>)}
+        </select>
+        <select value={artifactCityFilter} onChange={(e) => setArtifactCityFilter(e.target.value)} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700">
+          <option value="">全部城市</option>
+          {artifactCityOptions.map((item) => <option key={item} value={item}>{item}</option>)}
+        </select>
+        <select value={artifactCategoryFilter} onChange={(e) => setArtifactCategoryFilter(e.target.value)} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700">
+          <option value="">全部类型</option>
+          {artifactCategoryOptions.map((item) => <option key={item} value={item}>{item}</option>)}
+        </select>
+        <select value={imageFilter} onChange={(e) => setImageFilter(e.target.value as ArtifactImageFilter)} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700">
+          <option value="all">全部</option>
+          <option value="local-complete">本地图已完成</option>
+          <option value="remote-only">仅有外链图</option>
+          <option value="no-local">无本地图</option>
+          <option value="local-broken">本地图异常</option>
+          <option value="no-image">完全无图</option>
+        </select>
+        <select value={artifactMuseumFilter} onChange={(e) => setArtifactMuseumFilter(e.target.value)} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700 sm:col-span-2">
+          <option value="">全部馆藏机构</option>
+          {artifactMuseumOptions.map((museum) => (
+            <option key={museum.id} value={museum.id}>{museum.name}（{museum.count}）</option>
+          ))}
+        </select>
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:flex">
+        <button type="button" onClick={() => setArtifactFilterOpen(false)} className="rounded-[5px] bg-[#17211f] px-4 py-2 text-xs font-black text-white">
+          应用筛选
+        </button>
+        <button type="button" onClick={clearArtifactFilters} className="rounded-[5px] bg-stone-100 px-4 py-2 text-xs font-black text-stone-700">
+          重置筛选
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderArtifactListCard = (artifact: Artifact) => {
+    const artifactId = String(artifact.id);
+    const imageStatus = getArtifactImageStatusInfo(artifact, Boolean(failedImageIds[artifactId]), localImageFileStatuses[artifactId]);
+    const editorRecommendationDraft = getEditorRecommendationDraft(artifact);
+    const isSavingEditorRecommendation = Boolean(editorRecommendationSavingIds[artifactId]);
+    return (
+      <article key={artifact.id} className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+        <div className="flex min-w-0 gap-3">
+          <SafeImage
+            src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")}
+            alt={artifact.name || "文物图片"}
+            width={64}
+            height={64}
+            onLoad={() => markArtifactImageFailed(artifactId, false)}
+            onError={() => markArtifactImageFailed(artifactId, true)}
+            className="h-16 w-16 shrink-0 rounded-[5px] bg-stone-100 object-cover"
+          />
+          <div className="min-w-0 flex-1">
+            <div className="break-words text-base font-black text-[#17211f]">{artifact.name || "未命名文物"}</div>
+            <div className="mt-1 text-xs font-bold leading-relaxed text-stone-500">{artifact.museumName || artifact.museum || "-"} · {artifact.dynasty || artifact.period || "-"} · {artifact.category || "-"}</div>
+            <span className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[11px] font-black ${imageStatusClassName(imageStatus.status)}`}>
+              {imageStatusLabel(imageStatus.status)}
+            </span>
+          </div>
+        </div>
+        <div className="mt-4 rounded-[5px] bg-stone-50 p-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="inline-flex items-center gap-2 text-xs font-black text-stone-700">
+              <input type="checkbox" checked={editorRecommendationDraft.isEditorRecommended} onChange={(event) => updateEditorRecommendationDraft(artifact, { isEditorRecommended: event.target.checked })} />
+              首页推荐
+            </label>
+            <input
+              type="number"
+              min={0}
+              max={9999}
+              value={editorRecommendationDraft.editorRecommendationOrder}
+              disabled={!editorRecommendationDraft.isEditorRecommended}
+              onChange={(event) => updateEditorRecommendationDraft(artifact, { editorRecommendationOrder: Math.max(0, Math.min(9999, Number(event.target.value) || 0)) })}
+              className="w-24 rounded-[5px] border border-stone-200 px-2 py-2 text-xs disabled:bg-stone-100 disabled:text-stone-400"
+            />
+            <button type="button" disabled={isSavingEditorRecommendation} onClick={() => onSaveEditorRecommendation(artifact)} className="rounded-[5px] bg-stone-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50">
+              {isSavingEditorRecommendation ? "保存中" : "保存推荐"}
+            </button>
+          </div>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <button type="button" onClick={() => onEditArtifact(artifact)} className="rounded-[5px] bg-amber-50 px-3 py-2 text-xs font-black text-amber-800">编辑</button>
+          <button type="button" onClick={() => onDeleteArtifact(artifact)} className="rounded-[5px] bg-rose-50 px-3 py-2 text-xs font-black text-rose-700">删除</button>
+        </div>
+      </article>
+    );
+  };
+
+  const AdminArtifactList = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="文物列表" description={`查看、搜索、筛选、编辑已有文物。当前显示 ${filteredArtifacts.length} / ${artifacts.length} 件。`} backTo="/admin/artifacts" />
+      {imageUploadMessage && <div className="rounded-[8px] border border-emerald-100 bg-emerald-50 p-4 text-sm font-bold text-emerald-700">{imageUploadMessage}</div>}
+      <section className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+        <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索名称、馆藏机构、朝代、类别" className="min-w-0 rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          <button type="button" onClick={() => setArtifactFilterOpen((value) => !value)} className="rounded-[5px] bg-[#17211f] px-4 py-3 text-sm font-black text-white">
+            筛选条件
+          </button>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {activeArtifactFilterTags.length === 0 ? (
+            <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-500">当前筛选：全部文物</span>
+          ) : activeArtifactFilterTags.map((tag) => (
+            <span key={tag} className="rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-700">{tag}</span>
+          ))}
+        </div>
+      </section>
+      {artifactFilterOpen && <AdminArtifactFilterPanel />}
+      <div className="grid gap-3 lg:grid-cols-2">
+        {filteredArtifacts.map(renderArtifactListCard)}
+        {filteredArtifacts.length === 0 && <div className="rounded-[8px] bg-white px-4 py-12 text-center text-sm font-bold text-stone-400">当前筛选下没有文物。</div>}
+      </div>
+    </div>
+  );
+
+  const AdminArtifactNew = () => (
+    <form onSubmit={onSaveArtifact} className="space-y-4 pb-20">
+      <AdminSectionHeader title={form.id ? "编辑文物" : "新增文物"} description={form.id ? `正在编辑 ID ${form.id}` : "按分组填写文物信息，保存时仍使用现有文物接口。"} backTo="/admin/artifacts" />
+      <section className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+        <h3 className="text-sm font-black text-[#17211f]">基础信息</h3>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="名称 *" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          <input value={form.museum} onChange={(e) => setForm({ ...form, museum: e.target.value })} placeholder="馆藏单位 *" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          <input value={form.dynasty} onChange={(e) => setForm({ ...form, dynasty: e.target.value })} placeholder="时代" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          <input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="类别" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          <input value={form.shortIntro} onChange={(e) => setForm({ ...form, shortIntro: e.target.value })} placeholder="一句话简介" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700 sm:col-span-2" />
+          <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="描述" rows={5} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700 sm:col-span-2" />
+        </div>
+      </section>
+      <section className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+        <h3 className="text-sm font-black text-[#17211f]">图片信息</h3>
+        <div className="mt-4 grid gap-3">
+          <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="图片 URL" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          <input value={form.sourceUrl} onChange={(e) => setForm({ ...form, sourceUrl: e.target.value })} placeholder="来源 URL" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          {form.id && (
+            <div className="rounded-[5px] border border-dashed border-stone-200 bg-stone-50 p-3">
+              <div className="text-xs font-black text-stone-600">本地上传</div>
+              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => { const file = e.target.files?.[0] || null; e.currentTarget.value = ""; if (file) openArtifactCrop(file, "裁剪文物卡片图片"); }} className="mt-2 block w-full rounded-[5px] border border-stone-200 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-[5px] file:border-0 file:bg-[#17211f] file:px-3 file:py-2 file:text-xs file:font-black file:text-white" />
+              {imageFile && imageFilePreviewUrl && <img src={imageFilePreviewUrl} alt="" className="mt-3 aspect-[4/3] w-32 rounded-[5px] object-cover" />}
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <button type="button" disabled={uploadingImage || !imageFile} onClick={onUploadArtifactImage} className="rounded-[5px] bg-[#17211f] px-3 py-2 text-xs font-black text-white disabled:opacity-50">{uploadingImage ? "保存中..." : "保存裁剪图并同步"}</button>
+                <button type="button" disabled={downloadingImageUrl || !imageUrlToDownload.trim()} onClick={onDownloadArtifactImageUrl} className="rounded-[5px] bg-amber-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50">{downloadingImageUrl ? "下载中..." : "从链接下载"}</button>
+              </div>
+              <input value={imageUrlToDownload} onChange={(e) => setImageUrlToDownload(e.target.value)} placeholder="粘贴图片链接下载到本地" className="mt-2 w-full rounded-[5px] border border-stone-200 bg-white px-3 py-2 text-sm outline-none focus:border-amber-700" />
+              {imageUploadMessage && <div className="mt-2 break-all text-xs font-bold text-emerald-700">{imageUploadMessage}</div>}
+            </div>
+          )}
+        </div>
+      </section>
+      <section className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+        <h3 className="text-sm font-black text-[#17211f]">扩展信息</h3>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="标签，用逗号分隔" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700 sm:col-span-2" />
+          <input value={form.material} onChange={(e) => setForm({ ...form, material: e.target.value })} placeholder="材质" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          <input value={form.dimensions} onChange={(e) => setForm({ ...form, dimensions: e.target.value })} placeholder="尺寸" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          <input value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })} placeholder="级别" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+          <input value={form.remarks} onChange={(e) => setForm({ ...form, remarks: e.target.value })} placeholder="地区 / 备注" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+        </div>
+      </section>
+      <div className="sticky bottom-0 z-20 -mx-3 border-t border-stone-200 bg-white/95 p-3 backdrop-blur">
+        <div className="mx-auto max-w-6xl">
+          <button disabled={saving} className="w-full rounded-[5px] bg-[#17211f] px-4 py-3 text-sm font-black text-white disabled:opacity-50">{saving ? "保存中..." : form.id ? "保存修改" : "新增文物"}</button>
+        </div>
+      </div>
+    </form>
+  );
+
+  const renderArtifactImageRepairCard = (artifact: Artifact) => {
+    const artifactId = String(artifact.id);
+    const imageStatus = getArtifactImageStatusInfo(artifact, Boolean(failedImageIds[artifactId]), localImageFileStatuses[artifactId]);
+    const rowSelection = rowImageSelections[artifactId];
+    const rowHasCustomUrl = Object.prototype.hasOwnProperty.call(rowImageUrls, artifactId);
+    const rowDownloadUrl = rowHasCustomUrl ? rowImageUrls[artifactId] : suggestedRemoteImageUrl(imageStatus.fields);
+    return (
+      <article key={artifact.id} className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+        <div className="flex gap-3">
+          <SafeImage src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")} alt={artifact.name || "文物图片"} width={64} height={64} onError={() => markArtifactImageFailed(artifactId, true)} className="h-16 w-16 shrink-0 rounded-[5px] bg-stone-100 object-cover" />
+          <div className="min-w-0 flex-1">
+            <div className="break-words font-black text-[#17211f]">{artifact.name || "未命名文物"}</div>
+            <div className="mt-1 text-xs font-bold text-stone-500">{artifact.museumName || artifact.museum || "-"}</div>
+            <span className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[11px] font-black ${imageStatusClassName(imageStatus.status)}`}>{imageStatusLabel(imageStatus.status)}</span>
+          </div>
+        </div>
+        <div className="mt-4 grid gap-2">
+          <label className="rounded-[5px] bg-stone-100 px-3 py-2 text-center text-xs font-black text-stone-700">
+            上传图片
+            <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => { const file = e.target.files?.[0] || null; e.currentTarget.value = ""; onSelectRowImage(artifactId, file); }} />
+          </label>
+          <button type="button" disabled={Boolean(rowUploadingIds[artifactId]) || !rowSelection} onClick={() => onUploadRowImage(artifact)} className="rounded-[5px] bg-[#17211f] px-3 py-2 text-xs font-black text-white disabled:opacity-50">
+            {rowUploadingIds[artifactId] ? "上传中..." : "保存裁剪图"}
+          </button>
+          <input value={rowDownloadUrl || ""} onChange={(e) => setRowImageUrls((current) => ({ ...current, [artifactId]: e.target.value }))} placeholder="粘贴图片链接下载" className="rounded-[5px] border border-stone-200 px-3 py-2 text-sm outline-none focus:border-amber-700" />
+          <button type="button" disabled={Boolean(rowDownloadingIds[artifactId]) || !String(rowDownloadUrl || "").trim()} onClick={() => onDownloadRowImageUrl(artifact)} className="rounded-[5px] bg-amber-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50">
+            {rowDownloadingIds[artifactId] ? "下载中..." : "粘贴图片链接下载"}
+          </button>
+          <button type="button" onClick={() => navigateAdmin("/admin/image-tools")} className="rounded-[5px] bg-stone-100 px-3 py-2 text-xs font-black text-stone-700">进入裁剪</button>
+          {rowSelection && <img src={rowSelection.previewUrl} alt="" className="aspect-[4/3] w-28 rounded-[5px] object-cover" />}
+          {rowImageErrors[artifactId] && <div className="text-xs font-bold text-rose-700">{rowImageErrors[artifactId]}</div>}
+        </div>
+      </article>
+    );
+  };
+
+  const AdminArtifactImages = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="文物补图" description={`只显示完全无图、仅有外链图、本地图异常的文物。当前 ${imageRepairArtifacts.length} 件。`} backTo="/admin/artifacts" />
+      <div className="grid gap-3 lg:grid-cols-2">
+        {imageRepairArtifacts.map(renderArtifactImageRepairCard)}
+        {imageRepairArtifacts.length === 0 && <div className="rounded-[8px] bg-white px-4 py-12 text-center text-sm font-bold text-stone-400">当前没有需要补图的文物。</div>}
+      </div>
+    </div>
+  );
+
+  const AdminImageTools = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="图片工具" description="图片相关能力集中入口，不在后台首页直接展开。" backTo="/admin" />
+      <div className="grid gap-3 sm:grid-cols-2">
+        <AdminEntryCard title="文物图片裁剪" description="从文物补图或编辑页上传图片后自动进入 4:3 裁剪。" action="去文物补图" onClick={() => navigateAdmin("/admin/artifacts/images")} />
+        <AdminEntryCard title="博物馆封面裁剪" description="选择博物馆后上传封面，自动进入 16:9 裁剪。" action="去封面补图" onClick={() => navigateAdmin("/admin/museums/images")} />
+        <AdminEntryCard title="检查异常图片" description="筛出本地图异常文物，便于重新上传或从外链下载。" action="检查异常" onClick={() => { setImageFilter("local-broken"); navigateAdmin("/admin/artifacts/images"); }} />
+        <AdminEntryCard title="批量生成缩略图" description="当前项目未提供独立批量缩略图接口，保留为工具入口说明。" action="查看补图队列" muted onClick={() => navigateAdmin("/admin/artifacts/images")} />
+      </div>
+    </div>
+  );
+
+  const AdminMuseumsHome = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="博物馆管理" description="选择博物馆管理任务，入口页不展开长列表。" backTo="/admin" />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <AdminEntryCard title="博物馆列表" description="查看、搜索、筛选和编辑馆藏机构。" action="进入列表" onClick={() => navigateAdmin("/admin/museums/list")} />
+        <AdminEntryCard title="新增博物馆" description="当前后端以导入创建和编辑为主，不新增接口。" action="查看说明" muted onClick={() => navigateAdmin("/admin/museums/new")} />
+        <AdminEntryCard title="封面补图" description={`处理 ${noCoverMuseums.length} 个缺少封面的博物馆。`} action="进入补图" onClick={() => navigateAdmin("/admin/museums/images")} />
+        <AdminEntryCard title="地区信息管理" description="通过博物馆列表筛选省市并编辑地区字段。" action="管理地区" onClick={() => navigateAdmin("/admin/museums/list")} />
+      </div>
+    </div>
+  );
+
+  const AdminMuseumList = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="博物馆列表" description={`当前显示 ${museums.length} 个博物馆机构。`} backTo="/admin/museums" />
+      <section className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <input value={museumQuery} onChange={(e) => setMuseumQuery(e.target.value)} placeholder="搜索标准名、别名、省市" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700 sm:col-span-2" />
+          <select value={museumProvinceFilter} onChange={(e) => { setMuseumProvinceFilter(e.target.value); setMuseumCityFilter(""); }} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700">
+            <option value="">全部省份</option>
+            {museumFilterOptions.provinces.map((item) => <option key={item} value={item}>{item}</option>)}
+          </select>
+          <select value={museumCityFilter} onChange={(e) => setMuseumCityFilter(e.target.value)} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700">
+            <option value="">全部城市</option>
+            {museumFilterOptions.cities.map((item) => <option key={item} value={item}>{item}</option>)}
+          </select>
+          <select value={museumStatusFilter} onChange={(e) => setMuseumStatusFilter(e.target.value as MuseumStatusFilter)} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700">
+            <option value="all">全部状态</option>
+            <option value="with-artifacts">有文物</option>
+            <option value="without-artifacts">无文物</option>
+            <option value="created-by-import">自动创建</option>
+            <option value="no-cover">无封面图</option>
+            <option value="duplicates">疑似重复</option>
+          </select>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button type="button" onClick={() => { setMuseumQuery(""); setMuseumProvinceFilter(""); setMuseumCityFilter(""); setMuseumTypeFilter(""); setMuseumGradeFilter(""); setMuseumStatusFilter("all"); }} className="rounded-[5px] bg-stone-100 px-3 py-2 text-xs font-black text-stone-700">重置筛选</button>
+          {activeMuseumFilterTags.map((tag) => <span key={tag} className="rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-700">{tag}</span>)}
+        </div>
+      </section>
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
+        <div className="space-y-3">{museums.map(renderMuseumMobileCard)}</div>
+        <section className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+          {selectedMuseum ? (
+            <form onSubmit={onSaveMuseum} className="space-y-4">
+              <h3 className="text-lg font-black text-[#17211f]">博物馆详情</h3>
+              <input value={museumForm.name} onChange={(e) => setMuseumForm({ ...museumForm, name: e.target.value })} placeholder="标准名称" className="w-full rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <select value={museumForm.type} onChange={(e) => setMuseumForm({ ...museumForm, type: e.target.value })} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700">{MUSEUM_TYPE_OPTIONS.map((item) => <option key={item} value={item}>{item}</option>)}</select>
+                <select value={museumForm.grade} onChange={(e) => setMuseumForm({ ...museumForm, grade: e.target.value })} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700">{MUSEUM_GRADE_OPTIONS.map((item) => <option key={item} value={item}>{item}</option>)}</select>
+                <select value={museumForm.province} onChange={(e) => setMuseumForm({ ...museumForm, province: e.target.value, city: "" })} className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700"><option value="">未填写省份</option>{PROVINCE_OPTIONS.map((item) => <option key={item} value={item}>{item}</option>)}</select>
+                <input value={museumForm.city} onChange={(e) => setMuseumForm({ ...museumForm, city: e.target.value })} placeholder="城市" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+              </div>
+              <input value={museumForm.address} onChange={(e) => setMuseumForm({ ...museumForm, address: e.target.value })} placeholder="地址" className="w-full rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+              <textarea value={museumForm.description} onChange={(e) => setMuseumForm({ ...museumForm, description: e.target.value })} placeholder="简介" rows={3} className="w-full rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+              <div className="rounded-[5px] border border-dashed border-stone-200 bg-stone-50 p-3">
+                <div className="text-xs font-black text-stone-600">封面图</div>
+                <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => { const file = e.target.files?.[0] || null; e.currentTarget.value = ""; if (file) openMuseumCoverCrop(file); }} className="mt-2 block w-full rounded-[5px] border border-stone-200 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-[5px] file:border-0 file:bg-[#17211f] file:px-3 file:py-2 file:text-xs file:font-black file:text-white" />
+                <input value={museumCoverUrlToDownload} onChange={(e) => setMuseumCoverUrlToDownload(e.target.value)} placeholder="粘贴封面图片链接" className="mt-2 w-full rounded-[5px] border border-stone-200 px-3 py-2 text-sm outline-none focus:border-amber-700" />
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <button type="button" disabled={saving || !museumCoverFile} onClick={onUploadMuseumCover} className="rounded-[5px] bg-[#17211f] px-3 py-2 text-xs font-black text-white disabled:opacity-50">保存裁剪封面</button>
+                  <button type="button" disabled={downloadingMuseumCoverUrl || !museumCoverUrlToDownload.trim()} onClick={onDownloadMuseumCoverUrl} className="rounded-[5px] bg-amber-900 px-3 py-2 text-xs font-black text-white disabled:opacity-50">链接下载</button>
+                </div>
+              </div>
+              {museumMessage && <div className="rounded-[5px] bg-emerald-50 p-3 text-xs font-bold text-emerald-700">{museumMessage}</div>}
+              <button disabled={saving || !museumForm.name.trim()} className="w-full rounded-[5px] bg-[#17211f] px-4 py-3 text-sm font-black text-white disabled:opacity-50">{saving ? "保存中..." : "保存博物馆信息"}</button>
+            </form>
+          ) : (
+            <div className="py-16 text-center text-sm font-bold text-stone-400">选择一个博物馆查看详情、编辑信息和上传封面。</div>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+
+  const AdminMuseumNew = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="新增博物馆" description="当前项目没有独立的新建博物馆 API；保持接口不变，此页作为入口说明。" backTo="/admin/museums" />
+      <div className="rounded-[8px] border border-stone-200 bg-white p-6 text-sm font-bold leading-relaxed text-stone-600 shadow-sm">
+        新博物馆目前通过“导入文物”流程自动识别并创建，或在“博物馆列表”中选择已有机构编辑资料。这里不新增数据源和接口逻辑。
+      </div>
+    </div>
+  );
+
+  const AdminMuseumImages = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="博物馆封面补图" description={`只显示缺少封面的博物馆。当前 ${noCoverMuseums.length} 个。`} backTo="/admin/museums" />
+      <div className="grid gap-3 lg:grid-cols-2">
+        {noCoverMuseums.map((museum) => (
+          <article key={museum.id} className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+            <div className="font-black text-[#17211f]">{museum.name}</div>
+            <div className="mt-1 text-xs font-bold text-stone-500">{[museum.province, museum.city].filter(Boolean).join(" / ") || "未填写地区"} · 文物 {museum.artifactCount || 0}</div>
+            <button type="button" onClick={() => onSelectMuseum(museum)} className="mt-4 rounded-[5px] bg-[#17211f] px-4 py-2 text-xs font-black text-white">选择并上传封面</button>
+          </article>
+        ))}
+        {noCoverMuseums.length === 0 && <div className="rounded-[8px] bg-white px-4 py-12 text-center text-sm font-bold text-stone-400">当前没有需要补封面的博物馆。</div>}
+      </div>
+    </div>
+  );
+
+  const AdminImportPage = () => (
+    <section className="space-y-4">
+      <AdminSectionHeader title="导入文物" description="导入执行接口保持 /api/import/run，完成后同步到统一数据源。" backTo="/admin" />
+      <div className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+        <button type="button" onClick={loadImportTemplate} className="rounded-[5px] bg-stone-100 px-4 py-2 text-sm font-black text-stone-700">填入导入模板</button>
+        <textarea value={importText} onChange={(e) => setImportText(e.target.value)} placeholder='粘贴导入任务 JSON，例如 {"sourceType":"inline","format":"json","records":[...],"mode":"append"}' rows={18} className="mt-4 w-full rounded-[5px] border border-stone-200 px-3 py-3 font-mono text-sm outline-none focus:border-amber-700" />
+        <button disabled={saving || !importText.trim()} onClick={runImport} className="mt-3 w-full rounded-[5px] bg-[#17211f] px-5 py-3 text-sm font-black text-white disabled:opacity-50">{saving ? "导入中..." : "执行导入"}</button>
+        {importResult && <div className="mt-3 rounded-[5px] bg-emerald-50 p-3 text-sm font-bold text-emerald-700">{importResult}</div>}
+      </div>
+    </section>
+  );
+
+  const AdminUsersPage = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="用户统计" description="查看用户、管理员和内容活动数据。" backTo="/admin" />
+      {stats && (
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {[["Total Users", stats.totalUsers], ["Admins", stats.adminCount], ["Members", regularUserCount], ["Contacts", stats.usersWithContact]].map(([label, value]) => (
+            <div key={label} className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+              <div className="text-[10px] font-black uppercase tracking-[0.16em] text-stone-400">{label}</div>
+              <div className="mt-2 text-2xl font-black text-[#17211f]">{value}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="grid gap-3 lg:grid-cols-2">{users.map(renderUserMobileCard)}</div>
+    </div>
+  );
+
+  const resolvedRecommendationItem = (item: HomeRecommendationItem) => {
+    const allItems = [
+      ...(resolvedRecommendations?.artifactRecommendations || []),
+      ...(resolvedRecommendations?.exhibitionRecommendations || []),
+      ...(resolvedRecommendations?.editorPicks.items || []),
+    ];
+    return allItems.find((resolved) => resolved.id === item.id);
+  };
+
+  const renderRecommendationItemCard = (item: HomeRecommendationItem) => {
+    const resolved = resolvedRecommendationItem(item);
+    const artifact = resolved?.artifact;
+    const exhibition = resolved?.exhibition;
+    const displayTitle = resolved?.displayTitle || item.title || artifact?.name || exhibition?.title || item.targetId;
+    const displayReason = resolved?.displayReason || item.reason || artifact?.shortIntro || artifact?.description || exhibition?.intro || "";
+    const coverUrl = resolved?.displayCoverUrl || item.coverUrl || (artifact ? String(artifactImageUrlRaw(artifact, "thumbnail") ?? "") : exhibition?.coverUrl || "");
+
+    return (
+      <article key={item.id} className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+        <div className="flex gap-3">
+          {coverUrl ? (
+            <img src={coverUrl} alt="" className="h-16 w-16 shrink-0 rounded-[5px] bg-stone-100 object-cover" />
+          ) : (
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[5px] bg-stone-100 text-[10px] font-black text-stone-400">无图</div>
+          )}
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-black text-amber-800">{item.type === "artifact" ? "文物" : "展览"}</span>
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${item.enabled ? "bg-emerald-50 text-emerald-700" : "bg-stone-100 text-stone-500"}`}>
+                {item.enabled ? "启用" : "停用"}
+              </span>
+              <span className="text-[10px] font-bold text-stone-400">Order {item.order}</span>
+            </div>
+            <div className="mt-1 break-words text-sm font-black text-[#17211f]">{displayTitle}</div>
+            <div className="mt-1 line-clamp-2 text-xs font-bold leading-relaxed text-stone-500">{displayReason || "暂无推荐理由"}</div>
+            <div className="mt-1 break-all font-mono text-[10px] text-stone-400">{item.targetId}</div>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-2">
+          <input value={item.title} onChange={(e) => patchRecommendationItem(item.id, { title: e.target.value })} placeholder="推荐标题（为空则使用原标题）" className="rounded-[5px] border border-stone-200 px-3 py-2 text-sm outline-none focus:border-amber-700" />
+          <textarea value={item.reason} onChange={(e) => patchRecommendationItem(item.id, { reason: e.target.value })} placeholder="推荐理由（为空则使用简介摘要）" rows={2} className="rounded-[5px] border border-stone-200 px-3 py-2 text-sm outline-none focus:border-amber-700" />
+          {item.type === "exhibition" && (
+            <input value={item.coverUrl || ""} onChange={(e) => patchRecommendationItem(item.id, { coverUrl: e.target.value })} placeholder="推荐封面 URL（为空则使用展览封面）" className="rounded-[5px] border border-stone-200 px-3 py-2 text-sm outline-none focus:border-amber-700" />
+          )}
+          <div className="grid grid-cols-2 gap-2">
+            <label className="flex items-center gap-2 rounded-[5px] bg-stone-50 px-3 py-2 text-xs font-black text-stone-700">
+              <input type="checkbox" checked={item.enabled} onChange={(e) => patchRecommendationItem(item.id, { enabled: e.target.checked })} />
+              启用
+            </label>
+            <input type="number" value={item.order} onChange={(e) => patchRecommendationItem(item.id, { order: Number(e.target.value) || 0 })} className="rounded-[5px] border border-stone-200 px-3 py-2 text-xs outline-none focus:border-amber-700" />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <button type="button" onClick={() => moveRecommendationItem(item.id, -1)} className="rounded-[5px] bg-stone-100 px-3 py-2 text-xs font-black text-stone-700">上移</button>
+            <button type="button" onClick={() => moveRecommendationItem(item.id, 1)} className="rounded-[5px] bg-stone-100 px-3 py-2 text-xs font-black text-stone-700">下移</button>
+            <button type="button" onClick={() => removeRecommendationItem(item.id)} className="rounded-[5px] bg-rose-50 px-3 py-2 text-xs font-black text-rose-700">删除</button>
+          </div>
+        </div>
+      </article>
+    );
+  };
+
+  const renderArtifactCandidate = (artifact: Artifact) => (
+    <button key={artifact.id} type="button" onClick={() => addRecommendationItem("artifact", artifact.id)} className="flex w-full gap-3 rounded-[5px] bg-white p-3 text-left shadow-sm">
+      <SafeImage src={String(artifactImageUrlRaw(artifact, "thumbnail") ?? "")} alt={artifact.name} width={48} height={48} className="h-12 w-12 shrink-0 rounded-[5px] bg-stone-100 object-cover" />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-black text-[#17211f]">{artifact.name}</span>
+        <span className="mt-1 block truncate text-xs font-bold text-stone-500">{artifact.museumName || artifact.museum || "-"} · {artifact.dynasty || artifact.period || "-"}</span>
+      </span>
+    </button>
+  );
+
+  const renderExhibitionCandidate = (exhibition: Exhibition) => (
+    <button key={exhibition.id} type="button" onClick={() => addRecommendationItem("exhibition", exhibition.id)} className="flex w-full gap-3 rounded-[5px] bg-white p-3 text-left shadow-sm">
+      {exhibition.coverUrl ? (
+        <img src={exhibition.coverUrl} alt="" className="h-12 w-12 shrink-0 rounded-[5px] bg-stone-100 object-cover" />
+      ) : (
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[5px] bg-stone-100 text-[10px] font-black text-stone-400">无图</span>
+      )}
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-black text-[#17211f]">{exhibition.title}</span>
+        <span className="mt-1 block truncate text-xs font-bold text-stone-500">{exhibition.userName || "公开展览"} · {exhibition.artifactIds?.length || 0} 件文物</span>
+      </span>
+    </button>
+  );
+
+  const AdminRecommendationsPage = () => {
+    const items = recommendationItemsForTab();
+    return (
+      <div className="space-y-4">
+        <AdminSectionHeader title="编辑推荐管理" description="管理首页展示的文物推荐、展览推荐和编辑精选内容。" backTo="/admin" />
+        <div className="grid grid-cols-3 gap-2 rounded-[8px] border border-stone-200 bg-white p-2 shadow-sm">
+          {[
+            ["artifacts", "首页文物推荐"],
+            ["exhibitions", "首页展览推荐"],
+            ["editor-picks", "编辑精选栏目"],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => {
+                setRecommendationTab(id as typeof recommendationTab);
+                setRecommendationSearchQuery("");
+              }}
+              className={`rounded-[5px] px-2 py-2 text-xs font-black ${recommendationTab === id ? "bg-[#17211f] text-white" : "bg-stone-100 text-stone-700"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {recommendationTab === "editor-picks" && (
+          <section className="grid gap-3 rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+            <label className="flex items-center gap-2 text-xs font-black text-stone-700">
+              <input type="checkbox" checked={recommendationsConfig.editorPicks.enabled} onChange={(e) => updateEditorPicksMeta({ enabled: e.target.checked })} />
+              显示编辑精选栏目
+            </label>
+            <input value={recommendationsConfig.editorPicks.title} onChange={(e) => updateEditorPicksMeta({ title: e.target.value })} placeholder="栏目标题" className="rounded-[5px] border border-stone-200 px-3 py-2 text-sm outline-none focus:border-amber-700" />
+            <input value={recommendationsConfig.editorPicks.subtitle} onChange={(e) => updateEditorPicksMeta({ subtitle: e.target.value })} placeholder="栏目副标题" className="rounded-[5px] border border-stone-200 px-3 py-2 text-sm outline-none focus:border-amber-700" />
+          </section>
+        )}
+
+        <section className="rounded-[8px] border border-stone-200 bg-stone-50 p-4 shadow-sm">
+          <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+            <input value={recommendationSearchQuery} onChange={(e) => setRecommendationSearchQuery(e.target.value)} placeholder="搜索可推荐文物或公开展览" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
+            <button type="button" onClick={refreshRecommendationCandidates} className="rounded-[5px] bg-[#17211f] px-4 py-3 text-sm font-black text-white">搜索</button>
+          </div>
+          <div className="mt-3 grid gap-2 lg:grid-cols-2">
+            {(recommendationTab === "artifacts" || recommendationTab === "editor-picks") && recommendationArtifactCandidates.map(renderArtifactCandidate)}
+            {(recommendationTab === "exhibitions" || recommendationTab === "editor-picks") && recommendationExhibitionCandidates.map(renderExhibitionCandidate)}
+          </div>
+        </section>
+
+        {recommendationsMessage && <div className="rounded-[8px] border border-emerald-100 bg-emerald-50 p-3 text-sm font-bold text-emerald-700">{recommendationsMessage}</div>}
+
+        <section className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-sm font-black text-[#17211f]">当前推荐项（{items.length}）</h3>
+            <button type="button" disabled={recommendationsSaving} onClick={onSaveRecommendations} className="rounded-[5px] bg-amber-900 px-4 py-2 text-xs font-black text-white disabled:opacity-50">
+              {recommendationsSaving ? "保存中..." : "保存推荐配置"}
+            </button>
+          </div>
+          <div className="grid gap-3 lg:grid-cols-2">
+            {items.map(renderRecommendationItemCard)}
+            {items.length === 0 && <div className="rounded-[8px] bg-white px-4 py-12 text-center text-sm font-bold text-stone-400">当前栏目还没有推荐项。</div>}
+          </div>
+        </section>
+      </div>
+    );
+  };
+
+  const AdminBulkPlaceholder = () => (
+    <div className="space-y-4">
+      <AdminSectionHeader title="批量操作" description="不新增接口逻辑，当前作为后续批量能力入口。" backTo="/admin/artifacts" />
+      <div className="rounded-[8px] border border-stone-200 bg-white p-6 text-sm font-bold text-stone-600 shadow-sm">当前可用的批量相关工作先通过“导入文物”和“文物补图”完成。</div>
+    </div>
+  );
+
+  const renderAdminRoute = () => {
+    if (adminPath === "/admin") return AdminDashboard();
+    if (adminPath === "/admin/artifacts") return AdminArtifactsHome();
+    if (adminPath === "/admin/artifacts/list") return AdminArtifactList();
+    if (adminPath === "/admin/artifacts/new") return AdminArtifactNew();
+    if (adminPath === "/admin/artifacts/images") return AdminArtifactImages();
+    if (adminPath === "/admin/artifacts/bulk") return AdminBulkPlaceholder();
+    if (adminPath === "/admin/image-tools") return AdminImageTools();
+    if (adminPath === "/admin/museums") return AdminMuseumsHome();
+    if (adminPath === "/admin/museums/list") return AdminMuseumList();
+    if (adminPath === "/admin/museums/new") return AdminMuseumNew();
+    if (adminPath === "/admin/museums/images") return AdminMuseumImages();
+    if (adminPath === "/admin/recommendations") return AdminRecommendationsPage();
+    if (adminPath === "/admin/import") return AdminImportPage();
+    if (adminPath === "/admin/users") return AdminUsersPage();
+    return AdminDashboard();
+  };
+
+  return renderAdminShell(renderAdminRoute());
 
   return (
     <div className="h-full min-h-0 overflow-y-auto bg-gray-50 p-3">
@@ -2391,8 +3259,8 @@ export function AdminPage() {
                               alt={artifact.name || "文物图片"}
                               width={56}
                               height={56}
-                              onLoad={() => setFailedImageIds((current) => ({ ...current, [artifactId]: false }))}
-                              onError={() => setFailedImageIds((current) => ({ ...current, [artifactId]: true }))}
+                              onLoad={() => markArtifactImageFailed(artifactId, false)}
+                              onError={() => markArtifactImageFailed(artifactId, true)}
                               className="h-14 w-14 rounded-2xl bg-gray-100 object-cover"
                             />
                             <div>

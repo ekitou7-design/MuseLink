@@ -36,7 +36,7 @@ import {
   displayDbString,
 } from './lib/dbDisplay';
 import { PROVINCIAL_MUSEUMS } from '../backend/provincial-museums';
-import { fetchEditorRecommendedArtifacts, fetchMergedArtifacts, searchRelics } from './modules/artifacts/services/artifactsService';
+import { fetchMergedArtifacts, searchRelics } from './modules/artifacts/services/artifactsService';
 import {
   buildArtifactRecommendations,
   readRecommendationPreferences,
@@ -84,6 +84,10 @@ import { AIExhibitionModal } from './modules/curation/components/AIExhibitionMod
 import { AICurationEntry } from './modules/curation/components/AICurationEntry';
 import { CuratorTIQuiz } from './modules/curation/components/CuratorTIQuiz';
 import { ArtifactSwipePage } from './pages/ArtifactSwipePage';
+import {
+  fetchHomeRecommendations,
+  type ResolvedHomeRecommendations,
+} from './modules/recommendations/services/homeRecommendationsService';
 import type { CuratorGuideAnswers } from './modules/curation/data/curatorPreferences';
 import { ExhibitionTopTabs, type ExhibitionView } from './modules/exhibitions/components/ExhibitionTopTabs';
 import { ExploreTabBar } from './modules/artifacts/components/ExploreTabBar';
@@ -102,29 +106,7 @@ import { goBackOrNavigate, navigate } from './router/router';
 // --- Components ---
 
 const RECOMMENDED_ARTIFACT_LIMIT = 8;
-const EDITOR_RECOMMENDED_EXHIBITION_LIMIT = 10;
 const ALL_ARTIFACT_PAGE_SIZE = 24;
-const TEST_EDITOR_RECOMMENDED_EXHIBITION_ID = 'editor-recommendation-test-exhibition';
-const TEST_EDITOR_RECOMMENDED_EXHIBITION: Exhibition = {
-  id: TEST_EDITOR_RECOMMENDED_EXHIBITION_ID,
-  userId: 'editorial',
-  userName: '博悟编辑部',
-  userPhoto: '',
-  title: '测试展览',
-  intro: '编辑推荐展览占位内容，后续可替换为真实推荐展览。',
-  coverUrl: '',
-  artifactIds: [],
-  isPublic: true,
-  likesCount: 0,
-  favsCount: 0,
-  commentsCount: 0,
-  createdAt: '2026-05-18T00:00:00.000Z',
-  updatedAt: '2026-05-18T00:00:00.000Z',
-};
-
-const isEditorRecommendationPlaceholder = (exhibition: Exhibition | null) => (
-  exhibition?.id === TEST_EDITOR_RECOMMENDED_EXHIBITION_ID
-);
 
 type ToastState = {
   id: number;
@@ -150,7 +132,7 @@ export default function App({
   const canAccessAdmin = userProfile?.role === 'admin';
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [artifactPool, setArtifactPool] = useState<Artifact[]>(MOCK_ARTIFACTS);
-  const [editorRecommendedArtifacts, setEditorRecommendedArtifacts] = useState<Artifact[]>([]);
+  const [homeRecommendations, setHomeRecommendations] = useState<ResolvedHomeRecommendations | null>(null);
   const [museumPool, setMuseumPool] = useState<Museum[]>([]);
   const [selectedMuseumId, setSelectedMuseumId] = useState<string | null>(initialMuseumId || null);
   const [selectedArtifact, setSelectedArtifact] = useState<Artifact | null>(null);
@@ -727,9 +709,26 @@ export default function App({
     [artifactPool, favorites, history, preferenceProfile, recommendationPreferences, searchHistory]
   );
 
+  const configuredArtifactRecommendations = useMemo(
+    () => (homeRecommendations?.artifactRecommendations || []).filter((item) => item.artifact),
+    [homeRecommendations]
+  );
+
   const recommendedArtifacts = useMemo(
-    () => recommendedArtifactResults.map((item) => item.artifact),
-    [recommendedArtifactResults]
+    () => configuredArtifactRecommendations.length > 0
+      ? configuredArtifactRecommendations.map((item) => item.artifact!)
+      : recommendedArtifactResults.map((item) => item.artifact),
+    [configuredArtifactRecommendations, recommendedArtifactResults]
+  );
+
+  const editorPickItems = useMemo(
+    () => homeRecommendations?.editorPicks.enabled ? homeRecommendations.editorPicks.items : [],
+    [homeRecommendations]
+  );
+
+  const homeExhibitionRecommendations = useMemo(
+    () => (homeRecommendations?.exhibitionRecommendations || []).filter((item) => item.exhibition),
+    [homeRecommendations]
   );
 
   const hasSwipeHistory = useMemo(() => readSwipeHistory().length > 0, [preferenceProfile]);
@@ -758,11 +757,6 @@ export default function App({
     const tags = countArtifactValues(artifactPool.flatMap((artifact) => (artifact.tags || []).map(artifactTagText)));
     return { categories, materials, eras, museums, tags };
   }, [artifactPool, countArtifactValues]);
-
-  const editorRecommendedExhibitions = useMemo(
-    () => [TEST_EDITOR_RECOMMENDED_EXHIBITION].slice(0, EDITOR_RECOMMENDED_EXHIBITION_LIMIT),
-    []
-  );
 
   const museumArtifacts = useMemo(() => {
     return artifactPool
@@ -1079,27 +1073,25 @@ export default function App({
   }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
+    let cancelled = false;
 
-    const fetchEditorRecommendations = async () => {
+    const fetchRecommendations = async () => {
       try {
-        const data = await fetchEditorRecommendedArtifacts({ limit: 6, signal: controller.signal });
-        if (!controller.signal.aborted) {
-          setEditorRecommendedArtifacts(Array.isArray(data.artifacts) ? data.artifacts : []);
-        }
+        const data = await fetchHomeRecommendations();
+        if (!cancelled) setHomeRecommendations(data);
       } catch (error) {
-        if (!controller.signal.aborted) {
-          console.error("Fetch editor recommended artifacts error:", error);
-          setEditorRecommendedArtifacts([]);
+        if (!cancelled) {
+          console.error("Fetch home recommendations error:", error);
+          setHomeRecommendations(null);
         }
       }
     };
 
-    fetchEditorRecommendations();
-    const interval = setInterval(fetchEditorRecommendations, 30000);
+    fetchRecommendations();
+    const interval = setInterval(fetchRecommendations, 30000);
 
     return () => {
-      controller.abort();
+      cancelled = true;
       clearInterval(interval);
     };
   }, []);
@@ -1434,6 +1426,7 @@ export default function App({
                         </h2>
                         <Banner
                           artifacts={recommendedArtifacts}
+                          recommendations={configuredArtifactRecommendations}
                           onArtifactClick={(artifact) => {
                             setSelectedArtifact(artifact);
                             addToHistory(artifact.id);
@@ -1493,25 +1486,74 @@ export default function App({
                         </div>
                       </button>
 
-                      {/* 3. Editor Artifact Recommendations */}
-                      {editorRecommendedArtifacts.length > 0 && (
+                      {/* 3. Editor Picks */}
+                      {editorPickItems.length > 0 && (
+                        <div className="space-y-4">
+                          <div>
+                            <h2 className="text-lg font-bold text-secondary font-serif flex items-center gap-2 force-nowrap">
+                              <BookmarkCheck size={18} className="text-primary flex-shrink-0" />
+                              {homeRecommendations?.editorPicks.title || '编辑推荐'}
+                            </h2>
+                            {homeRecommendations?.editorPicks.subtitle && (
+                              <p className="mt-1 text-xs font-bold text-gray-400">{homeRecommendations.editorPicks.subtitle}</p>
+                            )}
+                          </div>
+
+                          <div className="columns-2 gap-1.5">
+                            {editorPickItems.map(item => {
+                              const artifact = item.artifact;
+                              const exhibition = item.exhibition;
+                              return (
+                                <div key={`editor-pick-${item.id}`} className="mb-1.5 break-inside-avoid">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (artifact) {
+                                        setSelectedArtifact(artifact);
+                                        addToHistory(artifact.id);
+                                      } else if (exhibition) {
+                                        setSelectedExhibition(exhibition);
+                                      }
+                                    }}
+                                    className="w-full overflow-hidden rounded-[5px] border border-gray-100 bg-white text-left shadow-sm"
+                                  >
+                                    {item.displayCoverUrl ? (
+                                      <SafeImage src={item.displayCoverUrl} alt={item.displayTitle} className="aspect-[4/3] w-full bg-gray-100 object-cover" />
+                                    ) : (
+                                      <div className="flex aspect-[4/3] w-full items-center justify-center bg-gray-100 text-xs font-black text-gray-400">暂无图片</div>
+                                    )}
+                                    <div className="space-y-1 p-3">
+                                      <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-black text-amber-800">{item.type === 'artifact' ? '文物' : '展览'}</span>
+                                      <h3 className="line-clamp-2 text-sm font-black leading-snug text-gray-950">{item.displayTitle}</h3>
+                                      <p className="line-clamp-2 text-[10px] font-bold leading-relaxed text-gray-500">{item.displayReason || '编辑精选内容'}</p>
+                                    </div>
+                                  </button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {homeExhibitionRecommendations.length > 0 && (
                         <div className="space-y-4">
                           <h2 className="text-lg font-bold text-secondary font-serif flex items-center gap-2 force-nowrap">
-                            <BookmarkCheck size={18} className="text-primary flex-shrink-0" />
-                            编辑推荐文物
+                            <Library size={18} className="text-primary flex-shrink-0" />
+                            展览推荐
                           </h2>
 
                           <div className="columns-2 gap-1.5">
-                            {editorRecommendedArtifacts.map(artifact => (
-                              <div key={`editor-artifact-${artifact.id}`} className="break-inside-avoid mb-1.5">
-                                <ArtifactCard
-                                  artifact={artifact}
-                                  isFavorite={favorites.includes(artifact.id)}
-                                  onFavoriteClick={() => toggleFavorite(artifact.id)}
-                                  onClick={() => {
-                                    setSelectedArtifact(artifact);
-                                    addToHistory(artifact.id);
+                            {homeExhibitionRecommendations.map(item => item.exhibition && (
+                              <div key={`home-exhibition-rec-${item.id}`} className="mb-1.5 break-inside-avoid">
+                                <ExhibitionCard
+                                  exhibition={{
+                                    ...item.exhibition,
+                                    title: item.displayTitle || item.exhibition.title,
+                                    intro: item.displayReason || item.exhibition.intro,
+                                    coverUrl: item.displayCoverUrl || item.exhibition.coverUrl,
                                   }}
+                                  onClick={() => setSelectedExhibition(item.exhibition!)}
+                                  variant="masonry"
                                 />
                               </div>
                             ))}
@@ -2458,11 +2500,9 @@ export default function App({
             onClose={() => setSelectedExhibition(null)} 
             onArtifactClick={(a: Artifact) => setSelectedArtifact(a)}
             artifacts={artifactPool}
-            isFavorite={!isEditorRecommendationPlaceholder(selectedExhibition) && favExhibitionIds.includes(selectedExhibition.id)}
+            isFavorite={favExhibitionIds.includes(selectedExhibition.id)}
             toggleFavorite={() => {
-              if (!isEditorRecommendationPlaceholder(selectedExhibition)) {
-                toggleExhibitionFavorite(selectedExhibition.id);
-              }
+              toggleExhibitionFavorite(selectedExhibition.id);
             }}
             user={user}
             onEdit={() => {

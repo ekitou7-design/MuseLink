@@ -19,16 +19,24 @@ const RECOMMENDATION_BANNER_LIMIT = 5;
 
 type BannerProps = {
   artifacts: Artifact[];
+  recommendations?: Array<{
+    id: string;
+    artifact?: Artifact;
+    displayTitle?: string;
+    displayReason?: string;
+    displayCoverUrl?: string;
+  }>;
   onArtifactClick?: (artifact: Artifact) => void;
 };
 
-export const Banner = ({ artifacts, onArtifactClick }: BannerProps) => {
+export const Banner = ({ artifacts, recommendations = [], onArtifactClick }: BannerProps) => {
   const [index, setIndex] = useState(0);
   const banners = useMemo(() => (
-    artifacts
+    (recommendations.length > 0 ? recommendations.map((item) => item.artifact).filter(Boolean) as Artifact[] : artifacts)
       .filter((artifact) => !isStrictDbEmpty(artifactNameRaw(artifact)))
       .slice(0, RECOMMENDATION_BANNER_LIMIT)
       .map((artifact) => {
+        const recommendation = recommendations.find((item) => item.artifact?.id === artifact.id);
         const museum = displayDbString(artifactMuseumRaw(artifact));
         const era = displayDbString(artifactEraRaw(artifact));
         const subtitle = [museum, era]
@@ -38,13 +46,13 @@ export const Banner = ({ artifacts, onArtifactClick }: BannerProps) => {
         return {
           artifact,
           id: artifact.id,
-          title: displayDbString(artifactNameRaw(artifact)),
+          title: recommendation?.displayTitle || displayDbString(artifactNameRaw(artifact)),
           subtitle: subtitle || '馆藏推荐',
-          image: String(artifactImageUrlRaw(artifact) ?? ''),
-          description: displayDbString(artifactDescriptionRaw(artifact)),
+          image: recommendation?.displayCoverUrl || String(artifactImageUrlRaw(artifact) ?? ''),
+          description: recommendation?.displayReason || displayDbString(artifactDescriptionRaw(artifact)),
         };
       })
-  ), [artifacts]);
+  ), [artifacts, recommendations]);
 
   useEffect(() => {
     setIndex(0);

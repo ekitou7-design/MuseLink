@@ -50,6 +50,13 @@ import {
   setExhibitionFavoriteCount,
   updateExhibition,
 } from "./backend/exhibitions";
+import {
+  getAdminRecommendationsResponse,
+  resolveHomeRecommendations,
+  searchRecommendationArtifactCandidates,
+  searchRecommendationExhibitionCandidates,
+  writeHomeRecommendationsConfig,
+} from "./backend/home-recommendations";
 import { getFavExhibitions, getFavorites, toggleFavExhibition, toggleFavorite } from "./backend/user-data";
 import { db as appDb } from "./backend/api/db/client";
 import { migrateArtifactDetails } from "./backend/api/db/migrateArtifactDetails";
@@ -2269,6 +2276,54 @@ async function startServer() {
   });
 
   app.get("/api/editor-recommended-artifacts", listEditorRecommendedArtifacts);
+
+  app.get("/api/home/recommendations", async (_req, res) => {
+    try {
+      const recommendations = await resolveHomeRecommendations(true);
+      res.json(recommendations);
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  app.get("/api/admin/recommendations", requireAdmin, async (_req, res) => {
+    try {
+      res.json(await getAdminRecommendationsResponse());
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  app.put("/api/admin/recommendations", requireAdmin, async (req, res) => {
+    try {
+      const config = await writeHomeRecommendationsConfig(req.body || {});
+      res.json({ config, resolved: await resolveHomeRecommendations(false) });
+    } catch (error) {
+      res.status(400).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  app.get("/api/admin/recommendation-candidates/artifacts", requireAdmin, async (req, res) => {
+    try {
+      const q = getSingleQueryParam(req.query.q as string | string[] | undefined) || "";
+      const limit = Number(getSingleQueryParam(req.query.limit as string | string[] | undefined) || "20");
+      const artifacts = await searchRecommendationArtifactCandidates(q, limit);
+      res.json({ artifacts });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
+
+  app.get("/api/admin/recommendation-candidates/exhibitions", requireAdmin, async (req, res) => {
+    try {
+      const q = getSingleQueryParam(req.query.q as string | string[] | undefined) || "";
+      const limit = Number(getSingleQueryParam(req.query.limit as string | string[] | undefined) || "20");
+      const exhibitions = await searchRecommendationExhibitionCandidates(q, limit);
+      res.json({ exhibitions });
+    } catch (error) {
+      res.status(500).json({ error: error instanceof Error ? error.message : String(error) });
+    }
+  });
 
   app.get("/api/relics/search", async (req, res) => {
     try {

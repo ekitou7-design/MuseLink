@@ -8,7 +8,6 @@ import { AdminPage } from "./pages/AdminPage";
 import { UserSession } from "./auth/UserSession";
 import { AuthGuard } from "./router/AuthGuard";
 import { AdminGuard } from "./router/AdminGuard";
-import { isCurrentUserAdmin } from "./router/authChecks";
 
 export default function RootApp() {
   const route = useRoute();
@@ -21,22 +20,16 @@ export default function RootApp() {
   // - If logged in -> go home
   // - If not -> go login
   useEffect(() => {
-    let cancelled = false;
     const snap = UserSession.snapshot();
     if (snap.isLoggedIn && snap.token && snap.museId) {
       if (route === "/login" || route === "/register") {
-        isCurrentUserAdmin().then((isAdmin) => {
-          if (!cancelled) navigate(isAdmin ? "/admin" : "/home");
-        });
+        navigate("/home");
       }
     } else {
-      if (route === "/home" || route === "/swipe" || route === "/profile" || route === "/admin" || route.startsWith("/museums/")) {
+      if (route === "/home" || route === "/swipe" || route === "/profile" || route === "/admin" || route.startsWith("/admin/") || route.startsWith("/museums/")) {
         navigate("/login");
       }
     }
-    return () => {
-      cancelled = true;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -45,6 +38,6 @@ export default function RootApp() {
   if (museumRouteId) return <AuthGuard><HomePage initialTab="explore" initialMuseumId={museumRouteId} /></AuthGuard>;
   if (route === "/swipe") return <AuthGuard><HomePage initialTab="swipe" /></AuthGuard>;
   if (route === "/profile") return <AuthGuard><ProfilePage /></AuthGuard>;
-  if (route === "/admin") return <AdminGuard><AdminPage /></AdminGuard>;
+  if (route === "/admin" || route.startsWith("/admin/")) return <AdminGuard><AdminPage adminPath={route as "/admin" | `/admin/${string}`} /></AdminGuard>;
   return <LoginPage />;
 }

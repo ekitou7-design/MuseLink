@@ -1,0 +1,94 @@
+{
+  "artifactRecommendations": [
+    {
+      "id": "rec-artifact-1781748914466-7da5e",
+      "type": "artifact",
+      "targetId": "WW-辽-金灰陶罐形扑满-0",
+      "title": "",
+      "reason": "",
+      "coverUrl": "",
+      "order": 1,
+      "enabled": true
+    },
+    {
+      "id": "rec-artifact-1781748917516-46c59",
+      "type": "artifact",
+      "targetId": "WW-清浮雕瓜瓞天台石印-2",
+      "title": "",
+      "reason": "",
+      "coverUrl": "",
+      "order": 2,
+      "enabled": true
+    },
+    {
+      "id": "rec-artifact-1781748928448-af41c",
+      "type": "artifact",
+      "targetId": "WW-清浮雕人物玛瑙鼻烟壶-14",
+      "title": "",
+      "reason": "",
+      "coverUrl": "",
+      "order": 3,
+      "enabled": true
+    }
+  ],
+  "exhibitionRecommendations": [
+    {
+      "id": "rec-exhibition-1781748924498-d5df4",
+      "type": "exhibition",
+      "targetId": "exh_1776687363674_f5d284",
+      "title": "",
+      "reason": "",
+      "coverUrl": "",
+      "order": 1,
+      "enabled": true
+    }
+  ],
+  "editorPicks": {
+    "sectionKey": "editor-picks",
+    "title": "编辑推荐",
+    "subtitle": "",
+    "enabled": true,
+    "items": [
+      {
+        "id": "rec-exhibition-1781748972549-cf0c0",
+        "type": "exhibition",
+        "targetId": "exh_1776687363674_f5d284",
+        "title": "",
+        "reason": "",
+        "coverUrl": "",
+        "order": 1,
+        "enabled": true
+      },
+      {
+        "id": "rec-artifact-1781748974199-13a6e",
+        "type": "artifact",
+        "targetId": "WW-清白玉鼻烟壶-19",
+        "title": "",
+        "reason": "",
+        "coverUrl": "",
+        "order": 2,
+        "enabled": true
+      },
+      {
+        "id": "rec-artifact-1781748976082-b312a",
+        "type": "artifact",
+        "targetId": "WW-清浮雕盖耳青玉鼻烟壶-18",
+        "title": "",
+        "reason": "",
+        "coverUrl": "",
+        "order": 3,
+        "enabled": true
+      },
+      {
+        "id": "rec-artifact-1781748977398-04c3b",
+        "type": "artifact",
+        "targetId": "WW-清内画山水清供玻璃鼻烟壶-17",
+        "title": "",
+        "reason": "",
+        "coverUrl": "",
+        "order": 4,
+        "enabled": true
+      }
+    ]
+  }
+}
