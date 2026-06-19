@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-18T02:15:45.321Z",
+  "updatedAt": "2026-06-19T14:54:41.167Z",
   "artifacts": [
     {
       "id": "WW-辽-金灰陶罐形扑满-0",
@@ -10935,8 +10935,8 @@
       "尺寸": "",
       "remarks": "",
       "备注": "",
-      "isEditorRecommended": false,
-      "is_editor_recommended": false,
+      "isEditorRecommended": true,
+      "is_editor_recommended": true,
       "editorRecommendationOrder": 0,
       "editor_recommendation_order": 0
     },
@@ -25705,6 +25705,48 @@
       "is_editor_recommended": false,
       "editorRecommendationOrder": 0,
       "editor_recommendation_order": 0
+    },
+    {
+      "name": "哈哈哈",
+      "museum": "辽宁省博物馆",
+      "dynasty": "暂无信息",
+      "category": "",
+      "shortIntro": "",
+      "description": "哈哈哈",
+      "imageUrl": "",
+      "sourceUrl": "",
+      "tags": [],
+      "attributes": [],
+      "id": "哈哈哈-mql1qz13",
+      "文物名称": "哈哈哈",
+      "museumName": "辽宁省博物馆",
+      "所属博物馆": "辽宁省博物馆",
+      "period": "暂无信息",
+      "朝代": "暂无信息",
+      "image_url": "",
+      "图片链接": "",
+      "source_url": "",
+      "material": "",
+      "dimensions": "",
+      "level": "",
+      "remarks": "",
+      "isEditorRecommended": false,
+      "is_editor_recommended": false,
+      "editorRecommendationOrder": 0,
+      "editor_recommendation_order": 0,
+      "材质": "",
+      "culture": "中华文化",
+      "origin": "",
+      "localImageUrl": "/artifact-images/哈哈哈-mql1qz13.jpg",
+      "localThumbnailUrl": "/artifact-images/thumbs/哈哈哈-mql1qz13-thumb.jpg",
+      "local_image_url": "/artifact-images/哈哈哈-mql1qz13.jpg",
+      "local_thumbnail_url": "/artifact-images/thumbs/哈哈哈-mql1qz13-thumb.jpg",
+      "externalImageUrl": "",
+      "类别": "",
+      "等级": "",
+      "尺寸": "",
+      "备注": "",
+      "favsCount": 0
     }
   ]
 }

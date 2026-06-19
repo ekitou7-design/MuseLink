@@ -2,6 +2,221 @@
   "version": 1,
   "exhibitions": [
     {
+      "id": "exh_1781880588035_9a7572",
+      "userId": 100010,
+      "userName": "犟种",
+      "userPhoto": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+      "title": "石头",
+      "intro": "",
+      "coverUrl": "/exhibition-covers/default-3.png",
+      "artifactIds": [
+        "WW-辽-金灰陶罐形扑满-0",
+        "WW-民国巴林石印-1",
+        "WW-清浮雕瓜瓞天台石印-2",
+        "WW-清雕钮天然木根印-3"
+      ],
+      "isPublic": false,
+      "likesCount": 0,
+      "favsCount": 0,
+      "commentsCount": 0,
+      "slideshowSettings": {
+        "duration": 4,
+        "transition": "fade",
+        "showIntro": true,
+        "loop": true
+      },
+      "createdAt": "2026-06-19T14:49:48.035Z",
+      "updatedAt": "2026-06-19T14:49:48.035Z"
+    },
+    {
+      "id": "exh_1781880508681_7d644b",
+      "userId": 100010,
+      "userName": "犟种",
+      "userPhoto": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+      "title": "千里江山：宋代书画雅集",
+      "intro": "以王希孟《千里江山图》为核心，汇聚宋代书画珍品，展现宋代文人的山水意境与笔墨精神，营造一场穿越千年的雅集之旅。",
+      "coverUrl": "/exhibition-covers/default-3.png",
+      "artifactIds": [
+        "prohibited-export-2-075",
+        "prohibited-export-2-098",
+        "prohibited-export-2-074",
+        "prohibited-export-2-081",
+        "prohibited-export-2-080",
+        "prohibited-export-2-079"
+      ],
+      "isPublic": false,
+      "likesCount": 0,
+      "favsCount": 1,
+      "commentsCount": 0,
+      "source": "ai",
+      "aiGenerated": true,
+      "aiCuration": {
+        "theme": "千里江山：宋代书画雅集",
+        "opening": "欢迎步入『千里江山：宋代书画雅集』。宋代是中国书画艺术的巅峰时期，文人雅士以笔墨寄情，追求意境与气韵。本次展览以王希孟《千里江山图》为轴心，辅以蔡襄、林逋、米芾、黄庭坚、赵佶等大家的墨宝，邀您共赏宋人笔下的江山胜景与诗意生活。",
+        "sections": [
+          {
+            "title": "第一单元：观看入口",
+            "summary": "本单元作为第一段叙事，帮助观众从展品细节进入更完整的文化语境。",
+            "artifactIds": [
+              "prohibited-export-2-075",
+              "prohibited-export-2-098",
+              "prohibited-export-2-074",
+              "prohibited-export-2-081",
+              "prohibited-export-2-080",
+              "prohibited-export-2-079"
+            ]
+          }
+        ],
+        "artifactNotes": {
+          "prohibited-export-2-098": "它作为开篇展品，为观众建立进入展览的第一条线索。",
+          "prohibited-export-2-075": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。",
+          "prohibited-export-2-074": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。",
+          "prohibited-export-2-080": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。",
+          "prohibited-export-2-079": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。",
+          "prohibited-export-2-081": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。"
+        },
+        "ending": "宋代文人在笔墨间寄寓了对自然与人生的哲思，这一幅幅书画不仅是艺术的瑰宝，更是心灵的对话。感谢您的莅临，愿这份宋韵长存心间。",
+        "sourceNote": "展品来自后端馆藏库；结构由 MuseLink 根据展品字段整理。"
+      },
+      "exhibitionIntro": "以王希孟《千里江山图》为核心，汇聚宋代书画珍品，展现宋代文人的山水意境与笔墨精神，营造一场穿越千年的雅集之旅。",
+      "units": [
+        {
+          "id": "unit-1",
+          "title": "第一单元：观看入口",
+          "description": "这一单元关注王希孟《千里江山图》卷、蔡襄《自书诗》卷、林逋《自书诗》卷等展品之间的联系，带观众进入展览的一个侧面。",
+          "artifactIds": [
+            "prohibited-export-2-075",
+            "prohibited-export-2-098",
+            "prohibited-export-2-074",
+            "prohibited-export-2-081",
+            "prohibited-export-2-080",
+            "prohibited-export-2-079"
+          ],
+          "curatorNote": "本单元作为第一段叙事，帮助观众从展品细节进入更完整的文化语境。"
+        }
+      ],
+      "conclusion": "宋代文人在笔墨间寄寓了对自然与人生的哲思，这一幅幅书画不仅是艺术的瑰宝，更是心灵的对话。感谢您的莅临，愿这份宋韵长存心间。",
+      "selectionReasons": {
+        "prohibited-export-2-098": "它作为开篇展品，为观众建立进入展览的第一条线索。",
+        "prohibited-export-2-075": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。",
+        "prohibited-export-2-074": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。",
+        "prohibited-export-2-080": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。",
+        "prohibited-export-2-079": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。",
+        "prohibited-export-2-081": "它展现了北宋、纸本/绢本书画中的一处关键面貌，帮助观众把主题看得更具体。"
+      },
+      "artifactRoles": {
+        "prohibited-export-2-098": "核心展品",
+        "prohibited-export-2-075": "补充展品",
+        "prohibited-export-2-074": "补充展品",
+        "prohibited-export-2-080": "补充展品",
+        "prohibited-export-2-079": "对比展品",
+        "prohibited-export-2-081": "过渡展品"
+      },
+      "createdAt": "2026-06-19T14:48:28.681Z",
+      "updatedAt": "2026-06-19T14:49:12.907Z",
+      "bgmUrl": "",
+      "slideshowSettings": {
+        "duration": 4,
+        "transition": "fade",
+        "showIntro": true,
+        "loop": true
+      }
+    },
+    {
+      "id": "exh_1781879719232_9cc25c",
+      "userId": 100010,
+      "userName": "犟种",
+      "userPhoto": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200",
+      "title": "王者之器：从后母戊鼎到西周青铜礼制",
+      "intro": "以商代重器后母戊鼎为引，聚焦西周青铜礼器，展现青铜器作为权力象征与礼制载体的演进。",
+      "coverUrl": "/exhibition-covers/default-3.png",
+      "artifactIds": [
+        "ncha-first-core-031",
+        "ncha-first-core-003",
+        "ncha-first-core-005",
+        "ncha-first-core-008",
+        "ncha-third-006",
+        "ncha-third-010"
+      ],
+      "isPublic": false,
+      "likesCount": 0,
+      "favsCount": 0,
+      "commentsCount": 0,
+      "source": "ai",
+      "aiGenerated": true,
+      "aiCuration": {
+        "theme": "王者之器：从后母戊鼎到西周青铜礼制",
+        "opening": "青铜，古称吉金，是中华文明早期权力与信仰的凝聚。从商代后母戊鼎的雄浑，到西周礼器的繁复，每一件青铜器都承载着王朝的秩序与理想。本次展览精选七件国宝重器，带您穿越商周，见证青铜礼制如何塑造中国古代国家形态。",
+        "sections": [
+          {
+            "title": "精选展品",
+            "summary": "为避免单元过碎，展品统一收束为一个完整单元。",
+            "artifactIds": [
+              "ncha-first-core-031",
+              "ncha-first-core-003",
+              "ncha-first-core-005",
+              "ncha-first-core-008",
+              "ncha-third-006",
+              "ncha-third-010"
+            ]
+          }
+        ],
+        "artifactNotes": {
+          "ncha-first-core-003": "它作为开篇展品，为观众建立进入展览的第一条线索。",
+          "ncha-first-core-031": "它展现了西周早期、青铜中的一处关键面貌，帮助观众把主题看得更具体。",
+          "ncha-first-core-005": "它展现了西周、青铜中的一处关键面貌，帮助观众把主题看得更具体。",
+          "ncha-first-core-008": "它展现了西周、青铜中的一处关键面貌，帮助观众把主题看得更具体。",
+          "ncha-third-006": "它展现了西周、青铜中的一处关键面貌，帮助观众把主题看得更具体。",
+          "ncha-third-010": "它展现了西周、青铜中的一处关键面貌，帮助观众把主题看得更具体。"
+        },
+        "ending": "从后母戊鼎的商代雄风，到西周铭文中的礼乐秩序，青铜器不仅是技艺的结晶，更是中华文明早期国家形态的缩影。这些吉金重器，至今仍诉说着三千年前权力与信仰的故事。",
+        "sourceNote": "展品来自后端馆藏库；结构由 MuseLink 根据展品字段整理。"
+      },
+      "exhibitionIntro": "以商代重器后母戊鼎为引，聚焦西周青铜礼器，展现青铜器作为权力象征与礼制载体的演进。",
+      "units": [
+        {
+          "id": "unit-1",
+          "title": "精选展品",
+          "description": "本单元汇集本展览中的代表性展品，形成一条连续的观看路线。",
+          "artifactIds": [
+            "ncha-first-core-031",
+            "ncha-first-core-003",
+            "ncha-first-core-005",
+            "ncha-first-core-008",
+            "ncha-third-006",
+            "ncha-third-010"
+          ],
+          "curatorNote": "为避免单元过碎，展品统一收束为一个完整单元。"
+        }
+      ],
+      "conclusion": "从后母戊鼎的商代雄风，到西周铭文中的礼乐秩序，青铜器不仅是技艺的结晶，更是中华文明早期国家形态的缩影。这些吉金重器，至今仍诉说着三千年前权力与信仰的故事。",
+      "selectionReasons": {
+        "ncha-first-core-003": "它作为开篇展品，为观众建立进入展览的第一条线索。",
+        "ncha-first-core-031": "它展现了西周早期、青铜中的一处关键面貌，帮助观众把主题看得更具体。",
+        "ncha-first-core-005": "它展现了西周、青铜中的一处关键面貌，帮助观众把主题看得更具体。",
+        "ncha-first-core-008": "它展现了西周、青铜中的一处关键面貌，帮助观众把主题看得更具体。",
+        "ncha-third-006": "它展现了西周、青铜中的一处关键面貌，帮助观众把主题看得更具体。",
+        "ncha-third-010": "它展现了西周、青铜中的一处关键面貌，帮助观众把主题看得更具体。"
+      },
+      "artifactRoles": {
+        "ncha-first-core-003": "核心展品",
+        "ncha-first-core-031": "补充展品",
+        "ncha-first-core-005": "补充展品",
+        "ncha-first-core-008": "补充展品",
+        "ncha-third-006": "对比展品",
+        "ncha-third-010": "过渡展品"
+      },
+      "createdAt": "2026-06-19T14:35:19.232Z",
+      "updatedAt": "2026-06-19T14:36:03.481Z",
+      "bgmUrl": "",
+      "slideshowSettings": {
+        "duration": 4,
+        "transition": "fade",
+        "showIntro": true,
+        "loop": true
+      }
+    },
+    {
       "id": "exh_1781686917995_8f081a",
       "userId": 100014,
       "userName": "MuseLink 0488",

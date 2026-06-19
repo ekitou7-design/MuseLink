@@ -2372,15 +2372,15 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
     onClick: () => void;
     muted?: boolean;
   }) => (
-    <article className="flex min-h-40 flex-col justify-between rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
-      <div>
-        <h3 className="text-lg font-black text-[#17211f]">{title}</h3>
+    <article className="flex min-w-0 items-start gap-3 rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
+      <div className="min-w-0 flex-1">
+        <h3 className="break-words text-lg font-black leading-snug text-[#17211f]">{title}</h3>
         <p className="mt-2 text-sm font-bold leading-relaxed text-stone-500">{description}</p>
       </div>
       <button
         type="button"
         onClick={onClick}
-        className={`mt-5 rounded-[5px] px-4 py-2 text-sm font-black ${muted ? "bg-stone-100 text-stone-600" : "bg-[#17211f] text-white"}`}
+        className={`w-24 shrink-0 rounded-[5px] px-3 py-2 text-sm font-black leading-snug ${muted ? "bg-stone-100 text-stone-600" : "bg-[#17211f] text-white"}`}
       >
         {action}
       </button>
@@ -2390,7 +2390,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
   const AdminDashboard = () => (
     <div className="space-y-4">
       <AdminSectionHeader title="控制台首页" description="选择一个管理模块进入，首页不直接展示长列表或表单。" />
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3">
         <AdminEntryCard title="文物管理" description={`管理 ${artifacts.length} 件文物的列表、编辑、补图和推荐。`} action="进入文物管理" onClick={() => navigateAdmin("/admin/artifacts")} />
         <AdminEntryCard title="博物馆管理" description={`维护 ${museums.length} 个馆藏机构、封面和地区信息。`} action="进入博物馆管理" onClick={() => navigateAdmin("/admin/museums")} />
         <AdminEntryCard title="导入文物" description="使用现有导入任务接口导入文物，并同步到统一数据源。" action="进入导入文物" onClick={() => navigateAdmin("/admin/import")} />
@@ -2404,7 +2404,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
   const AdminArtifactsHome = () => (
     <div className="space-y-4">
       <AdminSectionHeader title="文物管理" description="选择一个文物管理任务，避免在入口页堆叠列表和表单。" backTo="/admin" />
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3">
         <AdminEntryCard title="文物列表" description="查看、搜索、筛选和编辑已有文物。" action="进入列表" onClick={() => navigateAdmin("/admin/artifacts/list")} />
         <AdminEntryCard title="新增文物" description="按基础信息、图片信息、扩展信息分组录入文物。" action="新建文物" onClick={() => { setForm(emptyForm); clearArtifactImageFile(); navigateAdmin("/admin/artifacts/new"); }} />
         <AdminEntryCard title="文物补图" description={`处理完全无图、仅外链图、本地图异常的文物。`} action="进入补图" onClick={() => { setImageFilter("no-local"); navigateAdmin("/admin/artifacts/images"); }} />
@@ -2528,7 +2528,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
         </div>
       </section>
       {artifactFilterOpen && <AdminArtifactFilterPanel />}
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-3">
         {filteredArtifacts.map(renderArtifactListCard)}
         {filteredArtifacts.length === 0 && <div className="rounded-[8px] bg-white px-4 py-12 text-center text-sm font-bold text-stone-400">当前筛选下没有文物。</div>}
       </div>
@@ -2626,7 +2626,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
   const AdminArtifactImages = () => (
     <div className="space-y-4">
       <AdminSectionHeader title="文物补图" description={`只显示完全无图、仅有外链图、本地图异常的文物。当前 ${imageRepairArtifacts.length} 件。`} backTo="/admin/artifacts" />
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-3">
         {imageRepairArtifacts.map(renderArtifactImageRepairCard)}
         {imageRepairArtifacts.length === 0 && <div className="rounded-[8px] bg-white px-4 py-12 text-center text-sm font-bold text-stone-400">当前没有需要补图的文物。</div>}
       </div>
@@ -2636,7 +2636,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
   const AdminImageTools = () => (
     <div className="space-y-4">
       <AdminSectionHeader title="图片工具" description="图片相关能力集中入口，不在后台首页直接展开。" backTo="/admin" />
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3">
         <AdminEntryCard title="文物图片裁剪" description="从文物补图或编辑页上传图片后自动进入 4:3 裁剪。" action="去文物补图" onClick={() => navigateAdmin("/admin/artifacts/images")} />
         <AdminEntryCard title="博物馆封面裁剪" description="选择博物馆后上传封面，自动进入 16:9 裁剪。" action="去封面补图" onClick={() => navigateAdmin("/admin/museums/images")} />
         <AdminEntryCard title="检查异常图片" description="筛出本地图异常文物，便于重新上传或从外链下载。" action="检查异常" onClick={() => { setImageFilter("local-broken"); navigateAdmin("/admin/artifacts/images"); }} />
@@ -2648,7 +2648,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
   const AdminMuseumsHome = () => (
     <div className="space-y-4">
       <AdminSectionHeader title="博物馆管理" description="选择博物馆管理任务，入口页不展开长列表。" backTo="/admin" />
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3">
         <AdminEntryCard title="博物馆列表" description="查看、搜索、筛选和编辑馆藏机构。" action="进入列表" onClick={() => navigateAdmin("/admin/museums/list")} />
         <AdminEntryCard title="新增博物馆" description="当前后端以导入创建和编辑为主，不新增接口。" action="查看说明" muted onClick={() => navigateAdmin("/admin/museums/new")} />
         <AdminEntryCard title="封面补图" description={`处理 ${noCoverMuseums.length} 个缺少封面的博物馆。`} action="进入补图" onClick={() => navigateAdmin("/admin/museums/images")} />
@@ -2685,10 +2685,12 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
           {activeMuseumFilterTags.map((tag) => <span key={tag} className="rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-700">{tag}</span>)}
         </div>
       </section>
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
-        <div className="space-y-3">{museums.map(renderMuseumMobileCard)}</div>
+      <div className="space-y-3">
+        {museums.map(renderMuseumMobileCard)}
+        {museums.length === 0 && <div className="rounded-[8px] bg-white px-4 py-12 text-center text-sm font-bold text-stone-400">当前筛选下没有博物馆。</div>}
+      </div>
+      {selectedMuseum && (
         <section className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
-          {selectedMuseum ? (
             <form onSubmit={onSaveMuseum} className="space-y-4">
               <h3 className="text-lg font-black text-[#17211f]">博物馆详情</h3>
               <input value={museumForm.name} onChange={(e) => setMuseumForm({ ...museumForm, name: e.target.value })} placeholder="标准名称" className="w-full rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
@@ -2712,11 +2714,8 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
               {museumMessage && <div className="rounded-[5px] bg-emerald-50 p-3 text-xs font-bold text-emerald-700">{museumMessage}</div>}
               <button disabled={saving || !museumForm.name.trim()} className="w-full rounded-[5px] bg-[#17211f] px-4 py-3 text-sm font-black text-white disabled:opacity-50">{saving ? "保存中..." : "保存博物馆信息"}</button>
             </form>
-          ) : (
-            <div className="py-16 text-center text-sm font-bold text-stone-400">选择一个博物馆查看详情、编辑信息和上传封面。</div>
-          )}
         </section>
-      </div>
+      )}
     </div>
   );
 
@@ -2732,7 +2731,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
   const AdminMuseumImages = () => (
     <div className="space-y-4">
       <AdminSectionHeader title="博物馆封面补图" description={`只显示缺少封面的博物馆。当前 ${noCoverMuseums.length} 个。`} backTo="/admin/museums" />
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-3">
         {noCoverMuseums.map((museum) => (
           <article key={museum.id} className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
             <div className="font-black text-[#17211f]">{museum.name}</div>
@@ -2761,7 +2760,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
     <div className="space-y-4">
       <AdminSectionHeader title="用户统计" description="查看用户、管理员和内容活动数据。" backTo="/admin" />
       {stats && (
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3">
           {[["Total Users", stats.totalUsers], ["Admins", stats.adminCount], ["Members", regularUserCount], ["Contacts", stats.usersWithContact]].map(([label, value]) => (
             <div key={label} className="rounded-[8px] border border-stone-200 bg-white p-4 shadow-sm">
               <div className="text-[10px] font-black uppercase tracking-[0.16em] text-stone-400">{label}</div>
@@ -2770,7 +2769,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
           ))}
         </div>
       )}
-      <div className="grid gap-3 lg:grid-cols-2">{users.map(renderUserMobileCard)}</div>
+      <div className="grid gap-3">{users.map(renderUserMobileCard)}</div>
     </div>
   );
 
@@ -2901,7 +2900,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
             <input value={recommendationSearchQuery} onChange={(e) => setRecommendationSearchQuery(e.target.value)} placeholder="搜索可推荐文物或公开展览" className="rounded-[5px] border border-stone-200 px-3 py-3 text-sm outline-none focus:border-amber-700" />
             <button type="button" onClick={refreshRecommendationCandidates} className="rounded-[5px] bg-[#17211f] px-4 py-3 text-sm font-black text-white">搜索</button>
           </div>
-          <div className="mt-3 grid gap-2 lg:grid-cols-2">
+          <div className="mt-3 grid gap-2">
             {(recommendationTab === "artifacts" || recommendationTab === "editor-picks") && recommendationArtifactCandidates.map(renderArtifactCandidate)}
             {(recommendationTab === "exhibitions" || recommendationTab === "editor-picks") && recommendationExhibitionCandidates.map(renderExhibitionCandidate)}
           </div>
@@ -2916,7 +2915,7 @@ export function AdminPage({ adminPath = "/admin" }: { adminPath?: AdminRoute }) 
               {recommendationsSaving ? "保存中..." : "保存推荐配置"}
             </button>
           </div>
-          <div className="grid gap-3 lg:grid-cols-2">
+          <div className="grid gap-3">
             {items.map(renderRecommendationItemCard)}
             {items.length === 0 && <div className="rounded-[8px] bg-white px-4 py-12 text-center text-sm font-bold text-stone-400">当前栏目还没有推荐项。</div>}
           </div>
